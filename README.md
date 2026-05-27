@@ -1,15 +1,15 @@
-# StreamSim: Stellar Stream Simulation & Observation
+# StreamObs: Stellar Stream Simulation & Observation Toolkit
 
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://lsstdesc.github.io/stream_sim/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**StreamSim** is a Python package for stellar stream data generation and observation simulation. It provides tools to:
+**StreamObs* is a Python package for stellar stream data generation and observation simulation. It provides tools to:
 
 - **Generate mock stellar stream data** from parametric models. The goal is to provide a modular codebase that can be easily configured and run. The user should be able to generate a variety of stream morphologies by changing the configuration files. 
 - **Assign photometric properties** to stars using stellar isochrones  
 - **Simulate realistic survey observations** with observational effects
 
-StreamSim bridges theoretical/dynamical stream models and realistic mock observations as they would appear in astronomical surveys like LSST.
+StreamObs bridges theoretical/dynamical stream models and realistic mock observations as they would appear in astronomical surveys like LSST.
 
 > **Note**: This package is not intended to generate dynamic models or N-body simulations, but rather to study statistical realizations of parametrized stream geometries.
 
@@ -53,7 +53,7 @@ Eventually stream_sim will be installable through common package managers (i.e.,
 
 ## Use Cases
 
-StreamSim is particularly useful for:
+StreamObs is particularly useful for:
 
 - **Dynamical simulations**: Convert N-body simulation outputs into observable quantities
 - **Algorithm development**: Generate test data for stream detection algorithms
