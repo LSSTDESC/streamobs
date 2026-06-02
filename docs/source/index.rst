@@ -1,19 +1,19 @@
-.. stream_sim documentation master file
+.. streamobs documentation master file
 
-Welcome to StreamSim's Documentation!
+Welcome to StreamObs's Documentation!
 ======================================
 
 .. warning::
    This package is under active development. The API and features may change in future releases.
 
-**StreamSim** is a Python package for stellar stream data generation and observation simulation. 
+**StreamObs** is a Python package for stellar stream data generation and observation simulation. 
 It provides a complete pipeline to transform theoretical or dynamical stream models into realistic 
 mock observations as they would appear in astronomical surveys.
 
-What StreamSim Does
+What StreamObs Does
 -------------------
 
-StreamSim enables you to:
+StreamObs enables you to:
 
 1. **Generate mock stellar stream data** from parametric models
    
@@ -35,7 +35,7 @@ StreamSim enables you to:
 Use Cases
 ---------
 
-StreamSim is particularly useful for people who:
+StreamObs is particularly useful for people who:
 
 - Run **dynamical simulations** and need to convert results into observable quantities
 - Develop **stream detection algorithms** and require realistic test data
@@ -43,17 +43,17 @@ StreamSim is particularly useful for people who:
 - Need to generate **mock catalogs** for pipeline validation
 
 .. note::
-   StreamSim focuses on parametric stream models and observation simulation. 
+   StreamObs focuses on parametric stream models and observation simulation. 
    It is **not** designed for N-body simulations or dynamical modeling.
 
 
 Getting Started
 ---------------
 
-New to StreamSim? Start here:
+New to StreamObs? Start here:
 
-1. **Installation**: :doc:`installation` - Set up StreamSim on your system
-2. **About**: :doc:`about` - Understand StreamSim's purpose and design
+1. **Installation**: :doc:`installation` - Set up StreamObs on your system
+2. **About**: :doc:`about` - Understand StreamObs's purpose and design
 3. **Quickstart**: :doc:`quickstart` - Learn the basics with simple examples
 4. **API Reference**: :doc:`modules` - Explore the complete API documentation
 

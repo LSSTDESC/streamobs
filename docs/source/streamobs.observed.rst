@@ -1,7 +1,7 @@
-stream\_sim.plotting module
+streamobs.observed module
 ===========================
 
-.. automodule:: stream_sim.plotting
+.. automodule:: streamobs.observed
    :members:
    :show-inheritance:
    :undoc-members:

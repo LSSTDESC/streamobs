@@ -9,8 +9,8 @@ import warnings
 import numpy as np
 import pandas as pd
 
-from stream_sim.functions import function_factory
-from stream_sim.samplers import sampler_factory
+from streamobs.functions import function_factory
+from streamobs.samplers import sampler_factory
 
 
 class ConfigurableModel(object):

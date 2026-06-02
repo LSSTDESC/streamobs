@@ -1,6 +1,6 @@
 # StreamObs: Stellar Stream Simulation & Observation Toolkit
 
-[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://lsstdesc.github.io/stream_sim/)
+[![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://lsstdesc.github.io/streamobs/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **StreamObs* is a Python package for stellar stream data generation and observation simulation. It provides tools to:
@@ -15,12 +15,12 @@ StreamObs bridges theoretical/dynamical stream models and realistic mock observa
 
 ## Documentation
 
-**Full documentation**: https://lsstdesc.github.io/stream_sim/
+**Full documentation**: https://lsstdesc.github.io/streamobs/
 
-- [About](https://lsstdesc.github.io/stream_sim/about.html) - Overview and use cases
-- [Quickstart](https://lsstdesc.github.io/stream_sim/quickstart.html) - Get started in minutes
-- [Installation](https://lsstdesc.github.io/stream_sim/installation.html) - Detailed installation guide
-- [API Reference](https://lsstdesc.github.io/stream_sim/modules.html) - Complete API documentation
+- [About](https://lsstdesc.github.io/streamobs/about.html) - Overview and use cases
+- [Quickstart](https://lsstdesc.github.io/streamobs/quickstart.html) - Get started in minutes
+- [Installation](https://lsstdesc.github.io/streamobs/installation.html) - Detailed installation guide
+- [API Reference](https://lsstdesc.github.io/streamobs/modules.html) - Complete API documentation
 
 ## Installation
 
@@ -28,8 +28,8 @@ Installation consists of three steps:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/LSSTDESC/stream_sim.git
-cd stream_sim
+git clone https://github.com/LSSTDESC/streamobs.git
+cd streamobs
 
 # 2. Set environment variables
 export PYTHONPATH=${PWD}:${PYTHONPATH}
@@ -45,11 +45,11 @@ The code requires common scientific Python packages:
 - ugali (for stellar isochrones)
 
 For full setup (dependencies, optional tools, troubleshooting), see the
-[Installation Guide](https://lsstdesc.github.io/stream_sim/installation.html).  
+[Installation Guide](https://lsstdesc.github.io/streamobs/installation.html).  
 If data download fails or you want details on data structure, see the
-[Data page](https://lsstdesc.github.io/stream_sim/data.html).
+[Data page](https://lsstdesc.github.io/streamobs/data.html).
 
-Eventually stream_sim will be installable through common package managers (i.e., pip and/or conda).
+Eventually streamobs will be installable through common package managers (i.e., pip and/or conda).
 
 ## Use Cases
 
@@ -60,9 +60,9 @@ StreamObs is particularly useful for:
 - **Survey planning**: Predict stream detectability in upcoming surveys
 - **Pipeline validation**: Test analysis workflows with known ground truth
 
-See the [Quickstart Guide](https://lsstdesc.github.io/stream_sim/quickstart.html) for some examples.
+See the [Quickstart Guide](https://lsstdesc.github.io/streamobs/quickstart.html) for some examples.
 
 ## Citation
 
-See the [Citation page](https://lsstdesc.github.io/stream_sim/citation.html) for more information.
+See the [Citation page](https://lsstdesc.github.io/streamobs/citation.html) for more information.
 

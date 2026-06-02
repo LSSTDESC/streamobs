@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Utils for stream_sim
+Utils for streamobs
 """
 import yaml
 

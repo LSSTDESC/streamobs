@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-Download large data files for stream_sim.
+Download large data files for streamobs.
 
 This script downloads a data archive (zip file) from a remote repository
 (e.g., Zenodo, institutional server) and extracts it to the data/ directory.
@@ -147,7 +147,7 @@ def list_data_contents(data_dir):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Download and extract large data files for stream_sim',
+        description='Download and extract large data files for streamobs',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -170,7 +170,7 @@ Examples:
     parser.add_argument('--url', type=str, default=DATA_ARCHIVE_URL,
                         help=f'URL for data archive (default: configured Zenodo URL)')
     parser.add_argument('--data-dir', type=str, default=None,
-                        help='Data directory (default: stream_sim/data/)')
+                        help='Data directory (default: streamobs/data/)')
     parser.add_argument('--force', action='store_true',
                         help='Force re-download even if data exists')
     parser.add_argument('--keep-archive', action='store_true',
@@ -182,7 +182,7 @@ Examples:
     if args.data_dir:
         data_dir = Path(args.data_dir)
     else:
-        # Assume script is in stream_sim/bin/
+        # Assume script is in streamobs/bin/
         script_dir = Path(__file__).parent
         data_dir = script_dir.parent / 'data'
     

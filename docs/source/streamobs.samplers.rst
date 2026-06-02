@@ -1,7 +1,7 @@
-stream\_sim.samplers module
+streamobs.samplers module
 ===========================
 
-.. automodule:: stream_sim.samplers
+.. automodule:: streamobs.samplers
    :members:
    :show-inheritance:
    :undoc-members:

@@ -1,4 +1,4 @@
-# Documentation dependencies for StreamSim
+# Documentation dependencies for StreamObs
 # Install with: pip install -r docs/requirements.txt
 
 sphinx>=8.0

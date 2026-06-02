@@ -1,7 +1,7 @@
-stream\_sim.functions module
+streamobs.functions module
 ============================
 
-.. automodule:: stream_sim.functions
+.. automodule:: streamobs.functions
    :members:
    :show-inheritance:
    :undoc-members:

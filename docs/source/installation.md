@@ -1,17 +1,20 @@
 # Installation & Dependencies
 
-This guide provides complete instructions for installing `stream_sim` and its dependencies.
+This guide provides complete instructions for installing `streamobs` and its dependencies.
 
 ## Quick Start
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/LSSTDESC/stream_sim.git
-cd stream_sim
+git clone https://github.com/LSSTDESC/streamobs.git
+cd streamobs
 
-# 2. Set environment variables
+# 2a. Set environment variables
 export PYTHONPATH=${PWD}:${PYTHONPATH}
 export PATH=${PWD}/bin:${PATH}
+
+# 2a. alternatively you can pip install by running the following int the base directory
+pip install -e . 
 
 # 3. Download required data files
 python bin/download_data.py
@@ -19,7 +22,7 @@ python bin/download_data.py
 
 ## Data Download
 
-`stream_sim` needs external data files (maglim maps, dust map, completeness, photometric errors). Use the downloader and refer to the Data page for details.
+`streamobs` needs external data files (maglim maps, dust map, completeness, photometric errors). Use the downloader and refer to the Data page for details.
 
 ```bash
 # Download required data (default location: data/)
@@ -31,7 +34,7 @@ python bin/download_data.py --force         # Re-download/overwrite
 python bin/download_data.py --data-dir DIR  # Custom install location
 ```
 
-For troubleshooting and data structure, see [StreamSim Data Files](data.md).
+For troubleshooting and data structure, see [StreamObs Data Files](data.md).
 
 ## Dependences
 
