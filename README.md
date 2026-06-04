@@ -3,7 +3,7 @@
 [![Documentation](https://img.shields.io/badge/docs-latest-blue.svg)](https://lsstdesc.github.io/streamobs/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**StreamObs* is a Python package for stellar stream data generation and observation simulation. It provides tools to:
+*StreamObs* is a Python package for stellar stream data generation and observation simulation. It provides tools to:
 
 - **Generate mock stellar stream data** from parametric models. The goal is to provide a modular codebase that can be easily configured and run. The user should be able to generate a variety of stream morphologies by changing the configuration files. 
 - **Assign photometric properties** to stars using stellar isochrones  
