@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "streamobs"
+version = "0.1.0"
+description = "Stellar stream simulation and observation toolkit"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "LSST DESC" }]
+keywords = ["astronomy", "stellar-streams", "simulation", "LSST"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+    "pyyaml",
+    "astropy",
+    "healpy",
+    "healsparse",
+    "gala",
+]
+
+# `ugali` is not on PyPI; for CMD/isochrone sampling install from source:
+#   pip install git+https://github.com/DarkEnergySurvey/ugali.git
+[project.optional-dependencies]
+isochrones = ["ugali"]
+docs = ["sphinx", "sphinx-book-theme", "numpydoc", "myst-parser"]
+dev = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/LSSTDESC/streamobs"
+Documentation = "https://lsstdesc.github.io/streamobs/"
+Issues = "https://github.com/LSSTDESC/streamobs/issues"
+
+[tool.setuptools.packages.find]
+include = ["streamobs*"]
+exclude = ["tests*", "notebooks*", "docs*", "bin*"]

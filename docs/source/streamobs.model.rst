@@ -1,7 +1,7 @@
-stream\_sim.utils module
+streamobs.model module
 ========================
 
-.. automodule:: stream_sim.utils
+.. automodule:: streamobs.model
    :members:
    :show-inheritance:
    :undoc-members:

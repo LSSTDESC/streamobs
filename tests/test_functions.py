@@ -1,5 +1,5 @@
 
-from stream_sim.functions import (LinearDensityCubicSplineInterpolation,
+from streamobs.functions import (LinearDensityCubicSplineInterpolation,
                                   FileLinearDensityCubicSplineInterpolation,
                                   CubicSplineInterpolation,
                                   FileCubicSplineInterpolation)

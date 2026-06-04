@@ -12,11 +12,11 @@ import pandas as pd
 import scipy.interpolate
 
 
-import stream_sim.model; reload(stream_sim.model)
-from stream_sim.model import StreamModel, BackgroundModel
-import stream_sim.plotting; reload(stream_sim.plotting)
-from stream_sim.plotting import plot_stream
-from stream_sim.utils import parse_config
+import streamobs.model; reload(streamobs.model)
+from streamobs.model import StreamModel, BackgroundModel
+import streamobs.plotting; reload(streamobs.plotting)
+from streamobs.plotting import plot_stream
+from streamobs.utils import parse_config
 
 def generate_stream(config):
     """ Generate the simulated stream.

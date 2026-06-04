@@ -1,6 +1,6 @@
-# StreamSim Documentation
+# StreamObs Documentation
 
-This directory contains the source files for the StreamSim documentation, built using [Sphinx](https://www.sphinx-doc.org/).
+This directory contains the source files for the StreamObs documentation, built using [Sphinx](https://www.sphinx-doc.org/).
 
 ## Documentation Structure
 
@@ -63,7 +63,7 @@ make html
 
 ### Common Build Issues
 
-- **Import errors**: Make sure the `stream_sim` package is in your `PYTHONPATH`
+- **Import errors**: Make sure the `streamobs` package is in your `PYTHONPATH`
 - **Missing dependencies**: Install all required packages listed above
 - **Warnings about missing files**: Check that all files referenced in `index.rst` exist
 
@@ -85,8 +85,8 @@ To edit, simply modify the `.md` files in `docs/source/`.
 The API reference is automatically generated from docstrings in the Python code:
 
 - Docstrings should follow the [NumPy documentation style](https://numpydoc.readthedocs.io/)
-- Edit docstrings in the `.py` files in `stream_sim/`
-- The API pages (e.g., `stream_sim.surveys.rst`) are auto-generated
+- Edit docstrings in the `.py` files in `streamobs/`
+- The API pages (e.g., `streamobs.surveys.rst`) are auto-generated
 
 ### Main Index Page
 
@@ -94,7 +94,7 @@ The main landing page is `docs/source/index.rst` written in reStructuredText.
 
 ## Deploying Documentation
 
-The documentation is hosted on GitHub Pages at: https://lsstdesc.github.io/stream_sim/
+The documentation is hosted on GitHub Pages at: https://lsstdesc.github.io/streamobs/
 
 ### Manual Deployment
 

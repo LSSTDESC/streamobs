@@ -1,16 +1,16 @@
-# About StreamSim
+# About StreamObs
 
 ## Overview
 
-**StreamSim** is a Python package designed for stellar stream data generation and observation simulation. It provides a complete pipeline to transform theoretical or dynamical stream models into realistic mock observations as they would appear in astronomical surveys.
+**StreamObs** is a Python package designed for stellar stream data generation and observation simulation. It provides a complete pipeline to transform theoretical or dynamical stream models into realistic mock observations as they would appear in astronomical surveys.
 
 ```{note}
-StreamSim is **not** intended for generating dynamical models or N-body simulations. Instead, it provides tools to study statistical realizations of parametrized stream geometries and convert simulation outputs into mock observations.
+StreamObs is **not** intended for generating dynamical models or N-body simulations. Instead, it provides tools to study statistical realizations of parametrized stream geometries and convert simulation outputs into mock observations.
 ```
 
-## What StreamSim Does
+## What StreamObs Does
 
-StreamSim enables to:
+StreamObs enables to:
 
 1. **Generate mock stellar stream data** from parametric models
    - Create positions of stars along streams using various parametric descriptions
@@ -26,7 +26,7 @@ StreamSim enables to:
 
 ## Use Cases
 
-StreamSim is particularly useful for people who:
+StreamObs is particularly useful for people who:
 
 - Run **dynamical simulations** of stellar streams and need to convert results into observable quantities
 - Develop **stream detection algorithms** and require realistic test data with known properties
@@ -36,14 +36,14 @@ StreamSim is particularly useful for people who:
 
 ## Development Team
 
-StreamSim is developed and maintained by members of the LSST Dark Energy Science Collaboration (DESC).
+StreamObs is developed and maintained by members of the LSST Dark Energy Science Collaboration (DESC).
 
 **Core Contributors:**
 - *To be completed with contributor names and affiliations*
 
 **Contact:**
-- GitHub: [LSSTDESC/stream_sim](https://github.com/LSSTDESC/stream_sim)
-- Issues: [Report bugs or request features](https://github.com/LSSTDESC/stream_sim/issues)
+- GitHub: [LSSTDESC/streamobs](https://github.com/LSSTDESC/streamobs)
+- Issues: [Report bugs or request features](https://github.com/LSSTDESC/streamobs/issues)
 
 ## License
 
@@ -52,7 +52,7 @@ StreamSim is developed and maintained by members of the LSST Dark Energy Science
 
 ## Acknowledgments
 
-If you use StreamSim in your research, please see the [Citation](citation.md) page for how to properly cite this software.
+If you use StreamObs in your research, please see the [Citation](citation.md) page for how to properly cite this software.
 
 **Funding and Support:**
 - This project is supported by the LSST Dark Energy Science Collaboration

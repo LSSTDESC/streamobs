@@ -5,9 +5,9 @@ More modular stream generation example.
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from stream_sim.model import SplineStreamModel, BackgroundModel
-from stream_sim.plotting import plot_stream
-from stream_sim.utils import parse_config
+from streamobs.model import SplineStreamModel, BackgroundModel
+from streamobs.plotting import plot_stream
+from streamobs.utils import parse_config
 
 
 def generate_stream(config):

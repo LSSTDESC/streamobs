@@ -6,7 +6,7 @@ Probabilistic samplers.
 import numpy as np
 import scipy.stats
 
-from stream_sim.functions import (Interpolation,
+from streamobs.functions import (Interpolation,
                                   FileInterpolation,
                                   Sinusoid,
                                   CubicSplineInterpolation,

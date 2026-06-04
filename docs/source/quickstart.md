@@ -1,13 +1,13 @@
 # Quickstart Guide
 
-This page provides a quick introduction to get you started with StreamSim.
+This page provides a quick introduction to get you started with StreamObs.
 
-First, make sure you have StreamSim installed (see [Installation](installation.md) for details).
+First, make sure you have StreamObs installed (see [Installation](installation.md) for details).
 
 
 ## Generating Mock Stream Data
 
-StreamSim can generate parametric stellar stream models using configuration files or directly in Python.
+StreamObs can generate parametric stellar stream models using configuration files or directly in Python.
 
 ### Example 1: Using Command-Line Tools
 
@@ -37,8 +37,8 @@ You can also generate streams programmatically:
 ```python
 import numpy as np
 import pandas as pd
-from stream_sim.model import StreamModel
-from stream_sim.utils import parse_config
+from streamobs.model import StreamModel
+from streamobs.utils import parse_config
 
 # Load configuration
 config = parse_config('config/toy1_config.yaml')
@@ -60,7 +60,7 @@ Once you have mock stream data (either generated or from simulations), you can c
 ```python
 import numpy as np
 import pandas as pd
-from stream_sim import surveys, observed
+from streamobs import surveys, observed
 
 # Load a survey (e.g., LSST Year 1)
 lsst_survey = surveys.Survey.load(survey='lsst', release='yr1')
@@ -130,4 +130,4 @@ Now that you've seen the basics, you can:
 
 - **Documentation**: Browse the full documentation for detailed information
 - **Examples**: Check the `notebooks/` directory for worked examples
-- **Issues**: Report bugs or request features on [GitHub](https://github.com/LSSTDESC/stream_sim/issues)
+- **Issues**: Report bugs or request features on [GitHub](https://github.com/LSSTDESC/streamobs/issues)

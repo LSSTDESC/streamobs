@@ -6,16 +6,16 @@
 
 ## How to Cite
 
-If you use StreamSim in your research, please cite:
+If you use StreamObs in your research, please cite:
 
 *Citation information to be added*
 
 ```bibtex
-@software{stream_sim,
+@software{streamobs,
   author = {Author names to be added},
-  title = {StreamSim: A Python package for stellar stream simulation},
+  title = {StreamObs: A Python package for stellar stream simulation},
   year = {2025},
-  url = {https://github.com/LSSTDESC/stream_sim},
+  url = {https://github.com/LSSTDESC/streamobs},
   version = {x.x.x}
 }
 ```

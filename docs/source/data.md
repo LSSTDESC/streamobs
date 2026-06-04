@@ -1,4 +1,4 @@
-# StreamSim Data Files
+# StreamObs Data Files
 
 This directory contains large data files required for stream simulations. These files are **not** tracked in the git repository due to their size. They must be downloaded separately from Zenodo.
 
@@ -170,7 +170,7 @@ If you need to add or modify data files:
 
 1. **Create a new zip archive**:
    ```bash
-   cd /path/to/stream_sim
+   cd /path/to/streamobs
    zip -r data.zip data/ \
        -x "*.DS_Store" \
        -x "*__MACOSX*" \

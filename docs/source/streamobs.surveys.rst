@@ -1,7 +1,7 @@
-stream\_sim.surveys module
+streamobs.surveys module
 ==========================
 
-.. automodule:: stream_sim.surveys
+.. automodule:: streamobs.surveys
    :members:
    :show-inheritance:
    :undoc-members:
