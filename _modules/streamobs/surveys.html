@@ -1,0 +1,1869 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>streamobs.surveys &#8212; streamobs  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/streamobs/surveys';</script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">streamobs  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation &amp; Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.utils.html">streamobs.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for streamobs.surveys</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">healpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">healsparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hsp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.interpolate</span>
+
+
+<div class="viewcode-block" id="Survey">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Survey</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Container for survey properties and data.</span>
+
+<span class="sd">    This class stores all survey-specific data including HEALPix maps,</span>
+<span class="sd">    efficiency functions, and photometric error models. Data is loaded</span>
+<span class="sd">    once and reused to avoid redundant file I/O.</span>
+
+<span class="sd">    Band-specific properties (magnitude limits, extinction, errors, etc.)</span>
+<span class="sd">    are stored in dictionaries keyed by band name (e.g., &#39;g&#39;, &#39;r&#39;, &#39;i&#39;).</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Survey identifier (e.g., &#39;lsst&#39;).</span>
+<span class="sd">    release : str, optional</span>
+<span class="sd">        Survey data release version (e.g., &#39;yr1&#39;, &#39;yr5&#39;).</span>
+<span class="sd">    bands : list of str, optional</span>
+<span class="sd">        List of photometric bands available (e.g., [&#39;g&#39;, &#39;r&#39;, &#39;i&#39;]).</span>
+<span class="sd">        Default is an empty list.</span>
+<span class="sd">    maglim_maps : dict, optional</span>
+<span class="sd">        HEALPix maps of magnitude limits, keyed by band.</span>
+<span class="sd">        Example: {&#39;g&#39;: array(...), &#39;r&#39;: array(...)}.</span>
+<span class="sd">        Default is an empty dictionary.</span>
+<span class="sd">    coeff_extinc : dict, optional</span>
+<span class="sd">        Extinction coefficients A_band/E(B-V), keyed by band.</span>
+<span class="sd">        Example: {&#39;g&#39;: 3.303, &#39;r&#39;: 2.285}.</span>
+<span class="sd">        Default uses LSST values for standard bands.</span>
+<span class="sd">    saturation : dict, optional</span>
+<span class="sd">        Bright magnitude limits where detector saturates, keyed by band.</span>
+<span class="sd">        Example: {&#39;g&#39;: 16.0, &#39;r&#39;: 16.0}.</span>
+<span class="sd">        Default is 16.0 mag for all bands.</span>
+<span class="sd">    sys_error : dict, optional</span>
+<span class="sd">        Systematic photometric errors (mag), keyed by band.</span>
+<span class="sd">        Example: {&#39;g&#39;: 0.01, &#39;r&#39;: 0.01}.</span>
+<span class="sd">        Default is 0.0 for all bands.</span>
+<span class="sd">    ebv_map : np.ndarray, optional</span>
+<span class="sd">        HEALPix map of E(B-V) extinction values (band-independent).</span>
+<span class="sd">    coverage : np.ndarray, optional</span>
+<span class="sd">        HEALPix map of survey coverage (1=observed, 0=not observed).</span>
+<span class="sd">    completeness : callable, optional</span>
+<span class="sd">        Efficiency function f(magnitude) -&gt; efficiency [0, 1].</span>
+<span class="sd">        Same function used for all bands, obtained from r band.</span>
+<span class="sd">    delta_saturation : float, optional</span>
+<span class="sd">        Magnitude difference for saturation threshold in the initial functions.</span>
+<span class="sd">    completeness_band : str, optional</span>
+<span class="sd">        Band used to derive completeness function (e.g., &#39;r&#39;).</span>
+<span class="sd">    log_photo_error : callable, optional</span>
+<span class="sd">        Photometric error model f(delta_mag) -&gt; log10(mag_error).</span>
+<span class="sd">        Same function used for all bands, obtained from r band.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Load a survey:</span>
+
+<span class="sd">    &gt;&gt;&gt; survey = Survey.load(&#39;lsst&#39;, release=&#39;dc2&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(survey.bands)</span>
+<span class="sd">    [&#39;g&#39;, &#39;r&#39;]</span>
+
+<span class="sd">    Access magnitude limit for g-band at pixel 10000:</span>
+
+<span class="sd">    &gt;&gt;&gt; maglim_g = survey.get_maglim(&#39;g&#39;, pixel=10000)</span>
+<span class="sd">    &gt;&gt;&gt; print(maglim_g)</span>
+
+<span class="sd">    Calculate extinction in r-band at pixel 10000:</span>
+
+<span class="sd">    &gt;&gt;&gt; extinction_r = survey.get_extinction(&#39;r&#39;, pixel=10000)</span>
+<span class="sd">    &gt;&gt;&gt; print(extinction_r)</span>
+
+<span class="sd">    Get detection efficiency for magnitude 24.0 in g-band:</span>
+
+<span class="sd">    &gt;&gt;&gt; maglim_r = survey.get_maglim(&#39;r&#39;, pixel=10000)</span>
+<span class="sd">    &gt;&gt;&gt; efficiency_g = survey.get_completeness(&#39;r&#39;, 24.0, maglim_r)</span>
+<span class="sd">    &gt;&gt;&gt; print(efficiency_g)</span>
+
+<span class="sd">    Calculate photometric error for magnitude 24.0 in r-band:</span>
+
+<span class="sd">    &gt;&gt;&gt; maglim_r = survey.get_maglim(&#39;r&#39;, pixel=10000)</span>
+<span class="sd">    &gt;&gt;&gt; photo_error_r = survey.get_photo_error(&#39;r&#39;, 24.0, maglim_r)</span>
+<span class="sd">    &gt;&gt;&gt; print(photo_error_r)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Survey identification</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">release</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Available bands</span>
+    <span class="n">bands</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Band-specific maps and properties (dictionaries keyed by band)</span>
+    <span class="n">maglim_maps</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">coeff_extinc</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">saturation</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">sys_error</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Band-independent functions (same for all bands)</span>
+    <span class="n">completeness</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">completeness_band</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">delta_saturation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">log_photo_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Band-independent maps</span>
+    <span class="n">ebv_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">coverage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize default dictionaries if not provided.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bands</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">maglim_maps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maglim_maps</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeff_extinc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">coeff_extinc</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sys_error</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sys_error</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Survey.load">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.load">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">survey</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">release</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Survey&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load survey data and return Survey instance.</span>
+
+<span class="sd">        This is a convenience method that calls SurveyFactory.create_survey().</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        survey : str</span>
+<span class="sd">            Survey name (e.g., &#39;lsst&#39;).</span>
+<span class="sd">        release : str, optional</span>
+<span class="sd">            Survey release/version (e.g., &#39;yr1&#39;, &#39;yr5&#39;).</span>
+<span class="sd">        config_file : dict, optional</span>
+<span class="sd">            Custom configuration dictionary.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments passed to ``SurveyFactory.create_survey()``</span>
+<span class="sd">            to override config values (including verbose: bool = True)</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Survey</span>
+<span class="sd">            Loaded Survey instance.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Load LSST year 5 survey:</span>
+
+<span class="sd">        &gt;&gt;&gt; lsst_yr5 = Survey.load(&#39;lsst&#39;, release=&#39;yr5&#39;)</span>
+
+<span class="sd">        Load with uniform survey variant:</span>
+
+<span class="sd">        &gt;&gt;&gt; lsst_yr4 = Survey.load(&#39;lsst&#39;, release=&#39;yr4&#39;, uniform_survey=True)</span>
+<span class="sd">        &gt;&gt;&gt; lsst_yr4_uniform = SurveyFactory._cached_surveys[&#39;lsst_yr4_uniform&#39;]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">SurveyFactory</span><span class="o">.</span><span class="n">create_survey</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="n">release</span><span class="p">,</span> <span class="n">config_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Survey.get_maglim">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.get_maglim">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_maglim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pixel</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get magnitude limit for a specific band.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        band : str</span>
+<span class="sd">            Band identifier (e.g., &#39;g&#39;, &#39;r&#39;).</span>
+<span class="sd">        pixel : int, optional</span>
+<span class="sd">            HEALPix pixel index. If None, returns entire map.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or np.ndarray</span>
+<span class="sd">            Magnitude limit(s). If pixel is None, returns full HEALPix map array.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the specified band is not available in the survey.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">band</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Band &#39;</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&#39; not available. Available: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bands</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">pixel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">][</span><span class="n">pixel</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Survey.get_extinction">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.get_extinction">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_extinction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pixel</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get extinction (A_band) for a specific band.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        band : str</span>
+<span class="sd">            Band identifier (e.g., &#39;g&#39;, &#39;r&#39;).</span>
+<span class="sd">        pixel : int, optional</span>
+<span class="sd">            HEALPix pixel index. If None, returns extinction map for entire sky.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or np.ndarray</span>
+<span class="sd">            Extinction in magnitudes. If pixel is None, returns full HEALPix map array.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the specified band is not available or E(B-V) map not loaded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">band</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeff_extinc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Band &#39;</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&#39; not available. Available: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bands</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ebv_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;E(B-V) map not loaded&quot;</span><span class="p">)</span>
+
+        <span class="n">extinction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeff_extinc</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ebv_map</span>
+
+        <span class="k">if</span> <span class="n">pixel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">extinction</span>
+        <span class="k">return</span> <span class="n">extinction</span><span class="p">[</span><span class="n">pixel</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Survey.get_photo_error">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.get_photo_error">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_photo_error</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">maglim</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get photometric error estimate.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        band : str</span>
+<span class="sd">            Band identifier (e.g., &#39;g&#39;, &#39;r&#39;). Used to get band-specific sys_error.</span>
+<span class="sd">        magnitude : float or np.ndarray</span>
+<span class="sd">            True apparent magnitude(s).</span>
+<span class="sd">        maglim : float or np.ndarray</span>
+<span class="sd">            Magnitude limit(s) at the position(s).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments:</span>
+
+<span class="sd">            delta_saturation : float, optional</span>
+<span class="sd">                Magnitude difference for saturation threshold in the initial error function.</span>
+<span class="sd">                Default is -10.4.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or np.ndarray</span>
+<span class="sd">            Total photometric error (including systematic component) in magnitudes.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If photo error model is not loaded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Photo error model not loaded&quot;</span><span class="p">)</span>
+
+        <span class="n">delta_saturation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delta_saturation&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">)</span>
+
+        <span class="c1"># Calculate delta_mag</span>
+        <span class="n">delta_mag</span> <span class="o">=</span> <span class="n">magnitude</span> <span class="o">-</span> <span class="n">maglim</span>
+
+        <span class="c1"># Get statistical error (same function for all bands)</span>
+        <span class="n">mag_err_stat</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="p">((</span><span class="n">delta_mag</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">delta_saturation</span><span class="p">)</span>
+                <span class="o">&amp;</span> <span class="p">(</span><span class="n">magnitude</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">]),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error</span><span class="p">(</span><span class="n">delta_saturation</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error</span><span class="p">(</span><span class="n">delta_mag</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">mag_err_stat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">magnitude</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">],</span>
+            <span class="mi">10</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error</span><span class="p">(</span><span class="n">delta_saturation</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">mag_err_stat</span><span class="p">,</span>
+        <span class="p">)</span>  <span class="c1"># saturation at the bright end</span>
+
+        <span class="c1"># Add band-specific systematic error in quadrature</span>
+        <span class="n">sys_err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sys_error</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">)</span>
+        <span class="n">total_error</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mag_err_stat</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">sys_err</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">total_error</span></div>
+
+
+<div class="viewcode-block" id="Survey.get_completeness">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.get_completeness">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_completeness</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">maglim</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get detection completeness (combined detection and classification efficiency).</span>
+
+<span class="sd">        This is a convenience wrapper around :meth:`get_efficiency` with</span>
+<span class="sd">        ``type=&quot;completeness&quot;``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        band : str</span>
+<span class="sd">            Band identifier (e.g., &#39;g&#39;, &#39;r&#39;).</span>
+<span class="sd">        magnitude : float or np.ndarray</span>
+<span class="sd">            True apparent magnitude(s).</span>
+<span class="sd">        maglim : float or np.ndarray</span>
+<span class="sd">            Magnitude limit(s) at the position(s).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments passed to :meth:`get_efficiency`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or np.ndarray</span>
+<span class="sd">            Detection efficiency in range [0, 1].</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        get_efficiency : Full documentation of efficiency calculation.</span>
+<span class="sd">        get_detection_efficiency : Detection-only efficiency.</span>
+<span class="sd">        get_classification_efficiency : Classification-only efficiency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_efficiency</span><span class="p">(</span>
+            <span class="n">band</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">,</span> <span class="n">maglim</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;completeness&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Survey.get_detection_efficiency">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.get_detection_efficiency">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_detection_efficiency</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">maglim</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get detection-only efficiency (ignoring classification).</span>
+
+<span class="sd">        This is a convenience wrapper around :meth:`get_efficiency` with</span>
+<span class="sd">        ``type=&quot;detection_efficiency&quot;``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        band : str</span>
+<span class="sd">            Band identifier (e.g., &#39;g&#39;, &#39;r&#39;).</span>
+<span class="sd">        magnitude : float or np.ndarray</span>
+<span class="sd">            True apparent magnitude(s).</span>
+<span class="sd">        maglim : float or np.ndarray</span>
+<span class="sd">            Magnitude limit(s) at the position(s).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments passed to :meth:`get_efficiency`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or np.ndarray</span>
+<span class="sd">            Detection efficiency in range [0, 1].</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        get_efficiency : Full documentation of efficiency calculation.</span>
+<span class="sd">        get_completeness : Combined detection and classification efficiency.</span>
+<span class="sd">        get_classification_efficiency : Classification-only efficiency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_efficiency</span><span class="p">(</span>
+            <span class="n">band</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">,</span> <span class="n">maglim</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;detection_efficiency&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Survey.get_classification_efficiency">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.get_classification_efficiency">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_classification_efficiency</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">maglim</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get classification-only efficiency (star/galaxy separation).</span>
+
+<span class="sd">        This is a convenience wrapper around :meth:`get_efficiency` with</span>
+<span class="sd">        ``type=&quot;classification_efficiency&quot;``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        band : str</span>
+<span class="sd">            Band identifier (e.g., &#39;g&#39;, &#39;r&#39;).</span>
+<span class="sd">        magnitude : float or np.ndarray</span>
+<span class="sd">            True apparent magnitude(s).</span>
+<span class="sd">        maglim : float or np.ndarray</span>
+<span class="sd">            Magnitude limit(s) at the position(s).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments passed to :meth:`get_efficiency`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or np.ndarray</span>
+<span class="sd">            Classification efficiency in range [0, 1].</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        get_efficiency : Full documentation of efficiency calculation.</span>
+<span class="sd">        get_completeness : Combined detection and classification efficiency.</span>
+<span class="sd">        get_detection_efficiency : Detection-only efficiency.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_efficiency</span><span class="p">(</span>
+            <span class="n">band</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">,</span> <span class="n">maglim</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;classification_efficiency&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Survey.get_efficiency">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.get_efficiency">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_efficiency</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">maglim</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;completeness&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get efficiency function values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        band : str</span>
+<span class="sd">            Band identifier (e.g., &#39;g&#39;, &#39;r&#39;). Currently unused since same function</span>
+<span class="sd">            is used for all bands.</span>
+<span class="sd">        magnitude : float or np.ndarray</span>
+<span class="sd">            True apparent magnitude(s).</span>
+<span class="sd">        maglim : float or np.ndarray</span>
+<span class="sd">            Magnitude limit(s) at the position(s).</span>
+
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments:</span>
+<span class="sd">            type : str, optional</span>
+<span class="sd">                Type of efficiency function to use. Options are &quot;completeness&quot;, &quot;detection_efficiency&quot;, or &quot;classification_efficiency&quot;.</span>
+<span class="sd">                Default is &quot;completeness&quot;.</span>
+<span class="sd">            delta_saturation : float, optional</span>
+<span class="sd">                Magnitude difference for saturation threshold in the initial completeness function.</span>
+<span class="sd">                Default is -10.4.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or np.ndarray</span>
+<span class="sd">            Detection efficiency in range [0, 1]. Value of 0 means no detection,</span>
+<span class="sd">            1 means certain detection.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the efficiency function for the requested ``type`` is not loaded,</span>
+<span class="sd">            or if ``type`` is not one of the recognized values.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        The efficiency is set to 0 in the following cases:</span>
+
+<span class="sd">        - Source is brighter than saturation limit (``magnitude &lt; saturation``)</span>
+<span class="sd">        - Survey does not cover the position (``maglim &lt; saturation`` or ``maglim`` is NaN)</span>
+<span class="sd">        - Source is too faint for reliable detection</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Get completeness for a single source:</span>
+
+<span class="sd">        &gt;&gt;&gt; maglim = survey.get_maglim(&#39;r&#39;, pixel=10000)</span>
+<span class="sd">        &gt;&gt;&gt; eff = survey.get_efficiency(&#39;r&#39;, 24.0, maglim)</span>
+
+<span class="sd">        Get detection efficiency for an array of magnitudes:</span>
+
+<span class="sd">        &gt;&gt;&gt; mags = np.linspace(18, 28, 100)</span>
+<span class="sd">        &gt;&gt;&gt; eff = survey.get_efficiency(&#39;r&#39;, mags, maglim, type=&quot;detection_efficiency&quot;)</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        get_completeness : Convenience wrapper for combined efficiency.</span>
+<span class="sd">        get_detection_efficiency : Convenience wrapper for detection-only.</span>
+<span class="sd">        get_classification_efficiency : Convenience wrapper for classification-only.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;completeness&quot;</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completeness</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;detection_efficiency&quot;</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">efficiency_detection</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;classification_efficiency&quot;</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">efficiency_classification</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Efficiency type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">&#39; not recognized.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Efficiency function for type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">&#39; not loaded&quot;</span><span class="p">)</span>
+
+        <span class="n">delta_saturation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delta_saturation&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">)</span>
+
+        <span class="c1"># Calculate delta_mag</span>
+        <span class="n">delta_mag</span> <span class="o">=</span> <span class="n">magnitude</span> <span class="o">-</span> <span class="n">maglim</span>
+
+        <span class="c1"># Apply saturation condition: 1 padding for objects fainter than saturation but equivalent mag brighter than saturation0</span>
+        <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">magnitude</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">delta_mag</span> <span class="o">&lt;=</span> <span class="n">delta_saturation</span><span class="p">),</span>
+            <span class="mf">1.0</span><span class="p">,</span>
+            <span class="n">func</span><span class="p">(</span><span class="n">delta_mag</span><span class="p">),</span>
+        <span class="p">)</span>  <span class="c1"># 1 padded</span>
+
+        <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">magnitude</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">compl</span>
+        <span class="p">)</span>  <span class="c1"># saturation at the bright end</span>
+
+        <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">maglim</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">])</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">maglim</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">compl</span>
+        <span class="p">)</span>  <span class="c1"># not observed if the area is not covered</span>
+
+        <span class="k">return</span> <span class="n">compl</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SurveyFactory">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.SurveyFactory">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SurveyFactory</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Factory for creating and caching Survey instances.</span>
+
+<span class="sd">    This class handles:</span>
+
+<span class="sd">    - Loading survey configurations from YAML/JSON files</span>
+<span class="sd">    - Caching loaded surveys to avoid redundant file I/O</span>
+<span class="sd">    - Validating survey configurations</span>
+<span class="sd">    - Populating Survey objects with all necessary data</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _cached_surveys : dict</span>
+<span class="sd">        Cache of previously loaded Survey objects, keyed by &quot;survey_release&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_cached_surveys</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="SurveyFactory.create_survey">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.SurveyFactory.create_survey">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_survey</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">survey</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">release</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">config_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Survey</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create or retrieve a cached Survey instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        survey : str</span>
+<span class="sd">            Survey name (e.g., &#39;lsst&#39;).</span>
+<span class="sd">        release : str, optional</span>
+<span class="sd">            Survey release/data version (e.g., &#39;yr1&#39;, &#39;yr5&#39;).</span>
+<span class="sd">            If None, loads the base survey configuration.</span>
+<span class="sd">        config_file : dict, optional</span>
+<span class="sd">            Custom configuration dictionary to use instead of loading from file.</span>
+<span class="sd">            If provided, bypasses the standard config file loading.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            uniform_survey : bool, optional</span>
+<span class="sd">                If True, also creates and caches a uniform version of the survey</span>
+<span class="sd">                with constant magnitude limits. The uniform survey can be accessed</span>
+<span class="sd">                via ``SurveyFactory._cached_surveys[&#39;{survey}_{release}_uniform&#39;]``.</span>
+<span class="sd">                Default is False.</span>
+<span class="sd">            verbose : bool, optional</span>
+<span class="sd">                Whether to print progress messages. Default is True.</span>
+<span class="sd">            Additional keyword arguments override config values</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Survey</span>
+<span class="sd">            Fully loaded Survey instance (from cache if available).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - First call: Loads all data files and caches the result.</span>
+<span class="sd">        - Subsequent calls: Returns cached instance (much faster).</span>
+<span class="sd">        - Use ``clear_cache()`` to force reloading from files.</span>
+<span class="sd">        - When ``uniform_survey=True``, the original survey is returned, but a</span>
+<span class="sd">          uniform variant is also cached for later retrieval.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        _save_uniform_survey : Creates the uniform survey variant.</span>
+<span class="sd">        clear_cache : Clears cached surveys.</span>
+<span class="sd">        list_cached_surveys : Lists all cached survey keys.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">uniform_survey</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;uniform_survey&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Generate unique cache key</span>
+        <span class="n">cache_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">survey</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">release</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">release</span> <span class="k">else</span> <span class="n">survey</span>
+
+        <span class="c1"># Return cached survey if available</span>
+        <span class="k">if</span> <span class="n">cache_key</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Using cached survey data for &#39;</span><span class="si">{</span><span class="n">cache_key</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading survey data for &#39;</span><span class="si">{</span><span class="n">cache_key</span><span class="si">}</span><span class="s2">&#39;...&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Load or use provided configuration</span>
+            <span class="k">if</span> <span class="n">config_file</span><span class="p">:</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">config</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_load_config</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="n">release</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="c1"># Apply any custom overrides</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="c1"># Create empty survey object and populate with data</span>
+            <span class="n">survey_obj</span> <span class="o">=</span> <span class="n">Survey</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">survey</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="n">release</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_load_survey_data</span><span class="p">(</span><span class="n">survey_obj</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="c1"># Cache for future use</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">survey_obj</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Survey &#39;</span><span class="si">{</span><span class="n">cache_key</span><span class="si">}</span><span class="s2">&#39; loaded and cached successfully&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">uniform_survey</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_save_uniform_survey</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span><span class="p">[</span><span class="n">cache_key</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="SurveyFactory.clear_cache">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.SurveyFactory.clear_cache">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_cache</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">survey</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">release</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear cached survey data to free memory or force reload.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        survey : str, optional</span>
+<span class="sd">            Survey name to clear. If None, clears all cached surveys.</span>
+<span class="sd">        release : str, optional</span>
+<span class="sd">            Survey release to clear. Only used if survey is specified.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            verbose : bool, optional</span>
+<span class="sd">                Whether to print progress messages. Default is True.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Clear all cached surveys:</span>
+
+<span class="sd">        &gt;&gt;&gt; SurveyFactory.clear_cache()</span>
+
+<span class="sd">        Clear all LSST surveys:</span>
+
+<span class="sd">        &gt;&gt;&gt; SurveyFactory.clear_cache(&#39;lsst&#39;)</span>
+
+<span class="sd">        Clear only LSST year 1:</span>
+
+<span class="sd">        &gt;&gt;&gt; SurveyFactory.clear_cache(&#39;lsst&#39;, &#39;yr1&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">survey</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Clear entire cache</span>
+            <span class="n">num_cleared</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Cleared </span><span class="si">{</span><span class="n">num_cleared</span><span class="si">}</span><span class="s2"> cached survey(s)&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Clear specific survey(s)</span>
+            <span class="k">if</span> <span class="n">release</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">keys_to_clear</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span> <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">survey</span><span class="si">}</span><span class="s2">_&quot;</span><span class="p">)</span>
+                <span class="p">]</span> <span class="o">+</span> <span class="p">([</span><span class="n">survey</span><span class="p">]</span> <span class="k">if</span> <span class="n">survey</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span> <span class="k">else</span> <span class="p">[])</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys_to_clear</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Cleared cached survey &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cache_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">survey</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">release</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="n">cache_key</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Cleared cached survey &#39;</span><span class="si">{</span><span class="n">cache_key</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠ Survey &#39;</span><span class="si">{</span><span class="n">cache_key</span><span class="si">}</span><span class="s2">&#39; not found in cache&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SurveyFactory.list_cached_surveys">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.SurveyFactory.list_cached_surveys">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_cached_surveys</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get list of currently cached survey names.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of str</span>
+<span class="sd">            Names of cached surveys in format &quot;survey_release&quot; or &quot;survey&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save_uniform_survey</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">survey</span><span class="p">:</span> <span class="n">Survey</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create and cache a uniform version of the survey with constant magnitude limits.</span>
+
+<span class="sd">        This method creates a copy of the survey where the magnitude limit maps</span>
+<span class="sd">        are replaced with a single uniform value (the median of valid pixels).</span>
+<span class="sd">        This is useful for studying selection effects independent of survey depth</span>
+<span class="sd">        variations.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        survey : Survey</span>
+<span class="sd">            Survey object to convert to uniform.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments:</span>
+
+<span class="sd">            verbose : bool, optional</span>
+<span class="sd">                Whether to print progress messages. Default is True.</span>
+<span class="sd">            uniform_survey_mask_type : list of str, optional</span>
+<span class="sd">                Mask types to apply when computing median. Options are &#39;nan&#39;</span>
+<span class="sd">                (exclude NaN pixels) and &#39;dust&#39; (exclude high-extinction regions).</span>
+<span class="sd">                Default is [&#39;nan&#39;, &#39;dust&#39;].</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        _get_median_value : Computes the median magnitude limit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">uniform_key</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">survey</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">survey</span><span class="o">.</span><span class="n">release</span><span class="si">}</span><span class="s2">_uniform&quot;</span>
+            <span class="k">if</span> <span class="n">survey</span><span class="o">.</span><span class="n">release</span>
+            <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">survey</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_uniform&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">uniform_key</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Uniform survey &#39;</span><span class="si">{</span><span class="n">uniform_key</span><span class="si">}</span><span class="s2">&#39; already cached&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating uniform survey &#39;</span><span class="si">{</span><span class="n">uniform_key</span><span class="si">}</span><span class="s2">&#39;...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Make a deep copy to avoid modifying the original</span>
+        <span class="n">survey_uniform</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">survey</span><span class="p">)</span>
+
+        <span class="c1"># Set uniform magnitude limits for each band</span>
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">maglim_map</span> <span class="ow">in</span> <span class="n">survey_uniform</span><span class="o">.</span><span class="n">maglim_maps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">uniform_limit</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_median_value</span><span class="p">(</span>
+                <span class="n">maglim_map</span><span class="p">,</span> <span class="n">survey</span><span class="o">=</span><span class="n">survey_uniform</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+            <span class="n">survey_uniform</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">uniform_limit</span>
+            <span class="p">)</span>  <span class="c1"># Set uniform value, keep NaNs - not observed areas</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">-band: uniform maglim = </span><span class="si">{</span><span class="n">uniform_limit</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> mag&quot;</span><span class="p">)</span>
+
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_cached_surveys</span><span class="p">[</span><span class="n">uniform_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">survey_uniform</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Uniform survey cached as &#39;</span><span class="si">{</span><span class="n">uniform_key</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_median_value</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">maglim_map</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate median magnitude limit, optionally masking invalid regions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        maglim_map : np.ndarray</span>
+<span class="sd">            HEALPix map of magnitude limits.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments:</span>
+
+<span class="sd">            survey : Survey, optional</span>
+<span class="sd">                Survey object (required if &#39;dust&#39; is in mask_type).</span>
+<span class="sd">            verbose : bool, optional</span>
+<span class="sd">                Whether to print progress messages. Default is True.</span>
+<span class="sd">            uniform_survey_mask_type : list of str or str, optional</span>
+<span class="sd">                Types of masking to apply before computing the median:</span>
+
+<span class="sd">                - &#39;nan&#39; : Exclude NaN pixels (always recommended).</span>
+<span class="sd">                - &#39;dust&#39; : Exclude high-extinction regions (E(B-V) &gt;= 0.2).</span>
+
+<span class="sd">                Default is [&#39;nan&#39;, &#39;dust&#39;].</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Median magnitude limit of valid pixels.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If &#39;dust&#39; mask is requested but survey object or E(B-V) map is unavailable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">mask_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;uniform_survey_mask_type&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nan&quot;</span><span class="p">,</span> <span class="s2">&quot;dust&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mask_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">mask_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">mask_type</span><span class="p">]</span>
+
+        <span class="c1"># Build valid pixel mask</span>
+        <span class="n">valid_pixels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">mtype</span> <span class="ow">in</span> <span class="n">mask_type</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mtype</span> <span class="o">==</span> <span class="s2">&quot;nan&quot;</span><span class="p">:</span>
+                <span class="n">valid_pixels</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">mtype</span> <span class="o">==</span> <span class="s2">&quot;dust&quot;</span><span class="p">:</span>
+                <span class="n">survey</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;survey&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">survey</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Survey object required for &#39;dust&#39; mask type.&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="s2">&quot;ebv_map&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;E(B-V) map not available for &#39;dust&#39; mask type.&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Resample E(B-V) map if needed</span>
+                <span class="n">nside_maglim</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">)</span>
+                <span class="n">nside_ebv</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">nside_maglim</span> <span class="o">!=</span> <span class="n">nside_ebv</span><span class="p">:</span>
+                    <span class="n">ebv_map</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ud_grade</span><span class="p">(</span><span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span><span class="p">,</span> <span class="n">nside_out</span><span class="o">=</span><span class="n">nside_maglim</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ebv_map</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span>
+
+                <span class="n">valid_pixels</span> <span class="o">&amp;=</span> <span class="n">ebv_map</span> <span class="o">&lt;</span> <span class="mf">0.2</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">n_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">valid_pixels</span><span class="p">)</span>
+            <span class="n">n_total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;  Computing median from </span><span class="si">{</span><span class="n">n_valid</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n_total</span><span class="si">}</span><span class="s2"> pixels (mask: </span><span class="si">{</span><span class="n">mask_type</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmedian</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">[</span><span class="n">valid_pixels</span><span class="p">])</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_config</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">survey</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">release</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load survey configuration from YAML or JSON file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        survey : str</span>
+<span class="sd">            Survey name.</span>
+<span class="sd">        release : str, optional</span>
+<span class="sd">            Survey release identifier.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            verbose : bool, optional</span>
+<span class="sd">                Whether to print progress messages. Default is True.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Configuration dictionary containing survey_files and survey_properties.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        FileNotFoundError</span>
+<span class="sd">            If no configuration file is found for the survey.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the loaded config doesn&#39;t match the requested survey/release.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Construct path to config directory</span>
+        <span class="n">current_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">config_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_dir</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;config/surveys/&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Build config filename</span>
+        <span class="n">config_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">survey</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">release</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">release</span> <span class="k">else</span> <span class="n">survey</span>
+
+        <span class="c1"># Try YAML first, then JSON</span>
+        <span class="n">yaml_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config_name</span><span class="si">}</span><span class="s2">.yaml&quot;</span><span class="p">)</span>
+        <span class="n">json_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">config_name</span><span class="si">}</span><span class="s2">.json&quot;</span><span class="p">)</span>
+
+        <span class="n">config_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">yaml_path</span><span class="p">):</span>
+            <span class="n">config_path</span> <span class="o">=</span> <span class="n">yaml_path</span>
+        <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">json_path</span><span class="p">):</span>
+            <span class="n">config_path</span> <span class="o">=</span> <span class="n">json_path</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Configuration file not found for &#39;</span><span class="si">{</span><span class="n">config_name</span><span class="si">}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Searched in: </span><span class="si">{</span><span class="n">config_dir</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Expected: </span><span class="si">{</span><span class="n">config_name</span><span class="si">}</span><span class="s2">.yaml or </span><span class="si">{</span><span class="n">config_name</span><span class="si">}</span><span class="s2">.json&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Load configuration file</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Loading config from: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">config_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.yaml&quot;</span><span class="p">):</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">config_data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">config_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+        <span class="c1"># Validate configuration matches request</span>
+        <span class="n">config_survey</span> <span class="o">=</span> <span class="n">config_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+        <span class="n">config_release</span> <span class="o">=</span> <span class="n">config_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;release&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">survey</span> <span class="o">!=</span> <span class="n">config_survey</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Survey name mismatch:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  Requested: &#39;</span><span class="si">{</span><span class="n">survey</span><span class="si">}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  In config: &#39;</span><span class="si">{</span><span class="n">config_survey</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">release</span> <span class="o">!=</span> <span class="n">config_release</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Release mismatch for survey &#39;</span><span class="si">{</span><span class="n">survey</span><span class="si">}</span><span class="s2">&#39;:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  Requested: &#39;</span><span class="si">{</span><span class="n">release</span><span class="si">}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  In config: &#39;</span><span class="si">{</span><span class="n">config_release</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">config_data</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_survey_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">survey</span><span class="p">:</span> <span class="n">Survey</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load all survey data files into the Survey object.</span>
+
+<span class="sd">        This method performs the following operations:</span>
+
+<span class="sd">        1. Determines available bands from config</span>
+<span class="sd">        2. Determines the data directory from config</span>
+<span class="sd">        3. Loads HEALPix maps for each band (magnitude limits)</span>
+<span class="sd">        4. Loads band-independent maps (extinction, coverage)</span>
+<span class="sd">        5. Loads efficiency and photometric error functions per band</span>
+<span class="sd">        6. Sets survey properties per band (extinction, saturation, sys_error)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        survey : Survey</span>
+<span class="sd">            Empty Survey object to populate.</span>
+<span class="sd">        config : dict</span>
+<span class="sd">            Configuration dictionary with &#39;survey_files&#39; and &#39;survey_properties&#39; keys.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            verbose : bool, optional</span>
+<span class="sd">                Whether to print progress messages. Default is True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;LOADING SURVEY DATA FILES&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+
+        <span class="c1"># Get file configuration and determine data path</span>
+        <span class="n">survey_config</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;survey_files&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">data_path_survey</span> <span class="o">=</span> <span class="n">survey_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;file_path&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Find data directory where might be stored additional files</span>
+        <span class="n">current_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="n">survey_name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">survey</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">survey</span><span class="o">.</span><span class="n">release</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">survey</span><span class="o">.</span><span class="n">release</span> <span class="k">else</span> <span class="n">survey</span><span class="o">.</span><span class="n">name</span>
+        <span class="p">)</span>
+        <span class="n">data_path_others</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_dir</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;others&quot;</span><span class="p">)</span>
+        <span class="c1"># Use default path if not specified</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data_path_survey</span><span class="p">:</span>
+            <span class="n">data_path_survey</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">current_dir</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;surveys&quot;</span><span class="p">,</span> <span class="n">survey_name</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Survey data directory: </span><span class="si">{</span><span class="n">data_path_survey</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Fallback directory for shared data files: </span><span class="si">{</span><span class="n">data_path_others</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Determine available bands from config</span>
+        <span class="c1"># Look for maglim_map_* entries to discover bands</span>
+        <span class="n">available_bands</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">survey_config</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;maglim_map_&quot;</span><span class="p">):</span>
+                <span class="n">band</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;maglim_map_&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">band</span> <span class="ow">and</span> <span class="n">band</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_bands</span><span class="p">:</span>
+                    <span class="n">available_bands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+
+        <span class="c1"># Also check survey_properties for bands</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;survey_properties&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">bands_from_props</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bands&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">bands_from_props</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">band</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_bands</span><span class="p">:</span>
+                <span class="n">available_bands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">band</span><span class="p">)</span>
+
+        <span class="c1"># Default to [&#39;g&#39;, &#39;r&#39;] if no bands specified</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">available_bands</span><span class="p">:</span>
+            <span class="n">available_bands</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">]</span>
+
+        <span class="n">survey</span><span class="o">.</span><span class="n">bands</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">available_bands</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available bands: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">survey</span><span class="o">.</span><span class="n">bands</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Load survey properties per band</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Loading survey properties...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Extinction coefficients per band</span>
+        <span class="n">default_extinc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;g&quot;</span><span class="p">:</span> <span class="mf">3.303</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">:</span> <span class="mf">2.285</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">:</span> <span class="mf">1.682</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="mf">1.322</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="mf">1.087</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">survey</span><span class="o">.</span><span class="n">bands</span><span class="p">:</span>
+            <span class="n">coeff_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;coeff_extinc_</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">survey</span><span class="o">.</span><span class="n">coeff_extinc</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="n">coeff_key</span><span class="p">,</span> <span class="n">default_extinc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Saturation per band</span>
+        <span class="n">default_saturation</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;saturation&quot;</span><span class="p">,</span> <span class="mf">16.0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">survey</span><span class="o">.</span><span class="n">bands</span><span class="p">:</span>
+            <span class="n">sat_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;saturation_</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">survey</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sat_key</span><span class="p">,</span> <span class="n">default_saturation</span><span class="p">)</span>
+
+        <span class="c1"># Systematic error per band</span>
+        <span class="n">default_sys_error</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sys_error&quot;</span><span class="p">,</span> <span class="mf">0.005</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">survey</span><span class="o">.</span><span class="n">bands</span><span class="p">:</span>
+            <span class="n">sys_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sys_error_</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">survey</span><span class="o">.</span><span class="n">sys_error</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sys_key</span><span class="p">,</span> <span class="n">default_sys_error</span><span class="p">)</span>
+
+        <span class="c1"># Load band-specific magnitude limit maps</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loading magnitude limit maps...&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">survey</span><span class="o">.</span><span class="n">bands</span><span class="p">:</span>
+            <span class="n">attr_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;maglim_map_</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">survey_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">filename</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+            <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;  ⚠ Warning: &#39;</span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">&#39; not specified in config (skipping </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">-band)&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">full_path</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_find_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">data_path_survey</span><span class="p">,</span> <span class="n">data_path_others</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">full_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;  ✗ </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">-band magnitude limit: File not found - </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">extension</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;.hsp&quot;</span><span class="p">:</span>
+                    <span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">open_map_sparse</span><span class="p">(</span>
+                        <span class="n">full_path</span><span class="p">,</span> <span class="n">map_min</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">read_map</span><span class="p">(</span><span class="n">full_path</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✓ Success for </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">-band magnitude limit&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    ✗ Failed to load </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">-band maglim map: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Load completeness function (same for all bands)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Loading completeness/efficiency function...&quot;</span><span class="p">)</span>
+        <span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span> <span class="o">=</span> <span class="n">survey_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;completeness_band&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="c1"># default to r band</span>
+        <span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delta_saturation&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.4</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;completeness&quot;</span> <span class="ow">in</span> <span class="n">survey_config</span><span class="p">:</span>
+            <span class="c1"># Use default saturation if not band-specific</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span>
+                <span class="n">survey</span><span class="p">,</span>
+                <span class="n">survey_config</span><span class="p">,</span>
+                <span class="s2">&quot;completeness&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Completeness/efficiency function&quot;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span>
+                    <span class="n">f</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span>
+                <span class="p">),</span>
+                <span class="n">data_path_survey</span><span class="p">,</span>
+                <span class="n">data_path_others</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Load detection and classification efficiencies separately, which can be usefull to study selection effects</span>
+            <span class="c1"># eg. perfect star-galaxy separation vs imperfect one</span>
+            <span class="c1"># Try to load detection efficiency</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span>
+                    <span class="n">survey</span><span class="p">,</span>
+                    <span class="n">survey_config</span><span class="p">,</span>
+                    <span class="s2">&quot;efficiency_detection&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Detection efficiency function&quot;</span><span class="p">,</span>
+                    <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span>
+                        <span class="n">f</span><span class="p">,</span>
+                        <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">,</span>
+                        <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;detected&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">data_path_survey</span><span class="p">,</span>
+                    <span class="n">data_path_others</span><span class="p">,</span>
+                    <span class="n">filename</span><span class="o">=</span><span class="n">survey_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                        <span class="s2">&quot;completeness&quot;</span>
+                    <span class="p">),</span>  <span class="c1"># use same file as completeness</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No detection efficiency file found, skipping.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Try to load classification efficiency</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span>
+                    <span class="n">survey</span><span class="p">,</span>
+                    <span class="n">survey_config</span><span class="p">,</span>
+                    <span class="s2">&quot;efficiency_classification&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Classification efficiency function&quot;</span><span class="p">,</span>
+                    <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span>
+                        <span class="n">f</span><span class="p">,</span>
+                        <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">,</span>
+                        <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;classified&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">data_path_survey</span><span class="p">,</span>
+                    <span class="n">data_path_others</span><span class="p">,</span>
+                    <span class="n">filename</span><span class="o">=</span><span class="n">survey_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                        <span class="s2">&quot;completeness&quot;</span>
+                    <span class="p">),</span>  <span class="c1"># use same file as completeness</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No classification efficiency file found, skipping.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Load photometric error model (same for all bands)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Loading photometric error model...&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;log_photo_error&quot;</span> <span class="ow">in</span> <span class="n">survey_config</span><span class="p">:</span>
+            <span class="c1"># Use default saturation if not band-specific</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span>
+                <span class="n">survey</span><span class="p">,</span>
+                <span class="n">survey_config</span><span class="p">,</span>
+                <span class="s2">&quot;log_photo_error&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Photometric error model&quot;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_photo_error</span><span class="p">(</span>
+                    <span class="n">f</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span>
+                <span class="p">),</span>
+                <span class="n">data_path_survey</span><span class="p">,</span>
+                <span class="n">data_path_others</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Load band-independent maps</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Loading band-independent maps...&quot;</span><span class="p">)</span>
+        <span class="n">band_independent</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;ebv_map&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;E(B-V) extinction map&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">hp</span><span class="o">.</span><span class="n">read_map</span><span class="p">(</span><span class="n">f</span><span class="p">)),</span>
+            <span class="s2">&quot;coverage&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Survey coverage map&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">hp</span><span class="o">.</span><span class="n">read_map</span><span class="p">(</span><span class="n">f</span><span class="p">)),</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">attr_name</span><span class="p">,</span> <span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">loader_func</span><span class="p">)</span> <span class="ow">in</span> <span class="n">band_independent</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span>
+                <span class="n">survey</span><span class="p">,</span>
+                <span class="n">survey_config</span><span class="p">,</span>
+                <span class="n">attr_name</span><span class="p">,</span>
+                <span class="n">description</span><span class="p">,</span>
+                <span class="n">loader_func</span><span class="p">,</span>
+                <span class="n">data_path_survey</span><span class="p">,</span>
+                <span class="n">data_path_others</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">survey</span><span class="o">.</span><span class="n">coverage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Building coverage map from magnitude limit maps...&quot;</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_build_coverage_map</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Print summary</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Survey properties summary:&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">survey</span><span class="o">.</span><span class="n">bands</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">-band:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Extinction coefficient: </span><span class="si">{</span><span class="n">survey</span><span class="o">.</span><span class="n">coeff_extinc</span><span class="p">[</span><span class="n">band</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Saturation limit: </span><span class="si">{</span><span class="n">survey</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> mag&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    Systematic error: </span><span class="si">{</span><span class="n">survey</span><span class="o">.</span><span class="n">sys_error</span><span class="p">[</span><span class="n">band</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> mag&quot;</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">70</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SURVEY DATA LOADED SUCCESSFULLY&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">70</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_file</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data_path_survey</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">data_path_others</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find a file by checking data_path_survey first, then data_path_others.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            Name of the file to find.</span>
+<span class="sd">        data_path_survey : str</span>
+<span class="sd">            Primary data directory (survey-specific).</span>
+<span class="sd">        data_path_others : str</span>
+<span class="sd">            Fallback data directory (shared files).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str or None</span>
+<span class="sd">            Full path to the file if found, None otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check survey-specific directory first</span>
+        <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path_survey</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">full_path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">full_path</span>
+
+        <span class="c1"># Check shared directory as fallback</span>
+        <span class="n">full_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path_others</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">full_path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">full_path</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_file</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">survey</span><span class="p">:</span> <span class="n">Survey</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+        <span class="n">attr_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">loader_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+        <span class="n">data_path_survey</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">data_path_others</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load a single data file and attach it to the survey object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        survey : Survey</span>
+<span class="sd">            Survey object to populate.</span>
+<span class="sd">        config : dict</span>
+<span class="sd">            Configuration dictionary containing filenames.</span>
+<span class="sd">        attr_name : str</span>
+<span class="sd">            Attribute name to set on the survey object (e.g., &#39;ebv_map&#39;).</span>
+<span class="sd">        description : str</span>
+<span class="sd">            Human-readable description for logging.</span>
+<span class="sd">        loader_func : callable</span>
+<span class="sd">            Function to load the file (e.g., hp.read_map).</span>
+<span class="sd">        data_path_survey : str</span>
+<span class="sd">            Primary directory containing the data files.</span>
+<span class="sd">        data_path_others : str, optional</span>
+<span class="sd">            Fallback directory for shared data files.</span>
+<span class="sd">        filename : str, optional</span>
+<span class="sd">            Override filename from config.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            verbose : bool, optional</span>
+<span class="sd">                Whether to print progress messages. Default is True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Get filename from config</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">attr_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ⚠ Warning: &#39;</span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">&#39; not specified in config (skipping)&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Find file in data paths</span>
+        <span class="n">full_path</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_find_file</span><span class="p">(</span>
+            <span class="n">filename</span><span class="p">,</span> <span class="n">data_path_survey</span><span class="p">,</span> <span class="n">data_path_others</span> <span class="ow">or</span> <span class="n">data_path_survey</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">full_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  ✗ </span><span class="si">{</span><span class="n">description</span><span class="si">}</span><span class="s2">: File not found - </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Load the file</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Loading </span><span class="si">{</span><span class="n">description</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    File: </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">loader_func</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    ✓ Success&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    ✗ Failed to load </span><span class="si">{</span><span class="n">attr_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SurveyFactory.open_map_sparse">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.SurveyFactory.open_map_sparse">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">open_map_sparse</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Open a sparse HEALPix map and return it as a standard HEALPix map.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_path : str</span>
+<span class="sd">            Full path to the sparse HEALPix file (.hsp).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments (currently unused).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            Standard HEALPix map with NaN for unseen pixels.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">hsp_map</span> <span class="o">=</span> <span class="n">hsp</span><span class="o">.</span><span class="n">HealSparseMap</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="n">nside_sparse</span> <span class="o">=</span> <span class="n">hsp_map</span><span class="o">.</span><span class="n">nside_sparse</span>
+        <span class="n">nest</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># by default set to True in hsp, but to False in healpy</span>
+        <span class="n">map_hpx</span> <span class="o">=</span> <span class="n">hsp_map</span><span class="o">.</span><span class="n">generate_healpix_map</span><span class="p">(</span><span class="n">nside</span><span class="o">=</span><span class="n">nside_sparse</span><span class="p">,</span> <span class="n">nest</span><span class="o">=</span><span class="n">nest</span><span class="p">)</span>
+        <span class="n">map_hpx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">map_hpx</span> <span class="o">==</span> <span class="n">hp</span><span class="o">.</span><span class="n">UNSEEN</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">map_hpx</span><span class="p">)</span>
+
+        <span class="n">map_min</span><span class="p">,</span> <span class="n">map_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;map_min&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;map_max&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">map_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">map_hpx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">map_hpx</span> <span class="o">&lt;</span> <span class="n">map_min</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">map_hpx</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">map_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">map_hpx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">map_hpx</span> <span class="o">&gt;</span> <span class="n">map_max</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">map_hpx</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">map_hpx</span></div>
+
+
+<div class="viewcode-block" id="SurveyFactory.set_completeness">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.SurveyFactory.set_completeness">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_completeness</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="o">=-</span><span class="mf">10.4</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load and interpolate completeness/efficiency function from file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            Path to CSV file with columns:</span>
+
+<span class="sd">            - &#39;delta_mag&#39; : Magnitude difference from limit (mag - maglim)</span>
+<span class="sd">            - &#39;eff_star&#39; : Detection efficiency only</span>
+<span class="sd">            - &#39;classifiction_eff&#39; : Classification efficiency only</span>
+<span class="sd">            - &#39;classification_detection_eff&#39; : Combined efficiency</span>
+
+<span class="sd">        delta_saturation : float, optional</span>
+<span class="sd">            Magnitude difference threshold for saturation. Default is -10.4.</span>
+<span class="sd">        selection : str, optional</span>
+<span class="sd">            Which efficiency to use:</span>
+
+<span class="sd">            - &#39;detected&#39; : Detection efficiency only (column &#39;eff_star&#39;)</span>
+<span class="sd">            - &#39;classified&#39; : Classification efficiency only (column &#39;classifiction_eff&#39;)</span>
+<span class="sd">            - &#39;both&#39; : Combined detection and classification (column &#39;classification_detection_eff&#39;)</span>
+
+<span class="sd">            Default is &#39;both&#39;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        callable</span>
+<span class="sd">            Interpolation function f(delta_mag) -&gt; efficiency [0, 1].</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If selection is not one of &#39;detected&#39;, &#39;classified&#39;, or &#39;both&#39;.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - Bright stars (delta_mag &lt;= delta_saturation): Efficiency forced to 0.</span>
+<span class="sd">        - Faint stars (beyond data): Returns efficiency = 0.0.</span>
+<span class="sd">        - The saturation parameter is automatically passed from the survey object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load photometric error data</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">delta_mags</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;delta_mag&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Select efficiency column based on user choice</span>
+        <span class="k">if</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;detected&quot;</span><span class="p">:</span>
+            <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;detection_eff&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;classified&quot;</span><span class="p">:</span>
+            <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;classifiction_eff&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span><span class="p">:</span>
+            <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;classification_detection_eff&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid selection &#39;</span><span class="si">{</span><span class="n">selection</span><span class="si">}</span><span class="s2">&#39;. Must be &#39;detected&#39;, &#39;classified&#39;, or &#39;both&#39;&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Extend efficiency to bright end (force to zero at saturation)</span>
+        <span class="k">if</span> <span class="n">delta_mags</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">delta_saturation</span><span class="p">:</span>
+            <span class="n">delta_mags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">delta_mags</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="p">)</span>
+            <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">efficiencies</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">delta_mags</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">==</span> <span class="n">delta_saturation</span><span class="p">:</span>
+            <span class="c1"># Ensure efficiency is zero at magnitude very near saturation</span>
+            <span class="n">delta_mags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">delta_mags</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="o">-</span><span class="mf">1e-5</span><span class="p">)</span>
+            <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">efficiencies</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Ensure efficiency is zero at saturation</span>
+            <span class="n">efficiencies</span><span class="p">[</span><span class="n">delta_mags</span> <span class="o">&lt;=</span> <span class="n">delta_saturation</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Extend efficiency to faint end (force to zero)</span>
+        <span class="n">delta_mags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">delta_mags</span><span class="p">,</span> <span class="n">delta_mags</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">efficiencies</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="c1"># Create interpolation function</span>
+        <span class="n">interpolator</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span>
+            <span class="n">delta_mags</span><span class="p">,</span>
+            <span class="n">efficiencies</span><span class="p">,</span>
+            <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># Return 0 for very faint/bright stars</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">interpolator</span></div>
+
+
+<div class="viewcode-block" id="SurveyFactory.set_photo_error">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.SurveyFactory.set_photo_error">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_photo_error</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="o">=-</span><span class="mf">10.4</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load photometric error model from file.</span>
+
+<span class="sd">        This creates an interpolation function that estimates photometric uncertainty</span>
+<span class="sd">        as a function of the magnitude difference from the survey limit (delta_mag).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            Path to CSV file with columns:</span>
+
+<span class="sd">            - &#39;delta_mag&#39; : Magnitude difference from limit (mag - maglim)</span>
+<span class="sd">            - &#39;log_mag_err&#39; : Logarithm (base 10) of magnitude error</span>
+
+<span class="sd">        delta_saturation : float, optional</span>
+<span class="sd">            Bright magnitude difference threshold. Used to determine the bright-end</span>
+<span class="sd">            extension point. Default is -10.4.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        callable</span>
+<span class="sd">            Interpolation function f(delta_mag) -&gt; log10(magnitude_error).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - Bright stars (delta_mag &lt; delta_saturation): Extended with constant error.</span>
+<span class="sd">        - Faint stars (beyond data): Returns log10(error) = 1.0 (error = 10 mag).</span>
+<span class="sd">        - The saturation parameter is automatically passed from the survey object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Load photometric error data</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">delta_mags</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;delta_mag&quot;</span><span class="p">]</span>
+        <span class="n">log_errors</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;log_mag_err&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Extend to bright end (keep constant for very bright stars)</span>
+        <span class="k">if</span> <span class="n">delta_mags</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">delta_saturation</span><span class="p">:</span>
+            <span class="n">delta_mags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">delta_mags</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="p">)</span>
+            <span class="n">log_errors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log_errors</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">log_errors</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Create interpolation function</span>
+        <span class="n">interpolator</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span>
+            <span class="n">delta_mags</span><span class="p">,</span>
+            <span class="n">log_errors</span><span class="p">,</span>
+            <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">fill_value</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Return log10(error)=1 (10 mag error) for very faint stars</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">interpolator</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_coverage_map</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">survey</span><span class="p">:</span> <span class="n">Survey</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build coverage map from magnitude limit maps.</span>
+
+<span class="sd">        Creates a combined coverage map by checking all available magnitude limit</span>
+<span class="sd">        maps and determining which pixels are covered in all bands (logical AND).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        survey : Survey</span>
+<span class="sd">            Survey object with loaded magnitude limit maps.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            verbose : bool, optional</span>
+<span class="sd">                Whether to print progress messages. Default is True.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray or None</span>
+<span class="sd">            HEALPix coverage map (1=observed, 0=not observed), or None if no</span>
+<span class="sd">            magnitude limit maps are available.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">nside</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">coverage_map</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Find the minimum nside among all maglim maps</span>
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">maglim_map</span> <span class="ow">in</span> <span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">maglim_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">nside_candidate</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nside</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">nside_candidate</span> <span class="o">&lt;</span> <span class="n">nside</span><span class="p">:</span>
+                <span class="n">nside</span> <span class="o">=</span> <span class="n">nside_candidate</span>
+
+        <span class="k">if</span> <span class="n">nside</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="s2">&quot;  ⚠ Warning: No magnitude limit maps found, cannot build coverage&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Initialize coverage map as all True</span>
+        <span class="n">npix</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">nside2npix</span><span class="p">(</span><span class="n">nside</span><span class="p">)</span>
+        <span class="n">coverage_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">npix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+        <span class="c1"># Accumulate coverage from all bands (logical AND)</span>
+        <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">maglim_map</span> <span class="ow">in</span> <span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">maglim_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Convert to common nside if needed</span>
+            <span class="n">nside_band</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nside_band</span> <span class="o">!=</span> <span class="n">nside</span><span class="p">:</span>
+                <span class="n">maglim_map</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ud_grade</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">,</span> <span class="n">nside_out</span><span class="o">=</span><span class="n">nside</span><span class="p">)</span>
+
+            <span class="c1"># Update coverage: pixel is covered if maglim is finite and above saturation</span>
+            <span class="n">band_coverage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span>
+                <span class="n">maglim_map</span> <span class="o">&gt;</span> <span class="n">survey</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">coverage_map</span> <span class="o">=</span> <span class="n">coverage_map</span> <span class="o">&amp;</span> <span class="n">band_coverage</span>
+
+        <span class="c1"># Convert boolean to float (1.0 = covered, 0.0 = not covered)</span>
+        <span class="n">survey</span><span class="o">.</span><span class="n">coverage</span> <span class="o">=</span> <span class="n">coverage_map</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;  ✓ Built coverage map (nside=</span><span class="si">{</span><span class="n">nside</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">coverage_map</span><span class="p">)</span><span class="si">}</span><span class="s2"> pixels covered)&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">survey</span><span class="o">.</span><span class="n">coverage</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By DESC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, DESC.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

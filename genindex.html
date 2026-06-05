@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; stream_sim  documentation</title>
+    <title>Index &#8212; streamobs  documentation</title>
   
   
   
@@ -15,36 +15,40 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
   
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -60,19 +64,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -80,7 +73,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -88,8 +80,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -107,7 +99,8 @@
       
         
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -132,41 +125,37 @@
   
   
   
-    <p class="title logo__title">stream_sim  documentation</p>
+    <p class="title logo__title">streamobs  documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="about.html">About StreamSim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="data.html">StreamSim Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="stream_sim.html">stream_sim package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.functions.html">stream_sim.functions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.model.html">stream_sim.model module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.observed.html">stream_sim.observed module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.plotting.html">stream_sim.plotting module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.samplers.html">stream_sim.samplers module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.surveys.html">stream_sim.surveys module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.utils.html">stream_sim.utils module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.utils.html">streamobs.utils module</a></li>
 </ul>
 </details></li>
 </ul>
@@ -179,9 +168,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -216,7 +210,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -230,24 +224,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 
 </div></div>
       
@@ -300,7 +286,11 @@ document.write(`
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.SurveyFactory._cached_surveys">_cached_surveys (stream_sim.surveys.SurveyFactory attribute)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory._cached_surveys">_cached_surveys (streamobs.surveys.SurveyFactory attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector._last_gc_frame">_last_gc_frame (streamobs.observed.StreamInjector attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -308,13 +298,13 @@ document.write(`
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.model.html#stream_sim.model.BackgroundModel">BackgroundModel (class in stream_sim.model)</a>
+      <li><a href="streamobs.model.html#streamobs.model.BackgroundModel">BackgroundModel (class in streamobs.model)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.surveys.html#id0">bands (stream_sim.surveys.Survey attribute)</a>, <a href="stream_sim.surveys.html#stream_sim.surveys.Survey.bands">[1]</a>
+      <li><a href="streamobs.surveys.html#id0">bands (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.bands">[1]</a>
 </li>
-      <li><a href="stream_sim.functions.html#stream_sim.functions.BoundedFunction">BoundedFunction (class in stream_sim.functions)</a>
+      <li><a href="streamobs.functions.html#streamobs.functions.BoundedFunction">BoundedFunction (class in streamobs.functions)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -322,33 +312,35 @@ document.write(`
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.SurveyFactory.clear_cache">clear_cache() (stream_sim.surveys.SurveyFactory class method)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.clear_cache">clear_cache() (streamobs.surveys.SurveyFactory class method)</a>
 </li>
-      <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.clear_mask_cache">clear_mask_cache() (stream_sim.observed.StreamInjector class method)</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.clear_mask_cache">clear_mask_cache() (streamobs.observed.StreamInjector class method)</a>
 </li>
-      <li><a href="stream_sim.surveys.html#id1">coeff_extinc (stream_sim.surveys.Survey attribute)</a>, <a href="stream_sim.surveys.html#stream_sim.surveys.Survey.coeff_extinc">[1]</a>
+      <li><a href="streamobs.surveys.html#id1">coeff_extinc (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.coeff_extinc">[1]</a>
 </li>
-      <li><a href="stream_sim.model.html#stream_sim.model.StreamModel.complete_catalog">complete_catalog() (stream_sim.model.StreamModel method)</a>
+      <li><a href="streamobs.model.html#streamobs.model.StreamModel.complete_catalog">complete_catalog() (streamobs.model.StreamModel method)</a>
 </li>
-      <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.complete_data">complete_data() (stream_sim.observed.StreamInjector method)</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.complete_data">complete_data() (streamobs.observed.StreamInjector method)</a>
 </li>
-      <li><a href="stream_sim.surveys.html#id2">completeness (stream_sim.surveys.Survey attribute)</a>, <a href="stream_sim.surveys.html#stream_sim.surveys.Survey.completeness">[1]</a>
+      <li><a href="streamobs.surveys.html#id2">completeness (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.completeness">[1]</a>
+</li>
+      <li><a href="streamobs.surveys.html#id3">completeness_band (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.completeness_band">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.model.html#stream_sim.model.ConfigurableModel">ConfigurableModel (class in stream_sim.model)</a>
+      <li><a href="streamobs.model.html#streamobs.model.ConfigurableModel">ConfigurableModel (class in streamobs.model)</a>
 </li>
-      <li><a href="stream_sim.functions.html#stream_sim.functions.Constant">Constant (class in stream_sim.functions)</a>
+      <li><a href="streamobs.functions.html#streamobs.functions.Constant">Constant (class in streamobs.functions)</a>
 </li>
-      <li><a href="stream_sim.surveys.html#id3">coverage (stream_sim.surveys.Survey attribute)</a>, <a href="stream_sim.surveys.html#stream_sim.surveys.Survey.coverage">[1]</a>
+      <li><a href="streamobs.surveys.html#id4">coverage (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.coverage">[1]</a>
 </li>
-      <li><a href="stream_sim.model.html#stream_sim.model.IsochroneModel.create_isochrone">create_isochrone() (stream_sim.model.IsochroneModel method)</a>
+      <li><a href="streamobs.model.html#streamobs.model.IsochroneModel.create_isochrone">create_isochrone() (streamobs.model.IsochroneModel method)</a>
 </li>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.SurveyFactory.create_survey">create_survey() (stream_sim.surveys.SurveyFactory class method)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.create_survey">create_survey() (streamobs.surveys.SurveyFactory class method)</a>
 </li>
-      <li><a href="stream_sim.functions.html#stream_sim.functions.CubicSplineInterpolation">CubicSplineInterpolation (class in stream_sim.functions)</a>
+      <li><a href="streamobs.functions.html#streamobs.functions.CubicSplineInterpolation">CubicSplineInterpolation (class in streamobs.functions)</a>
 </li>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.CubicSplineInterpolationSampler">CubicSplineInterpolationSampler (class in stream_sim.samplers)</a>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.CubicSplineInterpolationSampler">CubicSplineInterpolationSampler (class in streamobs.samplers)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -356,15 +348,17 @@ document.write(`
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.model.html#stream_sim.model.DensityModel">DensityModel (class in stream_sim.model)</a>
+      <li><a href="streamobs.surveys.html#id5">delta_saturation (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.delta_saturation">[1]</a>
 </li>
-      <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.detect_flag">detect_flag() (stream_sim.observed.StreamInjector method)</a>
+      <li><a href="streamobs.model.html#streamobs.model.DensityModel">DensityModel (class in streamobs.model)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.model.html#stream_sim.model.DistanceModel">DistanceModel (class in stream_sim.model)</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.detect_flag">detect_flag() (streamobs.observed.StreamInjector method)</a>
 </li>
-      <li><a href="stream_sim.plotting.html#stream_sim.plotting.draw_stream">draw_stream() (in module stream_sim.plotting)</a>
+      <li><a href="streamobs.model.html#streamobs.model.DistanceModel">DistanceModel (class in streamobs.model)</a>
+</li>
+      <li><a href="streamobs.plotting.html#streamobs.plotting.draw_stream">draw_stream() (in module streamobs.plotting)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -372,7 +366,7 @@ document.write(`
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.surveys.html#id4">ebv_map (stream_sim.surveys.Survey attribute)</a>, <a href="stream_sim.surveys.html#stream_sim.surveys.Survey.ebv_map">[1]</a>
+      <li><a href="streamobs.surveys.html#id6">ebv_map (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.ebv_map">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -380,23 +374,23 @@ document.write(`
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.functions.html#stream_sim.functions.FileCubicSplineInterpolation">FileCubicSplineInterpolation (class in stream_sim.functions)</a>
+      <li><a href="streamobs.functions.html#streamobs.functions.FileCubicSplineInterpolation">FileCubicSplineInterpolation (class in streamobs.functions)</a>
 </li>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.FileCubicSplineInterpolationSampler">FileCubicSplineInterpolationSampler (class in stream_sim.samplers)</a>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.FileCubicSplineInterpolationSampler">FileCubicSplineInterpolationSampler (class in streamobs.samplers)</a>
 </li>
-      <li><a href="stream_sim.functions.html#stream_sim.functions.FileInterpolation">FileInterpolation (class in stream_sim.functions)</a>
+      <li><a href="streamobs.functions.html#streamobs.functions.FileInterpolation">FileInterpolation (class in streamobs.functions)</a>
 </li>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.FileInterpolationSampler">FileInterpolationSampler (class in stream_sim.samplers)</a>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.FileInterpolationSampler">FileInterpolationSampler (class in streamobs.samplers)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.functions.html#stream_sim.functions.FileLinearDensityCubicSplineInterpolation">FileLinearDensityCubicSplineInterpolation (class in stream_sim.functions)</a>
+      <li><a href="streamobs.functions.html#streamobs.functions.FileLinearDensityCubicSplineInterpolation">FileLinearDensityCubicSplineInterpolation (class in streamobs.functions)</a>
 </li>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.FileLinearDensityCubicSplineInterpolationSampler">FileLinearDensityCubicSplineInterpolationSampler (class in stream_sim.samplers)</a>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.FileLinearDensityCubicSplineInterpolationSampler">FileLinearDensityCubicSplineInterpolationSampler (class in streamobs.samplers)</a>
 </li>
-      <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.fluxToMag">fluxToMag() (stream_sim.observed.StreamInjector static method)</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.fluxToMag">fluxToMag() (streamobs.observed.StreamInjector static method)</a>
 </li>
-      <li><a href="stream_sim.functions.html#stream_sim.functions.function_factory">function_factory() (in module stream_sim.functions)</a>
+      <li><a href="streamobs.functions.html#streamobs.functions.function_factory">function_factory() (in module streamobs.functions)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -404,19 +398,25 @@ document.write(`
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.GaussianSampler">GaussianSampler (class in stream_sim.samplers)</a>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.GaussianSampler">GaussianSampler (class in streamobs.samplers)</a>
 </li>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.Survey.get_completeness">get_completeness() (stream_sim.surveys.Survey method)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.get_classification_efficiency">get_classification_efficiency() (streamobs.surveys.Survey method)</a>
 </li>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.Survey.get_extinction">get_extinction() (stream_sim.surveys.Survey method)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.get_completeness">get_completeness() (streamobs.surveys.Survey method)</a>
+</li>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.get_detection_efficiency">get_detection_efficiency() (streamobs.surveys.Survey method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.Survey.get_maglim">get_maglim() (stream_sim.surveys.Survey method)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.get_efficiency">get_efficiency() (streamobs.surveys.Survey method)</a>
 </li>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.Survey.get_photo_error">get_photo_error() (stream_sim.surveys.Survey method)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.get_extinction">get_extinction() (streamobs.surveys.Survey method)</a>
 </li>
-      <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.getFluxError">getFluxError() (stream_sim.observed.StreamInjector static method)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.get_maglim">get_maglim() (streamobs.surveys.Survey method)</a>
+</li>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.get_photo_error">get_photo_error() (streamobs.surveys.Survey method)</a>
+</li>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.getFluxError">getFluxError() (streamobs.observed.StreamInjector static method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -424,17 +424,17 @@ document.write(`
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.inject">inject() (stream_sim.observed.StreamInjector method)</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.inject">inject() (streamobs.observed.StreamInjector method)</a>
 </li>
-      <li><a href="stream_sim.functions.html#stream_sim.functions.Interpolation">Interpolation (class in stream_sim.functions)</a>
+      <li><a href="streamobs.functions.html#streamobs.functions.Interpolation">Interpolation (class in streamobs.functions)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.InterpolationSampler">InterpolationSampler (class in stream_sim.samplers)</a>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.InterpolationSampler">InterpolationSampler (class in streamobs.samplers)</a>
 </li>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.inverse_transform_sample">inverse_transform_sample() (in module stream_sim.samplers)</a>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.inverse_transform_sample">inverse_transform_sample() (in module streamobs.samplers)</a>
 </li>
-      <li><a href="stream_sim.model.html#stream_sim.model.IsochroneModel">IsochroneModel (class in stream_sim.model)</a>
+      <li><a href="streamobs.model.html#streamobs.model.IsochroneModel">IsochroneModel (class in streamobs.model)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -442,21 +442,21 @@ document.write(`
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.functions.html#stream_sim.functions.Line">Line (class in stream_sim.functions)</a>
+      <li><a href="streamobs.functions.html#streamobs.functions.Line">Line (class in streamobs.functions)</a>
 </li>
-      <li><a href="stream_sim.functions.html#stream_sim.functions.LinearDensityCubicSplineInterpolation">LinearDensityCubicSplineInterpolation (class in stream_sim.functions)</a>
+      <li><a href="streamobs.functions.html#streamobs.functions.LinearDensityCubicSplineInterpolation">LinearDensityCubicSplineInterpolation (class in streamobs.functions)</a>
 </li>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.LinearDensityCubicSplineInterpolationSampler">LinearDensityCubicSplineInterpolationSampler (class in stream_sim.samplers)</a>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.LinearDensityCubicSplineInterpolationSampler">LinearDensityCubicSplineInterpolationSampler (class in streamobs.samplers)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.list_cached_masks">list_cached_masks() (stream_sim.observed.StreamInjector class method)</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.list_cached_masks">list_cached_masks() (streamobs.observed.StreamInjector class method)</a>
 </li>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.SurveyFactory.list_cached_surveys">list_cached_surveys() (stream_sim.surveys.SurveyFactory class method)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.list_cached_surveys">list_cached_surveys() (streamobs.surveys.SurveyFactory class method)</a>
 </li>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.Survey.load">load() (stream_sim.surveys.Survey class method)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.load">load() (streamobs.surveys.Survey class method)</a>
 </li>
-      <li><a href="stream_sim.surveys.html#id5">log_photo_error (stream_sim.surveys.Survey attribute)</a>, <a href="stream_sim.surveys.html#stream_sim.surveys.Survey.log_photo_error">[1]</a>
+      <li><a href="streamobs.surveys.html#id7">log_photo_error (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.log_photo_error">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -464,31 +464,31 @@ document.write(`
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.surveys.html#id6">maglim_maps (stream_sim.surveys.Survey attribute)</a>, <a href="stream_sim.surveys.html#stream_sim.surveys.Survey.maglim_maps">[1]</a>
+      <li><a href="streamobs.surveys.html#id8">maglim_maps (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.maglim_maps">[1]</a>
 </li>
-      <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.magToFlux">magToFlux() (stream_sim.observed.StreamInjector static method)</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.magToFlux">magToFlux() (streamobs.observed.StreamInjector static method)</a>
 </li>
-      <li><a href="stream_sim.observed.html#id0">mask_cache (stream_sim.observed.StreamInjector attribute)</a>, <a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.mask_cache">[1]</a>
+      <li><a href="streamobs.observed.html#id0">mask_cache (streamobs.observed.StreamInjector attribute)</a>, <a href="streamobs.observed.html#streamobs.observed.StreamInjector.mask_cache">[1]</a>
 </li>
       <li>
     module
 
       <ul>
-        <li><a href="stream_sim.html#module-stream_sim">stream_sim</a>
+        <li><a href="streamobs.html#module-streamobs">streamobs</a>
 </li>
-        <li><a href="stream_sim.functions.html#module-stream_sim.functions">stream_sim.functions</a>
+        <li><a href="streamobs.functions.html#module-streamobs.functions">streamobs.functions</a>
 </li>
-        <li><a href="stream_sim.model.html#module-stream_sim.model">stream_sim.model</a>
+        <li><a href="streamobs.model.html#module-streamobs.model">streamobs.model</a>
 </li>
-        <li><a href="stream_sim.observed.html#module-stream_sim.observed">stream_sim.observed</a>
+        <li><a href="streamobs.observed.html#module-streamobs.observed">streamobs.observed</a>
 </li>
-        <li><a href="stream_sim.plotting.html#module-stream_sim.plotting">stream_sim.plotting</a>
+        <li><a href="streamobs.plotting.html#module-streamobs.plotting">streamobs.plotting</a>
 </li>
-        <li><a href="stream_sim.samplers.html#module-stream_sim.samplers">stream_sim.samplers</a>
+        <li><a href="streamobs.samplers.html#module-streamobs.samplers">streamobs.samplers</a>
 </li>
-        <li><a href="stream_sim.surveys.html#module-stream_sim.surveys">stream_sim.surveys</a>
+        <li><a href="streamobs.surveys.html#module-streamobs.surveys">streamobs.surveys</a>
 </li>
-        <li><a href="stream_sim.utils.html#module-stream_sim.utils">stream_sim.utils</a>
+        <li><a href="streamobs.utils.html#module-streamobs.utils">streamobs.utils</a>
 </li>
       </ul></li>
   </ul></td>
@@ -497,7 +497,7 @@ document.write(`
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.surveys.html#id7">name (stream_sim.surveys.Survey attribute)</a>, <a href="stream_sim.surveys.html#stream_sim.surveys.Survey.name">[1]</a>
+      <li><a href="streamobs.surveys.html#id9">name (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.name">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -505,7 +505,7 @@ document.write(`
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.SurveyFactory.open_map_sparse">open_map_sparse() (stream_sim.surveys.SurveyFactory static method)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.open_map_sparse">open_map_sparse() (streamobs.surveys.SurveyFactory static method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -513,26 +513,30 @@ document.write(`
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.utils.html#stream_sim.utils.parse_config">parse_config() (in module stream_sim.utils)</a>
+      <li><a href="streamobs.utils.html#streamobs.utils.parse_config">parse_config() (in module streamobs.utils)</a>
 </li>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.Sampler.pdf">pdf() (stream_sim.samplers.Sampler method)</a>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.Sampler.pdf">pdf() (streamobs.samplers.Sampler method)</a>
 
       <ul>
-        <li><a href="stream_sim.samplers.html#stream_sim.samplers.ScipySampler.pdf">(stream_sim.samplers.ScipySampler method)</a>
+        <li><a href="streamobs.samplers.html#streamobs.samplers.ScipySampler.pdf">(streamobs.samplers.ScipySampler method)</a>
 </li>
       </ul></li>
-      <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.phi_to_radec">phi_to_radec() (stream_sim.observed.StreamInjector method)</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.phi_to_radec">phi_to_radec() (streamobs.observed.StreamInjector method)</a>
+</li>
+      <li><a href="streamobs.plotting.html#streamobs.plotting.plot_healsparse_map">plot_healsparse_map() (in module streamobs.plotting)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.plotting.html#stream_sim.plotting.plot_inject">plot_inject() (in module stream_sim.plotting)</a>
+      <li><a href="streamobs.plotting.html#streamobs.plotting.plot_inject">plot_inject() (in module streamobs.plotting)</a>
 </li>
-      <li><a href="stream_sim.plotting.html#stream_sim.plotting.plot_stream">plot_stream() (in module stream_sim.plotting)</a>
+      <li><a href="streamobs.plotting.html#streamobs.plotting.plot_maglim">plot_maglim() (in module streamobs.plotting)</a>
 </li>
-      <li><a href="stream_sim.plotting.html#stream_sim.plotting.plot_stream_in_mask">plot_stream_in_mask() (in module stream_sim.plotting)</a>
+      <li><a href="streamobs.plotting.html#streamobs.plotting.plot_stream">plot_stream() (in module streamobs.plotting)</a>
+</li>
+      <li><a href="streamobs.plotting.html#streamobs.plotting.plot_stream_in_mask">plot_stream_in_mask() (in module streamobs.plotting)</a>
 
       <ul>
-        <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.plot_stream_in_mask">(stream_sim.observed.StreamInjector method)</a>
+        <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.plot_stream_in_mask">(streamobs.observed.StreamInjector method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -541,7 +545,7 @@ document.write(`
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.surveys.html#id8">release (stream_sim.surveys.Survey attribute)</a>, <a href="stream_sim.surveys.html#stream_sim.surveys.Survey.release">[1]</a>
+      <li><a href="streamobs.surveys.html#id10">release (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.release">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -549,115 +553,115 @@ document.write(`
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.model.html#stream_sim.model.ConfigurableModel.sample">sample() (stream_sim.model.ConfigurableModel method)</a>
+      <li><a href="streamobs.model.html#streamobs.model.ConfigurableModel.sample">sample() (streamobs.model.ConfigurableModel method)</a>
 
       <ul>
-        <li><a href="stream_sim.model.html#stream_sim.model.DensityModel.sample">(stream_sim.model.DensityModel method)</a>
+        <li><a href="streamobs.model.html#streamobs.model.DensityModel.sample">(streamobs.model.DensityModel method)</a>
 </li>
-        <li><a href="stream_sim.model.html#stream_sim.model.IsochroneModel.sample">(stream_sim.model.IsochroneModel method)</a>
+        <li><a href="streamobs.model.html#streamobs.model.IsochroneModel.sample">(streamobs.model.IsochroneModel method)</a>
 </li>
-        <li><a href="stream_sim.model.html#stream_sim.model.StreamModel.sample">(stream_sim.model.StreamModel method)</a>
+        <li><a href="streamobs.model.html#streamobs.model.StreamModel.sample">(streamobs.model.StreamModel method)</a>
 </li>
-        <li><a href="stream_sim.model.html#stream_sim.model.TrackModel.sample">(stream_sim.model.TrackModel method)</a>
+        <li><a href="streamobs.model.html#streamobs.model.TrackModel.sample">(streamobs.model.TrackModel method)</a>
 </li>
-        <li><a href="stream_sim.model.html#stream_sim.model.VelocityModel.sample">(stream_sim.model.VelocityModel method)</a>
+        <li><a href="streamobs.model.html#streamobs.model.VelocityModel.sample">(streamobs.model.VelocityModel method)</a>
 </li>
-        <li><a href="stream_sim.samplers.html#stream_sim.samplers.InterpolationSampler.sample">(stream_sim.samplers.InterpolationSampler method)</a>
+        <li><a href="streamobs.samplers.html#streamobs.samplers.InterpolationSampler.sample">(streamobs.samplers.InterpolationSampler method)</a>
 </li>
-        <li><a href="stream_sim.samplers.html#stream_sim.samplers.Sampler.sample">(stream_sim.samplers.Sampler method)</a>
+        <li><a href="streamobs.samplers.html#streamobs.samplers.Sampler.sample">(streamobs.samplers.Sampler method)</a>
 </li>
-        <li><a href="stream_sim.samplers.html#stream_sim.samplers.ScipySampler.sample">(stream_sim.samplers.ScipySampler method)</a>
-</li>
-      </ul></li>
-      <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.sample_measured_magnitudes">sample_measured_magnitudes() (stream_sim.observed.StreamInjector method)</a>
-</li>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.Sampler">Sampler (class in stream_sim.samplers)</a>
-</li>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.sampler_factory">sampler_factory() (in module stream_sim.samplers)</a>
-</li>
-      <li><a href="stream_sim.surveys.html#id9">saturation (stream_sim.surveys.Survey attribute)</a>, <a href="stream_sim.surveys.html#stream_sim.surveys.Survey.saturation">[1]</a>
-</li>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.ScipySampler">ScipySampler (class in stream_sim.samplers)</a>
-</li>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.SurveyFactory.set_completeness">set_completeness() (stream_sim.surveys.SurveyFactory static method)</a>
-</li>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.SurveyFactory.set_photo_error">set_photo_error() (stream_sim.surveys.SurveyFactory static method)</a>
-</li>
-      <li><a href="stream_sim.functions.html#stream_sim.functions.Sinusoid">Sinusoid (class in stream_sim.functions)</a>
-</li>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.SinusoidSampler">SinusoidSampler (class in stream_sim.samplers)</a>
-</li>
-      <li><a href="stream_sim.model.html#stream_sim.model.SplineStreamModel">SplineStreamModel (class in stream_sim.model)</a>
-</li>
-      <li>
-    stream_sim
-
-      <ul>
-        <li><a href="stream_sim.html#module-stream_sim">module</a>
+        <li><a href="streamobs.samplers.html#streamobs.samplers.ScipySampler.sample">(streamobs.samplers.ScipySampler method)</a>
 </li>
       </ul></li>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.sample_measured_magnitudes">sample_measured_magnitudes() (streamobs.observed.StreamInjector method)</a>
+</li>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.Sampler">Sampler (class in streamobs.samplers)</a>
+</li>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.sampler_factory">sampler_factory() (in module streamobs.samplers)</a>
+</li>
+      <li><a href="streamobs.surveys.html#id11">saturation (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.saturation">[1]</a>
+</li>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.ScipySampler">ScipySampler (class in streamobs.samplers)</a>
+</li>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.set_completeness">set_completeness() (streamobs.surveys.SurveyFactory static method)</a>
+</li>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.set_photo_error">set_photo_error() (streamobs.surveys.SurveyFactory static method)</a>
+</li>
+      <li><a href="streamobs.functions.html#streamobs.functions.Sinusoid">Sinusoid (class in streamobs.functions)</a>
+</li>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.SinusoidSampler">SinusoidSampler (class in streamobs.samplers)</a>
+</li>
+      <li><a href="streamobs.model.html#streamobs.model.SplineStreamModel">SplineStreamModel (class in streamobs.model)</a>
+</li>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector">StreamInjector (class in streamobs.observed)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="streamobs.model.html#streamobs.model.StreamModel">StreamModel (class in streamobs.model)</a>
+</li>
       <li>
-    stream_sim.functions
+    streamobs
 
       <ul>
-        <li><a href="stream_sim.functions.html#module-stream_sim.functions">module</a>
+        <li><a href="streamobs.html#module-streamobs">module</a>
 </li>
       </ul></li>
       <li>
-    stream_sim.model
+    streamobs.functions
 
       <ul>
-        <li><a href="stream_sim.model.html#module-stream_sim.model">module</a>
+        <li><a href="streamobs.functions.html#module-streamobs.functions">module</a>
 </li>
       </ul></li>
       <li>
-    stream_sim.observed
+    streamobs.model
 
       <ul>
-        <li><a href="stream_sim.observed.html#module-stream_sim.observed">module</a>
+        <li><a href="streamobs.model.html#module-streamobs.model">module</a>
 </li>
       </ul></li>
       <li>
-    stream_sim.plotting
+    streamobs.observed
 
       <ul>
-        <li><a href="stream_sim.plotting.html#module-stream_sim.plotting">module</a>
+        <li><a href="streamobs.observed.html#module-streamobs.observed">module</a>
 </li>
       </ul></li>
       <li>
-    stream_sim.samplers
+    streamobs.plotting
 
       <ul>
-        <li><a href="stream_sim.samplers.html#module-stream_sim.samplers">module</a>
+        <li><a href="streamobs.plotting.html#module-streamobs.plotting">module</a>
 </li>
       </ul></li>
       <li>
-    stream_sim.surveys
+    streamobs.samplers
 
       <ul>
-        <li><a href="stream_sim.surveys.html#module-stream_sim.surveys">module</a>
+        <li><a href="streamobs.samplers.html#module-streamobs.samplers">module</a>
 </li>
       </ul></li>
       <li>
-    stream_sim.utils
+    streamobs.surveys
 
       <ul>
-        <li><a href="stream_sim.utils.html#module-stream_sim.utils">module</a>
+        <li><a href="streamobs.surveys.html#module-streamobs.surveys">module</a>
 </li>
       </ul></li>
-      <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector">StreamInjector (class in stream_sim.observed)</a>
+      <li>
+    streamobs.utils
+
+      <ul>
+        <li><a href="streamobs.utils.html#module-streamobs.utils">module</a>
 </li>
-      <li><a href="stream_sim.model.html#stream_sim.model.StreamModel">StreamModel (class in stream_sim.model)</a>
+      </ul></li>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey">Survey (class in streamobs.surveys)</a>
 </li>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.Survey">Survey (class in stream_sim.surveys)</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.survey">survey (streamobs.observed.StreamInjector attribute)</a>
 </li>
-      <li><a href="stream_sim.observed.html#stream_sim.observed.StreamInjector.survey">survey (stream_sim.observed.StreamInjector attribute)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory">SurveyFactory (class in streamobs.surveys)</a>
 </li>
-      <li><a href="stream_sim.surveys.html#stream_sim.surveys.SurveyFactory">SurveyFactory (class in stream_sim.surveys)</a>
-</li>
-      <li><a href="stream_sim.surveys.html#id10">sys_error (stream_sim.surveys.Survey attribute)</a>, <a href="stream_sim.surveys.html#stream_sim.surveys.Survey.sys_error">[1]</a>
+      <li><a href="streamobs.surveys.html#id12">sys_error (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.sys_error">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -665,7 +669,7 @@ document.write(`
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.model.html#stream_sim.model.TrackModel">TrackModel (class in stream_sim.model)</a>
+      <li><a href="streamobs.model.html#streamobs.model.TrackModel">TrackModel (class in streamobs.model)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -673,7 +677,7 @@ document.write(`
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.samplers.html#stream_sim.samplers.UniformSampler">UniformSampler (class in stream_sim.samplers)</a>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.UniformSampler">UniformSampler (class in streamobs.samplers)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -681,7 +685,7 @@ document.write(`
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="stream_sim.model.html#stream_sim.model.VelocityModel">VelocityModel (class in stream_sim.model)</a>
+      <li><a href="streamobs.model.html#streamobs.model.VelocityModel">VelocityModel (class in streamobs.model)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -748,8 +752,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

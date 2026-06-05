@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Welcome to StreamSim’s Documentation! &#8212; stream_sim  documentation</title>
+    <title>Welcome to StreamObs’s Documentation! &#8212; streamobs  documentation</title>
   
   
   
@@ -16,37 +16,41 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
   
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="About StreamSim" href="about.html" />
+    <link rel="next" title="About StreamObs" href="about.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -62,19 +66,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -82,7 +75,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -90,8 +82,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -109,7 +101,8 @@
       
         
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -134,41 +127,37 @@
   
   
   
-    <p class="title logo__title">stream_sim  documentation</p>
+    <p class="title logo__title">streamobs  documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="about.html">About StreamSim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="data.html">StreamSim Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="stream_sim.html">stream_sim package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.functions.html">stream_sim.functions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.model.html">stream_sim.model module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.observed.html">stream_sim.observed module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.plotting.html">stream_sim.plotting module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.samplers.html">stream_sim.samplers module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.surveys.html">stream_sim.surveys module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="stream_sim.utils.html">stream_sim.utils module</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.utils.html">streamobs.utils module</a></li>
 </ul>
 </details></li>
 </ul>
@@ -181,9 +170,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -266,7 +260,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -280,25 +274,17 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
 </div></div>
@@ -311,7 +297,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Welcome to StreamSim’s Documentation!</h1>
+    <h1>Welcome to StreamObs’s Documentation!</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -321,8 +307,8 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Welcome to StreamSim’s Documentation!</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-streamsim-does">What StreamSim Does</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Welcome to StreamObs’s Documentation!</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-streamobs-does">What StreamObs Does</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting Started</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation-contents">Documentation Contents</a><ul class="nav section-nav flex-column">
@@ -343,18 +329,18 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="welcome-to-streamsim-s-documentation">
-<h1>Welcome to StreamSim’s Documentation!<a class="headerlink" href="#welcome-to-streamsim-s-documentation" title="Link to this heading">#</a></h1>
+  <section id="welcome-to-streamobs-s-documentation">
+<h1>Welcome to StreamObs’s Documentation!<a class="headerlink" href="#welcome-to-streamobs-s-documentation" title="Link to this heading">#</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This package is under active development. The API and features may change in future releases.</p>
 </div>
-<p><strong>StreamSim</strong> is a Python package for stellar stream data generation and observation simulation.
+<p><strong>StreamObs</strong> is a Python package for stellar stream data generation and observation simulation.
 It provides a complete pipeline to transform theoretical or dynamical stream models into realistic
 mock observations as they would appear in astronomical surveys.</p>
-<section id="what-streamsim-does">
-<h2>What StreamSim Does<a class="headerlink" href="#what-streamsim-does" title="Link to this heading">#</a></h2>
-<p>StreamSim enables you to:</p>
+<section id="what-streamobs-does">
+<h2>What StreamObs Does<a class="headerlink" href="#what-streamobs-does" title="Link to this heading">#</a></h2>
+<p>StreamObs enables you to:</p>
 <ol class="arabic simple">
 <li><p><strong>Generate mock stellar stream data</strong> from parametric models</p>
 <ul class="simple">
@@ -380,7 +366,7 @@ mock observations as they would appear in astronomical surveys.</p>
 </section>
 <section id="use-cases">
 <h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading">#</a></h2>
-<p>StreamSim is particularly useful for people who:</p>
+<p>StreamObs is particularly useful for people who:</p>
 <ul class="simple">
 <li><p>Run <strong>dynamical simulations</strong> and need to convert results into observable quantities</p></li>
 <li><p>Develop <strong>stream detection algorithms</strong> and require realistic test data</p></li>
@@ -389,22 +375,22 @@ mock observations as they would appear in astronomical surveys.</p>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>StreamSim focuses on parametric stream models and observation simulation.
+<p>StreamObs focuses on parametric stream models and observation simulation.
 It is <strong>not</strong> designed for N-body simulations or dynamical modeling.</p>
 </div>
 </section>
 <section id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h2>
-<p>New to StreamSim? Start here:</p>
+<p>New to StreamObs? Start here:</p>
 <ol class="arabic simple">
-<li><p><strong>Installation</strong>: <a class="reference internal" href="installation.html"><span class="doc">Installation &amp; Dependencies</span></a> - Set up StreamSim on your system</p></li>
-<li><p><strong>About</strong>: <a class="reference internal" href="about.html"><span class="doc">About StreamSim</span></a> - Understand StreamSim’s purpose and design</p></li>
+<li><p><strong>Installation</strong>: <a class="reference internal" href="installation.html"><span class="doc">Installation &amp; Dependencies</span></a> - Set up StreamObs on your system</p></li>
+<li><p><strong>About</strong>: <a class="reference internal" href="about.html"><span class="doc">About StreamObs</span></a> - Understand StreamObs’s purpose and design</p></li>
 <li><p><strong>Quickstart</strong>: <a class="reference internal" href="quickstart.html"><span class="doc">Quickstart Guide</span></a> - Learn the basics with simple examples</p></li>
 <li><p><strong>API Reference</strong>: <a class="reference internal" href="modules.html"><span class="doc">Content</span></a> - Explore the complete API documentation</p></li>
 </ol>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Having issues with data download? See the <a class="reference internal" href="data.html"><span class="doc">StreamSim Data Files</span></a> page for detailed troubleshooting.</p>
+<p>Having issues with data download? See the <a class="reference internal" href="data.html"><span class="doc">StreamObs Data Files</span></a> page for detailed troubleshooting.</p>
 </div>
 </section>
 <section id="documentation-contents">
@@ -412,9 +398,9 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="about.html">About StreamSim</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="about.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="about.html#what-streamsim-does">What StreamSim Does</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#what-streamobs-does">What StreamObs Does</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#use-cases">Use Cases</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#development-team">Development Team</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about.html#license">License</a></li>
@@ -448,7 +434,7 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="data.html">StreamSim Data Files</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="data.html#downloading-data">Downloading Data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html#data-storage-and-doi">Data Storage and DOI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html#data-organization">Data Organization</a></li>
@@ -457,7 +443,7 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Content</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="stream_sim.html">stream_sim package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="streamobs.html">streamobs package</a></li>
 </ul>
 </li>
 </ul>
@@ -489,7 +475,7 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">About StreamSim</p>
+        <p class="prev-next-title">About StreamObs</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -500,17 +486,19 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
   </div>
-  <nav class="bd-toc-nav page-toc">
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Welcome to StreamSim’s Documentation!</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-streamsim-does">What StreamSim Does</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Welcome to StreamObs’s Documentation!</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-streamobs-does">What StreamObs Does</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting Started</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation-contents">Documentation Contents</a><ul class="nav section-nav flex-column">
@@ -568,8 +556,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -1,0 +1,1501 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>streamobs.observed &#8212; streamobs  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/streamobs/observed';</script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">streamobs  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation &amp; Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.utils.html">streamobs.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for streamobs.observed</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">coord</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gala.coordinates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">healpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_stream_in_mask</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.surveys</span><span class="w"> </span><span class="kn">import</span> <span class="n">Survey</span>
+
+
+<div class="viewcode-block" id="StreamInjector">
+<a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StreamInjector</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Inject observational effects into stream data for a given survey.</span>
+
+<span class="sd">    This class handles the core injection logic while keeping survey data separate.</span>
+<span class="sd">    All survey data is loaded once and cached, making multiple injections efficient.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    survey : Survey</span>
+<span class="sd">        Survey instance containing all survey-specific data and functions.</span>
+<span class="sd">    mask_cache : dict (class attribute)</span>
+<span class="sd">        Cache of previously created HEALPix masks to avoid recomputation.</span>
+<span class="sd">    _last_gc_frame : GreatCircleICRSFrame or None</span>
+<span class="sd">        The most recently used great circle frame. This allows reusing the same</span>
+<span class="sd">        sky location across multiple inject() calls when gc_frame=&#39;last&#39;.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Initialize with a survey:</span>
+
+<span class="sd">    &gt;&gt;&gt; injector = StreamInjector(&#39;lsst&#39;, release=&#39;dc2&#39;)</span>
+
+<span class="sd">    Or with a pre-loaded Survey object:</span>
+
+<span class="sd">    &gt;&gt;&gt; survey = Survey.load(&#39;lsst&#39;, release=&#39;dc2&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; injector = StreamInjector(survey)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">mask_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">survey</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize with survey configuration.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        survey : str or Survey</span>
+<span class="sd">            Either a survey name string (e.g., &#39;lsst&#39;) or a pre-loaded Survey instance.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments passed to Survey.load() if survey is a string.</span>
+<span class="sd">            Common options include:</span>
+
+<span class="sd">            release : str, optional</span>
+<span class="sd">                Survey release version (e.g., &#39;dc2&#39;, &#39;yr1&#39;, &#39;yr10&#39;).</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If survey is neither a string nor a Survey instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">survey</span> <span class="o">=</span> <span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">survey</span><span class="o">=</span><span class="n">survey</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="n">Survey</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">survey</span> <span class="o">=</span> <span class="n">survey</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;survey must be a string or Survey instance.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Instance attribute to store the last used gc_frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_gc_frame</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="StreamInjector.inject">
+<a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.inject">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add observed quantities from the survey to the given data.</span>
+
+<span class="sd">        This method applies observational effects including photometric errors,</span>
+<span class="sd">        magnitude measurements, and detection flags based on survey properties.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : str or pd.DataFrame</span>
+<span class="sd">            Input data as DataFrame or path to the file (CSV or Excel).</span>
+<span class="sd">            Must contain either (ra, dec) or (phi1, phi2) coordinates, and</span>
+<span class="sd">            magnitude columns for the specified bands.</span>
+<span class="sd">        bands : list of str, optional</span>
+<span class="sd">            List of photometric bands to process. Default is [&#39;r&#39;, &#39;g&#39;].</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments:</span>
+
+<span class="sd">            seed : int, optional</span>
+<span class="sd">                Random seed for reproducibility.</span>
+<span class="sd">            nside : int, optional</span>
+<span class="sd">                HEALPix nside parameter. Default is 4096.</span>
+<span class="sd">            detection_mag_cut : list of str, optional</span>
+<span class="sd">                Bands to apply SNR detection cut. Default is [&#39;g&#39;].</span>
+<span class="sd">            save : bool, optional</span>
+<span class="sd">                Whether to save the output data. Default is False.</span>
+<span class="sd">            folder : str or Path, optional</span>
+<span class="sd">                Output folder path if save=True.</span>
+<span class="sd">            dust_correction : bool, optional</span>
+<span class="sd">                Whether to apply dust correction to observed magnitudes. Default is True.</span>
+<span class="sd">            perfect_galstarsep : bool, optional</span>
+<span class="sd">                If True, also computes a flag assuming perfect star/galaxy separation</span>
+<span class="sd">                (detection efficiency only, no classification losses). Default is False.</span>
+<span class="sd">            verbose : bool, optional</span>
+<span class="sd">                Whether to print progress information. Default is True.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            DataFrame with the following added columns:</span>
+
+<span class="sd">            - mag_&lt;band&gt;_obs : Observed magnitudes for each band</span>
+<span class="sd">            - magerr_&lt;band&gt; : Photometric errors for each band</span>
+<span class="sd">            - flag_observed : Boolean flag (True=detected, False=not detected). Includes both detection and classification efficiencies.</span>
+<span class="sd">            - flag_perfect_galstarsep : Boolean flag assuming perfect star/galaxy separation (detection efficiency only, no classification losses; only if requested with perfect_galstarsep=True)</span>
+<span class="sd">            - ra, dec : Sky coordinates (if not already present)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If required columns are missing or bands are not supported.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">perfect_galstarsep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;perfect_galstarsep&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Load data</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Set the seed for reproducibility</span>
+        <span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="c1"># Complete missing columns (ra/dec, magnitudes)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">complete_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">bands</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Get HEALPix pixel indices</span>
+        <span class="n">nside</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;nside&quot;</span><span class="p">,</span> <span class="mi">4096</span><span class="p">)</span>
+        <span class="n">pix</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ang2pix</span><span class="p">(</span><span class="n">nside</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">],</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Initialize detection flags (will be updated per band)</span>
+        <span class="n">flag_completeness_band</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">flag_detection_only_band</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Process each band</span>
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">band</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Currently only &#39;r&#39; and &#39;g&#39; bands are supported.&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Get extinction for this band</span>
+            <span class="n">nside_ebv</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nside_ebv</span> <span class="o">!=</span> <span class="n">nside</span><span class="p">:</span>
+                <span class="n">pix_ebv</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ang2pix</span><span class="p">(</span><span class="n">nside_ebv</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">],</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pix_ebv</span> <span class="o">=</span> <span class="n">pix</span>
+            <span class="n">extinction_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">get_extinction</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">pixel</span><span class="o">=</span><span class="n">pix_ebv</span><span class="p">)</span>
+
+            <span class="c1"># Calculate true apparent magnitudes (including extinction)</span>
+            <span class="n">apparent_mag_true</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;mag_&quot;</span> <span class="o">+</span> <span class="n">band</span><span class="p">]</span> <span class="o">+</span> <span class="n">extinction_band</span>
+
+            <span class="c1"># Get magnitude limits</span>
+            <span class="n">nside_maglim</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">nside_maglim</span> <span class="o">!=</span> <span class="n">nside</span><span class="p">:</span>
+                <span class="n">pix_maglim</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ang2pix</span><span class="p">(</span>
+                    <span class="n">nside_maglim</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">],</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">pix_maglim</span> <span class="o">=</span> <span class="n">pix</span>
+
+            <span class="c1"># Calculate photometric errors</span>
+            <span class="n">mag_err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">get_photo_error</span><span class="p">(</span>
+                <span class="n">band</span><span class="p">,</span>
+                <span class="n">apparent_mag_true</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">get_maglim</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">pixel</span><span class="o">=</span><span class="n">pix_maglim</span><span class="p">),</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Sample measured magnitudes</span>
+            <span class="n">mag_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_measured_magnitudes</span><span class="p">(</span>
+                <span class="n">apparent_mag_true</span><span class="p">,</span>
+                <span class="n">mag_err</span><span class="p">,</span>
+                <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span>
+                <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">dust_correction</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dust_correction&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dust_correction</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Applying dust correction for </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">-band on observed magnitudes.&quot;</span>
+                    <span class="p">)</span>
+                <span class="c1"># Correct observed magnitudes for extinction (only for valid detections)</span>
+                <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">mag_obs</span> <span class="o">!=</span> <span class="s2">&quot;BAD_MAG&quot;</span>
+                <span class="c1"># Create a float array for corrected magnitudes</span>
+                <span class="n">mag_obs_corrected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mag_obs</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+                <span class="n">mag_obs_corrected</span><span class="p">[</span><span class="o">~</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;BAD_MAG&quot;</span>
+                <span class="n">mag_obs_corrected</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">mag_obs</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">-</span> <span class="n">extinction_band</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">mag_obs</span> <span class="o">=</span> <span class="n">mag_obs_corrected</span>
+
+            <span class="c1"># Add new columns</span>
+            <span class="n">new_columns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;mag_&quot;</span> <span class="o">+</span> <span class="n">band</span> <span class="o">+</span> <span class="s2">&quot;_obs&quot;</span><span class="p">:</span> <span class="n">mag_obs</span><span class="p">,</span>
+                    <span class="s2">&quot;magerr_&quot;</span> <span class="o">+</span> <span class="n">band</span><span class="p">:</span> <span class="n">mag_err</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Reset indices and concatenate</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">new_columns</span> <span class="o">=</span> <span class="n">new_columns</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">data</span><span class="p">,</span> <span class="n">new_columns</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># Compute detection flag for completeness-band (reference band)</span>
+            <span class="k">if</span> <span class="n">band</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="p">:</span>
+                <span class="n">flag_completeness_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_flag</span><span class="p">(</span>
+                    <span class="n">pix_maglim</span><span class="p">,</span>
+                    <span class="n">mag</span><span class="o">=</span><span class="n">apparent_mag_true</span><span class="p">,</span>
+                    <span class="n">band</span><span class="o">=</span><span class="n">band</span><span class="p">,</span>
+                    <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span>
+                    <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+                    <span class="n">perfect_galstarsep</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
+                    <span class="n">flag_detection_only_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_flag</span><span class="p">(</span>
+                        <span class="n">pix_maglim</span><span class="p">,</span>
+                        <span class="n">mag</span><span class="o">=</span><span class="n">apparent_mag_true</span><span class="p">,</span>
+                        <span class="n">band</span><span class="o">=</span><span class="n">band</span><span class="p">,</span>
+                        <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span>
+                        <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+                        <span class="n">perfect_galstarsep</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+        <span class="c1"># Apply detection threshold</span>
+        <span class="k">if</span> <span class="n">flag_completeness_band</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;flag_completeness_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2"> must be computed for detection in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2"> band.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detection flag requires &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2">&#39; band to be in bands.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Build combined detection flags</span>
+        <span class="c1"># Start with flux validity check (not BAD_MAG)</span>
+        <span class="n">flag_valid_flux</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;mag_r_obs&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;BAD_MAG&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;g&quot;</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">:</span>
+            <span class="n">flag_valid_flux</span> <span class="o">&amp;=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;mag_g_obs&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;BAD_MAG&quot;</span>
+
+        <span class="c1"># Combine with completeness</span>
+        <span class="n">flag_observed</span> <span class="o">=</span> <span class="n">flag_valid_flux</span> <span class="o">&amp;</span> <span class="n">flag_completeness_band</span> <span class="k">if</span> <span class="n">flag_completeness_band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">flag_valid_flux</span> 
+        <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
+            <span class="n">flag_perfect</span> <span class="o">=</span> <span class="n">flag_valid_flux</span> <span class="o">&amp;</span> <span class="n">flag_detection_only_band</span> <span class="k">if</span> <span class="n">flag_detection_only_band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">flag_valid_flux</span>
+
+        <span class="c1"># Apply SNR cuts</span>
+        <span class="n">detection_mag_cut</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;detection_mag_cut&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;g&quot;</span><span class="p">])</span>
+        <span class="n">SNR_min</span> <span class="o">=</span> <span class="mf">5.0</span>
+
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">detection_mag_cut</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">band</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Warning: SNR cut requested for </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">-band but it&#39;s not in bands list. Skipping.&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Applying detection cut on </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">-band with SNR &gt;= </span><span class="si">{</span><span class="n">SNR_min</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">SNR</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;magerr_&quot;</span> <span class="o">+</span> <span class="n">band</span><span class="p">]</span>
+            <span class="n">flag_observed</span> <span class="o">&amp;=</span> <span class="n">SNR</span> <span class="o">&gt;=</span> <span class="n">SNR_min</span>
+            <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
+                <span class="n">flag_perfect</span> <span class="o">&amp;=</span> <span class="n">SNR</span> <span class="o">&gt;=</span> <span class="n">SNR_min</span>
+
+        <span class="c1"># Force SNR cut on r-band for perfect gal/star separation (because it&#39;s not included in the detection efficiency functions, while it is for the completeness functions)</span>
+        <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
+            <span class="n">SNR_r</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;magerr_r&quot;</span><span class="p">]</span>
+            <span class="n">flag_perfect</span> <span class="o">&amp;=</span> <span class="n">SNR_r</span> <span class="o">&gt;=</span> <span class="n">SNR_min</span>
+
+        <span class="c1"># Store flags in DataFrame</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;flag_observed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_observed</span>
+        <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;flag_perfect_galstarsep&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_perfect</span>
+
+        <span class="c1"># Save if requested</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_injected_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;folder&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+        <span class="c1"># Return data (do NOT store as instance attribute to avoid conflicts between runs)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load data from file or return the provided DataFrame.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : str or pd.DataFrame</span>
+<span class="sd">            Path to the file or pandas DataFrame.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            Loaded DataFrame.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If file format is unsupported or data type is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">extension</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">extension</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">extension</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;xls&quot;</span><span class="p">,</span> <span class="s2">&quot;xlsx&quot;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported file format: </span><span class="si">{</span><span class="n">extension</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported file format&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="StreamInjector.complete_data">
+<a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.complete_data">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">complete_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate and complete the columns needed for injection.</span>
+
+<span class="sd">        This function ensures sky coordinates are present and, if requested,</span>
+<span class="sd">        fills missing photometric magnitude columns using a stream model.</span>
+<span class="sd">        Specifically:</span>
+
+<span class="sd">        - If (ra, dec) are missing but (phi1, phi2) exist, it converts to</span>
+<span class="sd">          sky coordinates via ``phi_to_radec``.</span>
+<span class="sd">        - It checks for ``mag_&lt;band&gt;`` for each requested band; any missing</span>
+<span class="sd">          bands are generated via ``StreamModel.complete_catalog`` when a</span>
+<span class="sd">          ``stream_config`` is provided.</span>
+<span class="sd">        - Existing columns are preserved and are not overwritten.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame</span>
+<span class="sd">            Input catalog. Must contain either (ra, dec) or (phi1, phi2).</span>
+<span class="sd">            The DataFrame is copied; the input object is not modified in place.</span>
+<span class="sd">        bands : list[str], optional</span>
+<span class="sd">            Photometric bands to ensure (as ``mag_&lt;band&gt;``). Default is</span>
+<span class="sd">            ``[&#39;r&#39;, &#39;g&#39;]``.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional options:</span>
+
+<span class="sd">            rng : numpy.random.Generator, optional</span>
+<span class="sd">                Random number generator instance.</span>
+<span class="sd">            seed : int, optional</span>
+<span class="sd">                Random seed used to initialize an RNG if ``rng`` is not given.</span>
+<span class="sd">            gc_frame : gala.coordinates.GreatCircleICRSFrame or &#39;last&#39;, optional</span>
+<span class="sd">                Great circle frame to use. If &#39;last&#39;, uses the frame from the</span>
+<span class="sd">                previous call. If None, generates a new random frame.</span>
+<span class="sd">            stream_config : dict, optional</span>
+<span class="sd">                Configuration passed to ``StreamModel``. Required only when at</span>
+<span class="sd">                least one requested magnitude band is missing. See</span>
+<span class="sd">                ``StreamModel`` for the expected schema (e.g., track, distance</span>
+<span class="sd">                modulus, isochrone).</span>
+
+<span class="sd">            Keyword arguments forwarded to ``phi_to_radec`` (only used when</span>
+<span class="sd">            converting from (phi1, phi2)):</span>
+
+<span class="sd">            mask_type : list[str] or str, optional</span>
+<span class="sd">                Mask(s) used when searching a frame (e.g., &#39;footprint&#39;,</span>
+<span class="sd">                &#39;maglim_r&#39;, &#39;ebv&#39;).</span>
+<span class="sd">            percentile_threshold : float, optional</span>
+<span class="sd">                Fraction of points that must lie inside the mask when selecting</span>
+<span class="sd">                a frame. Default defined in ``phi_to_radec``.</span>
+<span class="sd">            max_iter : int, optional</span>
+<span class="sd">                Maximum trials when searching a frame. Default defined in</span>
+<span class="sd">                ``phi_to_radec``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            A copy of the input with the required columns present:</span>
+<span class="sd">            ``ra``, ``dec``, and one ``mag_&lt;band&gt;`` column per requested band.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If neither (ra, dec) nor (phi1, phi2) are present; or if one or</span>
+<span class="sd">            more magnitude bands are missing and ``stream_config`` is not</span>
+<span class="sd">            provided; or if after completion a required column is still absent.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - Only missing magnitude columns are synthesized; existing values are</span>
+<span class="sd">          left untouched.</span>
+<span class="sd">        - Magnitudes are produced by ``StreamModel.complete_catalog`` and rely</span>
+<span class="sd">          on the model&#39;s configuration (e.g., isochrone and distance modulus).</span>
+<span class="sd">        - When a new gc_frame is created or used, it is stored in ``self._last_gc_frame``</span>
+<span class="sd">          for potential reuse via ``gc_frame=&#39;last&#39;``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Convert from (phi1, phi2) and generate both bands:</span>
+
+<span class="sd">        &gt;&gt;&gt; df = pd.DataFrame({&#39;phi1&#39;: [-5, 0, 5], &#39;phi2&#39;: [0, 0, 0]})</span>
+<span class="sd">        &gt;&gt;&gt; cfg = {...}  # stream model config</span>
+<span class="sd">        &gt;&gt;&gt; out = injector.complete_data(df, bands=[&#39;r&#39;, &#39;g&#39;], stream_config=cfg)</span>
+
+<span class="sd">        Use already existing ra/dec and fill a missing &#39;g&#39; band from a model:</span>
+
+<span class="sd">        &gt;&gt;&gt; df = pd.DataFrame({&#39;phi1&#39;: [-5, 0, 5], &#39;phi2&#39;: [0, 0, 0], &#39;ra&#39;: [10.1, 12.5, 24.7], &#39;dec&#39;: [5.2, 6.2, 7.2],})</span>
+<span class="sd">        &gt;&gt;&gt; out = injector.complete_data(df, bands=[&#39;r&#39;, &#39;g&#39;], stream_config=cfg, seed=42)</span>
+
+<span class="sd">        Reuse the same gc_frame for multiple streams:</span>
+
+<span class="sd">        &gt;&gt;&gt; data1 = injector.complete_data(df1, seed=42)  # Creates new frame</span>
+<span class="sd">        &gt;&gt;&gt; data2 = injector.complete_data(df2, gc_frame=&#39;last&#39;)  # Reuses frame from data1</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">required_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">,</span> <span class="s2">&quot;dec&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">]</span>
+
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;rng&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Make explicit copy to avoid SettingWithCopyWarning</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s2">&quot;ra&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s2">&quot;dec&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s2">&quot;phi1&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="s2">&quot;phi2&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Input data must contain either (ra, dec) or (phi1, phi2) columns.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Handle &#39;last&#39; keyword for gc_frame</span>
+            <span class="n">gc_frame_param</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gc_frame&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">gc_frame_param</span> <span class="o">==</span> <span class="s2">&quot;last&quot;</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;gc_frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_gc_frame</span>
+
+            <span class="c1"># Convert coordinates (Phi1, Phi2) into (ra,dec)</span>
+            <span class="n">stream_coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi_to_radec</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">],</span>
+                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;phi2&quot;</span><span class="p">],</span>
+                <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+                <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;ra&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stream_coord</span><span class="o">.</span><span class="n">icrs</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">deg</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;dec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stream_coord</span><span class="o">.</span><span class="n">icrs</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">deg</span>
+
+        <span class="c1"># Sample missing magnitudes if needed</span>
+        <span class="n">mag_bands_missing</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">bands</span> <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">mag_bands_missing</span><span class="p">:</span>
+            <span class="n">stream_config</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream_config&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">stream_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;`stream_config` must be provided to sample missing magnitudes.&quot;</span>
+                <span class="p">)</span>
+            <span class="n">stream_model</span> <span class="o">=</span> <span class="n">StreamModel</span><span class="p">(</span><span class="n">stream_config</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">stream_model</span><span class="o">.</span><span class="n">complete_catalog</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">,</span>
+                <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">columns_to_add</span><span class="o">=</span><span class="n">mag_bands_missing</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">required_columns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input data must contain &#39;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&#39; column.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="StreamInjector.phi_to_radec">
+<a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.phi_to_radec">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">phi_to_radec</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">phi1</span><span class="p">,</span>
+        <span class="n">phi2</span><span class="p">,</span>
+        <span class="n">gc_frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mask_type</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;footprint&quot;</span><span class="p">],</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Transform stream coordinates (phi1, phi2) to sky coordinates (RA, Dec).</span>
+
+<span class="sd">        This method converts stream coordinates to celestial coordinates using a great circle</span>
+<span class="sd">        frame. If no frame is provided, it automatically finds one randomly chosen such that a given percentile</span>
+<span class="sd">        of the points lie within the mask defined with mask_type.</span>
+
+<span class="sd">        The frame used (whether provided or generated) is stored in ``self._last_gc_frame``</span>
+<span class="sd">        for potential reuse via ``gc_frame=&#39;last&#39;`` in subsequent calls.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        phi1, phi2 : array-like</span>
+<span class="sd">            Stream coordinates in degrees.</span>
+<span class="sd">        gc_frame : gala.coordinates.GreatCircleICRSFrame or &#39;last&#39;, optional</span>
+<span class="sd">            Great circle coordinate frame. If None, will be automatically determined.</span>
+<span class="sd">            If &#39;last&#39;, uses the frame from the previous call (stored in self._last_gc_frame).</span>
+<span class="sd">        seed : int, optional</span>
+<span class="sd">            Random seed for reproducible frame selection.</span>
+<span class="sd">        rng : numpy.random.Generator, optional</span>
+<span class="sd">            Random number generator instance.</span>
+<span class="sd">        mask_type : list of str, optional</span>
+<span class="sd">            Types of masks to use for footprint validation.</span>
+<span class="sd">            Options: [&quot;footprint&quot;, &quot;maglim_g&quot;, &quot;maglim_r&quot;, &quot;ebv&quot;].</span>
+<span class="sd">            Default is [&quot;footprint&quot;].</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments passed to _find_gc_frame():</span>
+
+<span class="sd">            percentile_threshold : float, optional</span>
+<span class="sd">                Minimum fraction of points that must be in mask. Default is 0.99.</span>
+<span class="sd">            max_iter : int, optional</span>
+<span class="sd">                Maximum number of random trials. Default is 1000.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        astropy.coordinates.SkyCoord</span>
+<span class="sd">            Sky coordinates in ICRS frame.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If phi1 and phi2 have different lengths or contain invalid values.</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">            If no suitable great circle frame could be found.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Convert stream coordinates to sky coordinates:</span>
+
+<span class="sd">        &gt;&gt;&gt; phi1 = np.linspace(-10, 10, 1000)</span>
+<span class="sd">        &gt;&gt;&gt; phi2 = np.zeros_like(phi1)</span>
+<span class="sd">        &gt;&gt;&gt; coords = injector.phi_to_radec(phi1, phi2, seed=42)</span>
+
+<span class="sd">        Reuse the frame from a previous call:</span>
+
+<span class="sd">        &gt;&gt;&gt; coords2 = injector.phi_to_radec(phi1_2, phi2_2, gc_frame=&#39;last&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Input validation</span>
+        <span class="n">phi1_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">phi1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">phi2_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">phi2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">phi1_arr</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">phi2_arr</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;phi1 and phi2 cannot be empty arrays&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Handle &#39;last&#39; keyword for gc_frame</span>
+        <span class="k">if</span> <span class="n">gc_frame</span> <span class="o">==</span> <span class="s2">&quot;last&quot;</span><span class="p">:</span>
+            <span class="n">gc_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_gc_frame</span>
+
+        <span class="c1"># Find or use provided great circle frame</span>
+        <span class="k">if</span> <span class="n">gc_frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">gc_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_gc_frame</span><span class="p">(</span>
+                <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span>
+                <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+                <span class="n">mask_type</span><span class="o">=</span><span class="n">mask_type</span><span class="p">,</span>
+                <span class="n">phi1</span><span class="o">=</span><span class="n">phi1_arr</span><span class="p">,</span>
+                <span class="n">phi2</span><span class="o">=</span><span class="n">phi2_arr</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Store the frame for potential reuse</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_gc_frame</span> <span class="o">=</span> <span class="n">gc_frame</span>
+
+        <span class="c1"># Transform to sky coordinates</span>
+        <span class="n">phi1_deg</span> <span class="o">=</span> <span class="n">phi1_arr</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+        <span class="n">phi2_deg</span> <span class="o">=</span> <span class="n">phi2_arr</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+        <span class="n">stream_coord</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">phi1</span><span class="o">=</span><span class="n">phi1_deg</span><span class="p">,</span> <span class="n">phi2</span><span class="o">=</span><span class="n">phi2_deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">gc_frame</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">stream_coord</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_gc_frame</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">phi1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">phi2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">mask_type</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;footprint&quot;</span><span class="p">],</span>
+        <span class="n">percentile_threshold</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span>
+        <span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+        <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find a great circle frame such that a chosen fraction of points lie within the chosen mask.</span>
+
+<span class="sd">        This method iteratively tries random great circle orientations until it finds</span>
+<span class="sd">        one where at least `percentile_threshold` of the stream points fall within</span>
+<span class="sd">        the survey mask.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        phi1, phi2 : array-like, optional</span>
+<span class="sd">            Stream coordinates to validate against the mask.</span>
+<span class="sd">        mask : np.ndarray, optional</span>
+<span class="sd">            Pre-computed HEALPix mask. If None, will be created from mask_type.</span>
+<span class="sd">        mask_type : list of str, optional</span>
+<span class="sd">            Types of masks to combine for footprint validation.</span>
+<span class="sd">            Default is [&quot;footprint&quot;].</span>
+<span class="sd">        percentile_threshold : float, optional</span>
+<span class="sd">            Minimum fraction of points that must be within the mask.</span>
+<span class="sd">            Default is 0.99.</span>
+<span class="sd">        max_iter : int, optional</span>
+<span class="sd">            Maximum number of random trials. Default is 1000.</span>
+<span class="sd">        rng : numpy.random.Generator, optional</span>
+<span class="sd">            Random number generator instance.</span>
+<span class="sd">        seed : int, optional</span>
+<span class="sd">            Random seed if rng is not provided.</span>
+<span class="sd">        verbose : bool, optional</span>
+<span class="sd">            Whether to print progress information. Default is True.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments (currently unused).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        gala.coordinates.GreatCircleICRSFrame or None</span>
+<span class="sd">            Great circle frame, or None if no suitable frame found after max_iter attempts.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">rng</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="c1"># Create the mask if not provided</span>
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">healpix_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_mask</span><span class="p">(</span><span class="n">mask_type</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">healpix_mask</span> <span class="o">=</span> <span class="n">mask</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using provided HEALPix mask for footprint checking.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Do NOT store mask as instance attribute to avoid conflicts between runs</span>
+        <span class="c1"># (each run may need a different mask)</span>
+
+        <span class="c1"># If no mask is available, return a random great circle frame</span>
+        <span class="k">if</span> <span class="n">healpix_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No mask available, returning a random great circle frame.&quot;</span><span class="p">)</span>
+            <span class="n">end1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random_uniform_skycoord</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+            <span class="n">end2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random_uniform_skycoord</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+            <span class="n">gc_frame</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">GreatCircleICRSFrame</span><span class="o">.</span><span class="n">from_endpoints</span><span class="p">(</span><span class="n">end1</span><span class="p">,</span> <span class="n">end2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">gc_frame</span>
+
+        <span class="k">if</span> <span class="n">phi1</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">phi2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;phi1 and phi2 must be provided if no mask is given.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Iteratively try random great circle frames</span>
+        <span class="n">trials</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">trials</span> <span class="o">&lt;</span> <span class="n">max_iter</span><span class="p">:</span>
+            <span class="n">trials</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># Generate random endpoints for the great circle</span>
+            <span class="n">end1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random_uniform_skycoord</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+            <span class="n">end2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random_uniform_skycoord</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+            <span class="n">gc_frame</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">GreatCircleICRSFrame</span><span class="o">.</span><span class="n">from_endpoints</span><span class="p">(</span><span class="n">end1</span><span class="p">,</span> <span class="n">end2</span><span class="p">)</span>
+
+            <span class="c1"># Transform stream points to ICRS and check mask coverage</span>
+            <span class="n">pts_gc</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">SkyCoord</span><span class="p">(</span>
+                <span class="n">phi1</span><span class="o">=</span><span class="n">phi1</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">phi2</span><span class="o">=</span><span class="n">phi2</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">gc_frame</span>
+            <span class="p">)</span>
+            <span class="n">pts_icrs</span> <span class="o">=</span> <span class="n">pts_gc</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
+            <span class="n">ra_all</span> <span class="o">=</span> <span class="n">pts_icrs</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">deg</span>
+            <span class="n">dec_all</span> <span class="o">=</span> <span class="n">pts_icrs</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">deg</span>
+            <span class="n">frac</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fraction_inside_mask</span><span class="p">(</span><span class="n">ra_all</span><span class="p">,</span> <span class="n">dec_all</span><span class="p">,</span> <span class="n">healpix_mask</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">frac</span> <span class="o">&gt;=</span> <span class="n">percentile_threshold</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Found suitable great circle frame after </span><span class="si">{</span><span class="n">trials</span><span class="si">}</span><span class="s2"> trials with </span><span class="si">{</span><span class="n">frac</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">% points inside the mask.&quot;</span>
+                    <span class="p">)</span>
+                <span class="k">return</span> <span class="n">gc_frame</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Could not find a suitable great circle frame after </span><span class="si">{</span><span class="n">max_iter</span><span class="si">}</span><span class="s2"> trials.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_random_uniform_skycoord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rng</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a random point uniformly distributed on the sky.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rng : numpy.random.Generator</span>
+<span class="sd">            Random number generator instance.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        astropy.coordinates.SkyCoord</span>
+<span class="sd">            Random sky coordinate in ICRS frame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+        <span class="n">ra</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">360.0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">coord</span><span class="o">.</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="n">ra</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">dec</span><span class="o">=</span><span class="n">dec</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fraction_inside_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra_deg</span><span class="p">,</span> <span class="n">dec_deg</span><span class="p">,</span> <span class="n">healpix_mask</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the fraction of points that fall within valid mask regions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ra_deg, dec_deg : array-like</span>
+<span class="sd">            Coordinates in degrees.</span>
+<span class="sd">        healpix_mask : np.ndarray</span>
+<span class="sd">            Boolean HEALPix mask array (1=valid, 0=invalid).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Fraction of points inside mask (range 0.0 to 1.0).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nside</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="n">healpix_mask</span><span class="p">)</span>
+        <span class="n">pix_indices</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ang2pix</span><span class="p">(</span><span class="n">nside</span><span class="p">,</span> <span class="n">ra_deg</span><span class="p">,</span> <span class="n">dec_deg</span><span class="p">,</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">healpix_mask</span><span class="p">[</span><span class="n">pix_indices</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">pix_indices</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mask_type</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ebv_threshold</span><span class="o">=</span><span class="mf">0.2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a combined boolean mask from specified mask types.</span>
+
+<span class="sd">        This method uses a class-level cache to avoid recomputing masks. The cache key</span>
+<span class="sd">        includes the survey name, mask types, and ebv_threshold to ensure correct cache hits.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mask_type : str, list of str, or None</span>
+<span class="sd">            Type(s) of masks to combine. Options: [&quot;footprint&quot;, &quot;coverage&quot;,</span>
+<span class="sd">            &quot;maglim_&lt;band&gt;&quot;, &quot;ebv&quot;]. If None, returns None.</span>
+<span class="sd">        verbose : bool, optional</span>
+<span class="sd">            Whether to print status messages. Default is True.</span>
+<span class="sd">        ebv_threshold : float, optional</span>
+<span class="sd">            E(B-V) threshold for extinction mask (only used if &#39;ebv&#39; in mask_type).</span>
+<span class="sd">            Pixels with E(B-V) &gt; ebv_threshold are masked out. Default is 0.2.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray or None</span>
+<span class="sd">            Combined boolean mask array (1=valid, 0=invalid), or None if mask_type is None.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If mask_type is invalid or required maps are missing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Normalize mask_type to list</span>
+        <span class="k">if</span> <span class="n">mask_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;⚠ No mask_type provided to build mask.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mask_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">mask_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">mask_type</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mask_type</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mask_type must be a string, list of strings, or None.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Sort mask_type for consistent cache keys</span>
+        <span class="n">mask_type</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">mask_type</span><span class="p">)</span>
+
+        <span class="c1"># Create cache key that includes survey name and ebv_threshold if relevant</span>
+        <span class="n">survey_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+        <span class="n">uses_ebv</span> <span class="o">=</span> <span class="s2">&quot;ebv&quot;</span> <span class="ow">in</span> <span class="n">mask_type</span>
+        <span class="n">cache_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">survey_name</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">mask_type</span><span class="p">),</span> <span class="n">ebv_threshold</span> <span class="k">if</span> <span class="n">uses_ebv</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Check cache first</span>
+        <span class="k">if</span> <span class="n">cache_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_cache</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Using cached mask for </span><span class="si">{</span><span class="n">mask_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Building new mask for </span><span class="si">{</span><span class="n">mask_type</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Find the minimum nside among the needed maps and collect maps</span>
+        <span class="n">nside_target</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">maps</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mask_type</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;maglim&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="p">:</span>
+                <span class="n">band</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">band</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Band &#39;</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&#39; not found in survey magnitude limit maps. Available: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">nside</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">])</span>
+                <span class="n">maps</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+                <span class="n">nside_target</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nside</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;coverage&quot;</span><span class="p">,</span> <span class="s2">&quot;footprint&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">coverage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Survey coverage map is not available.&quot;</span><span class="p">)</span>
+                <span class="n">nside</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">coverage</span><span class="p">)</span>
+                <span class="n">maps</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">coverage</span>
+                <span class="n">nside_target</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nside</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">m</span> <span class="o">==</span> <span class="s2">&quot;ebv&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Survey E(B-V) extinction map is not available.&quot;</span><span class="p">)</span>
+                <span class="n">nside</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span><span class="p">)</span>
+                <span class="n">maps</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span>
+                <span class="n">nside_target</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nside</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Unknown mask type: &#39;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2">&#39;. Valid options: &#39;footprint&#39;, &#39;coverage&#39;, &#39;maglim_&lt;band&gt;&#39;, &#39;ebv&#39;&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">nside_target</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No valid maps found for mask_type: </span><span class="si">{</span><span class="n">mask_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">nside_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">nside_target</span><span class="p">)</span>
+
+        <span class="c1"># Upgrade/downgrade all maps to the same nside</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">maps</span><span class="p">:</span>
+            <span class="n">nside</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="n">maps</span><span class="p">[</span><span class="n">m</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">nside</span> <span class="o">!=</span> <span class="n">nside_min</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Resampling </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s2"> from nside=</span><span class="si">{</span><span class="n">nside</span><span class="si">}</span><span class="s2"> to nside=</span><span class="si">{</span><span class="n">nside_min</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">maps</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ud_grade</span><span class="p">(</span><span class="n">maps</span><span class="p">[</span><span class="n">m</span><span class="p">],</span> <span class="n">nside_min</span><span class="p">)</span>
+
+        <span class="c1"># Initialize combined mask (start with all True)</span>
+        <span class="n">npix</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">nside2npix</span><span class="p">(</span><span class="n">nside_min</span><span class="p">)</span>
+        <span class="n">mask_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">npix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+
+        <span class="c1"># Combine the masks with appropriate thresholds</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mask_type</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;maglim&quot;</span> <span class="ow">in</span> <span class="n">m</span><span class="p">:</span>
+                <span class="n">band</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c1"># Valid regions are where magnitude limit is above saturation</span>
+                <span class="k">if</span> <span class="n">band</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">saturation</span><span class="p">:</span>
+                    <span class="n">mask_map</span> <span class="o">&amp;=</span> <span class="n">maps</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;  Applied saturation cut for </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2"> band (&gt; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">]</span><span class="si">}</span><span class="s2"> mag)&quot;</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># If no saturation defined, just check for positive values</span>
+                    <span class="n">mask_map</span> <span class="o">&amp;=</span> <span class="n">maps</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
+                    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;  Applied positivity cut for </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2"> band (no saturation defined)&quot;</span>
+                        <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">m</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;coverage&quot;</span><span class="p">,</span> <span class="s2">&quot;footprint&quot;</span><span class="p">]:</span>
+                <span class="c1"># Valid regions have coverage &gt; 0.5</span>
+                <span class="n">mask_map</span> <span class="o">&amp;=</span> <span class="n">maps</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.5</span>
+            <span class="k">elif</span> <span class="n">m</span> <span class="o">==</span> <span class="s2">&quot;ebv&quot;</span><span class="p">:</span>
+                <span class="c1"># Valid regions have low extinction</span>
+                <span class="n">mask_map</span> <span class="o">&amp;=</span> <span class="n">maps</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">ebv_threshold</span>
+
+        <span class="c1"># Store in cache</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask_map</span>
+
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">total_pixels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask_map</span><span class="p">)</span>
+            <span class="n">valid_pixels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask_map</span><span class="p">)</span>
+            <span class="n">coverage_fraction</span> <span class="o">=</span> <span class="n">valid_pixels</span> <span class="o">/</span> <span class="n">total_pixels</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Mask created: valid pixels fraction = </span><span class="si">{</span><span class="n">coverage_fraction</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Cached with key: </span><span class="si">{</span><span class="n">cache_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">mask_map</span>
+
+<div class="viewcode-block" id="StreamInjector.sample_measured_magnitudes">
+<a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.sample_measured_magnitudes">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample_measured_magnitudes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mag_true</span><span class="p">,</span> <span class="n">mag_err</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sample measured magnitudes from true apparent magnitudes and errors.</span>
+
+<span class="sd">        This method adds photometric noise to true magnitudes by sampling</span>
+<span class="sd">        from a Gaussian distribution in flux space.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mag_true : float or np.ndarray</span>
+<span class="sd">            True apparent magnitude(s).</span>
+<span class="sd">        mag_err : float or np.ndarray</span>
+<span class="sd">            Magnitude error(s).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments:</span>
+
+<span class="sd">            rng : numpy.random.Generator, optional</span>
+<span class="sd">                Random number generator instance.</span>
+<span class="sd">            seed : int, optional</span>
+<span class="sd">                Random seed if rng is not provided.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray or str</span>
+<span class="sd">            Measured magnitude(s). Returns &quot;BAD_MAG&quot; for objects with negative flux.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;rng&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rng</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="c1"># Sample the fluxes their errors</span>
+        <span class="n">flux_obs</span> <span class="o">=</span> <span class="n">StreamInjector</span><span class="o">.</span><span class="n">magToFlux</span><span class="p">(</span><span class="n">mag_true</span><span class="p">)</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span>
+            <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getFluxError</span><span class="p">(</span><span class="n">mag_true</span><span class="p">,</span> <span class="n">mag_err</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># If the flux is negative, set the magnitude to &quot;BAD_MAG&quot; (not detected). Otherwise, convert the flux back to magnitude</span>
+        <span class="n">mag_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+            <span class="n">flux_obs</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">StreamInjector</span><span class="o">.</span><span class="n">fluxToMag</span><span class="p">(</span><span class="n">flux_obs</span><span class="p">),</span> <span class="s2">&quot;BAD_MAG&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">mag_obs</span></div>
+
+
+<div class="viewcode-block" id="StreamInjector.detect_flag">
+<a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.detect_flag">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detect_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pix</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply the survey selection to determine detection flags for stars.</span>
+
+<span class="sd">        This method uses the survey completeness function and random sampling</span>
+<span class="sd">        to determine which stars would be detected by the survey.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pix : int or np.ndarray</span>
+<span class="sd">            HEALPix pixel index/indices.</span>
+<span class="sd">        mag : float or np.ndarray, optional</span>
+<span class="sd">            Magnitude(s). Default is None.</span>
+<span class="sd">        band : str, optional</span>
+<span class="sd">            Band to consider for detection. Default is &#39;r&#39;.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments:</span>
+
+<span class="sd">            rng : numpy.random.Generator, optional</span>
+<span class="sd">                Random number generator instance.</span>
+<span class="sd">            seed : int, optional</span>
+<span class="sd">                Random seed if rng is not provided.</span>
+<span class="sd">            perfect_galstarsep : bool, optional</span>
+<span class="sd">                If True, assumes perfect star/galaxy separation. Default is False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        np.ndarray</span>
+<span class="sd">            Boolean array: True for detected stars, False otherwise.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If magnitude values are not provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;rng&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rng</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="c1"># Select the appropriate magnitude and map depending on the band</span>
+        <span class="n">maglim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">get_maglim</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">pixel</span><span class="o">=</span><span class="n">pix</span><span class="p">)</span>
+
+        <span class="n">perfect_galstarsep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;perfect_galstarsep&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
+            <span class="n">compl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">get_detection_efficiency</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">maglim</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">compl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">get_completeness</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">maglim</span><span class="p">)</span>
+
+        <span class="c1"># Set the threshold using completeness</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">mag</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">compl</span>
+
+        <span class="k">return</span> <span class="n">threshold</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save_injected_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">folder</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the injected data to a CSV file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pd.DataFrame</span>
+<span class="sd">            Data to save.</span>
+<span class="sd">        folder : str or Path, optional</span>
+<span class="sd">            Path to the folder where the file will be saved. If None, uses default</span>
+<span class="sd">            location in package&#39;s data/outputs directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">current_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+            <span class="n">folder</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">current_dir</span><span class="p">,</span> <span class="s2">&quot;..&quot;</span><span class="p">,</span> <span class="s2">&quot;data/outputs/&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">folder</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">folder</span><span class="p">)</span>
+
+        <span class="n">file_name</span> <span class="o">=</span> <span class="n">folder</span> <span class="o">+</span> <span class="s2">&quot;data_injected.csv&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saving injected data to </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="StreamInjector.magToFlux">
+<a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.magToFlux">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">magToFlux</span><span class="p">(</span><span class="n">mag</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert from AB magnitude to flux.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mag : float or np.ndarray</span>
+<span class="sd">            AB magnitude(s).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or np.ndarray</span>
+<span class="sd">            Flux in Janskys (Jy).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">3631.0</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.4</span> <span class="o">*</span> <span class="n">mag</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StreamInjector.fluxToMag">
+<a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.fluxToMag">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fluxToMag</span><span class="p">(</span><span class="n">flux</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert from flux to AB magnitude.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        flux : float or np.ndarray</span>
+<span class="sd">            Flux in Janskys (Jy).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or np.ndarray</span>
+<span class="sd">            AB magnitude(s).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mf">2.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">flux</span> <span class="o">/</span> <span class="mf">3631.0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StreamInjector.getFluxError">
+<a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.getFluxError">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getFluxError</span><span class="p">(</span><span class="n">mag</span><span class="p">,</span> <span class="n">mag_error</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert magnitude error to flux error.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mag : float or np.ndarray</span>
+<span class="sd">            Magnitude(s).</span>
+<span class="sd">        mag_error : float or np.ndarray</span>
+<span class="sd">            Magnitude error(s).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or np.ndarray</span>
+<span class="sd">            Flux error in Janskys (Jy).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">StreamInjector</span><span class="o">.</span><span class="n">magToFlux</span><span class="p">(</span><span class="n">mag</span><span class="p">)</span> <span class="o">*</span> <span class="n">mag_error</span> <span class="o">/</span> <span class="mf">1.0857362</span></div>
+
+
+<div class="viewcode-block" id="StreamInjector.clear_mask_cache">
+<a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.clear_mask_cache">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear_mask_cache</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear the mask cache.</span>
+
+<span class="sd">        This can be useful if you want to free memory or force masks to be recomputed.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; StreamInjector.clear_mask_cache()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">mask_cache</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Mask cache cleared&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StreamInjector.list_cached_masks">
+<a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.list_cached_masks">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_cached_masks</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List all cached masks.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of tuples</span>
+<span class="sd">            List of cache keys (survey_name, mask_types, ebv_threshold)</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; StreamInjector.list_cached_masks()</span>
+<span class="sd">        [(&#39;LSST&#39;, (&#39;footprint&#39;, &#39;maglim_r&#39;), None),</span>
+<span class="sd">         (&#39;LSST&#39;, (&#39;ebv&#39;, &#39;footprint&#39;), 0.2)]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">mask_cache</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No masks cached&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cached masks (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">mask_cache</span><span class="p">)</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">mask_cache</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">survey_name</span><span class="p">,</span> <span class="n">mask_types</span><span class="p">,</span> <span class="n">ebv_thresh</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="n">ebv_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;, ebv_threshold=</span><span class="si">{</span><span class="n">ebv_thresh</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">ebv_thresh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">survey_name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">mask_types</span><span class="p">)</span><span class="si">}{</span><span class="n">ebv_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">mask_cache</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="StreamInjector.plot_stream_in_mask">
+<a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.plot_stream_in_mask">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plot_stream_in_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">mask_type</span><span class="p">,</span> <span class="n">ebv_threshold</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the stream over the footprint mask.</span>
+
+<span class="sd">        Creates a visualization showing the stream&#39;s position relative to the</span>
+<span class="sd">        survey footprint or other masks.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pd.DataFrame</span>
+<span class="sd">            Data containing &#39;ra&#39; and &#39;dec&#39; columns.</span>
+<span class="sd">        mask_type : str or list of str</span>
+<span class="sd">            Type(s) of masks to plot. Options: [&quot;footprint&quot;, &quot;coverage&quot;,</span>
+<span class="sd">            &quot;maglim_&lt;band&gt;&quot;, &quot;ebv&quot;].</span>
+<span class="sd">        ebv_threshold : float, optional</span>
+<span class="sd">            E(B-V) threshold (only used if &#39;ebv&#39; in mask_type). Default is 0.2.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Additional arguments passed to plotting function:</span>
+
+<span class="sd">            output_folder : str, optional</span>
+<span class="sd">                Path to save the figure.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        fig : matplotlib.figure.Figure</span>
+<span class="sd">            The figure object.</span>
+<span class="sd">        ax : matplotlib.axes.Axes</span>
+<span class="sd">            The axes object.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If mask cannot be created from mask_type parameter.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Plot stream in footprint:</span>
+
+<span class="sd">        &gt;&gt;&gt; fig, ax = injector.plot_stream_in_mask(data, [&#39;footprint&#39;, &#39;maglim_r&#39;])</span>
+
+<span class="sd">        Plot with custom E(B-V) threshold:</span>
+
+<span class="sd">        &gt;&gt;&gt; fig, ax = injector.plot_stream_in_mask(</span>
+<span class="sd">        ...     data, [&#39;footprint&#39;, &#39;ebv&#39;], ebv_threshold=0.15</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get or create the mask</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_mask</span><span class="p">(</span><span class="n">mask_type</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ebv_threshold</span><span class="o">=</span><span class="n">ebv_threshold</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Could not create mask. Check mask_type parameter.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Call the plotting function</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_stream_in_mask</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">],</span> <span class="n">mask</span><span class="p">,</span> <span class="n">output_folder</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;output_folder&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By DESC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, DESC.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-# StreamSim Data Files
+# StreamObs Data Files
 
 This directory contains large data files required for stream simulations. These files are **not** tracked in the git repository due to their size. They must be downloaded separately from Zenodo.
 
@@ -77,7 +77,7 @@ python bin/download_data.py --url https://custom-server.edu/data.zip
 #### Problem: Download fails with "404 Not Found"
 
 **Solution**: The data URL may have changed. Check the latest URL at:
-- Zenodo record: https://zenodo.org/records/17589908
+- Zenodo record: https://zenodo.org/records/17939098
 - Or update `BASE_DATA_URL` in `bin/download_data.py`
 
 #### Problem: Extraction fails
@@ -106,7 +106,7 @@ python bin/download_data.py --url https://custom-server.edu/data.zip
 The data files are hosted on [Zenodo](https://zenodo.org) with a persistent DOI for citation and long-term access.
 
 **DOI**: 10.5281/zenodo.17550956  
-**URL**: https://zenodo.org/records/17589908
+**URL**: https://zenodo.org/records/17939098
 **Version**: 1.0  
 **Last Updated**: November 2025
 
@@ -127,6 +127,9 @@ Each survey subdirectory contains magnitude limit maps (maglim maps) in HEALPix 
 
 Current surveys:
 - `lsst_yr1/` - LSST baseline v5.0.0, Year 1 observations (g, r bands)
+- `lsst_yr2/` - LSST baseline v5.0.0, Year 2 observations (g, r bands)
+- `lsst_yr3/` - LSST baseline v5.0.0, Year 3 observations (g, r bands)
+- `lsst_yr4/` - LSST baseline v5.0.0, Year 4 observations (g, r bands)
 - `lsst_yr5/` - LSST baseline v5.0.0, Year 5 observations (g, r bands)
 
 Additional surveys can be added by placing maglim maps in new subdirectories.
@@ -167,7 +170,7 @@ If you need to add or modify data files:
 
 1. **Create a new zip archive**:
    ```bash
-   cd /path/to/stream_sim
+   cd /path/to/streamobs
    zip -r data.zip data/ \
        -x "*.DS_Store" \
        -x "*__MACOSX*" \
@@ -179,7 +182,7 @@ If you need to add or modify data files:
    ```
    
 2. **Upload to Zenodo**:
-   - Go to https://zenodo.org/records/17589908
+   - Go to https://zenodo.org/records/18298544
    - Create a new version
    - Upload the `data.zip` file
    - Add release notes describing changes
@@ -235,5 +238,15 @@ To add a new survey:
 5. Document the new survey in this document.
 
 ## Data Sources and Credits
+
+### DES Y6 Gold
+
+We have added the DES Y6 Gold as a supported survey to use with streamsim. 
+The survey dataset is described in [Bechtol et al. 2025](https://arxiv.org/abs/2501.05739), and the catalogs can are documented/publically available from [DESDM](https://des.ncsa.illinois.edu/releases). 
+The maglim, completeness, and photoerror files should be downloaded and placed in the `data/surveys/des_y6/` folder and loaded in the following manner:
+```
+des_y6= surveys.Survey.load(survey = 'des', release='y6')
+```
+Any questions about the creation of these survey specific files can be addressed to Peter Ferguson. 
 
 **To be completed**
