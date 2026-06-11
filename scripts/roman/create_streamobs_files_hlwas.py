@@ -8,7 +8,7 @@ Run with the streamobs env:
 
 Inputs : data/surveys/roman_dc2/roman_dc2_det_truth.parquet (+ per-tile truth indices
          on first run, cached to roman_dc2_truth_stars.parquet)
-Outputs: data/surveys/roman_hlwas/{roman_photoerror_f158.csv,
+Outputs: data/surveys/roman_dc2/{roman_photoerror_f158.csv,
          roman_stellar_efficiency_cutf158.csv, roman_dc2_maglim_f*_nside1024.fits.gz}
          and the documentation figures in docs/source/_static/roman_dc2/.
 """
@@ -55,7 +55,7 @@ try:                                  # running as a script (scripts/roman/)
 except NameError:                     # running as a notebook (notebooks/)
     REPO = Path.cwd().resolve().parent if Path.cwd().name == "notebooks" else Path.cwd().resolve()
 DC2_DIR = REPO / "data/surveys/roman_dc2"
-OUT_DIR = REPO / "data/surveys/roman_hlwas"
+OUT_DIR = DC2_DIR   # products live with the DC2 data (survey release "dc2")
 CAT_PATH = DC2_DIR / "roman_dc2_det_truth.parquet"
 TRUTH_STARS_CACHE = DC2_DIR / "roman_dc2_truth_stars.parquet"
 
