@@ -25,24 +25,26 @@ survey_files:
     log_photo_error: roman_photoerror_f158.csv
 
 survey_properties:
-  bands: ['f106', 'f129', 'f158', 'f184']
+  # F184 is excluded: it is deep-tier-only in the community-defined HLWAS and
+  # has a known unresolved chromatic calibration issue in the DC2 mock
+  # (Troxel+23 Sec 5.3 / Fig 6).
+  bands: ['f106', 'f129', 'f158']
 
   # Extinction coefficients per band (A_band / E(B-V))
-  # CCM89 R_V=3.1 evaluated at the filter effective wavelengths
-  # (1.06, 1.29, 1.58, 1.84 micron). NIR extinction is small; refine with
-  # dust_extinction + actual Roman bandpasses if percent-level accuracy matters.
+  # CCM89 R_V=3.1 evaluated at the filter pivot wavelengths (1.06, 1.29,
+  # 1.58 micron). The band RATIOS are validated to ~1% against the DC2 truth
+  # dereddening corrections (Y/H=1.88, J/H=1.37 vs CCM 1.90, 1.38); absolute
+  # amplitudes cannot be validated from the mock (its dust application is
+  # bugged, Troxel+23 Sec 4.1).
   coeff_extinc_f106: 1.14
   coeff_extinc_f129: 0.83
   coeff_extinc_f158: 0.60
-  coeff_extinc_f184: 0.47
 
   # Systematic photometric errors (mag), or could be specified per band
   sys_error: 0.005
 
-  # Saturation limits per band. The DC2 truth catalog only extends to ~15 AB
-  # and the simulation does not model saturation, so this is the validity
-  # limit of the efficiency table rather than a physical saturation estimate
-  # (real Roman WFI saturates around 17-18 AB for point sources in 107 s
-  # exposures - tighten this if bright stars matter).
-  saturation: 15.0
-  delta_saturation: -11.8
+  # Saturation: the mock clips pixels at ~1.1e5 e- and saturation effects
+  # appear brighter than mag ~17 (Troxel+23 Fig 7); stars brighter than 15
+  # are not chromatically rendered.
+  saturation: 17.0
+  delta_saturation: -10.1
