@@ -76,19 +76,36 @@ rate of detected compact (<0.3″) true galaxies on the same axes.*
 
 ## Photometric errors
 
-The photometric error model `roman_photoerror_f158.csv` is the binned median of
-log10 of the observed F158 `magerr_auto` for star-classified objects, tabulated
-against `delta_mag = m_true − maglim`, where the magnitude limit is evaluated at
-each object's position from the nside=1024 depth map described below. Tabulating
-against `delta_mag` rather than magnitude makes the model portable across regions
-(and surveys) of different depth, under the assumption that the error profile
-depends on magnitude only through the local depth.
+Because the truth is available, the reported photometric uncertainties can be
+validated directly: for true stars, the scatter of observed-minus-true magnitude
+should match the reported `magerr_auto`. It does not. The truth-based scatter —
+measured as half the 16th-to-84th percentile span of (m_obs − m_true) in bins of
+magnitude — exceeds the reported errors by a flat factor of ~1.9–2.0 at all
+magnitudes and in all four bands, the signature of SExtractor underestimating the
+correlated noise of the resampled, median-combined coadds.
+
+![Reported errors vs truth-based scatter](_static/roman_hlwas/error_validation.png)
+
+*Truth-based scatter (solid) and median reported `magerr_auto` (dashed) for true
+stars per band, with their ratio in the lower panel: a constant factor ≈2 in every
+band.*
+
+The photometric error model `roman_photoerror_f158.csv` is therefore built from the
+**truth-based scatter**, not the reported errors: it tabulates the binned log10
+scatter of (observed − true) F158 magnitude for star-classified objects against
+`delta_mag = m_true − maglim`, where the magnitude limit is evaluated at each
+object's position from the nside=1024 depth map described below. Tabulating against
+`delta_mag` rather than magnitude makes the model portable across regions (and
+surveys) of different depth, under the assumption that the error profile depends on
+magnitude only through the local depth.
 
 ![Observed F158 photometric error vs true magnitude](_static/roman_hlwas/photoerror_f158.png)
 
 *Observed F158 `magerr_auto` against true F158 magnitude for star-classified
-objects, with binned median and 16/84% curves. The error saturates near the S/N≈5
-floor at the faint end; the sparse cloud above the median relation is blends.*
+objects, with binned median and 16/84% curves of the reported errors and, in orange,
+the truth-based scatter adopted for the error model. The reported error saturates
+near the S/N≈5 floor at the faint end; the sparse cloud above the median relation is
+blends.*
 
 ## Survey depth
 
@@ -102,33 +119,29 @@ magnitude limit of a pixel is the median over its objects. We define depth at
 **S/N = 5**, consistent with the catalog's detection threshold. The resulting
 medians are 26.77/27.11/27.11/26.67 in F106/F129/F158/F184.
 
-These measured depths run ~0.2 mag (F106–F158) to ~0.5 mag (F184) past the official
-expected 5σ point-source depths of the simulated survey. The same excess is visible
-in Figure 5 of Troxel et al., whose measured magnitude histograms extend beyond the
-expected limiting-magnitude lines (most prominently in F184); the likely cause is
-that SExtractor underestimates the correlated noise of the resampled, median-combined
-coadds, inflating the apparent signal-to-noise.
+These nominally exceed the official expected 5σ point-source depths of the simulated
+survey (26.9 in F106/F129/F158, 26.2 in F184) by ~0.2–0.5 mag, but this is not real
+extra depth: it follows from the same error underestimation established above (the
+same excess is visible in Figure 5 of Troxel et al., most prominently in F184). The
+maps are therefore an *internal* depth reference — their value is the spatial
+structure and the `delta_mag` coordinate they define, not their absolute calibration.
 
 ![Magnitude-limit maps per band at nside=1024](_static/roman_hlwas/maglim_maps.png)
 
 *Measured S/N=5 magnitude-limit maps over the DC2 footprint (RA 51–56, Dec −42 to
 −38). The spatial structure traces the simulated dither/pass pattern.*
 
-### Depth convention and normalization
+### Depth convention
 
-Because of this offset, we adopt the **official 5σ point-source depth** as the
-reference convention. Each band's map is provided in two forms:
-
-- the raw measured map (`roman_dc2_maglim_f*_nside1024.fits.gz`);
-- a normalized map (`..._5sigps.fits.gz`) shifted so its median equals the official
-  depth of the simulated survey (26.9 in F106/F129/F158, 26.2 in F184), preserving
-  the measured spatial structure.
-
-The `delta_mag` axes of the completeness and photometric-error tables are keyed to
-the official convention, so they must be paired with magnitude-limit maps in the
-same convention — the `_5sigps` maps above or, for the real HLWAS footprint, an
-exposure-time-scaled map normalized to the
-[STScI community-defined HLWAS median 5σ point-source depths](https://roman-docs.stsci.edu/roman-community-defined-surveys/high-latitude-wide-area-survey):
+No renormalization is applied anywhere: the maps are released as measured
+(`roman_dc2_maglim_f*_nside1024.fits.gz`), and the `delta_mag` axes of the
+completeness and photometric-error tables are keyed to the median of the F158 map,
+so maps and tables share a single internal convention. A magnitude-limit map for a
+different footprint (e.g. an exposure-time-scaled map of the real HLWAS) must be
+expressed in this same convention — scaled relative to the DC2 depth — for the
+tables to apply. For reference, the
+[STScI community-defined HLWAS median 5σ point-source depths](https://roman-docs.stsci.edu/roman-community-defined-surveys/high-latitude-wide-area-survey)
+are:
 
 | Tier | Area | 5σ point-source total depth (AB) |
 |---|---|---|
@@ -136,10 +149,9 @@ exposure-time-scaled map normalized to the
 | Medium | ~2400 deg² | F106 26.5, F129 26.4, F158 26.4 |
 | Deep | ~19.2 deg² | F106 27.7, F129 27.6, F158 27.5, F184 27.0, F213 25.9 |
 
-With this convention, substituting a shallower (e.g. wide-tier) map automatically
-translates the completeness and error curves to the correct depths, under the
-assumption that the selection function depends on magnitude only through
-`mag − maglim`.
+Substituting a shallower (e.g. wide-tier) map translates the completeness and error
+curves to the corresponding depths, under the assumption that the selection function
+depends on magnitude only through `mag − maglim`.
 
 ![Roman F158 vs LSST r selection-function tables](_static/roman_hlwas/lsst_comparison.png)
 
@@ -172,5 +184,9 @@ photo_error = survey.get_photo_error("f158", mag, maglim)
   saturation; the configured `saturation: 15.0` marks the validity limit of the
   completeness table rather than the physical WFI saturation (~17–18 AB for point
   sources).
+- `mag_auto` carries a systematic offset with respect to the truth (≈ +0.1–0.2 mag
+  in F106/F129/F158 and ≈ +0.6 mag in F184 at the bright end, growing toward faint
+  magnitudes from aperture losses). The error model captures the scatter about this
+  offset, not the offset itself.
 - Extinction coefficients are CCM89 (R_V = 3.1) evaluated at the filter effective
   wavelengths (1.14, 0.83, 0.60, 0.47 for F106/F129/F158/F184).

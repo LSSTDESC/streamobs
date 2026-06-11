@@ -11,15 +11,12 @@ survey_files:
     # Path to data files (leave empty for default location: data/surveys/roman_hlwas)
     file_path: ''
 
-    # Band-specific magnitude limit maps.
-    # The _5sigps map is the DC2-measured S/N=5 depth map renormalized so its
-    # median equals the official 5-sigma point-source depth of the simulated
-    # survey (F158: 26.9). The delta_mag axes of the completeness and
-    # photo-error tables are keyed to this same convention, so any replacement
-    # map (e.g. an exposure-time-scaled HLWAS map normalized to the STScI
-    # median depths: wide F158 26.2, medium F106 26.5 / F129 26.4 / F158 26.4)
-    # must also be a 5-sigma point-source maglim.
-    maglim_map_f158: roman_dc2_maglim_f158_nside1024_5sigps.fits.gz
+    # Band-specific magnitude limit maps: the DC2-measured S/N=5 depth map
+    # (un-normalized). The delta_mag axes of the completeness and photo-error
+    # tables are keyed to this map's median, so any replacement map (e.g. an
+    # exposure-time-scaled HLWAS map) must be expressed in the same convention,
+    # i.e. scaled relative to the DC2 depth.
+    maglim_map_f158: roman_dc2_maglim_f158_nside1024.fits.gz
 
     # Band-independent maps
     ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
