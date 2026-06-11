@@ -38,14 +38,6 @@ Following the paper, three selections define the analysis sample:
 2. **S/N > 5** in the detection image;
 3. **a positional match to a true object**, as defined above.
 
-The matched-only selection also serves a geometric purpose. Each detection coadd
-extends ~30″ beyond the footprint of its tile's truth index, so detections in that
-margin band (~21% of the total) have no truth object in their own tile — they are
-duplicates of detections that appear, matched, in the neighbouring tile. Within the
-truth footprint the unmatched fraction is 0.1–5% per tile, consistent with the 1.7%
-quoted by Troxel et al.; requiring a match therefore removes the margin duplicates
-along with the small residual of spurious and shredded detections.
-
 A further property of the truth catalog requires care: about a quarter of the true
 stars carry a second truth entry at the same position under a different identifier,
 populated in only one band. Because the matcher can assign a star's detection to
