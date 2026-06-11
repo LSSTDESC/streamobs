@@ -11,8 +11,10 @@ survey_files:
     # Path to data files (leave empty for default location: data/surveys/roman_hlwas)
     file_path: ''
 
-    # Band-specific magnitude limit maps: the DC2-measured S/N=5 depth map
-    # (un-normalized). The delta_mag axes of the completeness and photo-error
+    # Band-specific magnitude limit maps: truth-anchored S/N=5 point-source
+    # depth (desqr spatial structure from the reported errors, absolute scale
+    # set by where the truth-based scatter of obs-true reaches S/N=5; F158
+    # median 25.98). The delta_mag axes of the completeness and photo-error
     # tables are keyed to this map's median, so any replacement map (e.g. an
     # exposure-time-scaled HLWAS map) must be expressed in the same convention,
     # i.e. scaled relative to the DC2 depth.
@@ -46,4 +48,4 @@ survey_properties:
   # appear brighter than mag ~17 (Troxel+23 Fig 7); stars brighter than 15
   # are not chromatically rendered.
   saturation: 17.0
-  delta_saturation: -10.1
+  delta_saturation: -9.0   # = saturation - reference maglim (25.98)
