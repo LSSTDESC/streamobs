@@ -13,8 +13,12 @@ simulations of the Roman High Latitude Imaging Survey reference design at full
 depth, reaching a 5σ point-source depth of ~26.9 AB in the F106/F129/F158 bands and
 26.2 AB in F184. Stars are drawn from a Galfast model of the Galaxy and galaxies
 from the cosmoDC2 extragalactic catalog. Object detection and photometry are
-performed with SExtractor on a median F106+F129+F158+F184 coadd detection image,
-with forced photometry in each band, over 1039 coadd tiles. Each tile provides a
+performed with SExtractor on a median F106+F129+F158+F184 coadd detection image
+(segmentation at 2.5σ with a minimum area of 5 pixels; deblending with
+`DEBLEND_NTHRESH=48`, `DEBLEND_MINCONT=0.05`), with forced photometry in each band,
+over 1039 coadd tiles. The recommended catalog-level selection of S/N > 5 in the
+detection image is applied on top of this — i.e. the detection limit is a two-stage
+selection, not a single 5σ threshold. Each tile provides a
 detection catalog and a truth index listing every simulated object in the tile with
 its position, four-band magnitudes, and a star/galaxy label.
 
@@ -34,7 +38,12 @@ assigning a blend to only one of its members.
 Following the paper, three selections define the analysis sample:
 
 1. **`flags == 0`** — objects with any SExtractor flag are removed (32% of
-   detections, matching the fraction quoted in the paper);
+   detections, matching the fraction quoted in the paper). This is the selection an
+   observer would apply to obtain a *pure stellar sample* from the data: the flag is
+   the bitwise OR of the detection and per-band measurement flags, so the cut
+   removes blended objects and contaminated photometry. It is deliberately stricter
+   than parts of the paper's own analysis (which readmits flags 1–2), and it is the
+   origin of the ~0.90 bright-end completeness plateau below;
 2. **S/N > 5** in the detection image;
 3. **a positional match to a true object**, as defined above.
 
@@ -106,6 +115,45 @@ objects, with binned median and 16/84% curves of the reported errors and, in ora
 the truth-based scatter adopted for the error model. The reported error saturates
 near the S/N≈5 floor at the faint end; the sparse cloud above the median relation is
 blends.*
+
+## Zeropoints and extinction coefficients
+
+For reference, the official Roman WFI AB-magnitude zeropoints (effective-area curves
+of 2024-03-01, from the
+[Roman technical information repository](https://github.com/RomanSpaceTelescope/roman-technical-information/blob/main/roman_technical_information/data/WideFieldInstrument/Imaging/ZeroPoints/Roman_zeropoints_20240301.ecsv);
+the range reflects detector-to-detector variation across WFI01–WFI18):
+
+| Filter | AB zeropoint | mean |
+|---|---|---|
+| F106 | 26.31 – 26.44 | 26.36 |
+| F129 | 26.30 – 26.47 | 26.37 |
+| F158 | 26.34 – 26.46 | 26.39 |
+
+The mock's photometry is calibrated greyly (a constant per-band offset from bright
+stars, mimicking standard-star calibration); the measured offsets are +0.11/+0.10/+0.12
+mag in F106/F129/F158. F184 additionally requires a chromatic (color-dependent)
+correction that the simulation team did not derive, which is one reason F184 is
+excluded from the survey configuration (it is also deep-tier-only in the
+community-defined HLWAS).
+
+The extinction coefficients adopted in the configuration are CCM89 (R_V = 3.1)
+evaluated at the filter pivot wavelengths:
+
+| Filter | A_band / E(B−V) |
+|---|---|
+| F106 | 1.14 |
+| F129 | 0.83 |
+| F158 | 0.60 |
+
+The *shape* of this law is validated against the simulation itself: the truth
+catalog's per-band dereddening corrections have band ratios of 1.88 (F106/F158) and
+1.37 (F129/F158), matching the CCM89 ratios (1.90, 1.38) to ~1%. The absolute
+amplitudes cannot be validated from the mock — its dust application is known to be
+incorrect (Milky Way extinction is absent from the Roman images, and the per-object
+correction amplitudes do not track the SFD column) — so the absolute scale rests on
+the CCM89 calculation. In the near-infrared the difference between modern extinction
+laws is at the ~10% level, and the absolute extinction in typical high-latitude
+fields is small (A_F158 ≈ 0.01 mag at E(B−V) = 0.013).
 
 ## Survey depth
 
@@ -180,13 +228,16 @@ photo_error = survey.get_photo_error("f158", mag, maglim)
 - The detection-centric match assigns a blend to its dominant source, so the
   detection efficiency is slightly conservative for stars blended with brighter
   neighbours.
-- The truth catalog only extends to ~15 AB and the simulation does not model
-  saturation; the configured `saturation: 15.0` marks the validity limit of the
-  completeness table rather than the physical WFI saturation (~17–18 AB for point
-  sources).
+- Saturation is modeled in the simulation (pixels clip at ~1.1×10⁵ e⁻) and its
+  effects appear brighter than mag ≈ 17 — the dip in the classification efficiency
+  near mag 16.6 is its signature — and stars brighter than 15 are not chromatically
+  rendered. The configuration therefore sets `saturation: 17.0`; photometry of
+  brighter stars should not be trusted.
 - `mag_auto` carries a systematic offset with respect to the truth (≈ +0.1–0.2 mag
   in F106/F129/F158 and ≈ +0.6 mag in F184 at the bright end, growing toward faint
   magnitudes from aperture losses). The error model captures the scatter about this
   offset, not the offset itself.
-- Extinction coefficients are CCM89 (R_V = 3.1) evaluated at the filter effective
-  wavelengths (1.14, 0.83, 0.60, 0.47 for F106/F129/F158/F184).
+- The detection catalogs are detector-optimistic: the coadds use the "simple"
+  detector model (read noise, dark current, saturation only — no cosmic rays,
+  persistence, interpixel capacitance, or hot pixels) and bright stars are not
+  masked (12 diffraction spikes remain in the images).
