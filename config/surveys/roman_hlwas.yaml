@@ -1,0 +1,51 @@
+# Configuration file for the Roman High Latitude Wide Area Survey (HLWAS)
+#
+# Selection function derived from the Roman-Rubin DC2 synthetic survey
+# (Troxel et al. 2023, arXiv:2209.06829), which simulates the reference HLIS
+# at full depth (5-sigma point-source ~26.9 AB in F106/F129/F158, 26.2 in F184).
+# Derivation: notebooks/create_streamobs_files_hlwas.ipynb (see docs page
+# "Roman HLWAS survey files" for details and caveats).
+name: roman
+release: hlwas
+survey_files:
+    # Path to data files (leave empty for default location: data/surveys/roman_hlwas)
+    file_path: ''
+
+    # Band-specific magnitude limit maps.
+    # The _5sigps map is the DC2-measured S/N=5 depth map renormalized so its
+    # median equals the official 5-sigma point-source depth of the simulated
+    # survey (F158: 26.9). The delta_mag axes of the completeness and
+    # photo-error tables are keyed to this same convention, so any replacement
+    # map (e.g. an exposure-time-scaled HLWAS map normalized to the STScI
+    # median depths: wide F158 26.2, medium F106 26.5 / F129 26.4 / F158 26.4)
+    # must also be a 5-sigma point-source maglim.
+    maglim_map_f158: roman_dc2_maglim_f158_nside1024_5sigps.fits.gz
+
+    # Band-independent maps
+    ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
+    completeness: roman_stellar_efficiency_cutf158.csv
+    completeness_band: f158 # the completeness has been obtained in the F158 band
+    log_photo_error: roman_photoerror_f158.csv
+
+survey_properties:
+  bands: ['f106', 'f129', 'f158', 'f184']
+
+  # Extinction coefficients per band (A_band / E(B-V))
+  # CCM89 R_V=3.1 evaluated at the filter effective wavelengths
+  # (1.06, 1.29, 1.58, 1.84 micron). NIR extinction is small; refine with
+  # dust_extinction + actual Roman bandpasses if percent-level accuracy matters.
+  coeff_extinc_f106: 1.14
+  coeff_extinc_f129: 0.83
+  coeff_extinc_f158: 0.60
+  coeff_extinc_f184: 0.47
+
+  # Systematic photometric errors (mag), or could be specified per band
+  sys_error: 0.005
+
+  # Saturation limits per band. The DC2 truth catalog only extends to ~15 AB
+  # and the simulation does not model saturation, so this is the validity
+  # limit of the efficiency table rather than a physical saturation estimate
+  # (real Roman WFI saturates around 17-18 AB for point sources in 107 s
+  # exposures - tighten this if bright stars matter).
+  saturation: 15.0
+  delta_saturation: -11.8
