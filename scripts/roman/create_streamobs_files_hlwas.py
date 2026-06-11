@@ -4,7 +4,7 @@
 
 Run with the streamobs env:
   /astro/store/shiren/conda-envs/stream_team/envs/streamobs/bin/python \
-      notebooks/create_streamobs_files_hlwas.py
+      scripts/roman/create_streamobs_files_hlwas.py
 
 Inputs : data/surveys/roman_dc2/roman_dc2_det_truth.parquet (+ per-tile truth indices
          on first run, cached to roman_dc2_truth_stars.parquet)
@@ -50,7 +50,7 @@ from astropy.table import Table
 from scipy.spatial import cKDTree
 from scipy.stats import gaussian_kde
 
-REPO = Path(__file__).resolve().parent.parent
+REPO = Path(__file__).resolve().parent.parent.parent
 DC2_DIR = REPO / "data/surveys/roman_dc2"
 OUT_DIR = REPO / "data/surveys/roman_hlwas"
 CAT_PATH = DC2_DIR / "roman_dc2_det_truth.parquet"
