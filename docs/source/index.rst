@@ -116,6 +116,7 @@ Documentation Contents
 
    column_convention
    data
+   roman_hlwas
    modules
 
 Indices and Tables
