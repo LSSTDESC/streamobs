@@ -31,14 +31,13 @@ survey_properties:
   bands: ['f106', 'f129', 'f158']
 
   # Extinction coefficients per band (A_band / E(B-V))
-  # CCM89 R_V=3.1 evaluated at the filter pivot wavelengths (1.06, 1.29,
-  # 1.58 micron). The band RATIOS are validated to ~1% against the DC2 truth
-  # dereddening corrections (Y/H=1.88, J/H=1.37 vs CCM 1.90, 1.38); absolute
-  # amplitudes cannot be validated from the mock (its dust application is
-  # bugged, Troxel+23 Sec 4.1).
-  coeff_extinc_f106: 1.14
-  coeff_extinc_f129: 0.83
-  coeff_extinc_f158: 0.60
+  # Official STScI values from Roman-STScI-000825 (Sharma), Table 3:
+  # bandpass-integrated with synphot for a solar-parameter Phoenix spectrum.
+  # Band ratios independently validated to ~1% against the DC2 truth
+  # dereddening corrections.
+  coeff_extinc_f106: 1.1495
+  coeff_extinc_f129: 0.8497
+  coeff_extinc_f158: 0.6140
 
   # Systematic photometric errors (mag), or could be specified per band
   sys_error: 0.005

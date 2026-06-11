@@ -129,6 +129,10 @@ the range reflects detector-to-detector variation across WFI01–WFI18):
 | F129 | 26.30 – 26.47 | 26.37 |
 | F158 | 26.34 – 26.46 | 26.39 |
 
+These agree with the single-value zeropoints of Roman-STScI-000825 Table 3
+(Z = 26.3546, 26.3531, 26.3760 with detector-to-detector σ_Z ≈ 0.033–0.038 for
+F106/F129/F158).
+
 The mock's photometry is calibrated greyly (a constant per-band offset from bright
 stars, mimicking standard-star calibration); the measured offsets are +0.11/+0.10/+0.12
 mag in F106/F129/F158. F184 additionally requires a chromatic (color-dependent)
@@ -136,24 +140,27 @@ correction that the simulation team did not derive, which is one reason F184 is
 excluded from the survey configuration (it is also deep-tier-only in the
 community-defined HLWAS).
 
-The extinction coefficients adopted in the configuration are CCM89 (R_V = 3.1)
-evaluated at the filter pivot wavelengths:
+The extinction coefficients adopted in the configuration are the official STScI
+values from
+[Roman-STScI-000825](https://www.stsci.edu/files/live/sites/www/files/home/roman/documentation/technical-documentation/_documents/Roman-STScI%E2%80%93000825.pdf)
+(Sharma, Table 3), computed by integrating a solar-parameter Phoenix spectrum
+through the WFI bandpasses with synphot (the change in apparent magnitude per unit
+E(B−V); for the narrow Roman bands the dependence on stellar parameters is
+negligible):
 
 | Filter | A_band / E(B−V) |
 |---|---|
-| F106 | 1.14 |
-| F129 | 0.83 |
-| F158 | 0.60 |
+| F106 | 1.1495 |
+| F129 | 0.8497 |
+| F158 | 0.6140 |
 
-The *shape* of this law is validated against the simulation itself: the truth
+The *shape* of this law is independently validated against the simulation: the truth
 catalog's per-band dereddening corrections have band ratios of 1.88 (F106/F158) and
-1.37 (F129/F158), matching the CCM89 ratios (1.90, 1.38) to ~1%. The absolute
-amplitudes cannot be validated from the mock — its dust application is known to be
-incorrect (Milky Way extinction is absent from the Roman images, and the per-object
-correction amplitudes do not track the SFD column) — so the absolute scale rests on
-the CCM89 calculation. In the near-infrared the difference between modern extinction
-laws is at the ~10% level, and the absolute extinction in typical high-latitude
-fields is small (A_F158 ≈ 0.01 mag at E(B−V) = 0.013).
+1.37 (F129/F158), matching the official ratios (1.87, 1.38) to ~1%. (The absolute
+amplitudes cannot be cross-checked from the mock — its dust application is known to
+be incorrect, with Milky Way extinction absent from the Roman images — but the
+absolute extinction in typical high-latitude fields is small in any case:
+A_F158 ≈ 0.01 mag at E(B−V) = 0.013.)
 
 ## Survey depth
 
