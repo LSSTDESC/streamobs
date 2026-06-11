@@ -44,7 +44,12 @@ Following the paper, three selections define the analysis sample:
    removes blended objects and contaminated photometry. It is deliberately stricter
    than parts of the paper's own analysis (which readmits flags 1–2), and it is the
    origin of the ~0.90 bright-end completeness plateau below;
-2. **S/N > 5** in the detection image;
+2. **true S/N > 5** in the detection image. The catalog's native S/N is computed
+   from the *reported* flux errors, which underestimate the real noise; the
+   detection-image error factor, measured against the truth in the same way as the
+   per-band factors below, is 1.71, so the selection is reported `det_sn` > 8.6.
+   Without this correction the catalog admits "detections" whose true significance
+   is well below 5σ, and the completeness extends ~1 mag past the true depth;
 3. **a positional match to a true object**, as defined above.
 
 ![True vs observed magnitude distributions per band](_static/roman_dc2/mag_distributions.png)
@@ -58,9 +63,9 @@ survey depth.*
 The completeness table `roman_stellar_efficiency_cutf158.csv` gives, in bins of
 true F158 magnitude for true stars:
 
-- `detection_eff` — the fraction with a clean (`flags==0`) S/N>5 detection matched
-  to them. The denominator is the full truth-star catalog, including undetected
-  stars, so this is a true completeness;
+- `detection_eff` — the fraction with a clean (`flags==0`), true-S/N>5 detection
+  matched to them. The denominator is the full truth-star catalog, including
+  undetected stars, so this is a true completeness;
 - `classifiction_eff` — among detected stars, the fraction whose detection is
   classified as a point source, for which we adopt SExtractor `class_star > 0.5`
   (the median `class_star` of detected true stars is 0.94);
@@ -71,7 +76,9 @@ The bright plateau sits at ~0.90–0.95 rather than unity: stars blended with
 brighter neighbours either share a detection assigned to the neighbour or carry
 blend flags and are removed by the `flags==0` selection. This is a property of the
 adopted catalog cuts, not of the instrument. The combined efficiency crosses 50% at
-F158 ≈ 27.2 in the simulated (reference-depth) survey.
+F158 ≈ 26.3 in the simulated (reference-depth) survey, ≈ 0.35 mag past the F158
+maglim — detection runs on the four-band median image, which reaches deeper than any
+single band.
 
 We characterize stellar contamination with the same machinery: for *true galaxies*
 that are detected and compact — measured semi-major axis `awin_world < 0.3″`, the

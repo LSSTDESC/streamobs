@@ -50,7 +50,10 @@ from astropy.table import Table
 from scipy.spatial import cKDTree
 from scipy.stats import gaussian_kde
 
-REPO = Path(__file__).resolve().parent.parent.parent
+try:                                  # running as a script (scripts/roman/)
+    REPO = Path(__file__).resolve().parent.parent.parent
+except NameError:                     # running as a notebook (notebooks/)
+    REPO = Path.cwd().resolve().parent if Path.cwd().name == "notebooks" else Path.cwd().resolve()
 DC2_DIR = REPO / "data/surveys/roman_dc2"
 OUT_DIR = REPO / "data/surveys/roman_hlwas"
 CAT_PATH = DC2_DIR / "roman_dc2_det_truth.parquet"
@@ -93,7 +96,7 @@ print(f"repo: {REPO}")
 usecols = (["alphawin_j2000", "deltawin_j2000", "mag_auto", "magerr_auto",
             "flags", "class_star", "det_sn", "awin_world",
             "matched", "match_sep_arcsec", "truth_ind", "truth_gal_star",
-            ]
+            "truth_bb_mag"]
            + [f"truth_mag_{b}" for b in BANDS]
            + [f"mag_auto_{b}" for b in BANDS] + [f"magerr_auto_{b}" for b in BANDS])
 cat = pq.read_table(CAT_PATH, columns=usecols).to_pandas()
@@ -104,6 +107,52 @@ for b in BANDS:  # SExtractor unmeasured -> 99
 
 print(f"{len(cat):,} detections, {int(cat.matched.sum()):,} matched "
       f"({cat.matched.mean():.1%}); {int(((cat.truth_gal_star == 1) & cat.matched).sum()):,} matched-star rows")
+
+
+# ### Effective S/N = 5 detection cut
+# 
+# The catalog's S/N>5 cut uses the *reported* detection-image flux errors, which
+# underestimate the true noise (factor ~2, validated against the truth below). A real
+# S/N = 5 selection therefore corresponds to a higher reported S/N. We measure the
+# detection-image error factor from true stars — the scatter of
+# (`mag_auto` − `truth_bb_mag`), with the bright-end systematic floor (the broadband
+# truth proxy's color mismatch) removed in quadrature, against the median reported
+# `magerr_auto` — and select the catalog at reported `det_sn` > 5 × factor everywhere
+# (the error-validation plot below intentionally keeps the raw catalog: it is where
+# the correction factor comes from).
+
+# In[ ]:
+
+
+def detection_image_error_factor(df):
+    """Truth-based inflation factor of the detection-image errors: scatter of
+    (mag_auto - truth_bb_mag) for clean true stars, with the bright-end systematic
+    floor removed in quadrature, over the median reported magerr_auto."""
+    sub = df.loc[df.matched & (df.truth_gal_star == 1) & (df["flags"] < FLAG_CUT)
+                 & (df.class_star > CLASS_STAR_CUT),
+                 ["truth_bb_mag", "mag_auto", "magerr_auto"]].dropna()
+    mt = sub["truth_bb_mag"].values
+    res = sub["mag_auto"].values - mt
+    sg = sub["magerr_auto"].values
+
+    def scat(sel):
+        return (np.percentile(res[sel], 84) - np.percentile(res[sel], 16)) / 2
+
+    floor = scat((mt > 21.0) & (mt <= 22.5))   # photometric noise negligible here
+    ratios = []
+    for b_lo in np.arange(24.5, 26.5, 0.5):
+        sel = (mt > b_lo) & (mt <= b_lo + 0.5)
+        if sel.sum() < 500:
+            continue
+        s_noise = np.sqrt(max(scat(sel) ** 2 - floor ** 2, 0.0))
+        ratios.append(s_noise / np.median(sg[sel]))
+    return float(np.median(ratios))
+
+F_DET = detection_image_error_factor(cat)
+SN_CUT_EFF = SNR_DEPTH * F_DET
+det_ok = cat["det_sn"] > SN_CUT_EFF
+print(f"detection-image error factor = {F_DET:.2f} -> true S/N>{SNR_DEPTH} cut: "
+      f"reported det_sn > {SN_CUT_EFF:.1f} (keeps {det_ok.mean():.1%} of detections)")
 
 
 # ## Truth-star denominator
@@ -171,7 +220,8 @@ print(f"{n_rows:,} truth-star rows -> {len(truth_stars):,} unique stars")
 # In[4]:
 
 
-sel = (cat.matched & (cat.class_star > CLASS_STAR_CUT) & (cat["flags"] < FLAG_CUT))
+sel = (cat.matched & (cat.class_star > CLASS_STAR_CUT) & (cat["flags"] < FLAG_CUT)
+       & det_ok)
 pe = cat.loc[sel, [f"truth_mag_{BAND}", f"mag_auto_{BAND}", f"magerr_auto_{BAND}"]].dropna()
 x, y = pe[f"truth_mag_{BAND}"].values, pe[f"magerr_auto_{BAND}"].values
 print(f"{len(pe):,} star-classified matched detections with F158 photometry")
@@ -217,7 +267,7 @@ plt.show()
 
 
 sel_ts = (cat.matched & (cat.truth_gal_star == 1)
-          & (cat.class_star > CLASS_STAR_CUT) & (cat["flags"] < FLAG_CUT))
+          & (cat.class_star > CLASS_STAR_CUT) & (cat["flags"] < FLAG_CUT) & det_ok)
 pe_ts = cat.loc[sel_ts, [f"truth_mag_{BAND}", f"mag_auto_{BAND}", f"magerr_auto_{BAND}"]].dropna()
 x, y = pe_ts[f"truth_mag_{BAND}"].values, pe_ts[f"magerr_auto_{BAND}"].values
 res = pe_ts[f"truth_mag_{BAND}"].values - pe_ts[f"mag_auto_{BAND}"].values   # truth - obs
@@ -319,7 +369,8 @@ plt.show()
 # ## 2. Detection & classification efficiency for true stars
 # 
 # Denominator: all unique true stars. A star counts as **detected** if any S/N>5 detection
-# matched its `ind` **and passed the paper's `flags == 0` cut** (Troxel et al. selection 1 —
+# matched its `ind` at **true S/N > 5** (reported `det_sn` above the corrected cut)
+# **and passed the paper's `flags == 0` cut** (Troxel et al. selection 1 —
 # a star whose only detection is flagged would not appear in the science catalog); for
 # classification we take its nearest clean matched detection and ask whether `class_star > {cut}`.
 # 
@@ -338,7 +389,8 @@ plt.show()
 # In[7]:
 
 
-star_dets = (cat.loc[cat.matched & (cat.truth_gal_star == 1) & (cat["flags"] < FLAG_CUT),
+star_dets = (cat.loc[cat.matched & (cat.truth_gal_star == 1) & (cat["flags"] < FLAG_CUT)
+                     & det_ok,
                      ["truth_ind", "match_sep_arcsec", "class_star"]]
              .sort_values("match_sep_arcsec").drop_duplicates("truth_ind"))
 print(f"class_star of matched true stars: p10/50/90 = "
@@ -385,7 +437,8 @@ print(f"star sample for the efficiency curves: {ok.sum():,} "
 # In[8]:
 
 
-gal = (cat.loc[cat.matched & (cat.truth_gal_star == 0) & (cat["flags"] < FLAG_CUT),
+gal = (cat.loc[cat.matched & (cat.truth_gal_star == 0) & (cat["flags"] < FLAG_CUT)
+               & det_ok,
                ["truth_ind", "match_sep_arcsec", "class_star", "awin_world", f"truth_mag_{BAND}"]]
        .sort_values("match_sep_arcsec").drop_duplicates("truth_ind"))
 gal["size_arcsec"] = gal.awin_world * 3600.0
@@ -512,7 +565,7 @@ def desqr_maglim(df, mag_col, magerr_col, nside=NSIDE, snr=SNR_DEPTH,
 
 # true-star convention used for all streamobs products: same sample as the
 # photo-error model, so the maps and the error model describe one population
-depth_src = cat[(cat["flags"] < FLAG_CUT) & cat.matched
+depth_src = cat[(cat["flags"] < FLAG_CUT) & cat.matched & det_ok
                 & (cat.truth_gal_star == 1) & (cat.class_star > CLASS_STAR_CUT)]
 
 def truth_anchor_m5(df, b, snr=SNR_DEPTH):
@@ -613,7 +666,7 @@ print(f"reference maglim = measured map median = {MAGLIM_REF:.3f}")
 # star-classified sample is galaxy-dominated faintward of ~25.5 and would inflate
 # the faint-end errors (0.33 vs 0.15 mag at 25.5)
 sel = (cat.matched & (cat.truth_gal_star == 1)
-       & (cat.class_star > CLASS_STAR_CUT) & (cat["flags"] < FLAG_CUT))
+       & (cat.class_star > CLASS_STAR_CUT) & (cat["flags"] < FLAG_CUT) & det_ok)
 pe = cat.loc[sel, ["alphawin_j2000", "deltawin_j2000", f"truth_mag_{BAND}",
                    f"mag_auto_{BAND}", f"magerr_auto_{BAND}"]].dropna()
 pix = hp.ang2pix(NSIDE, pe.alphawin_j2000.values, pe.deltawin_j2000.values, lonlat=True)
