@@ -38,14 +38,6 @@ Following the paper, three selections define the analysis sample:
 2. **S/N > 5** in the detection image;
 3. **a positional match to a true object**, as defined above.
 
-A further property of the truth catalog requires care: about a quarter of the true
-stars carry a second truth entry at the same position under a different identifier,
-populated in only one band. Because the matcher can assign a star's detection to
-either entry, we collapse the truth catalog to unique positions (209,024 entries →
-181,502 stars) and count a star as detected if *any* of its entries received a
-match. Without this, the detection efficiency would show a spurious, flat ~12%
-deficit at all magnitudes.
-
 ![True vs observed magnitude distributions per band](_static/roman_hlwas/mag_distributions.png)
 
 *Number counts per band: solid — true magnitudes of matched sources; dotted —
