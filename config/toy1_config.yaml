@@ -18,7 +18,7 @@ stream:
     sampler: Gaussian
 
   isochrone:
-    name: Bressan2012
+    name: Marigo2017
     survey: lsst
     age: 12.0
     z: 0.0006
