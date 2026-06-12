@@ -116,6 +116,13 @@ class TestStreamInjectorBehavior:
         compare_coords(stream_coord_1, stream_coord_3)
         compare_gc_frames(gc_1, gc_3)
 
+        masks_before = mock_injector.list_cached_masks()
+        mock_injector.clear_mask_cache()
+        masks = mock_injector.list_cached_masks()
+        assert len(masks) == 0, "Mask cache should be empty after clearing"
+        assert len(masks_before) > len(masks), "Mask cache should have had entries before clearing"
+
+
 
 
 
