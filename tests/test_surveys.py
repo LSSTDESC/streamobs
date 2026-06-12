@@ -29,7 +29,11 @@ import numpy as np
 # ---------------------------------------------------------------------------
 
 SURVEY_REGISTRY = [
+    {"survey": "lsst", "release": "yr1",  "expected_bands": ["g", "r"], "expected_maglim": ['g', 'r']},
+    {"survey": "lsst", "release": "yr2",  "expected_bands": ["g", "r"], "expected_maglim": ['g', 'r']},
+    {"survey": "lsst", "release": "yr3",  "expected_bands": ["g", "r"], "expected_maglim": ['g', 'r']},
     {"survey": "lsst", "release": "yr4",  "expected_bands": ["g", "r"], "expected_maglim": ['g', 'r']},
+    {"survey": "lsst", "release": "yr5",  "expected_bands": ["g", "r"], "expected_maglim": ['g', 'r']},
     {"survey": "des", "release": "yr6", "expected_bands": ["g", "r"], "expected_maglim": ['g', 'r']},
 ]
 
