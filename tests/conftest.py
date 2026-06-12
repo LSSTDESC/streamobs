@@ -24,6 +24,10 @@ def rng(seed):
     """Random number generator initialized with a fixed seed."""
     return np.random.default_rng(seed)
 
+@pytest.fixture(scope="session")
+def verbose():
+    """Control verbosity of test output."""
+    return True
 
 # ---------------------------------------------------------------------------
 # Minimal stream model config (no isochrone, no velocity — pure geometry)
