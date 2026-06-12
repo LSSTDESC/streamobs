@@ -1,6 +1,6 @@
 .. streamobs documentation master file
 
-Welcome to StreamObs's Documentation!
+Welcome to StreamObs Documentation!
 ======================================
 
 .. warning::
