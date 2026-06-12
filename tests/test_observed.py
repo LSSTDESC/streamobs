@@ -54,34 +54,34 @@ class TestStreamInjectorBehavior:
         assert set(expected_columns).issubset(injected_catalog.columns), "Injected catalog must contain all expected columns"
 
 
-    def test_full_injection_pipeline(self, mock_injector, stream_catalog):
+    def test_full_injection_pipeline(self, mock_injector, stream_catalog, verbose):
         """Test the full injection pipeline with a controlled input catalog."""
         # Perform injection
-        injected_catalog = mock_injector.inject(stream_catalog, perfect_galstarsep=True)
+        injected_catalog = mock_injector.inject(stream_catalog, perfect_galstarsep=True, verbose=verbose)
 
         # Minimal expected columns in the injected catalog (position, magnitude, and flags)
         self._verify_injected_catalog_content(injected_catalog,)
 
-    def test_injection_partialinput(self, mock_injector,stream_catalog, stream_config_with_distance):
+    def test_injection_partialinput(self, mock_injector,stream_catalog, stream_config_with_distance, verbose):
         """Test injection with a catalog that has some missing columns."""
         data_without_mag = stream_catalog.drop(columns=["mag_g", "mag_r"])
-        injected_catalog = mock_injector.inject(data_without_mag, perfect_galstarsep=True, stream_config=stream_config_with_distance)
+        injected_catalog = mock_injector.inject(data_without_mag, perfect_galstarsep=True, stream_config=stream_config_with_distance, verbose=verbose)
         self._verify_injected_catalog_content(injected_catalog)
 
-    def test_random_injection(self, mock_injector, stream_catalog,seed):
+    def test_random_injection(self, mock_injector, stream_catalog,seed, verbose):
         """Test random sky injection"""
         mask_type = ["footprint", "ebv", "maglim_g"]
         # Inject a first time
-        stream_coord_1 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=seed,gc_frame=None,mask_type=mask_type)
+        stream_coord_1 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=seed,gc_frame=None,mask_type=mask_type, verbose=verbose)
         gc_1 = mock_injector._last_gc_frame
 
         # Inject a second time with the same random seed
-        stream_coord_2 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=seed,gc_frame=None,mask_type=mask_type)
+        stream_coord_2 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=seed,gc_frame=None,mask_type=mask_type, verbose=verbose)
         gc_2 = mock_injector._last_gc_frame
 
         # Inject a 3rd time using the existing gc_frame (should not use a random
         # seed)
-        stream_coord_3 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=None,gc_frame=gc_1,mask_type=mask_type)
+        stream_coord_3 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=None,gc_frame=gc_1,mask_type=mask_type, verbose=verbose)
         gc_3 = mock_injector._last_gc_frame
 
         def compare_coords(coord1, coord2):

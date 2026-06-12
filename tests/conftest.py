@@ -121,18 +121,18 @@ def base_maglim():
     return 26
 
 @pytest.fixture(scope="session")
-def mock_survey():
+def mock_survey(verbose):
     from streamobs import surveys
     return surveys.Survey.load(
         survey="lsst",
         release="yr4",
-        verbose=False,
+        verbose=verbose,
     )
 
 @pytest.fixture(scope="session")
-def mock_injector(mock_survey):
+def mock_injector(mock_survey, verbose):
     from streamobs.observed import StreamInjector
-    return StreamInjector(survey=mock_survey)
+    return StreamInjector(survey=mock_survey, verbose=verbose)
 
 
 @pytest.fixture(scope="session")
