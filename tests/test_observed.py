@@ -70,17 +70,18 @@ class TestStreamInjectorBehavior:
 
     def test_random_injection(self, mock_injector, stream_catalog,seed):
         """Test random sky injection"""
+        mask_type = ["footprint", "ebv", "maglim_g"]
         # Inject a first time
-        stream_coord_1 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=seed,gc_frame=None,mask_type=["footprint", "ebv"])
+        stream_coord_1 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=seed,gc_frame=None,mask_type=mask_type)
         gc_1 = mock_injector._last_gc_frame
 
         # Inject a second time with the same random seed
-        stream_coord_2 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=seed,gc_frame=None,mask_type=["footprint", "ebv"])
+        stream_coord_2 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=seed,gc_frame=None,mask_type=mask_type)
         gc_2 = mock_injector._last_gc_frame
 
         # Inject a 3rd time using the existing gc_frame (should not use a random
         # seed)
-        stream_coord_3 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=None,gc_frame=gc_1,mask_type=["footprint", "ebv"])
+        stream_coord_3 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=None,gc_frame=gc_1,mask_type=mask_type)
         gc_3 = mock_injector._last_gc_frame
 
         def compare_coords(coord1, coord2):
@@ -110,7 +111,7 @@ class TestStreamInjectorBehavior:
         # Verify that the first two injections produce the same coordinates (same random seed)
         compare_coords(stream_coord_1, stream_coord_2)
         compare_gc_frames(gc_1, gc_2)
-        
+
         # Verify that the 3rd injection produces the same coordinates (same gc_frame, no new random seed)
         compare_coords(stream_coord_1, stream_coord_3)
         compare_gc_frames(gc_1, gc_3)
