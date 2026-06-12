@@ -19,6 +19,8 @@ Example
     {"survey": "lsst", "release": "yr5", "bands": ["g", "r"], "expected_maglim": ["g", "r"]},
 """
 
+from platform import release
+
 import pytest
 from streamobs import surveys
 import numpy as np
@@ -47,13 +49,14 @@ def _survey_id(entry):
 
 @pytest.mark.surveys
 @pytest.fixture(scope="module", params=SURVEY_REGISTRY, ids=[_survey_id(e) for e in SURVEY_REGISTRY])
-def loaded_survey(request):
+def loaded_survey(request, verbose):
     """Load each registered survey once per module and cache it."""
-    entry = request.param
+    entry = request.param 
     survey = surveys.Survey.load(
         survey=entry["survey"],
         release=entry["release"],
-        verbose=False,
+        verbose=verbose,
+        uniform_survey = True, # Also build the uniform survey for testing purposes
     )
     # Attach the registry entry so tests can access expected values
     survey._test_entry = entry
@@ -78,6 +81,49 @@ class TestSurveyCreation:
 
     def test_release_matches_registry(self, loaded_survey):
         assert loaded_survey.release == loaded_survey._test_entry["release"]
+
+@pytest.mark.surveys
+class TestSurveyFactory:
+    """Test that SurveyFactory creates and caches surveys as expected."""
+    def test_cache(self, verbose):
+        """Test that SurveyFactory returns the same instance for repeated
+        loads."""
+        survey_1_prop = SURVEY_REGISTRY[0]
+        survey_2_prop = SURVEY_REGISTRY[1]
+        survey_3_prop = SURVEY_REGISTRY[2]
+        cache_key1 = f"{survey_1_prop['survey']}_{survey_1_prop['release']}"
+        cache_key2 = f"{survey_2_prop['survey']}_{survey_2_prop['release']}"
+        cache_key3 = f"{survey_3_prop['survey']}_{survey_3_prop['release']}"
+
+        survey1 = surveys.SurveyFactory.create_survey(survey_1_prop["survey"], survey_1_prop["release"], uniform_survey=True, verbose=verbose)
+        survey2 = surveys.SurveyFactory.create_survey(survey_2_prop["survey"], survey_2_prop["release"], uniform_survey=True, verbose=verbose)
+        survey3 = surveys.SurveyFactory.create_survey(survey_3_prop["survey"], survey_3_prop["release"], uniform_survey=True, verbose=verbose)
+
+
+        cache = surveys.SurveyFactory.list_cached_surveys()
+        assert cache_key1 in cache, f"Survey '{cache_key1}' should be in cache after loading"
+        assert cache_key2 in cache, f"Survey '{cache_key2}' should be in cache after loading"
+
+
+        surveys.SurveyFactory.clear_cache(survey_1_prop['survey'], survey_1_prop['release'], verbose=verbose)
+        cache_after_clear = surveys.SurveyFactory.list_cached_surveys()
+        assert cache_key1 not in cache_after_clear, f"Survey '{cache_key1}' should have been cleared from cache"
+        assert cache_key2 in cache_after_clear, f"Survey '{cache_key2}' should still be in cache after clearing '{cache_key1}'"
+        assert cache_key3 in cache_after_clear, f"Survey '{cache_key3}' should still be in cache after clearing '{cache_key1}'"
+
+        surveys.SurveyFactory.clear_cache(survey_2_prop['survey'], verbose=verbose)
+        cache_after_clear2 = surveys.SurveyFactory.list_cached_surveys()
+        assert cache_key2 not in cache_after_clear2, f"Survey '{cache_key2}' should have been cleared from cache"
+        if survey_3_prop['survey'] == survey_2_prop['survey']:
+            assert cache_key3 not in cache_after_clear2, f"Survey '{cache_key3}' should have been cleared from cache since it has the same survey name as '{cache_key2}'"
+        else:
+            assert cache_key3 in cache_after_clear2, f"Survey '{cache_key3}' should still be in cache after clearing '{cache_key2}' since it has a different survey name"
+
+        surveys.SurveyFactory.clear_cache(verbose=verbose)
+        cache_after_clear_tot = surveys.SurveyFactory.list_cached_surveys()
+        assert len(cache_after_clear_tot) == 0, "All surveys should have been cleared from cache"
+
+
 
 
 # ---------------------------------------------------------------------------
