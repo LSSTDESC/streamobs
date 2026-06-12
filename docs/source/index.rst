@@ -9,6 +9,10 @@ Welcome to StreamObs's Documentation!
 **StreamObs** is a Python package for stellar stream data generation and observation simulation. 
 It provides a complete pipeline to transform theoretical or dynamical stream models into realistic 
 mock observations as they would appear in astronomical surveys.
+It now supports the following surveys (and corresponding data releases):
+- **DES**: Y6
+- **LSST**: simulated properties for Y1, Y2, Y3, Y4, and Y5
+
 
 What StreamObs Does
 -------------------
