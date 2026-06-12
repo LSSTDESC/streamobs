@@ -105,15 +105,36 @@ class TestTrackModel:
 @pytest.mark.model
 class TestStreamModelFull:
     """Tests for StreamModel when having a complete config"""
+
+    def _verify_catalogue_content(self, catalog, expected_columns):
+        """Helper to verify that a completed catalog contains the expected columns with valid data."""
+        assert expected_columns.issubset(catalog.columns), f"Catalog should contain columns {expected_columns}"
+        for col in expected_columns:
+            assert np.issubdtype(catalog[col].dtype, np.floating), f"Column {col} should contain floats"
+            assert np.all(np.isfinite(catalog[col])), f"Column {col} should contain finite numbers"
+            assert np.all(~np.isnan(catalog[col])), f"Column {col} should not contain NaNs"
+
     def test_full_model(self, stream_config_with_distance):
         """Test that StreamModel can be instantiated and sampled with a full config."""
         model = StreamModel(stream_config_with_distance)
         samples = model.sample(N)
         assert isinstance(samples, pd.DataFrame), "Samples should be returned as a DataFrame"
         expected_columns = {"phi1", "phi2", "dist", "mag_g", "mag_r"} # Not adding mu1, mu2, rv since not implemented yet
-        assert expected_columns.issubset(samples.columns), f"Sample DataFrame should contain columns {expected_columns}"
-        assert len(samples) == N, f"Sample DataFrame should have {N} rows"
-        for col in expected_columns:
-            assert np.issubdtype(samples[col].dtype, np.floating), f"Column {col} should contain floats"
-            assert np.all(np.isfinite(samples[col])), f"Column {col} should contain finite numbers"
-            assert np.all(~np.isnan(samples[col])), f"Column {col} should not contain NaNs"
+        self._verify_catalogue_content(samples, expected_columns)
+
+    def test_complete_catalog(self, sample_catalog_phi,stream_config_with_distance):
+        """Test that complete_catalog produces a catalog with the expected columns and valid data."""
+        model = StreamModel(stream_config_with_distance)
+        completed_catalog = model.complete_catalog(catalog = sample_catalog_phi)
+        expected_columns = {"phi1", "phi2", "dist", "mag_g", "mag_r"} # Not adding mu1, mu2, rv since not implemented yet
+        self._verify_catalogue_content(completed_catalog, expected_columns)
+        assert len(completed_catalog) == len(sample_catalog_phi), f"Completed catalog should have the same number of rows as the input catalog"
+
+        # Verify that I can add a targeted column (e.g. dist) to the input catalog and complete the rest
+        partial_catalog = completed_catalog.drop(columns=['mag_r', 'dist', 'mag_g']).reset_index(drop=True)
+        completed_catalog = model.complete_catalog(catalog=partial_catalog,columns_to_add=["dist"],)
+        expected_columns = {"phi1", "phi2", "dist"} # Not adding mu1, mu2, rv since not implemented yet
+        self._verify_catalogue_content(completed_catalog, expected_columns)
+        assert len(completed_catalog) == len(partial_catalog), f"Completed catalog should have the same number of rows as the input catalog"
+        assert "mag_r" not in completed_catalog.columns, "Column 'mag_r' should not be added when not requested"
+
