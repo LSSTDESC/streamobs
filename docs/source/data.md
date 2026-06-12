@@ -131,6 +131,7 @@ Current surveys:
 - `lsst_yr3/` - LSST baseline v5.0.0, Year 3 observations (g, r bands)
 - `lsst_yr4/` - LSST baseline v5.0.0, Year 4 observations (g, r bands)
 - `lsst_yr5/` - LSST baseline v5.0.0, Year 5 observations (g, r bands)
+- `des_yr6/` - DES Y6 Gold
 
 Additional surveys can be added by placing maglim maps in new subdirectories.
 
@@ -163,20 +164,21 @@ These are small reference files (<100 KB) and are tracked in git.
 
 ## For Developers
 
-Informations to modify the data base can be found in [Update data
-page](update_data.md), which can be usefull to add [new survey](new_survey.md).
+Informations to modify the data base can be found in [Update data page](update_data.md), which can be usefull to add [new survey](new_survey.md).
 
 
 ## Data Sources and Credits
 
+### LSST data
+Error model for LSST is taken from [Tsiane et al.2025](https://arxiv.org/abs/2504.16203). 
+Maps depths have been estimated using [RubinSim](https://rubin-sim.lsst.io/).
+
 ### DES Y6 Gold
 
-We have added the DES Y6 Gold as a supported survey to use with streamsim. 
+We have added the DES Y6 Gold as a supported survey to use with streamobs. 
 The survey dataset is described in [Bechtol et al. 2025](https://arxiv.org/abs/2501.05739), and the catalogs can are documented/publically available from [DESDM](https://des.ncsa.illinois.edu/releases). 
 The maglim, completeness, and photoerror files should be downloaded and placed in the `data/surveys/des_y6/` folder and loaded in the following manner:
 ```
 des_y6= surveys.Survey.load(survey = 'des', release='y6')
 ```
 Any questions about the creation of these survey specific files can be addressed to Peter Ferguson. 
-
-**To be completed**
