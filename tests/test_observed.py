@@ -3,9 +3,6 @@ tests/test_observed.py
 =======================
 Tests for ``streamobs.observed.StreamInjector``.
 
-All tests use the ``mock_survey`` / ``mock_injector`` fixtures from
-``conftest.py``, so no real survey files are required.
-
 The injection pipeline is tested end-to-end by calling
 ``StreamInjector.inject()`` with controlled input DataFrames and verifying
 the output columns, dtypes, and flag semantics.

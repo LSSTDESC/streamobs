@@ -4,8 +4,7 @@ tests/test_model.py
 Tests for ``streamobs.model.StreamModel`` and its sub-models.
 
 Focus: verify that every quantity the model can produce is actually sampled
-and has the right shape / dtype, without requiring the optional ugali /
-velocity backends.
+and has the right shape / dtype, without requiring the optional ugali.
 """
 
 import numpy as np
