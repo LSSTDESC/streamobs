@@ -163,79 +163,9 @@ These are small reference files (<100 KB) and are tracked in git.
 
 ## For Developers
 
-### Updating the Data Archive
+Informations to modify the data base can be found in [Update data
+page](update_data.md), which can be usefull to add [new survey](new_survey.md).
 
-If you need to add or modify data files:
-
-
-1. **Create a new zip archive**:
-   ```bash
-   cd /path/to/streamobs
-   zip -r data.zip data/ \
-       -x "*.DS_Store" \
-       -x "*__MACOSX*" \
-       -x "data/.git*" \
-       -x "data/__pycache__/*" \
-       -x "*.backup" \
-       -x "*.bak" \
-       -x "*~"
-   ```
-   
-2. **Upload to Zenodo**:
-   - Go to https://zenodo.org/records/18298544
-   - Create a new version
-   - Upload the `data.zip` file
-   - Add release notes describing changes
-   - Publish and note the new record ID
-
-3. **Update the download script**:
-   - Edit `bin/download_data.py`
-   - Update `BASE_DATA_URL` if record ID changed
-   - Update `ARCHIVE_SIZE_MB` if size changed
-   - Update version in this document
-
-4. **Commit and push**:
-   ```bash
-   git add .
-   git commit -m "Update data archive to version X.Y"
-   git push
-   ```
-
-### Adding New Surveys
-
-To add a new survey:
-
-1. Create a new subdirectory in `data/surveys/` + its release:
-   ```bash
-   mkdir -p data/surveys/new_survey_name_release
-   ```
-
-2. Add magnitude limit maps for each band:
-   - Files should be HEALPix format (`.hsp`) or `.fit`
-   - Example: `des_y6_g_band_nside_128.hsp`
-   - Optional: one may add new completeness and photometric errors data. If not provided, the ones in data/others will be used.
-
-3. Create a corresponding survey configuration in `config/surveys/`:
-   ```yaml
-   name: new_survey
-   release: its_release
-   survey_files: 
-      # Path to data files (leave empty for default location)
-      file_path: ''
-
-      # Band-specific magnitude limit maps
-      maglim_map_g: new_survey_maglim_g_band.hsp
-      maglim_map_r: new_survey_maglim_r_band.hsp
-
-      # Band-independent maps. Keep by defaults files for completeness, ebv map, and photometric errors
-      ebv_map: ebv_sfd98_fullres_nside_4096_ring_equatorial.fits
-      completeness: stellar_efficiency_cutr.csv
-      log_photo_error: photoerror_r.csv
-   ```
-
-4. Update the data archive and upload to Zenodo
-
-5. Document the new survey in this document.
 
 ## Data Sources and Credits
 
