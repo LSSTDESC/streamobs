@@ -60,6 +60,15 @@ New to StreamObs? Start here:
 .. tip::
    Having issues with data download? See the :doc:`data` page for detailed troubleshooting.
 
+For developers
+---------------
+
+If you're interested in contributing to StreamObs or using it as a base for your own development, check out these pages:
+
+1. **Modify Streamobs**: :doc:`modifying_streamobs` - Guidlines for modifying the core codebase
+2. **Adding a new survey**: :doc:`new_survey` - Learn how to add support for a new photometric survey
+3. **Update data base**: :doc:`update_data` - Learn how to update the data base
+
 Documentation Contents
 ----------------------
 
@@ -74,8 +83,16 @@ Documentation Contents
 
 .. toctree::
    :maxdepth: 2
-   :caption: Reference
+   :caption: For developers
    
+   modifying_streamobs
+   new_survey
+   update_data
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Reference
+
    data
    modules
 
