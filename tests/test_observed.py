@@ -48,7 +48,7 @@ class TestStreamInjectorProperties:
 @pytest.mark.observed
 class TestStreamInjectorBehavior:
     """Tests for StreamInjector behavior and output structure."""
-    def _verify_injected_catalog_content(self, injected_catalog, expected_columns):
+    def _verify_injected_catalog_content(self, injected_catalog, expected_columns=["ra", "dec","mag_g", "mag_r", "mag_g_obs", "mag_r_obs","flag_observed", "flag_perfect_galstarsep"]):
         """Helper method to verify the content of the injected catalog."""
         # Verify expected columns are present
         assert set(expected_columns).issubset(injected_catalog.columns), "Injected catalog must contain all expected columns"
@@ -60,8 +60,63 @@ class TestStreamInjectorBehavior:
         injected_catalog = mock_injector.inject(stream_catalog, perfect_galstarsep=True)
 
         # Minimal expected columns in the injected catalog (position, magnitude, and flags)
-        expected_columns = [
-            "ra", "dec", "mag_g", "mag_r",
-            "flag_observed", "flag_perfect_galstarsep"
-        ]
-        self._verify_injected_catalog_content(injected_catalog, expected_columns)
+        self._verify_injected_catalog_content(injected_catalog,)
+
+    def test_injection_partialinput(self, mock_injector,stream_catalog, stream_config_with_distance):
+        """Test injection with a catalog that has some missing columns."""
+        data_without_mag = stream_catalog.drop(columns=["mag_g", "mag_r"])
+        injected_catalog = mock_injector.inject(data_without_mag, perfect_galstarsep=True, stream_config=stream_config_with_distance)
+        self._verify_injected_catalog_content(injected_catalog)
+
+    def test_random_injection(self, mock_injector, stream_catalog,seed):
+        """Test random sky injection"""
+        # Inject a first time
+        stream_coord_1 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=seed,gc_frame=None,mask_type=["footprint", "ebv"])
+        gc_1 = mock_injector._last_gc_frame
+
+        # Inject a second time with the same random seed
+        stream_coord_2 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=seed,gc_frame=None,mask_type=["footprint", "ebv"])
+        gc_2 = mock_injector._last_gc_frame
+
+        # Inject a 3rd time using the existing gc_frame (should not use a random
+        # seed)
+        stream_coord_3 = mock_injector.phi_to_radec(stream_catalog['phi1'], stream_catalog['phi2'], seed=None,gc_frame=gc_1,mask_type=["footprint", "ebv"])
+        gc_3 = mock_injector._last_gc_frame
+
+        def compare_coords(coord1, coord2):
+            """Helper function to compare two coordinate DataFrames."""
+            assert np.allclose(coord1.icrs.ra.deg, coord2.icrs.ra.deg), "RA values should be the same"
+            assert np.allclose(coord1.icrs.dec.deg, coord2.icrs.dec.deg), "Dec values should be the same"
+        
+        def get_gc_frame_dict(gc_frame):
+            origin = gc_frame.origin
+            pole = gc_frame.pole
+            priority = gc_frame.priority
+            gc_frame_params = {
+                "origin": {
+                    "ra": float(origin.ra.deg),
+                    "dec": float(origin.dec.deg),
+                    "unit": "deg",
+                },
+                "pole": {"ra": float(pole.ra.deg), "dec": float(pole.dec.deg), "unit": "deg"},
+                "priority": str(priority),
+            }
+            return gc_frame_params
+
+        def compare_gc_frames(gc1, gc2):
+            """Helper function to compare two gc_frame objects."""
+            assert get_gc_frame_dict(gc1) == get_gc_frame_dict(gc2), "gc_frame parameters should be the same"
+
+        # Verify that the first two injections produce the same coordinates (same random seed)
+        compare_coords(stream_coord_1, stream_coord_2)
+        compare_gc_frames(gc_1, gc_2)
+        
+        # Verify that the 3rd injection produces the same coordinates (same gc_frame, no new random seed)
+        compare_coords(stream_coord_1, stream_coord_3)
+        compare_gc_frames(gc_1, gc_3)
+
+
+
+
+
+        
