@@ -112,6 +112,11 @@ def faint_magnitudes(rng):
 # ---------------------------------------------------------------------------
 
 @pytest.fixture(scope="session")
+def base_maglim():
+    """Base magnitude limit for the mock survey."""
+    return 26
+
+@pytest.fixture(scope="session")
 def mock_survey():
     from streamobs import surveys
     return surveys.Survey.load(
