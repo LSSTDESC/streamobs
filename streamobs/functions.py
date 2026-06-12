@@ -9,7 +9,7 @@ import scipy.interpolate
 
 
 def function_factory(type_, **kwargs):
-    """ Create a function with given kwargs.
+    """Create a function with given kwargs.
 
     Parameters
     ----------
@@ -20,23 +20,23 @@ def function_factory(type_, **kwargs):
     -------
     func : the function
     """
-    if type_ == 'constant':
+    if type_ == "constant":
         func = Constant(**kwargs)
-    elif type_ == 'line':
+    elif type_ == "line":
         func = Line(**kwargs)
-    elif type_ == 'sinusoid':
+    elif type_ == "sinusoid":
         func = Sinusoid(**kwargs)
-    elif type_ == 'interpolation':
+    elif type_ == "interpolation":
         func = Interpolation(**kwargs)
-    elif type_ in ('file', 'fileinterpolation'):
+    elif type_ in ("file", "fileinterpolation"):
         func = FileInterpolation(**kwargs)
-    elif type_ in ('cubicsplineinterpolation'):
+    elif type_ in ("cubicsplineinterpolation"):
         func = CubicSplineInterpolation(**kwargs)
-    elif type_ in ('filecubicsplineinterpolation'):
+    elif type_ in ("filecubicsplineinterpolation"):
         func = FileCubicSplineInterpolation(**kwargs)
-    elif type_ in ('lineardensitycubicsplineinterpolation'):
+    elif type_ in ("lineardensitycubicsplineinterpolation"):
         func = LinearDensityCubicSplineInterpolation(**kwargs)
-    elif type_ in ('filelineardensitycubicsplineinterpolation'):
+    elif type_ in ("filelineardensitycubicsplineinterpolation"):
         func = FileLinearDensityCubicSplineInterpolation(**kwargs)
     else:
         raise Exception(f"Unrecognized function: {type_}")
@@ -46,7 +46,7 @@ def function_factory(type_, **kwargs):
 
 class BoundedFunction(object):
     def __init__(self, xmin=-np.inf, xmax=np.inf):
-        """ Function with bounds explicitly defined.
+        """Function with bounds explicitly defined.
 
         Parameters
         ----------
@@ -82,7 +82,7 @@ class BoundedFunction(object):
 class Constant(BoundedFunction):
 
     def __init__(self, value=1.0, **kwargs):
-        """ Constant value function.
+        """Constant value function.
 
         Parameters
         ----------
@@ -97,19 +97,19 @@ class Constant(BoundedFunction):
         self.value = value
 
     def _evaluate(self, xvals):
-        """ Evaluate the method """
-        yvals = self.value*np.ones(len(xvals))
+        """Evaluate the method"""
+        yvals = self.value * np.ones(len(xvals))
         return yvals
 
 
 class Line(BoundedFunction):
     """Line function. Evaluated as:
 
-      y(x) = slope*x + intercept
+    y(x) = slope*x + intercept
     """
 
     def __init__(self, slope=0.0, intercept=0.0, **kwargs):
-        """ Line function. Evaluated as:
+        """Line function. Evaluated as:
 
           y(x) = slope*x + intercept
 
@@ -128,20 +128,20 @@ class Line(BoundedFunction):
         self.intercept = intercept
 
     def _evaluate(self, xvals):
-        """ Evaluate the method """
-        yvals = self.slope*xvals + self.intercept
+        """Evaluate the method"""
+        yvals = self.slope * xvals + self.intercept
         return yvals
 
 
 class Sinusoid(BoundedFunction):
     """Sinusoid function. Evaluated as:
 
-       y(x) = amplitude/2 * cos( 2pi*(x - phase)/period ) + amplitude/2+offset
+    y(x) = amplitude/2 * cos( 2pi*(x - phase)/period ) + amplitude/2+offset
 
     """
-    def __init__(self, amplitude=1.0, period=1.0, phase=0.0, offset=0.0,
-                 **kwargs):
-        """ Sinusoid function
+
+    def __init__(self, amplitude=1.0, period=1.0, phase=0.0, offset=0.0, **kwargs):
+        """Sinusoid function
 
         Parameters
         ----------
@@ -162,17 +162,20 @@ class Sinusoid(BoundedFunction):
         self.offset = offset
 
     def _evaluate(self, xvals):
-        """ Evaluate the sinusoid """
-        norm = self.amplitude/2.0
-        yvals = norm * np.cos(2*np.pi * (xvals - self.phase)/self.period) + \
-            norm + self.offset
+        """Evaluate the sinusoid"""
+        norm = self.amplitude / 2.0
+        yvals = (
+            norm * np.cos(2 * np.pi * (xvals - self.phase) / self.period)
+            + norm
+            + self.offset
+        )
         return yvals
 
 
 class Interpolation(BoundedFunction):
 
     def __init__(self, xvals, yvals, **kwargs):
-        """ Interpolation function.
+        """Interpolation function.
 
         Parameters
         ----------
@@ -186,22 +189,22 @@ class Interpolation(BoundedFunction):
         """
         self.xvals = np.atleast_1d(xvals)
         self.yvals = np.atleast_1d(yvals)
-        kwargs.setdefault('xmin', np.min(xvals))
-        kwargs.setdefault('xmax', np.max(xvals))
+        kwargs.setdefault("xmin", np.min(xvals))
+        kwargs.setdefault("xmax", np.max(xvals))
         super().__init__(**kwargs)
 
     def _evaluate(self, xvals):
-        """ Evaluate the method """
-        interp = scipy.interpolate.interp1d(self.xvals, self.yvals,
-                                            bounds_error=False,
-                                            fill_value=np.nan)
+        """Evaluate the method"""
+        interp = scipy.interpolate.interp1d(
+            self.xvals, self.yvals, bounds_error=False, fill_value=np.nan
+        )
 
         return interp(xvals)
 
 
 class FileInterpolation(Interpolation):
     def __init__(self, filename, columns=None, **kwargs):
-        """ Interpolation function from file.
+        """Interpolation function from file.
 
         Parameters
         ----------
@@ -248,8 +251,8 @@ class CubicSplineInterpolation(BoundedFunction):
         """
         self.nodes = np.atleast_1d(nodes)
         self.node_values = np.atleast_1d(node_values)
-        kwargs.setdefault('xmin', np.min(nodes))
-        kwargs.setdefault('xmax', np.max(nodes))
+        kwargs.setdefault("xmin", np.min(nodes))
+        kwargs.setdefault("xmax", np.max(nodes))
         super().__init__(**kwargs)
 
     def _evaluate(self, xvals):
@@ -267,16 +270,22 @@ class CubicSplineInterpolation(BoundedFunction):
         array_like
             Values of the spline at the given x-values.
         """
-        interp = scipy.interpolate.CubicSpline(self.nodes,
-                                               self.node_values,
-                                               bc_type='natural',
-                                               extrapolate=False)
+        interp = scipy.interpolate.CubicSpline(
+            self.nodes, self.node_values, bc_type="natural", extrapolate=False
+        )
         return interp(xvals)
 
 
 class FileCubicSplineInterpolation(CubicSplineInterpolation):
-    def __init__(self, filename, stream_name=None, spline_type=None,
-                 nodes_name="phi1", node_vals_name="mean", **kwargs):
+    def __init__(
+        self,
+        filename,
+        stream_name=None,
+        spline_type=None,
+        nodes_name="phi1",
+        node_vals_name="mean",
+        **kwargs,
+    ):
         """
         Initialize a cubic spline interpolation using data from a file.
 
@@ -314,9 +323,15 @@ class FileCubicSplineInterpolation(CubicSplineInterpolation):
         super().__init__(nodes, node_values, **kwargs)
 
 
-class LinearDensityCubicSplineInterpolation():
-    def __init__(self, intensity_nodes, intensity_node_values, spread_nodes,
-                 spread_node_values, **kwargs):
+class LinearDensityCubicSplineInterpolation:
+    def __init__(
+        self,
+        intensity_nodes,
+        intensity_node_values,
+        spread_nodes,
+        spread_node_values,
+        **kwargs,
+    ):
         """
         Create an interpolation based on linear density and cubic splines.
 
@@ -338,10 +353,10 @@ class LinearDensityCubicSplineInterpolation():
         LinearDensityCubicSplineInterpolation
             Instance of the linear density cubic spline interpolation.
         """
-        self._peak_intensity = CubicSplineInterpolation(intensity_nodes,
-                                                        intensity_node_values)
-        self._spread = CubicSplineInterpolation(spread_nodes,
-                                                spread_node_values)
+        self._peak_intensity = CubicSplineInterpolation(
+            intensity_nodes, intensity_node_values
+        )
+        self._spread = CubicSplineInterpolation(spread_nodes, spread_node_values)
         # get the smallest range where both splines are defined
         self.xmin = np.max([intensity_nodes.min(), spread_nodes.min()])
         self.xmax = np.min([intensity_nodes.max(), spread_nodes.max()])
@@ -359,8 +374,7 @@ class LinearDensityCubicSplineInterpolation():
         return np.sqrt(2 * np.pi) * peak_intensity * spread
 
 
-class FileLinearDensityCubicSplineInterpolation(
-        LinearDensityCubicSplineInterpolation):
+class FileLinearDensityCubicSplineInterpolation(LinearDensityCubicSplineInterpolation):
     def __init__(self, filename, stream_name=None, **kwargs):
         """
         Create a linear density cubic spline interpolation using data from a
@@ -385,11 +399,11 @@ class FileLinearDensityCubicSplineInterpolation(
         self._data = pd.read_csv(self._filename)
         if stream_name:
             self._data = self._data.loc[self._data["stream"] == stream_name]
-        sel_intensity = (self._data["type"] == "peak_intensity")
+        sel_intensity = self._data["type"] == "peak_intensity"
         intensity_nodes = self._data.loc[sel_intensity, "phi1"].values
         intensity_node_values = self._data.loc[sel_intensity, "mean"].values
 
-        sel_spread = (self._data["type"] == "spread")
+        sel_spread = self._data["type"] == "spread"
         spread_nodes = self._data.loc[sel_spread, "phi1"].values
         spread_node_values = self._data.loc[sel_spread, "mean"].values
         super().__init__(
@@ -397,4 +411,5 @@ class FileLinearDensityCubicSplineInterpolation(
             intensity_node_values=intensity_node_values,
             spread_nodes=spread_nodes,
             spread_node_values=spread_node_values,
-            **kwargs)
+            **kwargs,
+        )

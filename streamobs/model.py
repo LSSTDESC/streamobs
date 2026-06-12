@@ -291,7 +291,7 @@ class StreamModel(ConfigurableModel):
                     raise ValueError(
                         "phi1 required to sample dist; include 'phi1' in columns_to_add or provide it in catalog"
                     )
-            
+
                 df.loc[idx, "dist"] = self.distance_modulus.sample(
                     df.loc[idx, "phi1"].to_numpy()
                 )

@@ -4,8 +4,9 @@ Utils for streamobs
 """
 import yaml
 
+
 def parse_config(config):
-    """ Parse a yaml formatted file or string into a dict.
+    """Parse a yaml formatted file or string into a dict.
 
     Parameters
     ----------
@@ -17,7 +18,7 @@ def parse_config(config):
     """
     try:
         # If `config` is a file
-        return yaml.safe_load(open(config,'r'))
+        return yaml.safe_load(open(config, "r"))
     except (OSError, FileNotFoundError):
         # Otherwise assume it is a string
         return yaml.safe_load(config)

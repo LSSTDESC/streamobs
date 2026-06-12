@@ -1,2 +1,2 @@
 #!/usr/bin/env python
-""" Nothing to see here. """
+"""Nothing to see here."""

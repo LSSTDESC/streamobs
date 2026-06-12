@@ -1026,8 +1026,10 @@ class SurveyFactory:
 
         # Load completeness function (same for all bands)
         if verbose:
-          print("\nLoading completeness/efficiency function...")
-        survey.completeness_band = survey_config.get("completeness_band", "r") # default to r band
+            print("\nLoading completeness/efficiency function...")
+        survey.completeness_band = survey_config.get(
+            "completeness_band", "r"
+        )  # default to r band
         survey.delta_saturation = props.get("delta_saturation", -10.4)
         if "completeness" in survey_config:
             # Use default saturation if not band-specific
@@ -1347,7 +1349,7 @@ class SurveyFactory:
             efficiencies = np.insert(efficiencies, 0, 0.0)
         elif delta_mags.min() == delta_saturation:
             # Ensure efficiency is zero at magnitude very near saturation
-            delta_mags = np.insert(delta_mags, 0, delta_saturation-1e-5)
+            delta_mags = np.insert(delta_mags, 0, delta_saturation - 1e-5)
             efficiencies = np.insert(efficiencies, 0, 0.0)
         else:
             # Ensure efficiency is zero at saturation

@@ -249,7 +249,9 @@ class StreamInjector:
                     f"flag_completeness_{self.survey.completeness_band} must be computed for detection in {self.survey.completeness_band} band."
                 )
             else:
-                raise ValueError(f"Detection flag requires '{self.survey.completeness_band}' band to be in bands.")
+                raise ValueError(
+                    f"Detection flag requires '{self.survey.completeness_band}' band to be in bands."
+                )
 
         # Build combined detection flags
         # Start with flux validity check (not BAD_MAG)
@@ -258,9 +260,17 @@ class StreamInjector:
             flag_valid_flux &= data["mag_g_obs"] != "BAD_MAG"
 
         # Combine with completeness
-        flag_observed = flag_valid_flux & flag_completeness_band if flag_completeness_band is not None else flag_valid_flux 
+        flag_observed = (
+            flag_valid_flux & flag_completeness_band
+            if flag_completeness_band is not None
+            else flag_valid_flux
+        )
         if perfect_galstarsep:
-            flag_perfect = flag_valid_flux & flag_detection_only_band if flag_detection_only_band is not None else flag_valid_flux
+            flag_perfect = (
+                flag_valid_flux & flag_detection_only_band
+                if flag_detection_only_band is not None
+                else flag_valid_flux
+            )
 
         # Apply SNR cuts
         detection_mag_cut = kwargs.get("detection_mag_cut", ["g"])
