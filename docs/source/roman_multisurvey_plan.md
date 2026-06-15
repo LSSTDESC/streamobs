@@ -181,18 +181,36 @@ without the old hard block; legacy column names and the `inject(df, bands=[...])
 API are unchanged; the test-branch suite stays green (94 passing; the lone
 `des_yr6` photo-error failure is pre-existing and unrelated).
 
-### Phase 3 — Multi-band / multi-survey `IsochroneModel`
+### Phase 3 — Multi-band / multi-survey `IsochroneModel` ✅ *(implemented)*
 
-- `IsochroneModel` accepts either today's single-survey config or a multi-survey
-  form (`surveys: {name: {survey, band_1, band_2, vega_to_ab}}`), building a dict
-  of `ugali` isochrones.
-- New `sample_masses(...)` (shared mass draw) and a `sample(...)` that returns
-  `{(survey, band): apparent_mag}` by interpolating those masses per survey; a
-  `sample_legacy()` wrapper preserves the `(mag_g, mag_r)` return for existing
-  callers.
-- `_apply_vega_to_ab` shim (see above). `StreamModel.sample`/`complete_catalog`
-  derive their magnitude columns from the isochrone's bands rather than the
-  literal `mag_g`/`mag_r`.
+- ✅ `IsochroneModel.create_isochrone` accepts either today's single-survey
+  config or a multi-survey form (`surveys: {name: {survey, band_1, band_2,
+  vega_to_ab}}` plus shared `name`/`age`/`z`/... at top level), building one
+  `ugali` isochrone per survey (`self.isos`, `self.survey_bands`).
+- ✅ New `sample_masses(...)` draws the initial masses *once* from the primary
+  isochrone's IMF (exactly `nstars`), and `sample_multisurvey(...)` interpolates
+  those shared masses into every survey's bands → `{(survey, band):
+  apparent_mag}` (same physical star, consistent across surveys). The legacy
+  `sample(nstars, dm)` still returns the `(mag_band_1, mag_band_2)` tuple (the
+  primary survey's two bands) so existing callers are unchanged.
+- ✅ `_apply_vega_to_ab(survey, band, mag)` shim — gated by a per-survey
+  `vega_to_ab: {band: offset}` mapping (`AB = Vega + offset`); a no-op when
+  absent. Applied in both the single- and multi-survey paths.
+- ✅ `StreamModel.sample`/`complete_catalog` derive their magnitude columns from
+  the isochrone via `_iso_mag_columns()` / `_sample_iso_mags()`: legacy
+  `mag_g`/`mag_r` for a single-survey isochrone, `<survey>_<band>_true` for a
+  multi-survey one. Naming routes through `columns.true_col`.
+
+**Note on the chosen API:** the plan originally named the dict-returning method
+`sample` and a tuple `sample_legacy`; to avoid `sample()` changing return *type*
+by config (a foot-gun for existing callers), the implementation keeps `sample()`
+as the `(mag_1, mag_2)` tuple and adds `sample_multisurvey()` for the dict.
+`StreamModel` dispatches on `isochrone.multi_survey`.
+
+**Validated:** single-survey model tests unchanged (test branch green, 94
+passing); a two-isochrone multi-survey config produces consistent shared-mass
+magnitudes, the Vega→AB offset shifts only the configured band, and
+`StreamModel.sample` emits the `<survey>_<band>_true` columns.
 
 ### Phase 4 — `MultiSurveyInjector`
 
