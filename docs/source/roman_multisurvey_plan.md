@@ -74,6 +74,18 @@ These are deliberate changes from current behaviour. They are flagged here for
 review **before** we depend on them — they are not silently adopted.
 ```
 
+### S/N detection cut now applies to *all* injected bands *(Phase 2, adopted)*
+
+Previously the injector applied its SNR ≥ 5 cut to a single hard-coded band
+(`detection_mag_cut=["g"]`). Now the default is **every band passed to
+`inject()`** — a star must have SNR ≥ 5 in *all* injected bands to be flagged
+observed. For the default LSST `bands=["r", "g"]` this is stricter than before
+(it adds the r-band SNR requirement on top of g), so detection counts drop
+relative to the old default. Rationale: it generalizes cleanly to any band set
+and makes "observed" mean "detected in everything you asked for". Callers can
+restore any prior behaviour by passing `detection_mag_cut=[...]` explicitly
+(e.g. `["g"]` for the old LSST default). **Adopted, but flagged for review.**
+
 ### `nstars` becomes "exactly N stars" (was an emergent IMF count)
 
 Today {meth}`~streamobs.model.IsochroneModel.sample` converts `nstars` into a
@@ -149,14 +161,25 @@ S/N cut are bit-for-bit identical to the previous single-curve behaviour. To opt
 in, add `log_photo_error_sample: <file>` (the measured true-scatter curve) to a
 survey's `survey_files`.
 
-### Phase 2 — De-hardcode the injector to arbitrary bands
+### Phase 2 — De-hardcode the injector to arbitrary bands ✅ *(implemented)*
 
-- New `streamobs/columns.py` with `obs_col` / `err_col` / `true_col` /
-  `flag_col(band, survey=None)` helpers (`survey=None` ⇒ legacy names).
-- `observed.py`: remove the `bands in {"r","g"}` hard block; generalize the
-  valid-flux check, the S/N cut (default to the survey's `completeness_band`),
-  and the detection-flag logic to arbitrary bands. Existing per-band nside
-  handling already supports Roman nside=1024 vs. LSST nside=128.
+- ✅ New `streamobs/columns.py` with `true_col` / `obs_col` / `err_col` helpers
+  `(band, survey=None)` and `flag_col(survey=None)` (`survey=None` ⇒ legacy
+  names `mag_<band>` / `mag_<band>_obs` / `magerr_<band>` / `flag_observed`;
+  a survey name ⇒ the `<survey>_<band>_…` multi-survey convention for Phase 4).
+- ✅ `observed.py`: removed the `bands in {"r","g"}` hard block; the true-mag
+  read, the observed/err columns, the valid-flux check (now ANDs over every
+  injected band), the S/N cut, the per-survey detection flag, and the stored
+  flag all route through the `columns.py` helpers and the survey's
+  `completeness_band`. Existing per-band nside handling already supports Roman
+  nside=1024 vs. LSST nside=128.
+- ⚠️ The S/N-cut default changed from the hard-coded `["g"]` to **all injected
+  bands** — see *Behaviour changes for discussion* above.
+
+**Validated:** single-band (`bands=["r"]`) and arbitrary band sets now inject
+without the old hard block; legacy column names and the `inject(df, bands=[...])`
+API are unchanged; the test-branch suite stays green (94 passing; the lone
+`des_yr6` photo-error failure is pre-existing and unrelated).
 
 ### Phase 3 — Multi-band / multi-survey `IsochroneModel`
 

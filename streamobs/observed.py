@@ -10,6 +10,7 @@ import healpy as hp
 import numpy as np
 import pandas as pd
 
+from .columns import err_col, flag_col, obs_col, true_col
 from .model import StreamModel
 from .plotting import plot_stream_in_mask
 from .surveys import Survey
@@ -100,7 +101,8 @@ class StreamInjector:
             nside : int, optional
                 HEALPix nside parameter. Default is 4096.
             detection_mag_cut : list of str, optional
-                Bands to apply SNR detection cut. Default is ['g'].
+                Bands to apply the SNR detection cut to. Default is all injected
+                bands (every band in ``bands`` must have SNR >= 5).
             save : bool, optional
                 Whether to save the output data. Default is False.
             folder : str or Path, optional
@@ -152,9 +154,6 @@ class StreamInjector:
 
         # Process each band
         for band in bands:
-            if band not in ["r", "g"]:
-                raise ValueError("Currently only 'r' and 'g' bands are supported.")
-
             # Get extinction for this band
             nside_ebv = hp.get_nside(self.survey.ebv_map)
             if nside_ebv != nside:
@@ -164,7 +163,7 @@ class StreamInjector:
             extinction_band = self.survey.get_extinction(band, pixel=pix_ebv)
 
             # Calculate true apparent magnitudes (including extinction)
-            apparent_mag_true = data["mag_" + band] + extinction_band
+            apparent_mag_true = data[true_col(band)] + extinction_band
 
             # Get magnitude limits
             nside_maglim = hp.get_nside(self.survey.maglim_maps[band])
@@ -216,8 +215,8 @@ class StreamInjector:
             # Add new columns
             new_columns = pd.DataFrame(
                 {
-                    "mag_" + band + "_obs": mag_obs,
-                    "magerr_" + band: mag_err,
+                    obs_col(band): mag_obs,
+                    err_col(band): mag_err,
                 }
             )
 
@@ -260,10 +259,13 @@ class StreamInjector:
                 )
 
         # Build combined detection flags
-        # Start with flux validity check (not BAD_MAG)
-        flag_valid_flux = data["mag_r_obs"] != "BAD_MAG"
-        if "g" in bands:
-            flag_valid_flux &= data["mag_g_obs"] != "BAD_MAG"
+        # Start with flux validity check (not BAD_MAG) across all injected bands
+        flag_valid_flux = None
+        for band in bands:
+            band_valid = data[obs_col(band)] != "BAD_MAG"
+            flag_valid_flux = (
+                band_valid if flag_valid_flux is None else flag_valid_flux & band_valid
+            )
 
         # Combine with completeness
         flag_observed = (
@@ -278,8 +280,8 @@ class StreamInjector:
                 else flag_valid_flux
             )
 
-        # Apply SNR cuts
-        detection_mag_cut = kwargs.get("detection_mag_cut", ["g"])
+        # Apply SNR cuts. Default: require SNR >= SNR_min in every injected band.
+        detection_mag_cut = kwargs.get("detection_mag_cut", list(bands))
         SNR_min = 5.0
 
         for band in detection_mag_cut:
@@ -291,18 +293,20 @@ class StreamInjector:
                 continue
             if verbose:
                 print(f"Applying detection cut on {band}-band with SNR >= {SNR_min}")
-            SNR = 1.0 / data["magerr_" + band]
+            SNR = 1.0 / data[err_col(band)]
             flag_observed &= SNR >= SNR_min
             if perfect_galstarsep:
                 flag_perfect &= SNR >= SNR_min
 
-        # Force SNR cut on r-band for perfect gal/star separation (because it's not included in the detection efficiency functions, while it is for the completeness functions)
+        # Force SNR cut on the completeness band for perfect gal/star separation
+        # (the SNR cut is baked into the completeness functions but not into the
+        # detection-only efficiency functions used for the perfect flag).
         if perfect_galstarsep:
-            SNR_r = 1.0 / data["magerr_r"]
-            flag_perfect &= SNR_r >= SNR_min
+            SNR_compl = 1.0 / data[err_col(self.survey.completeness_band)]
+            flag_perfect &= SNR_compl >= SNR_min
 
         # Store flags in DataFrame
-        data["flag_observed"] = flag_observed
+        data[flag_col()] = flag_observed
         if perfect_galstarsep:
             data["flag_perfect_galstarsep"] = flag_perfect
 
@@ -438,7 +442,7 @@ class StreamInjector:
         >>> data2 = injector.complete_data(df2, gc_frame='last')  # Reuses frame from data1
         """
 
-        required_columns = ["ra", "dec"] + [f"mag_{band}" for band in bands]
+        required_columns = ["ra", "dec"] + [true_col(band) for band in bands]
 
         rng = kwargs.pop("rng", None)
         seed = kwargs.pop("seed", None)
@@ -470,7 +474,7 @@ class StreamInjector:
 
         # Sample missing magnitudes if needed
         mag_bands_missing = [
-            f"mag_{band}" for band in bands if f"mag_{band}" not in data.columns
+            true_col(band) for band in bands if true_col(band) not in data.columns
         ]
         if mag_bands_missing:
             stream_config = kwargs.get("stream_config", None)
