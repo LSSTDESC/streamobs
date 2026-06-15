@@ -132,3 +132,8 @@ dmypy.json
 data/surveys/*
 data/others/*
 .DS_Store
+
+# External reference repos (design references only, not part of streamobs)
+/survey_systematics_in_LSST_streams/
+/rubin_roman_object_classification/
+/lsst_dc2_scratch/

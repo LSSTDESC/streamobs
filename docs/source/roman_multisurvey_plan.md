@@ -44,11 +44,21 @@ Two science realities drive specific features:
    `lsst_r_err`). The single-survey `StreamInjector` **keeps emitting the legacy
    names** `mag_{band}_obs` / `magerr_{band}` / `flag_observed` unchanged.
 3. **Sample-vs-catalog error split, backward-compatible by default.** `Survey`
-   gains the *structure* for two error models — `log_photo_error_sample` (drives
-   the noise draw) and `log_photo_error_catalog` (written as `magerr`) — but
-   **defaults to one relation for both** (`report_error_factor = 1.0` ⇒ catalog
-   == sample ⇒ existing outputs unchanged). Separating them is opt-in: set a
-   factor, or supply a second CSV.
+   holds two error curves, both functions of `delta_mag = mag − maglim`:
+   - `log_photo_error_catalog` — the survey's **reported** error curve (the
+     existing `photoerror_*.csv`). Written as `magerr` and drives the S/N cut.
+     Always present; loaded from the `log_photo_error_catalog` key or the legacy
+     `log_photo_error` key.
+   - `log_photo_error_sample` — an **optional second** curve giving the **true
+     scatter** of observed−true magnitudes; drives the noise draw. Config key
+     `log_photo_error_sample`.
+
+   If no sample curve is supplied, the noise draw falls back to the catalog
+   curve ⇒ existing outputs unchanged. Separating them is opt-in: supply the
+   second CSV. (Earlier drafts proposed a scalar `report_error_factor` /
+   inflation curve to *derive* one from the other; superseded by two independent
+   curves, which is more general and matches the Roman DC2 products that measure
+   the true scatter directly.)
 4. **Sample stellar masses once, interpolate per survey.** This is a correctness
    requirement (see below) and the engine of the whole feature.
 5. **Backward compatibility is by column-schema + public API**, not internal
@@ -110,20 +120,34 @@ Phase 3 is dropped.)*
 
 Phases 1–4 are the current branch; Phases 5–6 are designed here but deferred.
 
-### Phase 1 — Sample vs. catalog error models on `Survey`
+### Phase 1 — Sample vs. catalog error models on `Survey` ✅ *(implemented)*
 
-- `Survey`: replace the single `log_photo_error` field with
-  `log_photo_error_sample`, `log_photo_error_catalog`, and
-  `report_error_factor: float = 1.0`; keep a `log_photo_error` property alias.
-- `Survey.get_photo_error(band, mag, maglim, kind="sample")`: `kind` selects the
-  interpolator; `kind="catalog"` falls back to sample if no catalog model is
-  loaded. Default reproduces today's numbers exactly.
-- `SurveyFactory`: resolve the sample file (or legacy `log_photo_error`); load an
-  explicit `log_photo_error_catalog` file if given, else derive the catalog model
-  from the sample table via a `scale` argument on `set_photo_error`
-  (subtract `log10(report_error_factor)`).
-- `StreamInjector.inject`: draw noise with the **sample** error; write the
-  **catalog** error as `magerr`; S/N cut uses the catalog error.
+Two independent error curves, both vs `delta_mag = mag − maglim`:
+
+- ✅ `Survey`: replaced the single `log_photo_error` field with
+  `log_photo_error_catalog` (reported error, the base curve) and
+  `log_photo_error_sample` (optional true-scatter curve). Kept a read/write
+  `log_photo_error` property aliasing the **catalog** model (the legacy field's
+  meaning — back-compat for existing tests and any code that sets it).
+- ✅ `Survey.get_photo_error(band, mag, maglim, kind="catalog")`: `kind` selects
+  the curve via `_resolve_log_photo_error`. `kind="catalog"` returns the reported
+  error; `kind="sample"` returns the true-scatter curve, falling back to the
+  catalog curve when no sample curve is loaded. Default `kind="catalog"`
+  reproduces today's numbers exactly.
+- ✅ `SurveyFactory._load_survey_data`: loads the catalog curve from
+  `log_photo_error_catalog` (or the legacy `log_photo_error`) key, and an
+  optional sample curve from the `log_photo_error_sample` key. No factor /
+  inflation logic — both curves are read directly via `set_photo_error`.
+- ✅ `StreamInjector.inject`: draws noise with the **sample** error
+  (`kind="sample"`); writes the **catalog** error as `magerr` and runs the S/N
+  cut on it (`kind="catalog"`).
+
+**Backward compatibility verified (94 passing tests from the test branch):** with
+only the legacy `log_photo_error` curve and no `log_photo_error_sample`, the
+sample draw falls back to the catalog curve, so the noise draw, `magerr`, and the
+S/N cut are bit-for-bit identical to the previous single-curve behaviour. To opt
+in, add `log_photo_error_sample: <file>` (the measured true-scatter curve) to a
+survey's `survey_files`.
 
 ### Phase 2 — De-hardcode the injector to arbitrary bands
 

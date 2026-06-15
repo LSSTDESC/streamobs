@@ -175,17 +175,23 @@ class StreamInjector:
             else:
                 pix_maglim = pix
 
-            # Calculate photometric errors
+            # Calculate photometric errors. The *sample* error (true scatter)
+            # drives the noise draw; the *catalog* error (reported) is written
+            # as magerr and used for the S/N cut. When no sample curve is loaded,
+            # the sample error falls back to the catalog error, so the two are
+            # identical (outputs unchanged from the single-curve behaviour).
+            maglim_vals = self.survey.get_maglim(band, pixel=pix_maglim)
+            mag_err_sample = self.survey.get_photo_error(
+                band, apparent_mag_true, maglim_vals, kind="sample"
+            )
             mag_err = self.survey.get_photo_error(
-                band,
-                apparent_mag_true,
-                self.survey.get_maglim(band, pixel=pix_maglim),
+                band, apparent_mag_true, maglim_vals, kind="catalog"
             )
 
-            # Sample measured magnitudes
+            # Sample measured magnitudes using the sample (true-scatter) error
             mag_obs = self.sample_measured_magnitudes(
                 apparent_mag_true,
-                mag_err,
+                mag_err_sample,
                 rng=rng,
                 seed=seed,
                 **kwargs,

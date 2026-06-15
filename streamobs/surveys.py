@@ -57,9 +57,20 @@ class Survey:
         Magnitude difference for saturation threshold in the initial functions.
     completeness_band : str, optional
         Band used to derive completeness function (e.g., 'r').
-    log_photo_error : callable, optional
-        Photometric error model f(delta_mag) -> log10(mag_error).
-        Same function used for all bands, obtained from r band.
+    log_photo_error_catalog : callable, optional
+        *Catalog* (reported) photometric error model f(delta_mag) -> log10(mag_error),
+        where ``delta_mag = mag - maglim``. This is the survey's reported error
+        curve (e.g. ``photoerror_r.csv``); it is written as ``magerr`` and drives
+        the S/N cut. Loaded from the ``log_photo_error_catalog`` config key, or the
+        legacy ``log_photo_error`` key. Always present for a configured survey.
+    log_photo_error_sample : callable, optional
+        *Sample* photometric error model f(delta_mag) -> log10(mag_error): the true
+        scatter of observed-minus-true magnitudes, used to draw the observed
+        magnitudes. Optional second curve (config key ``log_photo_error_sample``).
+        If not provided, the noise draw falls back to the catalog model, which
+        reproduces the previous single-curve behaviour exactly.
+    log_photo_error : callable
+        Read/write alias for ``log_photo_error_catalog`` (backward compatibility).
 
     Examples
     --------
@@ -109,7 +120,8 @@ class Survey:
     completeness: Optional[Callable] = None
     completeness_band: Optional[str] = None
     delta_saturation: Optional[float] = None
-    log_photo_error: Optional[Callable] = None
+    log_photo_error_catalog: Optional[Callable] = None
+    log_photo_error_sample: Optional[Callable] = None
 
     # Band-independent maps
     ebv_map: Optional[np.ndarray] = None
@@ -127,6 +139,41 @@ class Survey:
             self.saturation = {}
         if self.sys_error is None:
             self.sys_error = {}
+
+    @property
+    def log_photo_error(self) -> Optional[Callable]:
+        """Backward-compatible alias for the *catalog* (reported) error model."""
+        return self.log_photo_error_catalog
+
+    @log_photo_error.setter
+    def log_photo_error(self, func: Optional[Callable]):
+        self.log_photo_error_catalog = func
+
+    def _resolve_log_photo_error(self, kind: str = "catalog") -> Optional[Callable]:
+        """
+        Select the log photometric-error interpolator.
+
+        Parameters
+        ----------
+        kind : str
+            ``"catalog"`` returns the catalog model: the reported error curve,
+            written as ``magerr`` and used for the S/N cut. ``"sample"`` returns
+            the sample model: the true scatter (observed-minus-true) that drives
+            the noise draw, falling back to the catalog model when no sample curve
+            is loaded (which reproduces the previous single-curve behaviour).
+
+        Returns
+        -------
+        callable or None
+            The selected ``f(delta_mag) -> log10(mag_error)`` interpolator.
+        """
+        if kind == "catalog":
+            return self.log_photo_error_catalog
+        elif kind == "sample":
+            if self.log_photo_error_sample is not None:
+                return self.log_photo_error_sample
+            return self.log_photo_error_catalog
+        raise ValueError(f"kind must be 'sample' or 'catalog', got '{kind}'")
 
     @classmethod
     def load(
@@ -232,7 +279,7 @@ class Survey:
         return extinction[pixel]
 
     def get_photo_error(
-        self, band: str, magnitude: float, maglim: float, **kwargs
+        self, band: str, magnitude: float, maglim: float, kind: str = "catalog", **kwargs
     ) -> float:
         """
         Get photometric error estimate.
@@ -245,6 +292,11 @@ class Survey:
             True apparent magnitude(s).
         maglim : float or np.ndarray
             Magnitude limit(s) at the position(s).
+        kind : str, optional
+            Which error model to evaluate: ``"catalog"`` (reported error, written
+            as ``magerr`` and used for S/N cuts) or ``"sample"`` (true scatter,
+            used to draw the observed magnitudes). ``"sample"`` falls back to the
+            catalog model if no sample curve is loaded. Default is ``"catalog"``.
         **kwargs
             Additional keyword arguments:
 
@@ -260,10 +312,11 @@ class Survey:
         Raises
         ------
         ValueError
-            If photo error model is not loaded.
+            If the requested photo error model is not loaded.
         """
-        if self.log_photo_error is None:
-            raise ValueError("Photo error model not loaded")
+        log_photo_error = self._resolve_log_photo_error(kind)
+        if log_photo_error is None:
+            raise ValueError(f"Photo error model ('{kind}') not loaded")
 
         delta_saturation = kwargs.get("delta_saturation", self.delta_saturation)
 
@@ -275,13 +328,13 @@ class Survey:
             np.where(
                 ((delta_mag) <= delta_saturation)
                 & (magnitude >= self.saturation[band]),
-                self.log_photo_error(delta_saturation),
-                self.log_photo_error(delta_mag),
+                log_photo_error(delta_saturation),
+                log_photo_error(delta_mag),
             )
         )
         mag_err_stat = np.where(
             magnitude < self.saturation[band],
-            10 ** self.log_photo_error(delta_saturation - 1),
+            10 ** log_photo_error(delta_saturation - 1),
             mag_err_stat,
         )  # saturation at the bright end
 
@@ -1094,16 +1147,46 @@ class SurveyFactory:
                 if verbose:
                     print("No classification efficiency file found, skipping.")
 
-        # Load photometric error model (same for all bands)
+        # Load photometric error model(s), same for all bands. Two curves:
+        #   - catalog : reported error vs delta_mag (the survey's photoerror file).
+        #               Written as magerr and used for the S/N cut. Always loaded.
+        #   - sample  : optional second curve giving the true scatter of
+        #               observed-minus-true magnitudes; drives the noise draw.
+        # Backward compatible: with no sample curve, the noise draw falls back to
+        # the catalog curve, reproducing the previous single-curve behaviour.
         if verbose:
             print("\nLoading photometric error model...")
-        if "log_photo_error" in survey_config:
-            # Use default saturation if not band-specific
+
+        # Catalog (reported) error model: prefer explicit 'log_photo_error_catalog',
+        # else the legacy 'log_photo_error' key.
+        catalog_key = (
+            "log_photo_error_catalog"
+            if "log_photo_error_catalog" in survey_config
+            else "log_photo_error"
+        )
+        if catalog_key in survey_config:
             cls._load_file(
                 survey,
                 survey_config,
-                "log_photo_error",
-                "Photometric error model",
+                "log_photo_error_catalog",
+                "Photometric error model (catalog / reported)",
+                lambda f: cls.set_photo_error(
+                    f, delta_saturation=survey.delta_saturation
+                ),
+                data_path_survey,
+                data_path_others,
+                filename=survey_config.get(catalog_key),
+                **kwargs,
+            )
+
+        # Optional sample (true-scatter) error model. If absent, the noise draw
+        # falls back to the catalog model (get_photo_error(kind="sample")).
+        if "log_photo_error_sample" in survey_config:
+            cls._load_file(
+                survey,
+                survey_config,
+                "log_photo_error_sample",
+                "Photometric error model (sample / true scatter)",
                 lambda f: cls.set_photo_error(
                     f, delta_saturation=survey.delta_saturation
                 ),
