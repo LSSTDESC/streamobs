@@ -1,0 +1,78 @@
+# Multi-survey demo scene: a single toy stream observed by BOTH Rubin/LSST and
+# Roman. Consumed by `streamobs.observed.MultiSurveyInjector` (Phase 4).
+#
+# Usage (see notebooks/multisurvey_phases_demo.ipynb):
+#
+#     import yaml, pandas as pd
+#     from streamobs.observed import MultiSurveyInjector
+#     scene = yaml.safe_load(open("config/scenes/roman_rubin_demo.yaml"))
+#     msi = MultiSurveyInjector(scene["surveys"])
+#     df  = pd.DataFrame(index=range(int(scene["stream"]["nstars"])))
+#     out = msi.inject(df, scene["survey_bands"],
+#                      stream_config=scene["stream"], seed=42)
+#
+# The same physical stars carry both `lsst_<band>_*` and `roman_<band>_*`
+# columns; each band's errors / detection come from that survey's own maps.
+
+# Surveys to inject. The mapping KEY is the column namespace (lsst_r_obs, ...).
+# Each value is a StreamInjector spec: a survey-name string here (loaded via
+# Survey.load); could also be a {name, release} once the loader supports it.
+surveys:
+  lsst: lsst
+  roman: roman
+
+# Bands to inject per survey. Each survey's `completeness_band` must appear here.
+# NOTE: a band label is used BOTH as the ugali isochrone field name AND as the
+# key into that survey's maglim/photo-error/extinction maps, so the two must
+# agree. ugali's Roman fields are upper-case (F106, F158, ...); the Roman
+# Survey's maps must therefore be keyed with the same upper-case labels.
+survey_bands:
+  lsst: [r, g]
+  roman: [F106, F158]
+
+# Shared stream geometry + a MULTI-SURVEY isochrone. The isochrone draws one set
+# of initial masses (exactly `nstars`) and interpolates them into every survey's
+# bands, so a star's LSST and Roman magnitudes describe the same object.
+stream:
+  nstars: 5.0e+3
+
+  density:
+    type: Uniform
+    xmin: -9.0
+    xmax: +9.0
+
+  track:
+    center:
+      type: Constant
+      value: 0.0
+    spread:
+      type: Constant
+      value: 0.2
+    sampler: Gaussian
+
+  distance_modulus:
+    center:
+      type: Line
+      slope: 0.1
+      intercept: 16.5
+    spread:
+      type: Constant
+      value: 0.0001
+    sampler: Uniform
+
+  isochrone:
+    # Shared stellar population (one age/metallicity for both surveys).
+    name: Marigo2017
+    age: 12.0
+    z: 0.0006
+    surveys:
+      lsst:
+        survey: lsst
+        band_1: g
+        band_2: r
+      roman:
+        survey: roman
+        band_1: F106
+        band_2: F158
+        # Roman bands are AUTOMATICALLY converted Vega->AB by IsochroneModel
+        # (streamobs.model.ROMAN_VEGA_TO_AB); no per-config flag is needed.

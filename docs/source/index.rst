@@ -108,6 +108,12 @@ Documentation Contents
    data
    modules
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Design Notes
+
+   roman_multisurvey_plan
+
 Indices and Tables
 ==================
 

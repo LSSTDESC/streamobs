@@ -279,7 +279,12 @@ class Survey:
         return extinction[pixel]
 
     def get_photo_error(
-        self, band: str, magnitude: float, maglim: float, kind: str = "catalog", **kwargs
+        self,
+        band: str,
+        magnitude: float,
+        maglim: float,
+        kind: str = "catalog",
+        **kwargs,
     ) -> float:
         """
         Get photometric error estimate.

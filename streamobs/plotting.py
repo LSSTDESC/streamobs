@@ -9,6 +9,8 @@ import numpy as np
 import pandas as pd
 import pylab as plt
 
+from .columns import flag_col, obs_col, true_col
+
 try:
     import healpy as hp
     import skyproj
@@ -95,8 +97,8 @@ def plot_inject(data, survey, bands=None, range=None, **kwargs):
         Data containing the injected stream. Must have columns:
         - 'ra', 'dec': Sky coordinates in degrees
         - 'flag_observed': Boolean flag for detected stars
-        - 'mag_<band>': True magnitudes for each band
-        - 'mag_<band>_obs': Observed magnitudes for each band
+        - '<band>_true': True magnitudes for each band
+        - '<band>_obs': Observed magnitudes for each band
     survey : Survey
         Survey object containing magnitude limit maps and other properties.
     bands : list of str, optional
@@ -134,18 +136,18 @@ def plot_inject(data, survey, bands=None, range=None, **kwargs):
     required_cols = [
         "ra",
         "dec",
-        "flag_observed",
-        f"mag_{band1}",
-        f"mag_{band2}",
-        f"mag_{band1}_obs",
-        f"mag_{band2}_obs",
+        flag_col(),
+        true_col(band1),
+        true_col(band2),
+        obs_col(band1),
+        obs_col(band2),
     ]
     missing_cols = [col for col in required_cols if col not in data.columns]
     if missing_cols:
         raise ValueError(f"Missing required columns: {missing_cols}")
 
     # Get detection flags
-    sel = data["flag_observed"].astype(bool)
+    sel = data[flag_col()].astype(bool)
 
     # Create figure
     fig, ax = plt.subplots(1, 3, figsize=(14, 6))
@@ -205,8 +207,8 @@ def plot_inject(data, survey, bands=None, range=None, **kwargs):
     # --- Panel 2: HR diagram with true magnitudes ---
     ax[1].set_title("HR diagram using True magnitudes")
 
-    color_true = data[f"mag_{band1}"] - data[f"mag_{band2}"]
-    mag_true = data[f"mag_{band1}"]
+    color_true = data[true_col(band1)] - data[true_col(band2)]
+    mag_true = data[true_col(band1)]
 
     ax[1].scatter(
         color_true,
@@ -234,8 +236,8 @@ def plot_inject(data, survey, bands=None, range=None, **kwargs):
     ax[2].set_title("HR diagram using sampled observed magnitudes")
 
     # Convert measured magnitudes to numeric, handling "BAD_MAG" strings
-    mag1_obs = pd.to_numeric(data[f"mag_{band1}_obs"], errors="coerce")
-    mag2_obs = pd.to_numeric(data[f"mag_{band2}_obs"], errors="coerce")
+    mag1_obs = pd.to_numeric(data[obs_col(band1)], errors="coerce")
+    mag2_obs = pd.to_numeric(data[obs_col(band2)], errors="coerce")
 
     # Mask out bad measurements
     mask_good = (~mag1_obs.isna()) & (~mag2_obs.isna())

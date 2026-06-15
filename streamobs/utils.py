@@ -2,6 +2,7 @@
 """
 Utils for streamobs
 """
+
 import yaml
 
 

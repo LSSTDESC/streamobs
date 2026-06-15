@@ -6,13 +6,15 @@ Probabilistic samplers.
 import numpy as np
 import scipy.stats
 
-from streamobs.functions import (CubicSplineInterpolation,
-                                 FileCubicSplineInterpolation,
-                                 FileInterpolation,
-                                 FileLinearDensityCubicSplineInterpolation,
-                                 Interpolation,
-                                 LinearDensityCubicSplineInterpolation,
-                                 Sinusoid)
+from streamobs.functions import (
+    CubicSplineInterpolation,
+    FileCubicSplineInterpolation,
+    FileInterpolation,
+    FileLinearDensityCubicSplineInterpolation,
+    Interpolation,
+    LinearDensityCubicSplineInterpolation,
+    Sinusoid,
+)
 
 
 def sampler_factory(type_, **kwargs):

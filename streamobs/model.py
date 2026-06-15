@@ -13,6 +13,26 @@ from streamobs.columns import true_col
 from streamobs.functions import function_factory
 from streamobs.samplers import sampler_factory
 
+# Roman ugali isochrones are delivered in Vega magnitudes, but our catalogs are
+# AB. These are the per-band AB - Vega offsets (AB = Vega + diff) for the Roman
+# WFI filters — the mode of the by-chip zeropoints from the Roman technical
+# information (Roman_zeropoints_20240301.ecsv), as used by the
+# rubin_roman_object_classification prototype. The conversion is applied
+# unconditionally to any Roman band (a no-op for non-Roman bands).
+#
+# TODO: this Vega->AB conversion really belongs in ugali, so isochrones are
+# returned natively in AB. Move it upstream and delete this table once that lands.
+ROMAN_VEGA_TO_AB = {
+    "F062": 0.153,
+    "F087": 0.481,
+    "F106": 0.660,
+    "F129": 1.051,
+    "F146": 1.164,
+    "F158": 1.315,
+    "F184": 1.556,
+    "F213": 1.837,
+}
+
 
 class ConfigurableModel(object):
     """Baseclass for models built from configs."""
@@ -117,8 +137,8 @@ class StreamModel(ConfigurableModel):
         pandas.DataFrame
             Columns include: ``phi1``, ``phi2``, ``dist``, ``mu1``, ``mu2``,
             ``rv``, and the isochrone magnitude columns. For a single-survey
-            isochrone these are the legacy ``mag_g`` / ``mag_r`` (its two bands);
-            for a multi-survey isochrone they are ``<survey>_<band>_true`` per
+            isochrone these are ``<band>_true`` (its two bands); for a
+            multi-survey isochrone they are ``<survey>_<band>_true`` per
             survey/band. Some may be None if the sub-model is absent.
         """
 
@@ -154,7 +174,7 @@ class StreamModel(ConfigurableModel):
         if self.isochrone:
             mag_data = self._sample_iso_mags(size, dist)
         else:
-            mag_data = {"mag_g": None, "mag_r": None}  # legacy placeholder
+            mag_data = {}  # no isochrone -> no magnitude columns
         for col, vals in mag_data.items():
             df[col] = vals
 
@@ -212,9 +232,10 @@ class StreamModel(ConfigurableModel):
             that length.
         columns_to_add : sequence of str or None, optional
             The columns to ensure in the output. Valid entries are
-            {'phi1','phi2','dist','mag_g','mag_r','mu1','mu2','rv'}.
-            If None, all valid columns supported by the configured model are
-            considered.
+            {'phi1','phi2','dist','mu1','mu2','rv'} plus the isochrone magnitude
+            columns (``<band>_true`` single-survey, ``<survey>_<band>_true``
+            multi-survey). If None, all valid columns supported by the
+            configured model are considered.
         size : int or None, optional
             Required when ``catalog`` is None or an empty table; ignored
             otherwise.
@@ -252,7 +273,7 @@ class StreamModel(ConfigurableModel):
         """
         # Supported outputs and capability filtering
         # Columns this method can fill using the configured model
-        # Magnitude columns are band-/survey-general (legacy mag_g/mag_r for a
+        # Magnitude columns are band-/survey-general (<band>_true for a
         # single-survey isochrone; <survey>_<band>_true for multi-survey).
         mag_cols = self._iso_mag_columns()
         all_cols = ("phi1", "phi2", "dist") + tuple(mag_cols) + ("mu1", "mu2", "rv")
@@ -480,8 +501,8 @@ class StreamModel(ConfigurableModel):
         # Mapping of possible column name variants to standard names
         col_mapping = {
             "dist": ["dist", "distance", "distance_modulus"],
-            "mag_g": ["mag_g", "g_mag", "g", "gmag", "magnitude_g"],
-            "mag_r": ["mag_r", "r_mag", "r", "rmag", "magnitude_r"],
+            "g_true": ["g_true", "mag_g", "g_mag", "g", "gmag", "magnitude_g"],
+            "r_true": ["r_true", "mag_r", "r_mag", "r", "rmag", "magnitude_r"],
             "phi1": ["phi1", "phi_1", "Phi1", "Phi_1"],
             "phi2": ["phi2", "phi_2", "Phi2", "Phi_2"],
             "mu1": ["mu1", "mu_1"],
@@ -586,13 +607,16 @@ class IsochroneModel(ConfigurableModel):
       ``band_2``, ...). :meth:`sample` returns ``(mag_band_1, mag_band_2)`` and
       reproduces the previous behaviour exactly.
     - **Multi-survey**: a ``surveys`` mapping
-      ``{survey_name: {survey, band_1, band_2, vega_to_ab}}`` plus shared keys
+      ``{survey_name: {survey, band_1, band_2}}`` plus shared keys
       (``name``, ``age``, ``z``, ...) at the top level. One ``ugali`` isochrone
       is built per survey from the *same* stellar population, so a single shared
       draw of initial masses (:meth:`sample_masses`) is interpolated into every
       survey's bands — giving the same physical star consistent magnitudes
       across surveys. :meth:`sample_multisurvey` returns
       ``{(survey, band): apparent_mag}``.
+
+    Roman bands are always converted from Vega to AB (see
+    :data:`ROMAN_VEGA_TO_AB`); other bands pass through unchanged.
     """
 
     # Defaults for the shared isochrone mass grid (see ugali Isochrone.sample)
@@ -633,8 +657,7 @@ class IsochroneModel(ConfigurableModel):
                 'Please use the "distance_modulus" section of the configuration '
                 "file, instead of the isochrone section, to define a distance modulus."
             )
-        factory_config = {k: v for k, v in config.items() if k != "vega_to_ab"}
-        self.iso = self._build_iso(factory_config)
+        self.iso = self._build_iso(config)
         self.survey_name = config.get("survey")
         self.band_1 = config.get("band_1")
         self.band_2 = config.get("band_2")
@@ -642,23 +665,17 @@ class IsochroneModel(ConfigurableModel):
         self.surveys = [self.survey_name]
         self.isos = {self.survey_name: self.iso}
         self.survey_bands = {self.survey_name: (self.band_1, self.band_2)}
-        self._vega_to_ab = {self.survey_name: config.get("vega_to_ab")}
 
     def _create_multisurvey_isochrones(self, config):
         """Build one isochrone per survey, sharing the top-level stellar params."""
         shared = {k: v for k, v in config.items() if k != "surveys"}
         self.isos = {}
         self.survey_bands = {}
-        self._vega_to_ab = {}
         self.surveys = []
         for name, scfg in config["surveys"].items():
-            factory_config = {
-                **shared,
-                **{k: v for k, v in scfg.items() if k != "vega_to_ab"},
-            }
+            factory_config = {**shared, **scfg}
             self.isos[name] = self._build_iso(factory_config)
             self.survey_bands[name] = (scfg.get("band_1"), scfg.get("band_2"))
-            self._vega_to_ab[name] = scfg.get("vega_to_ab")
             self.surveys.append(name)
         # Primary isochrone drives the shared mass draw and the legacy sample().
         self.survey_name = self.surveys[0]
@@ -707,24 +724,17 @@ class IsochroneModel(ConfigurableModel):
             np.interp(masses, mass_init, mag_2[order]),
         )
 
-    def _apply_vega_to_ab(self, survey, band, mag):
-        """Apply an optional per-band Vega->AB offset (``AB = Vega + offset``).
+    def _to_ab(self, band, mag):
+        """Convert Roman bands from Vega to AB (``AB = Vega + offset``).
 
-        ``vega_to_ab`` in the config is a ``{band: offset}`` mapping; if absent
-        or empty, the magnitudes are returned unchanged. This is the isolated
-        shim that lets multi-survey injection work while ``ugali`` still returns
-        some bands in Vega; it becomes a no-op once bands are natively AB.
+        Applied unconditionally: Roman bands use the offset in
+        :data:`ROMAN_VEGA_TO_AB`, every other band passes through unchanged.
+        ``ugali`` delivers Roman isochrones in Vega while our catalogs are AB.
+
+        TODO: this really belongs in ugali (return AB natively); remove once it
+        does.
         """
-        spec = self._vega_to_ab.get(survey)
-        if not spec:
-            return mag
-        if isinstance(spec, dict):
-            return mag + spec.get(band, 0.0)
-        warnings.warn(
-            f"vega_to_ab for survey '{survey}' is set but is not a "
-            "{band: offset} mapping; no Vega->AB correction applied."
-        )
-        return mag
+        return mag + ROMAN_VEGA_TO_AB.get(band, 0.0)
 
     @staticmethod
     def _add_distance_modulus(abs_mag, distance_modulus):
@@ -755,8 +765,8 @@ class IsochroneModel(ConfigurableModel):
         for name in self.surveys:
             band_1, band_2 = self.survey_bands[name]
             abs_1, abs_2 = self._absolute_mags(self.isos[name], masses)
-            abs_1 = self._apply_vega_to_ab(name, band_1, abs_1)
-            abs_2 = self._apply_vega_to_ab(name, band_2, abs_2)
+            abs_1 = self._to_ab(band_1, abs_1)
+            abs_2 = self._to_ab(band_2, abs_2)
             out[(name, band_1)] = self._add_distance_modulus(abs_1, distance_modulus)
             out[(name, band_2)] = self._add_distance_modulus(abs_2, distance_modulus)
         return out
@@ -764,10 +774,19 @@ class IsochroneModel(ConfigurableModel):
     def sample(self, nstars, distance_modulus, rng=None, **kwargs):
         """Simulate magnitudes in the two bands of the (primary) isochrone.
 
+        Draws *exactly* ``nstars`` stars: a fixed set of initial masses is drawn
+        once from the isochrone IMF (:meth:`sample_masses`) and interpolated into
+        the two bands. This differs from the historical behaviour, where
+        ``nstars`` was converted to a total stellar mass and ``ugali``'s
+        ``simulate`` returned a random-length IMF realization (count generally
+        ``!= nstars``). The fixed-count semantics are required so the *same
+        physical star* can be shared across surveys (see
+        :meth:`sample_multisurvey`).
+
         Parameters
         ----------
         nstars : int
-            Number of stars to simulate.
+            Number of stars to simulate (returns exactly this many).
         distance_modulus : float or array-like
             Distance modulus per star (broadcast if scalar).
 
@@ -778,30 +797,11 @@ class IsochroneModel(ConfigurableModel):
             this returns the primary survey's two bands; use
             :meth:`sample_multisurvey` to get every survey's bands.
         """
-        if getattr(self, "multi_survey", False):
-            mags = self.sample_multisurvey(
-                nstars, distance_modulus, rng=rng, **kwargs
-            )
-            return (
-                mags[(self.survey_name, self.band_1)],
-                mags[(self.survey_name, self.band_2)],
-            )
-
-        # Single-survey: preserve the existing ugali.simulate-based behaviour.
-        stellar_mass = nstars * self.iso.stellar_mass()
-        mag_1, mag_2 = self.iso.simulate(
-            stellar_mass, distance_modulus=self.iso.distance_modulus
+        mags = self.sample_multisurvey(nstars, distance_modulus, rng=rng, **kwargs)
+        return (
+            mags[(self.survey_name, self.band_1)],
+            mags[(self.survey_name, self.band_2)],
         )
-        if np.isscalar(distance_modulus):
-            mag_1, mag_2 = [
-                mag + np.ones_like(mag) * distance_modulus for mag in (mag_1, mag_2)
-            ]
-        else:
-            mag_1, mag_2 = [mag + distance_modulus for mag in (mag_1, mag_2)]
-
-        mag_1 = self._apply_vega_to_ab(self.survey_name, self.band_1, mag_1)
-        mag_2 = self._apply_vega_to_ab(self.survey_name, self.band_2, mag_2)
-        return mag_1, mag_2
 
     def _dist_to_modulus(self, distance):
         """

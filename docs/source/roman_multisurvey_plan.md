@@ -39,10 +39,16 @@ Two science realities drive specific features:
    `{survey_name: Survey}` and delegates per-survey work to the existing,
    unchanged `Survey` per-band API. Not a composite `Survey`; not manual
    re-runs.
-2. **Column convention.** Multi-survey outputs use `{survey}_{band}_true`,
-   `{survey}_{band}_obs`, and `{survey}_{band}_err` (e.g. `roman_f158_obs`,
-   `lsst_r_err`). The single-survey `StreamInjector` **keeps emitting the legacy
-   names** `mag_{band}_obs` / `magerr_{band}` / `flag_observed` unchanged.
+2. **Column convention (uniform `_true`/`_obs`/`_err`).** A single naming scheme
+   is used everywhere: `{band}_true` / `{band}_obs` / `{band}_err` /
+   `flag_observed` single-survey, and `{survey}_{band}_true` /
+   `{survey}_{band}_obs` / `{survey}_{band}_err` / `{survey}_flag_observed`
+   multi-survey (e.g. `roman_f158_obs`, `lsst_r_err`). The single- and
+   multi-survey forms differ only by the optional survey prefix.
+   **This intentionally drops the historical `mag_{band}` / `mag_{band}_obs` /
+   `magerr_{band}` names — it is *not* backward compatible** with catalogs or
+   downstream readers expecting those columns (decision made deliberately to
+   keep one convention; see decision 5).
 3. **Sample-vs-catalog error split, backward-compatible by default.** `Survey`
    holds two error curves, both functions of `delta_mag = mag − maglim`:
    - `log_photo_error_catalog` — the survey's **reported** error curve (the
@@ -61,11 +67,13 @@ Two science realities drive specific features:
    the true scatter directly.)
 4. **Sample stellar masses once, interpolate per survey.** This is a correctness
    requirement (see below) and the engine of the whole feature.
-5. **Backward compatibility is by column-schema + public API**, not internal
-   coupling. Downstream consumers read pre-generated CSVs by column name
-   (`mag_g_obs`/`mag_r_obs`/`flag_observed`) and use the
-   `StreamInjector(survey).inject(df, bands=[...])` API. Both are preserved;
-   multi-survey support is purely additive.
+5. **Public API preserved; column schema deliberately changed.** The
+   `StreamInjector(survey).inject(df, bands=[...])` API is unchanged. The
+   **column names are not** — we adopt the uniform `{band}_true/_obs/_err`
+   scheme (decision 2) *instead of* preserving the historical
+   `mag_g_obs`/`mag_r_obs`/`magerr_g` names. Downstream consumers that read those
+   columns must be updated. This is an accepted break in exchange for one
+   convention across single- and multi-survey output.
 
 ## Behaviour changes for discussion
 
@@ -86,12 +94,22 @@ and makes "observed" mean "detected in everything you asked for". Callers can
 restore any prior behaviour by passing `detection_mag_cut=[...]` explicitly
 (e.g. `["g"]` for the old LSST default). **Adopted, but flagged for review.**
 
-### `nstars` becomes "exactly N stars" (was an emergent IMF count)
+### `nstars` becomes "exactly N stars" (was an emergent IMF count) *(adopted, but flagged for review)*
 
-Today {meth}`~streamobs.model.IsochroneModel.sample` converts `nstars` into a
-total stellar mass and lets `ugali`'s `iso.simulate()` return a *random-length*
-IMF realization — so the number of stars returned is stochastic and generally
-**≠ `nstars`**.
+```{important}
+**Adopted (Phase 4).** {meth}`~streamobs.model.IsochroneModel.sample` now draws
+*exactly* `nstars` (the shared-mass path described below), for **both**
+single-survey and multi-survey isochrones. The single-survey
+`ugali.simulate()` emergent-count path has been removed. This flag is **left in
+place for review** because it changes what `StreamModel.sample(size)` returns
+for existing single-survey configs — see the discussion below before relying on
+the new normalization.
+```
+
+Previously {meth}`~streamobs.model.IsochroneModel.sample` converted `nstars`
+into a total stellar mass and let `ugali`'s `iso.simulate()` return a
+*random-length* IMF realization — so the number of stars returned was stochastic
+and generally **≠ `nstars`**.
 
 The multi-survey requirement (the *same physical star* must get consistent Roman
 **and** Rubin magnitudes) forces us instead to draw a fixed set of initial
@@ -108,25 +126,23 @@ semantics for injection (you control N, and it is shared across surveys), but it
 changes what `StreamModel.sample(size)` returns and could shift normalization in
 any analysis that relied on the old emergent count. **Open for discussion.**
 
-### Where Roman Vega→AB conversion lives
+### Roman Vega→AB conversion is automatic and unconditional
 
-`ugali` appears to deliver Roman isochrone magnitudes in **Vega**, while our
-catalogs are **AB**; the prototype corrects this after `isochrone_factory` with a
-`ROMAN_ZEROPOINTS[...]["diff"]` table.
+`ugali` delivers Roman isochrone magnitudes in **Vega**, while our catalogs are
+**AB**. `IsochroneModel` corrects this **unconditionally** for every Roman band
+using the module-level table `streamobs.model.ROMAN_VEGA_TO_AB` (AB = Vega +
+offset). The per-band offsets are the mode of the by-chip Roman zeropoints
+(`Roman_zeropoints_20240301.ecsv`), the same values the
+`rubin_roman_object_classification` prototype used:
 
-**Current plan (do both, in order):**
+| band | F062 | F087 | F106 | F129 | F146 | F158 | F184 | F213 |
+|---|---|---|---|---|---|---|---|---|
+| AB − Vega | 0.153 | 0.481 | 0.660 | 1.051 | 1.164 | 1.315 | 1.556 | 1.837 |
 
-1. **This branch:** implement the correction in `streamobs` as a single isolated
-   shim — `IsochroneModel._apply_vega_to_ab`, gated by a per-survey `vega_to_ab`
-   config flag — so the feature works now without blocking on an upstream
-   release. It is structured so that if `ugali` later returns AB natively we just
-   set `vega_to_ab: false` and the shim becomes a no-op / is removed.
-2. **Off the critical path:** pursue native AB support (or an explicit
-   photometric-system flag) in `ugali` itself, since `ugali` owns the isochrone
-   photometric system and every downstream user would benefit.
-
-*(If we decide to commit to the `ugali`-native route up front, the shim in
-Phase 3 is dropped.)*
+There is **no config flag** — Roman bands are always converted, non-Roman bands
+pass through unchanged. The code carries a `TODO` flagging that this conversion
+ideally belongs in `ugali` itself (so isochrones are returned natively in AB);
+when that lands the table can be removed.
 
 ## Phased rollout
 
@@ -184,22 +200,22 @@ API are unchanged; the test-branch suite stays green (94 passing; the lone
 ### Phase 3 — Multi-band / multi-survey `IsochroneModel` ✅ *(implemented)*
 
 - ✅ `IsochroneModel.create_isochrone` accepts either today's single-survey
-  config or a multi-survey form (`surveys: {name: {survey, band_1, band_2,
-  vega_to_ab}}` plus shared `name`/`age`/`z`/... at top level), building one
-  `ugali` isochrone per survey (`self.isos`, `self.survey_bands`).
+  config or a multi-survey form (`surveys: {name: {survey, band_1, band_2}}`
+  plus shared `name`/`age`/`z`/... at top level), building one `ugali` isochrone
+  per survey (`self.isos`, `self.survey_bands`).
 - ✅ New `sample_masses(...)` draws the initial masses *once* from the primary
   isochrone's IMF (exactly `nstars`), and `sample_multisurvey(...)` interpolates
   those shared masses into every survey's bands → `{(survey, band):
   apparent_mag}` (same physical star, consistent across surveys). The legacy
   `sample(nstars, dm)` still returns the `(mag_band_1, mag_band_2)` tuple (the
   primary survey's two bands) so existing callers are unchanged.
-- ✅ `_apply_vega_to_ab(survey, band, mag)` shim — gated by a per-survey
-  `vega_to_ab: {band: offset}` mapping (`AB = Vega + offset`); a no-op when
-  absent. Applied in both the single- and multi-survey paths.
+- ✅ `_to_ab(band, mag)` converts Roman bands Vega→AB **unconditionally** using
+  the `ROMAN_VEGA_TO_AB` table (no config flag; non-Roman bands pass through).
+  Applied in the shared `sample_multisurvey` path. See the Vega→AB section above.
 - ✅ `StreamModel.sample`/`complete_catalog` derive their magnitude columns from
-  the isochrone via `_iso_mag_columns()` / `_sample_iso_mags()`: legacy
-  `mag_g`/`mag_r` for a single-survey isochrone, `<survey>_<band>_true` for a
-  multi-survey one. Naming routes through `columns.true_col`.
+  the isochrone via `_iso_mag_columns()` / `_sample_iso_mags()`: `<band>_true`
+  for a single-survey isochrone, `<survey>_<band>_true` for a multi-survey one.
+  Naming routes through `columns.true_col`.
 
 **Note on the chosen API:** the plan originally named the dict-returning method
 `sample` and a tuple `sample_legacy`; to avoid `sample()` changing return *type*
@@ -209,20 +225,31 @@ as the `(mag_1, mag_2)` tuple and adds `sample_multisurvey()` for the dict.
 
 **Validated:** single-survey model tests unchanged (test branch green, 94
 passing); a two-isochrone multi-survey config produces consistent shared-mass
-magnitudes, the Vega→AB offset shifts only the configured band, and
-`StreamModel.sample` emits the `<survey>_<band>_true` columns.
+magnitudes, Roman bands are converted Vega→AB by the fixed `ROMAN_VEGA_TO_AB`
+offsets, and `StreamModel.sample` emits the `<survey>_<band>_true` columns.
 
-### Phase 4 — `MultiSurveyInjector`
+### Phase 4 — `MultiSurveyInjector` ✅ *(implemented)*
 
-- Refactor the per-band body of `StreamInjector.inject` into a shared
-  `_inject_one_survey(...)` helper.
-- `MultiSurveyInjector(surveys).inject(data, survey_bands, ...)`:
-  (1) one shared sky placement; (2) one shared true-magnitude fill (masses
-  sampled once); (3) a per-survey loop writing `{survey}_{band}_obs/_err` and
-  `{survey}_flag_observed` using each survey's own `completeness_band` and maglim
-  maps. Per-survey RNG via `rng.spawn(...)` for order-independent reproducibility.
-- A *scene* config (`config/scenes/roman_rubin_demo.yaml`) lists the surveys,
-  bands, per-survey isochrones, and shared stream geometry.
+- ✅ The per-band body of `StreamInjector.inject` is extracted into a shared
+  `StreamInjector._inject_one_survey(data, bands, survey_namespace=None, ...)`
+  helper. It assumes positions and true magnitudes are already present and only
+  does the observed/err draw, detection flags, and S/N cut, routing every column
+  name through `columns.py` (`survey_namespace=None` ⇒ legacy names). `inject`
+  now just completes the data and delegates to it, so single-survey behaviour is
+  unchanged.
+- ✅ `MultiSurveyInjector(surveys).inject(data, survey_bands, stream_config=...)`:
+  (1) one shared sky placement; (2) one shared true-magnitude fill via a
+  multi-survey isochrone (masses sampled once → every survey's
+  `<survey>_<band>_true`); (3) a per-survey loop calling each survey's
+  `_inject_one_survey` with `survey_namespace=<name>`, writing
+  `<survey>_<band>_obs/_err` and `<survey>_flag_observed` from that survey's own
+  `completeness_band` and maglim maps. Per-survey RNG via `rng.spawn(...)` for
+  order-independent reproducibility. `columns.perfect_flag_col` namespaces the
+  optional `perfect_galstarsep` flag.
+- ✅ A *scene* config (`config/scenes/roman_rubin_demo.yaml`) lists the surveys,
+  per-survey bands, the multi-survey isochrone, and shared stream geometry.
+- ✅ `notebooks/multisurvey_phases_demo.ipynb` walks through Phases 1–4 end to
+  end.
 
 ### Phase 5 *(future)* — Lightweight background + galaxy misclassification
 
