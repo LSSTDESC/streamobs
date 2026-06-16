@@ -40,10 +40,9 @@ class StreamInjector:
         namespace is the column prefix (``lsst_r_obs``, ``roman_F158_obs``, ...).
     primary : str
         Namespace of the survey whose footprint drives the shared sky placement
-        and whose ``_save_injected_data`` is used.
-    survey : Survey
-        The primary :class:`~streamobs.surveys.Survey` (convenience accessor used
-        by the mask / coordinate helpers; equal to ``surveys[primary]``).
+        and whose ``_save_injected_data`` is used. The primary
+        :class:`~streamobs.surveys.Survey` itself is available via the ``survey``
+        property (``surveys[primary]``), used by the mask/coordinate helpers.
     mask_cache : dict (class attribute)
         Cache of previously created HEALPix masks to avoid recomputation.
     _last_gc_frame : GreatCircleICRSFrame or None

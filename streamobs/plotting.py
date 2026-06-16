@@ -26,8 +26,8 @@ def draw_stream(phi1, phi2):
     ----------
     phi1, phi2 : coordinates of stars (deg)
 
-    Returns:
-    --------
+    Returns
+    -------
     num, xedges, yedges, im : output of imshow
     """
 
@@ -42,8 +42,8 @@ def draw_stream(phi1, phi2):
 
     ax = plt.gca()
     ax.set_title("Mock Stream")
-    ax.set_xlabel("$\phi_1$ [deg]")
-    ax.set_ylabel("$\phi_2$ [deg]")
+    ax.set_xlabel(r"$\phi_1$ [deg]")
+    ax.set_ylabel(r"$\phi_2$ [deg]")
 
     image = ax.imshow(
         hist.T,

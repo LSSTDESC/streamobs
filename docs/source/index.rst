@@ -83,6 +83,7 @@ Documentation Contents
    about
    installation
    quickstart
+   multisurvey
    citation
 
 .. toctree::
@@ -105,6 +106,7 @@ Documentation Contents
    :maxdepth: 2
    :caption: Reference
 
+   column_convention
    data
    modules
 

@@ -69,8 +69,6 @@ class Survey:
         magnitudes. Optional second curve (config key ``log_photo_error_sample``).
         If not provided, the noise draw falls back to the catalog model, which
         reproduces the previous single-curve behaviour exactly.
-    log_photo_error : callable
-        Read/write alias for ``log_photo_error_catalog`` (backward compatibility).
 
     Examples
     --------
@@ -469,15 +467,16 @@ class Survey:
             True apparent magnitude(s).
         maglim : float or np.ndarray
             Magnitude limit(s) at the position(s).
-
+        type : str, optional
+            Type of efficiency function to use. Options are ``"completeness"``,
+            ``"detection_efficiency"``, or ``"classification_efficiency"``.
+            Default is ``"completeness"``.
         **kwargs
-            Additional keyword arguments:
-            type : str, optional
-                Type of efficiency function to use. Options are "completeness", "detection_efficiency", or "classification_efficiency".
-                Default is "completeness".
+            Additional keyword arguments. Currently:
+
             delta_saturation : float, optional
-                Magnitude difference for saturation threshold in the initial completeness function.
-                Default is -10.4.
+                Magnitude difference for saturation threshold in the initial
+                completeness function. Default is -10.4.
 
         Returns
         -------
@@ -592,6 +591,8 @@ class SurveyFactory:
             Custom configuration dictionary to use instead of loading from file.
             If provided, bypasses the standard config file loading.
         **kwargs
+            Additional keyword arguments. Recognized:
+
             uniform_survey : bool, optional
                 If True, also creates and caches a uniform version of the survey
                 with constant magnitude limits. The uniform survey can be accessed
@@ -599,7 +600,8 @@ class SurveyFactory:
                 Default is False.
             verbose : bool, optional
                 Whether to print progress messages. Default is True.
-            Additional keyword arguments override config values
+
+            Any other keyword arguments override config values.
 
         Returns
         -------

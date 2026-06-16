@@ -31,6 +31,13 @@ extensions = [
 templates_path = ['_templates']
 exclude_patterns = []
 
+# -- numpydoc ----------------------------------------------------------------
+# autodoc's `:members:` already documents every class member, so tell numpydoc
+# not to also list them. This avoids both the "stub file not found" autosummary
+# warnings (numpydoc's default member toctree) and "duplicate object
+# description" warnings (numpydoc + autodoc documenting the same members).
+numpydoc_show_class_members = False
+
 
 
 # -- Options for HTML output -------------------------------------------------
