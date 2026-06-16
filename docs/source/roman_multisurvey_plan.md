@@ -105,6 +105,86 @@ and makes "observed" mean "detected in everything you asked for". Callers can
 restore any prior behaviour by passing `detection_mag_cut=[...]` explicitly
 (e.g. `["g"]` for the old LSST default). **Adopted, but flagged for review.**
 
+### S/N cut ownership: who applies the reference-band cut *(adopted — option (b))*
+
+The reference band (`survey.completeness_band`, e.g. LSST `r`) is special: the
+survey's **selection functions are estimated with the SNR ≥ 5 cut already
+applied** in that band. So the reference-band cut is conceptually *owned by the
+selection functions*, not by the injector's per-band loop.
+
+**The problem (pre-(b)).** The old code applied the per-band SNR loop to *every*
+injected band, including the reference band — so the reference band's cut was
+applied **twice** (once inside `get_completeness`, once in the loop). That is
+idempotent today (`A & A == A`), so `flag_observed` was numerically correct, but
+it is conceptually double-counted and fragile: it silently breaks if `SNR_min`
+ever differs from the threshold the curve was estimated at. Worse, the two
+selection curves disagreed about ownership — `get_completeness` bakes the cut
+in, but `get_detection_efficiency` (used for the perfect-galstarsep flag) does
+**not** — which forced a special-cased "force SNR cut on the completeness band"
+block just for `flag_perfect`.
+
+**Option (b) — implemented now (injector-only, no data regeneration).** Treat the
+reference-band cut as owned by the selection functions and apply it **exactly
+once**, to both flags:
+
+- The reference band's SNR cut is applied once in `_inject_one_survey`, to
+  `flag_observed` (idempotent with the baked-in completeness cut) and to
+  `flag_perfect` (which supplies it, since the efficiency curve lacks it).
+- `detection_mag_cut` defaults to *every injected band except the reference
+  band*; the reference band is skipped inside the loop.
+- The old special-cased "force" block is removed.
+
+This is **behaviour-preserving** (the same set of bands gets an SNR cut, the
+reference band counted once instead of twice) but removes the double-count and
+the asymmetry between the two flags. `survey.completeness_band` is the single
+attribute identifying the reference band for both completeness and detection
+efficiency (default `"r"`).
+
+**Option (a) — the eventual "correct home" (deferred; requires new data).** Fold
+the SNR cut into the **detection-efficiency curve itself**, so that
+`get_completeness` *and* `get_detection_efficiency` both own it consistently.
+Then the injector needs no reference-band special-casing at all — it simply
+**skips** `survey.completeness_band` in the SNR loop (the curves handle it), and
+the once-applied reference-band block from (b) can be deleted.
+
+*Why (a) is better:* the "a star's reference-band detectability already includes
+SNR ≥ 5" fact lives in **one place** — the survey product — rather than being
+re-asserted in the injector. Any consumer of `get_detection_efficiency` (not
+just this injector) then gets a self-consistent curve, and there is no implicit
+contract that "the caller must remember to also apply the SNR cut".
+
+*How to get from (b) to (a):*
+
+1. **Regenerate the detection-efficiency product with the SNR cut applied.** In
+   the build script that emits the efficiency tables
+   (`scripts/roman/create_streamobs_files_hlwas.py` for Roman DC2; the analogous
+   LSST/DES builders for the others), the *denominator* of the detection
+   efficiency is all true stars and the *numerator* is true stars detected — add
+   the requirement that the numerator detection also passes SNR ≥ 5 in the
+   reference band (the completeness/`classification_detection_eff` curve is
+   already built this way; mirror that selection for the detection-only curve).
+   Concretely: the column the loader reads for `type="detection_efficiency"`
+   (`detection_eff`, via `selection="detected"` in `set_completeness`) must be
+   recomputed with the SNR cut, so it matches how `classifiction_eff` /
+   `classification_detection_eff` are produced.
+2. **Re-emit the per-survey efficiency CSVs** (e.g. Roman
+   `roman_stellar_efficiency_cutf158.csv` in `data/surveys/roman_hlwas/`, and the
+   LSST/DES equivalents in `data/others/`) and re-run the notebook/build so the
+   committed products carry the cut. Keep the `classifiction_eff` header spelling
+   the loader greps for.
+3. **Flip the injector to (a):** drop the once-applied reference-band block and
+   change the `detection_mag_cut` default to skip the reference band *without*
+   re-adding its cut (the curve now carries it). `flag_observed` and
+   `flag_perfect` then both inherit the reference-band cut purely from the
+   selection functions.
+4. **Validate** that detection counts are unchanged within noise versus (b) on a
+   fixed seed (they should be, since (b) already applies the same cut once) — this
+   confirms the regenerated curve encodes exactly the SNR ≥ 5 selection rather
+   than a different threshold.
+
+Until those products are regenerated, (b) is the correct, behaviour-preserving
+state.
+
 ### `nstars` becomes "exactly N stars" (was an emergent IMF count) *(adopted — agreed)*
 
 ```{important}

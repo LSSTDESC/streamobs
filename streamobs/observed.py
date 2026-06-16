@@ -192,8 +192,11 @@ class StreamInjector:
             nside : int, optional
                 HEALPix nside parameter. Default is 4096.
             detection_mag_cut : list of str, optional
-                Bands to apply the SNR detection cut to. Default is all injected
-                bands (every injected band must have SNR >= 5).
+                Non-reference bands to apply the explicit SNR>=5 cut to. The
+                reference band (``survey.completeness_band``) is always cut via
+                the selection functions, so the default here is every injected
+                band *except* the reference band. Net effect: every injected band
+                must have SNR >= 5, with the reference band counted once.
             save : bool, optional
                 Whether to save the output data. Default is False.
             folder : str or Path, optional
@@ -472,11 +475,36 @@ class StreamInjector:
                 else flag_valid_flux
             )
 
-        # Apply SNR cuts. Default: require SNR >= SNR_min in every injected band.
-        detection_mag_cut = kwargs.get("detection_mag_cut", list(bands))
+        # Apply SNR cuts.
+        #
+        # The SNR>=SNR_min cut on the *reference* band (``survey.completeness_band``)
+        # is owned by the survey's selection functions — they are estimated with
+        # that cut already applied. We therefore apply it to the reference band
+        # exactly **once** here, to both flags. (``get_completeness`` bakes it in,
+        # so for ``flag_observed`` this is idempotent; ``get_detection_efficiency``
+        # does not, so for ``flag_perfect`` this line is what supplies it.) See
+        # the "S/N cut ownership" note in docs/source/roman_multisurvey_plan.md
+        # for the path to folding it into the efficiency curve itself (option a).
+        #
+        # Every *other* injected band gets the cut applied explicitly below.
         SNR_min = 5.0
+        ref_band = survey.completeness_band
 
+        if ref_band in bands:
+            SNR_ref = 1.0 / data[err_col(ref_band, survey_namespace)]
+            flag_observed &= SNR_ref >= SNR_min
+            if perfect_galstarsep:
+                flag_perfect &= SNR_ref >= SNR_min
+
+        # Non-reference bands. Default: every injected band except the reference
+        # band (whose cut is handled above via the selection functions).
+        detection_mag_cut = kwargs.get(
+            "detection_mag_cut", [b for b in bands if b != ref_band]
+        )
         for band in detection_mag_cut:
+            if band == ref_band:
+                # The reference band's SNR cut is already applied above.
+                continue
             if band not in bands:
                 if verbose:
                     print(
@@ -489,13 +517,6 @@ class StreamInjector:
             flag_observed &= SNR >= SNR_min
             if perfect_galstarsep:
                 flag_perfect &= SNR >= SNR_min
-
-        # Force SNR cut on the completeness band for perfect gal/star separation
-        # (the SNR cut is baked into the completeness functions but not into the
-        # detection-only efficiency functions used for the perfect flag).
-        if perfect_galstarsep:
-            SNR_compl = 1.0 / data[err_col(survey.completeness_band, survey_namespace)]
-            flag_perfect &= SNR_compl >= SNR_min
 
         # Store flags in DataFrame
         data[flag_col(survey_namespace)] = flag_observed
