@@ -1,12 +1,13 @@
 # Multi-survey demo scene: a single toy stream observed by BOTH Rubin/LSST and
-# Roman. Consumed by `streamobs.observed.MultiSurveyInjector` (Phase 4).
+# Roman. Consumed by `streamobs.observed.StreamInjector` (Phase 4) — the same
+# injector class handles one survey or several.
 #
 # Usage (see notebooks/multisurvey_phases_demo.ipynb):
 #
 #     import yaml, pandas as pd
-#     from streamobs.observed import MultiSurveyInjector
+#     from streamobs.observed import StreamInjector
 #     scene = yaml.safe_load(open("config/scenes/roman_rubin_demo.yaml"))
-#     msi = MultiSurveyInjector(scene["surveys"])
+#     msi = StreamInjector(scene["surveys"])
 #     df  = pd.DataFrame(index=range(int(scene["stream"]["nstars"])))
 #     out = msi.inject(df, scene["survey_bands"],
 #                      stream_config=scene["stream"], seed=42)
@@ -15,7 +16,7 @@
 # columns; each band's errors / detection come from that survey's own maps.
 
 # Surveys to inject. The mapping KEY is the column namespace (lsst_r_obs, ...).
-# Each value is a StreamInjector spec: a survey-name string here (loaded via
+# Each value is a survey spec: a survey-name string here (loaded via
 # Survey.load); could also be a {name, release} once the loader supports it.
 surveys:
   lsst: lsst

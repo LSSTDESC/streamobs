@@ -2,17 +2,15 @@
 Column-name helpers for injected catalogs.
 
 These centralize the naming convention so the injector is not hard-coded to
-specific bands. A single, uniform ``<band>_true`` / ``<band>_obs`` /
-``<band>_err`` convention is used everywhere; the only difference between the
-single- and multi-survey cases is an optional survey prefix:
+specific bands. Injected catalogs are **always** survey-namespaced —
+``<survey>_<band>_true`` (true / noiseless), ``<survey>_<band>_obs`` (observed /
+noisy), ``<survey>_<band>_err`` (reported error), and ``<survey>_flag_observed``
+— produced by :class:`~streamobs.observed.StreamInjector` whether it serves one
+survey or several (e.g. ``lsst_r_obs``, ``roman_F158_obs``).
 
-- **Single-survey** (``survey=None``): ``<band>_true`` (true / noiseless),
-  ``<band>_obs`` (observed / noisy), ``<band>_err`` (reported error),
-  ``flag_observed``.
-- **Multi-survey** (``survey="roman"``, ``"lsst"``, ...): ``<survey>_<band>_true``,
-  ``<survey>_<band>_obs``, ``<survey>_<band>_err``, ``<survey>_flag_observed``.
-  Used by :class:`~streamobs.observed.MultiSurveyInjector` so each band's
-  columns are namespaced by survey.
+The ``survey`` argument therefore identifies the namespace. ``survey=None`` is
+retained only as a low-level fallback that yields the bare ``<band>_…`` /
+``flag_observed`` names; the injector itself never uses it.
 
 .. note::
    This convention intentionally **drops** the historical ``mag_<band>`` /

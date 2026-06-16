@@ -136,10 +136,8 @@ class StreamModel(ConfigurableModel):
         -------
         pandas.DataFrame
             Columns include: ``phi1``, ``phi2``, ``dist``, ``mu1``, ``mu2``,
-            ``rv``, and the isochrone magnitude columns. For a single-survey
-            isochrone these are ``<band>_true`` (its two bands); for a
-            multi-survey isochrone they are ``<survey>_<band>_true`` per
-            survey/band. Some may be None if the sub-model is absent.
+            ``rv``, and the isochrone magnitude columns ``<survey>_<band>_true``
+            (per survey/band). Some may be None if the sub-model is absent.
         """
 
         # Sample phi1 and phi2
@@ -183,28 +181,24 @@ class StreamModel(ConfigurableModel):
     def _iso_mag_columns(self):
         """Names of the magnitude columns produced by the isochrone model.
 
-        Single-survey ⇒ legacy ``[mag_<band_1>, mag_<band_2>]``; multi-survey ⇒
-        ``[<survey>_<band>_true, ...]`` for every survey/band; no isochrone ⇒ [].
+        Always ``[<survey>_<band>_true, ...]`` for every survey/band the
+        isochrone carries (a single-survey isochrone simply has one survey); no
+        isochrone ⇒ ``[]``. ``IsochroneModel`` tracks ``surveys`` /
+        ``survey_bands`` in both configuration forms, so the naming is uniform.
         """
         iso = self.isochrone
         if iso is None:
             return []
-        if getattr(iso, "multi_survey", False):
-            cols = []
-            for name in iso.surveys:
-                band_1, band_2 = iso.survey_bands[name]
-                cols += [true_col(band_1, name), true_col(band_2, name)]
-            return cols
-        return [true_col(iso.band_1), true_col(iso.band_2)]
+        cols = []
+        for name in iso.surveys:
+            band_1, band_2 = iso.survey_bands[name]
+            cols += [true_col(band_1, name), true_col(band_2, name)]
+        return cols
 
     def _sample_iso_mags(self, n, dist):
-        """Sample isochrone magnitudes as a ``{column_name: values}`` dict."""
-        iso = self.isochrone
-        if getattr(iso, "multi_survey", False):
-            mags = iso.sample_multisurvey(n, dist)
-            return {true_col(band, name): vals for (name, band), vals in mags.items()}
-        mag_1, mag_2 = iso.sample(n, dist)
-        return {true_col(iso.band_1): mag_1, true_col(iso.band_2): mag_2}
+        """Sample isochrone magnitudes as a ``{<survey>_<band>_true: values}`` dict."""
+        mags = self.isochrone.sample_multisurvey(n, dist)
+        return {true_col(band, name): vals for (name, band), vals in mags.items()}
 
     def complete_catalog(
         self,
@@ -214,6 +208,7 @@ class StreamModel(ConfigurableModel):
         inplace=False,
         save_path=None,
         verbose=True,
+        dist=None,
     ):
         """Complete only the requested columns in a catalog.
 
@@ -222,6 +217,11 @@ class StreamModel(ConfigurableModel):
         while preserving pre-existing non-null values. Columns are generated
         using the configured sub-models (density, track, distance modulus,
         isochrone, velocity) and only if those capabilities are available.
+
+        Pre-existing values are never overwritten: for every column only the
+        missing (absent or NaN) rows are filled. In particular, supplying some
+        of an isochrone's bands and requesting the others fills only the missing
+        bands and leaves the provided ones untouched.
 
         Parameters
         ----------
@@ -233,9 +233,8 @@ class StreamModel(ConfigurableModel):
         columns_to_add : sequence of str or None, optional
             The columns to ensure in the output. Valid entries are
             {'phi1','phi2','dist','mu1','mu2','rv'} plus the isochrone magnitude
-            columns (``<band>_true`` single-survey, ``<survey>_<band>_true``
-            multi-survey). If None, all valid columns supported by the
-            configured model are considered.
+            columns (``<survey>_<band>_true``). If None, all valid columns
+            supported by the configured model are considered.
         size : int or None, optional
             Required when ``catalog`` is None or an empty table; ignored
             otherwise.
@@ -246,6 +245,12 @@ class StreamModel(ConfigurableModel):
             If provided, write the completed catalog to this CSV path.
         verbose : bool, default True
             If True, print progress/status messages.
+        dist : float or array-like or None, optional
+            Distance modulus to use directly instead of sampling one from the
+            ``distance_modulus`` sub-model. A scalar is broadcast to every row
+            that needs a ``dist`` value; an array must have one entry per row.
+            When given, ``phi1`` and a ``distance_modulus`` model are **not**
+            required to fill magnitudes. Only missing ``dist`` rows are set.
 
         Returns
         -------
@@ -273,8 +278,7 @@ class StreamModel(ConfigurableModel):
         """
         # Supported outputs and capability filtering
         # Columns this method can fill using the configured model
-        # Magnitude columns are band-/survey-general (<band>_true for a
-        # single-survey isochrone; <survey>_<band>_true for multi-survey).
+        # Magnitude columns are survey-namespaced (<survey>_<band>_true).
         mag_cols = self._iso_mag_columns()
         all_cols = ("phi1", "phi2", "dist") + tuple(mag_cols) + ("mu1", "mu2", "rv")
         target_cols = (
@@ -295,7 +299,7 @@ class StreamModel(ConfigurableModel):
             target_cols = [c for c in target_cols if c not in ("mu1", "mu2", "rv")]
             if removed:
                 self._info(verbose, "Velocity model not defined; skipping velocities.")
-        if self.distance_modulus is None:
+        if self.distance_modulus is None and dist is None:
             removed = [c for c in target_cols if c == "dist"]
             target_cols = [c for c in target_cols if c != "dist"]
             if removed:
@@ -336,39 +340,69 @@ class StreamModel(ConfigurableModel):
         ):
             idx = self._missing_idx(df, "dist")
             if len(idx) > 0:
-                if "phi1" not in df.columns or df["phi1"].isna().any():
-                    raise ValueError(
-                        "phi1 required to sample dist; include 'phi1' in columns_to_add or provide it in catalog"
-                    )
+                if dist is not None:
+                    # Use the distance supplied directly (scalar broadcast or
+                    # per-row vector); no phi1 / distance_modulus model needed.
+                    dist_arr = np.asarray(dist, dtype=float)
+                    if dist_arr.ndim == 0:
+                        df.loc[idx, "dist"] = float(dist_arr)
+                    else:
+                        if dist_arr.shape[0] != N:
+                            raise ValueError(
+                                f"dist vector has length {dist_arr.shape[0]} but "
+                                f"the catalog has {N} rows."
+                            )
+                        pos = df.index.get_indexer(idx)
+                        df.loc[idx, "dist"] = dist_arr[pos]
+                    self._info(verbose, f"Set {len(idx)} dist values from `dist`.")
+                else:
+                    if self.distance_modulus is None:
+                        raise ValueError(
+                            "No distance_modulus model is configured; pass `dist` "
+                            "(a float or per-row vector) to set distances."
+                        )
+                    if "phi1" not in df.columns or df["phi1"].isna().any():
+                        raise ValueError(
+                            "phi1 required to sample dist; include 'phi1' in columns_to_add or provide it in catalog"
+                        )
 
-                df.loc[idx, "dist"] = self.distance_modulus.sample(
-                    df.loc[idx, "phi1"].to_numpy()
-                )
-                self._info(verbose, f"Filled {len(idx)} dist values.")
+                    df.loc[idx, "dist"] = self.distance_modulus.sample(
+                        df.loc[idx, "phi1"].to_numpy()
+                    )
+                    self._info(verbose, f"Filled {len(idx)} dist values.")
 
         # magnitudes (need dist and isochrone)
-        if any(c in target_cols for c in mag_cols):
-            if all(c in df.columns for c in mag_cols):
+        requested_mags = [c for c in mag_cols if c in target_cols]
+        if requested_mags:
+            # Only touch rows that are missing a requested band; existing values
+            # are preserved (never overwritten).
+            missing = {c: self._missing_idx(df, c) for c in requested_mags}
+            to_fill = {c: idx for c, idx in missing.items() if len(idx) > 0}
+            if not to_fill:
                 self._info(
                     verbose,
-                    f"{mag_cols} already exist; no sampling performed.",
+                    f"{requested_mags} already present; no sampling performed.",
                 )
             else:
-                # Verify distance modulus availability
+                # Verify distance availability
                 if "dist" not in df.columns:
                     raise ValueError(
-                        "dist is required to sample apparent magnitudes; include 'dist' in `columns_to_add` or provide it in catalog"
+                        "dist is required to sample apparent magnitudes; include 'dist' in `columns_to_add`, provide it in the catalog, or pass `dist=`."
                     )
                 dist_vals = df["dist"].to_numpy()
-                # Sample all bands together to keep colors consistent across rows
-                if any(c in df.columns for c in mag_cols):
-                    self._info(
-                        verbose,
-                        "Overwriting existing magnitude columns to keep colors consistent.",
-                    )
-                for col, vals in self._sample_iso_mags(N, dist_vals).items():
-                    df[col] = vals
-                self._info(verbose, f"Filled magnitudes for {N} rows.")
+                # One shared mass draw -> all bands; the newly filled cells are
+                # mutually colour-consistent. Assign only the missing rows so any
+                # bands/values already present are left untouched.
+                mags = self._sample_iso_mags(N, dist_vals)
+                for col, idx in to_fill.items():
+                    pos = df.index.get_indexer(idx)
+                    if col not in df.columns:
+                        df[col] = np.nan
+                    df.loc[idx, col] = np.asarray(mags[col])[pos]
+                self._info(
+                    verbose,
+                    f"Filled magnitudes for {sorted(to_fill)} (missing rows only).",
+                )
 
         # velocities (need phi1 and velocity model)
         if any(c in target_cols for c in ("mu1", "mu2", "rv")):

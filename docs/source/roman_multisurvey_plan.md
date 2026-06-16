@@ -7,6 +7,14 @@ importantly — the **behaviour changes that need discussion** before we rely on
 them. Sections marked *(future)* are designed but not yet implemented.
 ```
 
+```{important}
+**Remove this file before merging the `roman_multisurvey` branch.** It is a
+working design/roadmap doc, not user documentation. Before merge, migrate the
+durable content — the column convention, the sample/catalog error split, the
+multi-survey `StreamInjector` usage, and the Vega→AB handling — into the proper
+docs pages (and the API docstrings), then delete `roman_multisurvey_plan.md`.
+```
+
 ## Motivation
 
 `streamobs` was built for **single-survey** stream injection (LSST). We want to
@@ -35,20 +43,22 @@ Two science realities drive specific features:
 
 ## Locked design decisions
 
-1. **Multi-survey via a `MultiSurveyInjector` orchestrator** that holds
-   `{survey_name: Survey}` and delegates per-survey work to the existing,
-   unchanged `Survey` per-band API. Not a composite `Survey`; not manual
-   re-runs.
-2. **Column convention (uniform `_true`/`_obs`/`_err`).** A single naming scheme
-   is used everywhere: `{band}_true` / `{band}_obs` / `{band}_err` /
-   `flag_observed` single-survey, and `{survey}_{band}_true` /
+1. **One `StreamInjector` for one *or* many surveys.** A single injector holds
+   `{survey_name: Survey}` (size 1 for the single-survey case) and delegates
+   per-survey work to the existing, unchanged `Survey` per-band API via a shared
+   `_inject_one_survey` helper. Not a composite `Survey`; not manual re-runs;
+   and **no separate multi-survey class** — `StreamInjector` accepts a survey
+   name/`Survey`, a `{name: spec}` dict, or a list of specs.
+2. **Column convention (always survey-namespaced `{survey}_{band}_true/_obs/_err`).**
+   A single naming scheme is used everywhere — `{survey}_{band}_true` /
    `{survey}_{band}_obs` / `{survey}_{band}_err` / `{survey}_flag_observed`
-   multi-survey (e.g. `roman_f158_obs`, `lsst_r_err`). The single- and
-   multi-survey forms differ only by the optional survey prefix.
-   **This intentionally drops the historical `mag_{band}` / `mag_{band}_obs` /
-   `magerr_{band}` names — it is *not* backward compatible** with catalogs or
-   downstream readers expecting those columns (decision made deliberately to
-   keep one convention; see decision 5).
+   (e.g. `roman_f158_obs`, `lsst_r_err`) — and it is **always namespaced by
+   survey, even for a single survey** (a one-survey injection of LSST emits
+   `lsst_r_obs`, not `r_obs`). There is no longer an un-namespaced single-survey
+   form. **This intentionally drops the historical `mag_{band}` /
+   `mag_{band}_obs` / `magerr_{band}` names — it is *not* backward compatible**
+   with catalogs or downstream readers expecting those columns (decision made
+   deliberately to keep one convention; see decision 5).
 3. **Sample-vs-catalog error split, backward-compatible by default.** `Survey`
    holds two error curves, both functions of `delta_mag = mag − maglim`:
    - `log_photo_error_catalog` — the survey's **reported** error curve (the
@@ -68,12 +78,13 @@ Two science realities drive specific features:
 4. **Sample stellar masses once, interpolate per survey.** This is a correctness
    requirement (see below) and the engine of the whole feature.
 5. **Public API preserved; column schema deliberately changed.** The
-   `StreamInjector(survey).inject(df, bands=[...])` API is unchanged. The
-   **column names are not** — we adopt the uniform `{band}_true/_obs/_err`
-   scheme (decision 2) *instead of* preserving the historical
-   `mag_g_obs`/`mag_r_obs`/`magerr_g` names. Downstream consumers that read those
-   columns must be updated. This is an accepted break in exchange for one
-   convention across single- and multi-survey output.
+   `StreamInjector(survey).inject(df, bands=[...])` single-survey call still
+   works (the same `StreamInjector` also takes a dict/list for several surveys).
+   The **column names are not** preserved — we adopt the always-namespaced
+   `{survey}_{band}_true/_obs/_err` scheme (decision 2) *instead of* the
+   historical `mag_g_obs`/`mag_r_obs`/`magerr_g` names. Downstream consumers that
+   read those columns must be updated. This is an accepted break in exchange for
+   one convention across single- and multi-survey output.
 
 ## Behaviour changes for discussion
 
@@ -94,16 +105,15 @@ and makes "observed" mean "detected in everything you asked for". Callers can
 restore any prior behaviour by passing `detection_mag_cut=[...]` explicitly
 (e.g. `["g"]` for the old LSST default). **Adopted, but flagged for review.**
 
-### `nstars` becomes "exactly N stars" (was an emergent IMF count) *(adopted, but flagged for review)*
+### `nstars` becomes "exactly N stars" (was an emergent IMF count) *(adopted — agreed)*
 
 ```{important}
-**Adopted (Phase 4).** {meth}`~streamobs.model.IsochroneModel.sample` now draws
-*exactly* `nstars` (the shared-mass path described below), for **both**
+**Adopted (Phase 4) and agreed.** {meth}`~streamobs.model.IsochroneModel.sample`
+now draws *exactly* `nstars` (the shared-mass path described below), for **both**
 single-survey and multi-survey isochrones. The single-survey
-`ugali.simulate()` emergent-count path has been removed. This flag is **left in
-place for review** because it changes what `StreamModel.sample(size)` returns
-for existing single-survey configs — see the discussion below before relying on
-the new normalization.
+`ugali.simulate()` emergent-count path has been removed. This was reviewed and
+**accepted as the intended semantics** (you control N, and it is shared across
+surveys); it is no longer open for discussion.
 ```
 
 Previously {meth}`~streamobs.model.IsochroneModel.sample` converted `nstars`
@@ -121,10 +131,10 @@ sampled_masses = rng.choice(init_mass[sel], size=nstars, p=imf_pdf)   # exactly 
 # then, per survey:  mag_band = np.interp(sampled_masses, init_mass, mag_band) + dist_mod
 ```
 
-This returns *exactly* `nstars` stars. It is almost certainly the right
-semantics for injection (you control N, and it is shared across surveys), but it
-changes what `StreamModel.sample(size)` returns and could shift normalization in
-any analysis that relied on the old emergent count. **Open for discussion.**
+This returns *exactly* `nstars` stars. It is the right semantics for injection
+(you control N, and it is shared across surveys). It changes what
+`StreamModel.sample(size)` returns relative to the old emergent count, but this
+was reviewed and **agreed** — no further discussion needed.
 
 ### Roman Vega→AB conversion is automatic and unconditional
 
@@ -180,9 +190,10 @@ survey's `survey_files`.
 ### Phase 2 — De-hardcode the injector to arbitrary bands ✅ *(implemented)*
 
 - ✅ New `streamobs/columns.py` with `true_col` / `obs_col` / `err_col` helpers
-  `(band, survey=None)` and `flag_col(survey=None)` (`survey=None` ⇒ legacy
-  names `mag_<band>` / `mag_<band>_obs` / `magerr_<band>` / `flag_observed`;
-  a survey name ⇒ the `<survey>_<band>_…` multi-survey convention for Phase 4).
+  `(band, survey=None)` and `flag_col(survey=None)`. Injected catalogs are
+  **always** survey-namespaced (`<survey>_<band>_…` / `<survey>_flag_observed`);
+  `survey=None` is retained only as a low-level fallback that the injector itself
+  never uses.
 - ✅ `observed.py`: removed the `bands in {"r","g"}` hard block; the true-mag
   read, the observed/err columns, the valid-flux check (now ANDs over every
   injected band), the S/N cut, the per-survey detection flag, and the stored
@@ -192,10 +203,9 @@ survey's `survey_files`.
 - ⚠️ The S/N-cut default changed from the hard-coded `["g"]` to **all injected
   bands** — see *Behaviour changes for discussion* above.
 
-**Validated:** single-band (`bands=["r"]`) and arbitrary band sets now inject
-without the old hard block; legacy column names and the `inject(df, bands=[...])`
-API are unchanged; the test-branch suite stays green (94 passing; the lone
-`des_yr6` photo-error failure is pre-existing and unrelated).
+**Validated:** single-band (`bands=["r"]`) and arbitrary band sets inject without
+the old hard block; the `inject(df, bands=[...])` API is unchanged (output now
+namespaced); `tests/test_observed.py` + `tests/test_model.py` green.
 
 ### Phase 3 — Multi-band / multi-survey `IsochroneModel` ✅ *(implemented)*
 
@@ -213,43 +223,48 @@ API are unchanged; the test-branch suite stays green (94 passing; the lone
   the `ROMAN_VEGA_TO_AB` table (no config flag; non-Roman bands pass through).
   Applied in the shared `sample_multisurvey` path. See the Vega→AB section above.
 - ✅ `StreamModel.sample`/`complete_catalog` derive their magnitude columns from
-  the isochrone via `_iso_mag_columns()` / `_sample_iso_mags()`: `<band>_true`
-  for a single-survey isochrone, `<survey>_<band>_true` for a multi-survey one.
-  Naming routes through `columns.true_col`.
+  the isochrone via `_iso_mag_columns()` / `_sample_iso_mags()`, which **always**
+  emit `<survey>_<band>_true` (a single-survey isochrone simply has one survey;
+  `IsochroneModel` tracks `surveys`/`survey_bands` in both config forms). Naming
+  routes through `columns.true_col`.
 
 **Note on the chosen API:** the plan originally named the dict-returning method
 `sample` and a tuple `sample_legacy`; to avoid `sample()` changing return *type*
-by config (a foot-gun for existing callers), the implementation keeps `sample()`
-as the `(mag_1, mag_2)` tuple and adds `sample_multisurvey()` for the dict.
-`StreamModel` dispatches on `isochrone.multi_survey`.
+by config (a foot-gun for existing callers), the implementation keeps
+`IsochroneModel.sample()` as the `(mag_1, mag_2)` tuple and adds
+`sample_multisurvey()` for the dict. `StreamModel` always goes through
+`sample_multisurvey()` (a single-survey isochrone is just the one-survey case),
+so the emitted columns are uniformly `<survey>_<band>_true`.
 
-**Validated:** single-survey model tests unchanged (test branch green, 94
-passing); a two-isochrone multi-survey config produces consistent shared-mass
-magnitudes, Roman bands are converted Vega→AB by the fixed `ROMAN_VEGA_TO_AB`
-offsets, and `StreamModel.sample` emits the `<survey>_<band>_true` columns.
+**Validated:** model tests green; a two-isochrone multi-survey config produces
+consistent shared-mass magnitudes, Roman bands are converted Vega→AB by the
+fixed `ROMAN_VEGA_TO_AB` offsets, and `StreamModel.sample` emits the
+`<survey>_<band>_true` columns.
 
-### Phase 4 — `MultiSurveyInjector` ✅ *(implemented)*
+### Phase 4 — one `StreamInjector` for one *or* many surveys ✅ *(implemented)*
 
-- ✅ The per-band body of `StreamInjector.inject` is extracted into a shared
-  `StreamInjector._inject_one_survey(data, bands, survey_namespace=None, ...)`
+- ✅ The per-band body of injection lives in a shared
+  `StreamInjector._inject_one_survey(data, bands, survey, survey_namespace, ...)`
   helper. It assumes positions and true magnitudes are already present and only
   does the observed/err draw, detection flags, and S/N cut, routing every column
-  name through `columns.py` (`survey_namespace=None` ⇒ legacy names). `inject`
-  now just completes the data and delegates to it, so single-survey behaviour is
-  unchanged.
-- ✅ `MultiSurveyInjector(surveys).inject(data, survey_bands, stream_config=...)`:
-  (1) one shared sky placement; (2) one shared true-magnitude fill via a
-  multi-survey isochrone (masses sampled once → every survey's
-  `<survey>_<band>_true`); (3) a per-survey loop calling each survey's
-  `_inject_one_survey` with `survey_namespace=<name>`, writing
-  `<survey>_<band>_obs/_err` and `<survey>_flag_observed` from that survey's own
-  `completeness_band` and maglim maps. Per-survey RNG via `rng.spawn(...)` for
-  order-independent reproducibility. `columns.perfect_flag_col` namespaces the
-  optional `perfect_galstarsep` flag.
+  name through `columns.py`. `survey`/`survey_namespace` are passed explicitly so
+  the same method serves every survey.
+- ✅ `StreamInjector` accepts **one survey or several** (a name/`Survey`, a
+  `{namespace: spec}` dict, or a list); `__init__` normalizes to
+  `self.surveys = {namespace: Survey}` with a `survey` property pointing at the
+  `primary`. `inject(data, survey_bands=None, bands=None, stream_config=...)`:
+  (1) one shared sky placement; (2) one shared true-magnitude fill via the
+  isochrone (masses sampled once → every survey's `<survey>_<band>_true`);
+  (3) a per-survey loop calling `_inject_one_survey` with `survey_namespace=<name>`,
+  writing `<survey>_<band>_obs/_err` and `<survey>_flag_observed` from that
+  survey's own `completeness_band` and maglim maps. Per-survey RNG via
+  `rng.spawn(...)` for order-independent reproducibility. `columns.perfect_flag_col`
+  namespaces the optional `perfect_galstarsep` flag. The separate
+  `MultiSurveyInjector` class has been **removed**.
 - ✅ A *scene* config (`config/scenes/roman_rubin_demo.yaml`) lists the surveys,
   per-survey bands, the multi-survey isochrone, and shared stream geometry.
 - ✅ `notebooks/multisurvey_phases_demo.ipynb` walks through Phases 1–4 end to
-  end.
+  end (executes against `StubSurvey` + real `ugali` isochrones).
 
 ### Phase 5 *(future)* — Lightweight background + galaxy misclassification
 
@@ -288,9 +303,8 @@ recreated here, so it can land cleanly when the `roman_hlwas` work merges.
 | File | Phase | Role |
 |---|---|---|
 | `streamobs/surveys.py` | 1 | sample/catalog error fields, `get_photo_error(kind=)`, loader |
-| `streamobs/columns.py` | 2 | NEW — column-name helpers |
-| `streamobs/observed.py` | 1,2,4 | error wiring; de-hardcode bands; `_inject_one_survey`; `MultiSurveyInjector` |
-| `streamobs/model.py` | 3 | multi-band `IsochroneModel`; band-generalized `StreamModel` |
-| `streamobs/multisurvey.py` | 4 | NEW — orchestrator (or a class in `observed.py`) |
+| `streamobs/columns.py` | 2 | NEW — column-name helpers (always namespaced) |
+| `streamobs/observed.py` | 1,2,4 | error wiring; de-hardcode bands; unified one-or-many-survey `StreamInjector` (`_inject_one_survey` + `_complete_shared`) |
+| `streamobs/model.py` | 3 | multi-band `IsochroneModel`; always-namespaced `StreamModel` |
 | `config/scenes/roman_rubin_demo.yaml` | 4 | NEW — multi-survey scene |
 | `streamobs/background.py` | 5 *(future)* | NEW — lightweight background |

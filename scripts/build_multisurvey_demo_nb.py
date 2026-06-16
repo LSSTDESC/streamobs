@@ -22,9 +22,9 @@ each band draws its errors and detection probability from its *own* survey.
 | Phase | What changed |
 |---|---|
 | **1** | `Survey` holds two error curves — a *catalog* (reported `magerr`, drives the S/N cut) and an optional *sample* (true scatter, drives the noise draw). `get_photo_error(..., kind=)` selects between them. |
-| **2** | The injector is de-hardcoded off `{r, g}`; column names route through `streamobs.columns`, using a **uniform** `<band>_true/_obs/_err` scheme (`<survey>_…` when namespaced). The S/N cut now applies to **all** injected bands. |
+| **2** | The injector is de-hardcoded off `{r, g}`; column names route through `streamobs.columns`, using a uniform, **always survey-namespaced** `<survey>_<band>_true/_obs/_err` scheme. The S/N cut now applies to **all** injected bands. |
 | **3** | `IsochroneModel` is multi-band / multi-survey: masses are drawn **once** (exactly `nstars`) and interpolated into every survey's bands, so the *same physical star* is consistent across surveys. Roman bands are auto-converted Vega→AB. |
-| **4** | `MultiSurveyInjector` orchestrates one shared sky placement + one shared true-mag fill, then a per-survey loop writing `<survey>_<band>_obs/_err` and `<survey>_flag_observed`. |
+| **4** | A single `StreamInjector` accepts one survey **or several**: it does one shared sky placement + one shared true-mag fill, then a per-survey loop writing `<survey>_<band>_obs/_err` and `<survey>_flag_observed`. |
 
 See `docs/source/roman_multisurvey_plan.md` for the full design.
 """)
@@ -39,7 +39,7 @@ import matplotlib.pyplot as plt
 
 from streamobs.surveys import Survey
 from streamobs.model import StreamModel, IsochroneModel
-from streamobs.observed import StreamInjector, MultiSurveyInjector
+from streamobs.observed import StreamInjector
 from streamobs import columns as C
 
 import os
@@ -133,32 +133,31 @@ print("no sample curve -> sample falls back to catalog:",
 md(r"""## Phase 2 — arbitrary bands + `columns.py`
 
 The injector no longer hard-codes `{r, g}`. Column names come from
-`streamobs.columns`, using one **uniform** convention: `<band>_true` /
-`<band>_obs` / `<band>_err` / `flag_observed` single-survey, and the same with a
-`<survey>_` prefix multi-survey. (This intentionally drops the historical
-`mag_<band>` / `magerr_<band>` names — not backward compatible.) Below we inject
-Roman NIR bands `F106`/`F158` through the *single-survey* `StreamInjector` —
-impossible under the old `{r,g}` block.
+`streamobs.columns`, using one uniform, **always survey-namespaced** convention:
+`<survey>_<band>_true` / `<survey>_<band>_obs` / `<survey>_<band>_err` /
+`<survey>_flag_observed`. (This intentionally drops the historical `mag_<band>` /
+`magerr_<band>` names — not backward compatible.) Below we inject Roman NIR bands
+`F106`/`F158` through a **single-survey** `StreamInjector` — impossible under the
+old `{r,g}` block — and the output is namespaced by the survey's name (`roman`).
 """)
 
 co(
-    """print("single-survey:", C.true_col("r"), C.obs_col("r"), C.err_col("r"), C.flag_col())
-print("multi-survey :", C.true_col("F158", "roman"), C.obs_col("F158", "roman"),
+    """print("namespaced columns:", C.true_col("F158", "roman"), C.obs_col("F158", "roman"),
       C.err_col("F158", "roman"), C.flag_col("roman"))
 
 roman_sv = StubSurvey("roman", ["F106", "F158"], completeness_band="F158", maglim=27.0)
-inj = StreamInjector(roman_sv)
+inj = StreamInjector(roman_sv)   # one survey -> namespaced by its name, "roman"
 N = 1500
 df = pd.DataFrame({
     "ra":  rng.uniform(10, 20, N),
     "dec": rng.uniform(-5, 5, N),
-    "F106_true": rng.uniform(20, 28, N),
-    "F158_true": rng.uniform(20, 28, N),
+    "roman_F106_true": rng.uniform(20, 28, N),
+    "roman_F158_true": rng.uniform(20, 28, N),
 })
 out = inj.inject(df, bands=["F106", "F158"], seed=1, verbose=False)
 print("\\ninjected NIR-only bands -> columns:",
-      [c for c in out.columns if c.endswith(("_obs", "_err")) or c == "flag_observed"])
-print("detected:", int(out.flag_observed.sum()), "/", len(out))"""
+      [c for c in out.columns if c.endswith(("_obs", "_err")) or c.endswith("flag_observed")])
+print("detected:", int(out.roman_flag_observed.sum()), "/", len(out))"""
 )
 
 md(r"""## Phase 3 — multi-band / multi-survey isochrone (exactly `nstars`)
@@ -218,18 +217,18 @@ x = np.array([20.0, 21.0])
 print("\\nF158 shift:", (iso._to_ab("F158", x) - x), " (always +1.315)")
 print("r    shift:", (iso._to_ab("r", x) - x), " (0 -> non-Roman pass-through)")""")
 
-md(r"""## Phase 4 — `MultiSurveyInjector`
+md(r"""## Phase 4 — one `StreamInjector`, many surveys
 
-One orchestrator, one shared sky placement and shared masses, then per-survey
-observed columns and flags. Per-survey RNGs come from `rng.spawn(...)`, so the
-result is reproducible and independent of survey order.
+The same `StreamInjector` class accepts a `{namespace: survey}` mapping. It does
+one shared sky placement and one shared mass draw, then a per-survey loop writing
+each survey's observed columns and flags. Per-survey RNGs come from
+`rng.spawn(...)`, so the result is reproducible and independent of survey order.
 """)
 
 co(
     """lsst_sv  = StubSurvey("lsst",  ["g", "r"],      completeness_band="r",    maglim=26.0)
 roman_sv = StubSurvey("roman", ["F106", "F158"], completeness_band="F158", maglim=27.0)
-msi = MultiSurveyInjector({"lsst": StreamInjector(lsst_sv),
-                            "roman": StreamInjector(roman_sv)}, primary="lsst")
+msi = StreamInjector({"lsst": lsst_sv, "roman": roman_sv}, primary="lsst")
 
 # Input carries only stream coordinates; everything else is sampled once.
 N = 4000
@@ -277,9 +276,10 @@ md(r"""## Notes for real runs
 * A band label is used **both** as the ugali isochrone field name and as the key
   into a survey's maglim/photo-error maps, so they must agree (ugali's Roman
   fields are upper-case: `F106`, `F158`, ...).
-* **`nstars` is now exactly N** (was an emergent IMF count). This is adopted but
-  intentionally still **flagged for review** in the plan doc, because it changes
-  what `StreamModel.sample(size)` returns for existing single-survey configs.
+* **`nstars` is now exactly N** (was an emergent IMF count). This is the agreed
+  semantics for both single- and multi-survey configs.
+* **Output columns are always survey-namespaced** (`<survey>_<band>_…`), even for
+  a single survey — there is no longer an un-namespaced single-survey form.
 """)
 
 nb = new_notebook(cells=cells)
