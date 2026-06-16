@@ -95,6 +95,22 @@ A single-survey isochrone (the flat `survey`/`band_1`/`band_2` form) is just the
 one-survey case of the same machinery and produces `<survey>_<band>_true`
 identically.
 
+A complete, runnable example — the surveys, per-survey bands, the multi-survey
+isochrone, and the shared stream geometry — is provided as a *scene* config in
+[`config/scenes/roman_rubin_demo.yaml`](https://github.com/LSSTDESC/streamobs/blob/main/config/scenes/roman_rubin_demo.yaml):
+
+```python
+import yaml
+from streamobs.observed import StreamInjector
+
+scene = yaml.safe_load(open("config/scenes/roman_rubin_demo.yaml"))
+inj = StreamInjector(scene["surveys"])              # {"lsst": "lsst", "roman": "roman"}
+cat = inj.inject(
+    df, survey_bands=scene["survey_bands"],         # {"lsst": [...], "roman": [...]}
+    stream_config=scene["stream"], seed=42,
+)
+```
+
 ```{note}
 **Roman bands are converted Vega→AB automatically.** `ugali` returns Roman
 isochrone magnitudes in Vega while the catalogs are AB, so `IsochroneModel`

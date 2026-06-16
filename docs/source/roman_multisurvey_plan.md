@@ -13,6 +13,15 @@ working design/roadmap doc, not user documentation. Before merge, migrate the
 durable content — the column convention, the sample/catalog error split, the
 multi-survey `StreamInjector` usage, and the Vega→AB handling — into the proper
 docs pages (and the API docstrings), then delete `roman_multisurvey_plan.md`.
+
+**Also remove before merge — useful for now, but not part of the merged package:**
+
+- `notebooks/multisurvey_phases_demo.ipynb` — the Phases 1–4 walkthrough. It is
+  kept tracked (with outputs stripped) during the branch's life, but should be
+  removed before merge and migrated into the rendered docs as an Examples page
+  (see the separate notebooks→docs migration). Its generator,
+  `scripts/build_multisurvey_demo_nb.py`, is a local-only helper and is **not**
+  tracked.
 ```
 
 ## Motivation
