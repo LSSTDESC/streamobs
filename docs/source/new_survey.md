@@ -14,7 +14,9 @@ mkdir -p data/surveys/new_survey_release
 
 Add magnitude limit maps for each band:
 
-* Supported formats: HEALPix (`.hsp`) or FITS (`.fits`)
+* Supported formats: HEALPix (`.hsp`) or FITS (`.fits`), but still have to be
+  healpixel arrays.
+* Those are assumed to be $5\sigma$ magnitude limit depth
 * Example:
 
   ```
