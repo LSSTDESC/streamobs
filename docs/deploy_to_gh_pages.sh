@@ -112,7 +112,7 @@ else
     echo ""
     echo "Pushing to GitHub..."
     #if git push origin gh-pages; then
-    if git git push origin gh-pages --no-verify; then
+    if git push origin gh-pages --no-verify; then
         echo "✓ Documentation deployed successfully!"
     else
         echo "⚠ Warning: Push to GitHub failed. You may need to push manually."
