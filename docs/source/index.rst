@@ -87,6 +87,14 @@ Documentation Contents
 
 .. toctree::
    :maxdepth: 2
+   :caption: Surveys supported
+   
+   DES
+   LSST
+   roman
+
+.. toctree::
+   :maxdepth: 2
    :caption: For developers
    
    modifying_streamobs
