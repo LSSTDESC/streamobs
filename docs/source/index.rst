@@ -1,6 +1,6 @@
 .. streamobs documentation master file
 
-Welcome to StreamObs's Documentation!
+Welcome to StreamObs Documentation!
 ======================================
 
 .. warning::
@@ -9,6 +9,10 @@ Welcome to StreamObs's Documentation!
 **StreamObs** is a Python package for stellar stream data generation and observation simulation. 
 It provides a complete pipeline to transform theoretical or dynamical stream models into realistic 
 mock observations as they would appear in astronomical surveys.
+It now supports the following surveys (and corresponding data releases):
+- **DES**: Y6
+- **LSST**: simulated properties for Y1, Y2, Y3, Y4, and Y5
+
 
 What StreamObs Does
 -------------------
@@ -60,6 +64,15 @@ New to StreamObs? Start here:
 .. tip::
    Having issues with data download? See the :doc:`data` page for detailed troubleshooting.
 
+For developers
+---------------
+
+If you're interested in contributing to StreamObs or using it as a base for your own development, check out these pages:
+
+1. **Modify Streamobs**: :doc:`modifying_streamobs` - Guidlines for modifying the core codebase
+2. **Adding a new survey**: :doc:`new_survey` - Learn how to add support for a new photometric survey
+3. **Update data base**: :doc:`update_data` - Learn how to update the data base
+
 Documentation Contents
 ----------------------
 
@@ -74,8 +87,24 @@ Documentation Contents
 
 .. toctree::
    :maxdepth: 2
-   :caption: Reference
+   :caption: Surveys supported
    
+   DES
+   LSST
+   roman
+
+.. toctree::
+   :maxdepth: 2
+   :caption: For developers
+   
+   modifying_streamobs
+   new_survey
+   update_data
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Reference
+
    data
    modules
 
