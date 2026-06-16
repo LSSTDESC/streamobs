@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>About StreamObs &#8212; streamobs  documentation</title>
+    <title>Update StreamObs data base &#8212; streamobs  documentation</title>
   
   
   
@@ -43,12 +43,12 @@
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'about';</script>
-    <link rel="author" title="About these documents" href="#" />
+    <script>DOCUMENTATION_OPTIONS.pagename = 'update_data';</script>
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation &amp; Dependencies" href="installation.html" />
-    <link rel="prev" title="Welcome to StreamObs Documentation!" href="index.html" />
+    <link rel="next" title="StreamObs Data Files" href="data.html" />
+    <link rel="prev" title="Adding a New Photometric Survey" href="new_survey.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -139,8 +139,8 @@
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">About StreamObs</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
@@ -155,10 +155,10 @@
 <li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Update StreamObs data base</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -235,7 +235,7 @@
       
       
       
-      <li><a href="_sources/about.md" target="_blank"
+      <li><a href="_sources/update_data.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -298,9 +298,7 @@
 <button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
 </button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="fa-solid fa-list"></span>
-</button>
+
 </div></div>
       
     </div>
@@ -311,24 +309,11 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>About StreamObs</h1>
+    <h1>Update StreamObs data base</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
-            <div>
-                <h2> Contents </h2>
-            </div>
-            <nav aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-streamobs-does">What StreamObs Does</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-team">Development Team</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgments">Acknowledgments</a></li>
-</ul>
-            </nav>
         </div>
     </div>
 </div>
@@ -338,81 +323,48 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="about-streamobs">
-<h1>About StreamObs<a class="headerlink" href="#about-streamobs" title="Link to this heading">#</a></h1>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
-<p><strong>StreamObs</strong> is a Python package designed for stellar stream data generation and observation simulation. It provides a complete pipeline to transform theoretical or dynamical stream models into realistic mock observations as they would appear in astronomical surveys.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>StreamObs is <strong>not</strong> intended for generating dynamical models or N-body simulations. Instead, it provides tools to study statistical realizations of parametrized stream geometries and convert simulation outputs into mock observations.</p>
+  <section id="update-streamobs-data-base">
+<h1>Update StreamObs data base<a class="headerlink" href="#update-streamobs-data-base" title="Link to this heading">#</a></h1>
+<p>If you need to add or modify data files:</p>
+<ol class="arabic">
+<li><p><strong>Create a new zip archive</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/path/to/streamobs
+zip<span class="w"> </span>-r<span class="w"> </span>data.zip<span class="w"> </span>data/<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;*.DS_Store&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;*__MACOSX*&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;data/.git*&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;data/__pycache__/*&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;*.backup&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;*.bak&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;*~&quot;</span>
+</pre></div>
 </div>
-</section>
-<section id="what-streamobs-does">
-<h2>What StreamObs Does<a class="headerlink" href="#what-streamobs-does" title="Link to this heading">#</a></h2>
-<p>StreamObs enables to:</p>
-<ol class="arabic simple">
-<li><p><strong>Generate mock stellar stream data</strong> from parametric models</p>
+</li>
+<li><p><strong>Upload to Zenodo</strong>:</p>
 <ul class="simple">
-<li><p>Create positions of stars along streams using various parametric descriptions</p></li>
-<li><p>Model stream morphologies including linear, sinusoidal, and spline-based geometries</p></li>
+<li><p>Go to https://zenodo.org/records/18298544</p></li>
+<li><p>Create a new version</p></li>
+<li><p>Upload the <code class="docutils literal notranslate"><span class="pre">data.zip</span></code> file</p></li>
+<li><p>Add release notes describing changes</p></li>
+<li><p>Publish and note the new record ID</p></li>
 </ul>
 </li>
-<li><p><strong>Assign photometric properties</strong> to stream stars</p>
+<li><p><strong>Update the download script</strong>:</p>
 <ul class="simple">
-<li><p>Attribute magnitudes in multiple photometric bands based on stellar isochrones</p></li>
+<li><p>Edit <code class="docutils literal notranslate"><span class="pre">bin/download_data.py</span></code></p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">BASE_DATA_URL</span></code> if record ID changed</p></li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">ARCHIVE_SIZE_MB</span></code> if size changed</p></li>
+<li><p>Update version in this document</p></li>
 </ul>
 </li>
-<li><p><strong>Simulate survey observations</strong> of streams</p>
-<ul class="simple">
-<li><p>Convert idealized mock data into observable quantities for specific surveys (e.g., LSST)</p></li>
-<li><p>Apply survey selection functions and detection limits</p></li>
-<li><p>Generate realistic photometric errors and observational uncertainties</p></li>
-</ul>
+<li><p><strong>Commit and push</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update data archive to version X.Y&quot;</span>
+git<span class="w"> </span>push
+</pre></div>
+</div>
 </li>
 </ol>
-</section>
-<section id="use-cases">
-<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading">#</a></h2>
-<p>StreamObs is particularly useful for people who:</p>
-<ul class="simple">
-<li><p>Run <strong>dynamical simulations</strong> of stellar streams and need to convert results into observable quantities</p></li>
-<li><p>Develop <strong>stream detection algorithms</strong> and require realistic test data with known properties</p></li>
-<li><p>Need to generate <strong>mock catalogs</strong> for testing analysis pipelines</p></li>
-<li><p>…</p></li>
-</ul>
-</section>
-<section id="development-team">
-<h2>Development Team<a class="headerlink" href="#development-team" title="Link to this heading">#</a></h2>
-<p>StreamObs is developed and maintained by members of the LSST Dark Energy Science Collaboration (DESC).</p>
-<p><strong>Core Contributors:</strong></p>
-<ul class="simple">
-<li><p>Matthieu Pélissier (Université Grenoble Alpes, CNRS/IN2P3, LPSC, 53 avenue des Martyrs, F-38026 Grenoble, France)</p></li>
-<li><p>Peter Ferguson (DiRAC Institute and the Department of Astronomy, University of Washington, Seattle, WA, USA)</p></li>
-<li><p>Alex Drlica-Wagner (Department of Astronomy and Astrophysics, University of Chicago, Chicago, IL 60637, USA)</p></li>
-</ul>
-<p><strong>Contact:</strong></p>
-<ul class="simple">
-<li><p>GitHub: <a class="reference external" href="https://github.com/LSSTDESC/streamobs">LSSTDESC/streamobs</a></p></li>
-<li><p>Issues: <a class="reference external" href="https://github.com/LSSTDESC/streamobs/issues">Report bugs or request features</a></p></li>
-</ul>
-</section>
-<section id="license">
-<h2>License<a class="headerlink" href="#license" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="https://opensource.org/license/MIT">MIT Licence</a></p>
-</section>
-<section id="acknowledgments">
-<h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Link to this heading">#</a></h2>
-<p>If you use StreamObs in your research, please see the <a class="reference internal" href="citation.html"><span class="std std-doc">Citation</span></a> page for how to properly cite this software.</p>
-<p><strong>Funding and Support:</strong></p>
-<ul class="simple">
-<li><p>This project is supported by the LSST Dark Energy Science Collaboration</p></li>
-</ul>
-<p><strong>Related Projects:</strong></p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/DarkEnergySurvey/ugali">ugali</a></p></li>
-</ul>
-</section>
 </section>
 
 
@@ -427,20 +379,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="index.html"
+       href="new_survey.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Welcome to StreamObs Documentation!</p>
+        <p class="prev-next-title">Adding a New Photometric Survey</p>
       </div>
     </a>
     <a class="right-next"
-       href="installation.html"
+       href="data.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Installation &amp; Dependencies</p>
+        <p class="prev-next-title">StreamObs Data Files</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -450,28 +402,6 @@
             </div>
             
             
-              
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item"><div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> Contents
-  </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-streamobs-does">What StreamObs Does</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-team">Development Team</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgments">Acknowledgments</a></li>
-</ul>
-  </nav></div>
-
-</div></div>
               
             
           </div>

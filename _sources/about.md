@@ -39,7 +39,10 @@ StreamObs is particularly useful for people who:
 StreamObs is developed and maintained by members of the LSST Dark Energy Science Collaboration (DESC).
 
 **Core Contributors:**
-- *To be completed with contributor names and affiliations*
+- Matthieu Pélissier (Université Grenoble Alpes, CNRS/IN2P3, LPSC, 53 avenue des Martyrs, F-38026 Grenoble, France)
+- Peter Ferguson (DiRAC Institute and the Department of Astronomy, University of Washington, Seattle, WA, USA)
+- Alex Drlica-Wagner (Department of Astronomy and Astrophysics, University of Chicago, Chicago, IL 60637, USA)
+
 
 **Contact:**
 - GitHub: [LSSTDESC/streamobs](https://github.com/LSSTDESC/streamobs)
@@ -56,8 +59,6 @@ If you use StreamObs in your research, please see the [Citation](citation.md) pa
 
 **Funding and Support:**
 - This project is supported by the LSST Dark Energy Science Collaboration
-- *Additional funding sources to be added*
 
 **Related Projects:**
 - [ugali](https://github.com/DarkEnergySurvey/ugali)
-- *Other related tools to be added*

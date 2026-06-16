@@ -144,6 +144,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../DES.html">DES</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../LSST.html">LSST</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../update_data.html">Update StreamObs data base</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
@@ -273,7 +288,7 @@
 <div class="viewcode-block" id="function_factory">
 <a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.function_factory">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">function_factory</span><span class="p">(</span><span class="n">type_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Create a function with given kwargs.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a function with given kwargs.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -284,23 +299,23 @@
 <span class="sd">    -------</span>
 <span class="sd">    func : the function</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;constant&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">type_</span> <span class="o">==</span> <span class="s2">&quot;constant&quot;</span><span class="p">:</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">Constant</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;line&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="s2">&quot;line&quot;</span><span class="p">:</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">Line</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;sinusoid&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="s2">&quot;sinusoid&quot;</span><span class="p">:</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">Sinusoid</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="s1">&#39;interpolation&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="o">==</span> <span class="s2">&quot;interpolation&quot;</span><span class="p">:</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">Interpolation</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">,</span> <span class="s1">&#39;fileinterpolation&#39;</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="s2">&quot;fileinterpolation&quot;</span><span class="p">):</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">FileInterpolation</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cubicsplineinterpolation&#39;</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;cubicsplineinterpolation&quot;</span><span class="p">):</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">CubicSplineInterpolation</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;filecubicsplineinterpolation&#39;</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;filecubicsplineinterpolation&quot;</span><span class="p">):</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">FileCubicSplineInterpolation</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;lineardensitycubicsplineinterpolation&#39;</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;lineardensitycubicsplineinterpolation&quot;</span><span class="p">):</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">LinearDensityCubicSplineInterpolation</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;filelineardensitycubicsplineinterpolation&#39;</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="n">type_</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;filelineardensitycubicsplineinterpolation&quot;</span><span class="p">):</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">FileLinearDensityCubicSplineInterpolation</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unrecognized function: </span><span class="si">{</span><span class="n">type_</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -313,7 +328,7 @@
 <a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.BoundedFunction">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BoundedFunction</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Function with bounds explicitly defined.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Function with bounds explicitly defined.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -352,7 +367,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Constant</span><span class="p">(</span><span class="n">BoundedFunction</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Constant value function.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Constant value function.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -367,8 +382,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xvals</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Evaluate the method &quot;&quot;&quot;</span>
-        <span class="n">yvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xvals</span><span class="p">))</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the method&quot;&quot;&quot;</span>
+        <span class="n">yvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xvals</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">yvals</span></div>
 
 
@@ -378,11 +393,11 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Line</span><span class="p">(</span><span class="n">BoundedFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Line function. Evaluated as:</span>
 
-<span class="sd">      y(x) = slope*x + intercept</span>
+<span class="sd">    y(x) = slope*x + intercept</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slope</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">intercept</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Line function. Evaluated as:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Line function. Evaluated as:</span>
 
 <span class="sd">          y(x) = slope*x + intercept</span>
 
@@ -401,8 +416,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span> <span class="o">=</span> <span class="n">intercept</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xvals</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Evaluate the method &quot;&quot;&quot;</span>
-        <span class="n">yvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span><span class="o">*</span><span class="n">xvals</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the method&quot;&quot;&quot;</span>
+        <span class="n">yvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">slope</span> <span class="o">*</span> <span class="n">xvals</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">intercept</span>
         <span class="k">return</span> <span class="n">yvals</span></div>
 
 
@@ -412,12 +427,12 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Sinusoid</span><span class="p">(</span><span class="n">BoundedFunction</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sinusoid function. Evaluated as:</span>
 
-<span class="sd">       y(x) = amplitude/2 * cos( 2pi*(x - phase)/period ) + amplitude/2+offset</span>
+<span class="sd">    y(x) = amplitude/2 * cos( 2pi*(x - phase)/period ) + amplitude/2+offset</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Sinusoid function</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amplitude</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sinusoid function</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -438,10 +453,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xvals</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Evaluate the sinusoid &quot;&quot;&quot;</span>
-        <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">amplitude</span><span class="o">/</span><span class="mf">2.0</span>
-        <span class="n">yvals</span> <span class="o">=</span> <span class="n">norm</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">xvals</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="p">)</span> <span class="o">+</span> \
-            <span class="n">norm</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the sinusoid&quot;&quot;&quot;</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">amplitude</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">yvals</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">norm</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">xvals</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">period</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">norm</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">yvals</span></div>
 
 
@@ -451,7 +469,7 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Interpolation</span><span class="p">(</span><span class="n">BoundedFunction</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Interpolation function.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Interpolation function.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -465,15 +483,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">yvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">yvals</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;xmin&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">xvals</span><span class="p">))</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;xmax&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xvals</span><span class="p">))</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;xmin&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">xvals</span><span class="p">))</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;xmax&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">xvals</span><span class="p">))</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xvals</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Evaluate the method &quot;&quot;&quot;</span>
-        <span class="n">interp</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xvals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yvals</span><span class="p">,</span>
-                                            <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                            <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the method&quot;&quot;&quot;</span>
+        <span class="n">interp</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">xvals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yvals</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">interp</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span></div>
 
@@ -483,7 +501,7 @@
 <a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.FileInterpolation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FileInterpolation</span><span class="p">(</span><span class="n">Interpolation</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Interpolation function from file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Interpolation function from file.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -533,8 +551,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">node_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">node_values</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;xmin&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">nodes</span><span class="p">))</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;xmax&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">nodes</span><span class="p">))</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;xmin&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">nodes</span><span class="p">))</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;xmax&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">nodes</span><span class="p">))</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xvals</span><span class="p">):</span>
@@ -552,10 +570,9 @@
 <span class="sd">        array_like</span>
 <span class="sd">            Values of the spline at the given x-values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">interp</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">CubicSpline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span>
-                                               <span class="bp">self</span><span class="o">.</span><span class="n">node_values</span><span class="p">,</span>
-                                               <span class="n">bc_type</span><span class="o">=</span><span class="s1">&#39;natural&#39;</span><span class="p">,</span>
-                                               <span class="n">extrapolate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">interp</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">CubicSpline</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_values</span><span class="p">,</span> <span class="n">bc_type</span><span class="o">=</span><span class="s2">&quot;natural&quot;</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">interp</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span></div>
 
 
@@ -563,8 +580,15 @@
 <div class="viewcode-block" id="FileCubicSplineInterpolation">
 <a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.FileCubicSplineInterpolation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FileCubicSplineInterpolation</span><span class="p">(</span><span class="n">CubicSplineInterpolation</span><span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">stream_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spline_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">nodes_name</span><span class="o">=</span><span class="s2">&quot;phi1&quot;</span><span class="p">,</span> <span class="n">node_vals_name</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">,</span>
+        <span class="n">stream_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">spline_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">nodes_name</span><span class="o">=</span><span class="s2">&quot;phi1&quot;</span><span class="p">,</span>
+        <span class="n">node_vals_name</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a cubic spline interpolation using data from a file.</span>
 
@@ -605,9 +629,15 @@
 
 <div class="viewcode-block" id="LinearDensityCubicSplineInterpolation">
 <a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.LinearDensityCubicSplineInterpolation">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">LinearDensityCubicSplineInterpolation</span><span class="p">():</span>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intensity_nodes</span><span class="p">,</span> <span class="n">intensity_node_values</span><span class="p">,</span> <span class="n">spread_nodes</span><span class="p">,</span>
-                 <span class="n">spread_node_values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LinearDensityCubicSplineInterpolation</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">intensity_nodes</span><span class="p">,</span>
+        <span class="n">intensity_node_values</span><span class="p">,</span>
+        <span class="n">spread_nodes</span><span class="p">,</span>
+        <span class="n">spread_node_values</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create an interpolation based on linear density and cubic splines.</span>
 
@@ -629,10 +659,10 @@
 <span class="sd">        LinearDensityCubicSplineInterpolation</span>
 <span class="sd">            Instance of the linear density cubic spline interpolation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_peak_intensity</span> <span class="o">=</span> <span class="n">CubicSplineInterpolation</span><span class="p">(</span><span class="n">intensity_nodes</span><span class="p">,</span>
-                                                        <span class="n">intensity_node_values</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_spread</span> <span class="o">=</span> <span class="n">CubicSplineInterpolation</span><span class="p">(</span><span class="n">spread_nodes</span><span class="p">,</span>
-                                                <span class="n">spread_node_values</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_peak_intensity</span> <span class="o">=</span> <span class="n">CubicSplineInterpolation</span><span class="p">(</span>
+            <span class="n">intensity_nodes</span><span class="p">,</span> <span class="n">intensity_node_values</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spread</span> <span class="o">=</span> <span class="n">CubicSplineInterpolation</span><span class="p">(</span><span class="n">spread_nodes</span><span class="p">,</span> <span class="n">spread_node_values</span><span class="p">)</span>
         <span class="c1"># get the smallest range where both splines are defined</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xmin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">intensity_nodes</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">spread_nodes</span><span class="o">.</span><span class="n">min</span><span class="p">()])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xmax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="n">intensity_nodes</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">spread_nodes</span><span class="o">.</span><span class="n">max</span><span class="p">()])</span>
@@ -653,8 +683,7 @@
 
 <div class="viewcode-block" id="FileLinearDensityCubicSplineInterpolation">
 <a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.FileLinearDensityCubicSplineInterpolation">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">FileLinearDensityCubicSplineInterpolation</span><span class="p">(</span>
-        <span class="n">LinearDensityCubicSplineInterpolation</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FileLinearDensityCubicSplineInterpolation</span><span class="p">(</span><span class="n">LinearDensityCubicSplineInterpolation</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">stream_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a linear density cubic spline interpolation using data from a</span>
@@ -679,11 +708,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filename</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">stream_name</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;stream&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">stream_name</span><span class="p">]</span>
-        <span class="n">sel_intensity</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;peak_intensity&quot;</span><span class="p">)</span>
+        <span class="n">sel_intensity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;peak_intensity&quot;</span>
         <span class="n">intensity_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel_intensity</span><span class="p">,</span> <span class="s2">&quot;phi1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">intensity_node_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel_intensity</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
-        <span class="n">sel_spread</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;spread&quot;</span><span class="p">)</span>
+        <span class="n">sel_spread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;spread&quot;</span>
         <span class="n">spread_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel_spread</span><span class="p">,</span> <span class="s2">&quot;phi1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">spread_node_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sel_spread</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -691,7 +720,8 @@
             <span class="n">intensity_node_values</span><span class="o">=</span><span class="n">intensity_node_values</span><span class="p">,</span>
             <span class="n">spread_nodes</span><span class="o">=</span><span class="n">spread_nodes</span><span class="p">,</span>
             <span class="n">spread_node_values</span><span class="o">=</span><span class="n">spread_node_values</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 </pre></div>
 

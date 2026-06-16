@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>About StreamObs &#8212; streamobs  documentation</title>
+    <title>Contributing to StreamObs &#8212; streamobs  documentation</title>
   
   
   
@@ -43,12 +43,12 @@
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'about';</script>
-    <link rel="author" title="About these documents" href="#" />
+    <script>DOCUMENTATION_OPTIONS.pagename = 'modifying_streamobs';</script>
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation &amp; Dependencies" href="installation.html" />
-    <link rel="prev" title="Welcome to StreamObs Documentation!" href="index.html" />
+    <link rel="next" title="Adding a New Photometric Survey" href="new_survey.html" />
+    <link rel="prev" title="Roman" href="roman.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -139,8 +139,8 @@
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">About StreamObs</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
@@ -155,8 +155,8 @@
 <li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Contributing to StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
 <li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
 </ul>
@@ -235,7 +235,7 @@
       
       
       
-      <li><a href="_sources/about.md" target="_blank"
+      <li><a href="_sources/modifying_streamobs.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -311,7 +311,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>About StreamObs</h1>
+    <h1>Contributing to StreamObs</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -321,12 +321,22 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-streamobs-does">What StreamObs Does</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-team">Development Team</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgments">Acknowledgments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#github-workflow">GitHub workflow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#update-your-local-main-branch">1. Update your local <code class="docutils literal notranslate"><span class="pre">main</span></code> branch</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-new-branch">2. Create a new branch</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#make-your-changes">3. Make your changes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-tests">4. Run the tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#push-your-branch">5. Push your branch</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#open-a-pull-request">6. Open a Pull Request</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#update-your-local-repository-after-merging">7. Update your local repository after merging</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-tests">Adding tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-markers">Test markers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-tests">Running tests</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -338,80 +348,91 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="about-streamobs">
-<h1>About StreamObs<a class="headerlink" href="#about-streamobs" title="Link to this heading">#</a></h1>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
-<p><strong>StreamObs</strong> is a Python package designed for stellar stream data generation and observation simulation. It provides a complete pipeline to transform theoretical or dynamical stream models into realistic mock observations as they would appear in astronomical surveys.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>StreamObs is <strong>not</strong> intended for generating dynamical models or N-body simulations. Instead, it provides tools to study statistical realizations of parametrized stream geometries and convert simulation outputs into mock observations.</p>
+  <section id="contributing-to-streamobs">
+<h1>Contributing to StreamObs<a class="headerlink" href="#contributing-to-streamobs" title="Link to this heading">#</a></h1>
+<p>Basic guidelines for contributors.</p>
+<section id="github-workflow">
+<h2>GitHub workflow<a class="headerlink" href="#github-workflow" title="Link to this heading">#</a></h2>
+<section id="update-your-local-main-branch">
+<h3>1. Update your local <code class="docutils literal notranslate"><span class="pre">main</span></code> branch<a class="headerlink" href="#update-your-local-main-branch" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>main
+git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
+</pre></div>
 </div>
 </section>
-<section id="what-streamobs-does">
-<h2>What StreamObs Does<a class="headerlink" href="#what-streamobs-does" title="Link to this heading">#</a></h2>
-<p>StreamObs enables to:</p>
-<ol class="arabic simple">
-<li><p><strong>Generate mock stellar stream data</strong> from parametric models</p>
-<ul class="simple">
-<li><p>Create positions of stars along streams using various parametric descriptions</p></li>
-<li><p>Model stream morphologies including linear, sinusoidal, and spline-based geometries</p></li>
-</ul>
-</li>
-<li><p><strong>Assign photometric properties</strong> to stream stars</p>
-<ul class="simple">
-<li><p>Attribute magnitudes in multiple photometric bands based on stellar isochrones</p></li>
-</ul>
-</li>
-<li><p><strong>Simulate survey observations</strong> of streams</p>
-<ul class="simple">
-<li><p>Convert idealized mock data into observable quantities for specific surveys (e.g., LSST)</p></li>
-<li><p>Apply survey selection functions and detection limits</p></li>
-<li><p>Generate realistic photometric errors and observational uncertainties</p></li>
-</ul>
-</li>
-</ol>
+<section id="create-a-new-branch">
+<h3>2. Create a new branch<a class="headerlink" href="#create-a-new-branch" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>MYBRANCH
+</pre></div>
+</div>
+<p>Use a descriptive branch name (e.g. <code class="docutils literal notranslate"><span class="pre">feature/new-model</span></code> or <code class="docutils literal notranslate"><span class="pre">fix/orbit-bug</span></code>).</p>
 </section>
-<section id="use-cases">
-<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading">#</a></h2>
-<p>StreamObs is particularly useful for people who:</p>
+<section id="make-your-changes">
+<h3>3. Make your changes<a class="headerlink" href="#make-your-changes" title="Link to this heading">#</a></h3>
+<p>Commit your changes regularly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Short description of the changes&quot;</span>
+</pre></div>
+</div>
+<p>You may create multiple commits on the same branch.</p>
+</section>
+<section id="run-the-tests">
+<h3>4. Run the tests<a class="headerlink" href="#run-the-tests" title="Link to this heading">#</a></h3>
+<p>Before pushing your changes, make sure all tests pass:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest
+</pre></div>
+</div>
+<p>If you add new features or fix bugs, add corresponding tests.</p>
+</section>
+<section id="push-your-branch">
+<h3>5. Push your branch<a class="headerlink" href="#push-your-branch" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>MYBRANCH
+</pre></div>
+</div>
+</section>
+<section id="open-a-pull-request">
+<h3>6. Open a Pull Request<a class="headerlink" href="#open-a-pull-request" title="Link to this heading">#</a></h3>
+<p>Once you did all the modifications you wanted, open a Pull Request on GitHub and request a review from one of the main contributors.</p>
+</section>
+<section id="update-your-local-repository-after-merging">
+<h3>7. Update your local repository after merging<a class="headerlink" href="#update-your-local-repository-after-merging" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>main
+git<span class="w"> </span>pull<span class="w"> </span>origin<span class="w"> </span>main
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading">#</a></h2>
+<p>All changes merged into <code class="docutils literal notranslate"><span class="pre">main</span></code> must pass the test suite.</p>
+<section id="adding-tests">
+<h3>Adding tests<a class="headerlink" href="#adding-tests" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Run <strong>dynamical simulations</strong> of stellar streams and need to convert results into observable quantities</p></li>
-<li><p>Develop <strong>stream detection algorithms</strong> and require realistic test data with known properties</p></li>
-<li><p>Need to generate <strong>mock catalogs</strong> for testing analysis pipelines</p></li>
-<li><p>…</p></li>
+<li><p>Add tests in the <code class="docutils literal notranslate"><span class="pre">tests/</span></code> directory.</p></li>
+<li><p>Place tests in the file corresponding to the modified module.</p></li>
+<li><p>Reuse fixtures defined in <code class="docutils literal notranslate"><span class="pre">conftest.py</span></code> whenever possible.</p></li>
+<li><p>Add regression tests for bug fixes.</p></li>
 </ul>
 </section>
-<section id="development-team">
-<h2>Development Team<a class="headerlink" href="#development-team" title="Link to this heading">#</a></h2>
-<p>StreamObs is developed and maintained by members of the LSST Dark Energy Science Collaboration (DESC).</p>
-<p><strong>Core Contributors:</strong></p>
-<ul class="simple">
-<li><p>Matthieu Pélissier (Université Grenoble Alpes, CNRS/IN2P3, LPSC, 53 avenue des Martyrs, F-38026 Grenoble, France)</p></li>
-<li><p>Peter Ferguson (DiRAC Institute and the Department of Astronomy, University of Washington, Seattle, WA, USA)</p></li>
-<li><p>Alex Drlica-Wagner (Department of Astronomy and Astrophysics, University of Chicago, Chicago, IL 60637, USA)</p></li>
-</ul>
-<p><strong>Contact:</strong></p>
-<ul class="simple">
-<li><p>GitHub: <a class="reference external" href="https://github.com/LSSTDESC/streamobs">LSSTDESC/streamobs</a></p></li>
-<li><p>Issues: <a class="reference external" href="https://github.com/LSSTDESC/streamobs/issues">Report bugs or request features</a></p></li>
-</ul>
+<section id="test-markers">
+<h3>Test markers<a class="headerlink" href="#test-markers" title="Link to this heading">#</a></h3>
+<p>Custom markers can be added using:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">mytag</span>
+</pre></div>
+</div>
+<p>Any new marker must also be declared in <code class="docutils literal notranslate"><span class="pre">pytest.ini</span></code>.</p>
 </section>
-<section id="license">
-<h2>License<a class="headerlink" href="#license" title="Link to this heading">#</a></h2>
-<p><a class="reference external" href="https://opensource.org/license/MIT">MIT Licence</a></p>
+<section id="running-tests">
+<h3>Running tests<a class="headerlink" href="#running-tests" title="Link to this heading">#</a></h3>
+<p>Run the full test suite:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest
+</pre></div>
+</div>
+<p>Run a subset of tests:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;mytag&quot;</span>
+</pre></div>
+</div>
 </section>
-<section id="acknowledgments">
-<h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Link to this heading">#</a></h2>
-<p>If you use StreamObs in your research, please see the <a class="reference internal" href="citation.html"><span class="std std-doc">Citation</span></a> page for how to properly cite this software.</p>
-<p><strong>Funding and Support:</strong></p>
-<ul class="simple">
-<li><p>This project is supported by the LSST Dark Energy Science Collaboration</p></li>
-</ul>
-<p><strong>Related Projects:</strong></p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/DarkEnergySurvey/ugali">ugali</a></p></li>
-</ul>
 </section>
 </section>
 
@@ -427,20 +448,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="index.html"
+       href="roman.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Welcome to StreamObs Documentation!</p>
+        <p class="prev-next-title">Roman</p>
       </div>
     </a>
     <a class="right-next"
-       href="installation.html"
+       href="new_survey.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Installation &amp; Dependencies</p>
+        <p class="prev-next-title">Adding a New Photometric Survey</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -462,12 +483,22 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-streamobs-does">What StreamObs Does</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#development-team">Development Team</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#license">License</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#acknowledgments">Acknowledgments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#github-workflow">GitHub workflow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#update-your-local-main-branch">1. Update your local <code class="docutils literal notranslate"><span class="pre">main</span></code> branch</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-new-branch">2. Create a new branch</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#make-your-changes">3. Make your changes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-tests">4. Run the tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#push-your-branch">5. Push your branch</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#open-a-pull-request">6. Open a Pull Request</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#update-your-local-repository-after-merging">7. Update your local repository after merging</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-tests">Adding tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-markers">Test markers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-tests">Running tests</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

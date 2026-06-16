@@ -111,6 +111,7 @@ else
     # Push to remote (allow this to fail without stopping the script)
     echo ""
     echo "Pushing to GitHub..."
+    #if git push origin gh-pages; then
     if git push origin gh-pages; then
         echo "✓ Documentation deployed successfully!"
     else

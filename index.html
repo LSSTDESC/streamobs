@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Welcome to StreamObs’s Documentation! &#8212; streamobs  documentation</title>
+    <title>Welcome to StreamObs Documentation! &#8212; streamobs  documentation</title>
   
   
   
@@ -145,6 +145,21 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
@@ -297,7 +312,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Welcome to StreamObs’s Documentation!</h1>
+    <h1>Welcome to StreamObs Documentation!</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -307,10 +322,11 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Welcome to StreamObs’s Documentation!</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Welcome to StreamObs Documentation!</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-streamobs-does">What StreamObs Does</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting Started</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#for-developers">For developers</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation-contents">Documentation Contents</a><ul class="nav section-nav flex-column">
 </ul>
 </li>
@@ -329,15 +345,18 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="welcome-to-streamobs-s-documentation">
-<h1>Welcome to StreamObs’s Documentation!<a class="headerlink" href="#welcome-to-streamobs-s-documentation" title="Link to this heading">#</a></h1>
+  <section id="welcome-to-streamobs-documentation">
+<h1>Welcome to StreamObs Documentation!<a class="headerlink" href="#welcome-to-streamobs-documentation" title="Link to this heading">#</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This package is under active development. The API and features may change in future releases.</p>
 </div>
 <p><strong>StreamObs</strong> is a Python package for stellar stream data generation and observation simulation.
 It provides a complete pipeline to transform theoretical or dynamical stream models into realistic
-mock observations as they would appear in astronomical surveys.</p>
+mock observations as they would appear in astronomical surveys.
+It now supports the following surveys (and corresponding data releases):
+- <strong>DES</strong>: Y6
+- <strong>LSST</strong>: simulated properties for Y1, Y2, Y3, Y4, and Y5</p>
 <section id="what-streamobs-does">
 <h2>What StreamObs Does<a class="headerlink" href="#what-streamobs-does" title="Link to this heading">#</a></h2>
 <p>StreamObs enables you to:</p>
@@ -393,6 +412,15 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
 <p>Having issues with data download? See the <a class="reference internal" href="data.html"><span class="doc">StreamObs Data Files</span></a> page for detailed troubleshooting.</p>
 </div>
 </section>
+<section id="for-developers">
+<h2>For developers<a class="headerlink" href="#for-developers" title="Link to this heading">#</a></h2>
+<p>If you’re interested in contributing to StreamObs or using it as a base for your own development, check out these pages:</p>
+<ol class="arabic simple">
+<li><p><strong>Modify Streamobs</strong>: <a class="reference internal" href="modifying_streamobs.html"><span class="doc">Contributing to StreamObs</span></a> - Guidlines for modifying the core codebase</p></li>
+<li><p><strong>Adding a new survey</strong>: <a class="reference internal" href="new_survey.html"><span class="doc">Adding a New Photometric Survey</span></a> - Learn how to add support for a new photometric survey</p></li>
+<li><p><strong>Update data base</strong>: <a class="reference internal" href="update_data.html"><span class="doc">Update StreamObs data base</span></a> - Learn how to update the data base</p></li>
+</ol>
+</section>
 <section id="documentation-contents">
 <h2>Documentation Contents<a class="headerlink" href="#documentation-contents" title="Link to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
@@ -432,6 +460,42 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
 </ul>
 </div>
 <div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="DES.html#available-releases">Available releases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DES.html#des-y6-gold">DES Y6 Gold</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LSST.html#available-releases">Available releases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LSST.html#lsst-data">LSST data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modifying_streamobs.html#github-workflow">GitHub workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modifying_streamobs.html#testing">Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="new_survey.html#create-the-survey-data-directory">1. Create the survey data directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="new_survey.html#add-survey-data-files">2. Add survey data files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="new_survey.html#create-the-survey-configuration">3. Create the survey configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="new_survey.html#define-survey-properties">4. Define survey properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="new_survey.html#add-survey-tests">5. Add survey tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="new_survey.html#run-the-survey-tests">6. Run the survey tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="new_survey.html#update-the-data-archive">7. Update the data archive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="new_survey.html#update-the-documentation">8. Update the documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a><ul>
@@ -439,7 +503,6 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
 <li class="toctree-l2"><a class="reference internal" href="data.html#data-storage-and-doi">Data Storage and DOI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html#data-organization">Data Organization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data.html#for-developers">For Developers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data.html#data-sources-and-credits">Data Sources and Credits</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">Content</a><ul>
@@ -497,10 +560,11 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Welcome to StreamObs’s Documentation!</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Welcome to StreamObs Documentation!</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-streamobs-does">What StreamObs Does</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting Started</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#for-developers">For developers</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#documentation-contents">Documentation Contents</a><ul class="nav section-nav flex-column">
 </ul>
 </li>

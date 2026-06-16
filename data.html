@@ -48,7 +48,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Content" href="modules.html" />
-    <link rel="prev" title="Citation" href="citation.html" />
+    <link rel="prev" title="Update StreamObs data base" href="update_data.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -144,6 +144,21 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
@@ -335,15 +350,7 @@
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#for-developers">For Developers</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#updating-the-data-archive">Updating the Data Archive</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-new-surveys">Adding New Surveys</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-sources-and-credits">Data Sources and Credits</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#des-y6-gold">DES Y6 Gold</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#for-developers">For Developers</a></li>
 </ul>
             </nav>
         </div>
@@ -493,6 +500,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">lsst_yr3/</span></code> - LSST baseline v5.0.0, Year 3 observations (g, r bands)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">lsst_yr4/</span></code> - LSST baseline v5.0.0, Year 4 observations (g, r bands)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">lsst_yr5/</span></code> - LSST baseline v5.0.0, Year 5 observations (g, r bands)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">des_yr6/</span></code> - DES Y6 Gold</p></li>
 </ul>
 <p>Additional surveys can be added by placing maglim maps in new subdirectories.</p>
 </section>
@@ -535,101 +543,7 @@
 </section>
 <section id="for-developers">
 <h2>For Developers<a class="headerlink" href="#for-developers" title="Link to this heading">#</a></h2>
-<section id="updating-the-data-archive">
-<h3>Updating the Data Archive<a class="headerlink" href="#updating-the-data-archive" title="Link to this heading">#</a></h3>
-<p>If you need to add or modify data files:</p>
-<ol class="arabic">
-<li><p><strong>Create a new zip archive</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/path/to/streamobs
-zip<span class="w"> </span>-r<span class="w"> </span>data.zip<span class="w"> </span>data/<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;*.DS_Store&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;*__MACOSX*&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;data/.git*&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;data/__pycache__/*&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;*.backup&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;*.bak&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-x<span class="w"> </span><span class="s2">&quot;*~&quot;</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Upload to Zenodo</strong>:</p>
-<ul class="simple">
-<li><p>Go to https://zenodo.org/records/18298544</p></li>
-<li><p>Create a new version</p></li>
-<li><p>Upload the <code class="docutils literal notranslate"><span class="pre">data.zip</span></code> file</p></li>
-<li><p>Add release notes describing changes</p></li>
-<li><p>Publish and note the new record ID</p></li>
-</ul>
-</li>
-<li><p><strong>Update the download script</strong>:</p>
-<ul class="simple">
-<li><p>Edit <code class="docutils literal notranslate"><span class="pre">bin/download_data.py</span></code></p></li>
-<li><p>Update <code class="docutils literal notranslate"><span class="pre">BASE_DATA_URL</span></code> if record ID changed</p></li>
-<li><p>Update <code class="docutils literal notranslate"><span class="pre">ARCHIVE_SIZE_MB</span></code> if size changed</p></li>
-<li><p>Update version in this document</p></li>
-</ul>
-</li>
-<li><p><strong>Commit and push</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>.
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Update data archive to version X.Y&quot;</span>
-git<span class="w"> </span>push
-</pre></div>
-</div>
-</li>
-</ol>
-</section>
-<section id="adding-new-surveys">
-<h3>Adding New Surveys<a class="headerlink" href="#adding-new-surveys" title="Link to this heading">#</a></h3>
-<p>To add a new survey:</p>
-<ol class="arabic">
-<li><p>Create a new subdirectory in <code class="docutils literal notranslate"><span class="pre">data/surveys/</span></code> + its release:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>data/surveys/new_survey_name_release
-</pre></div>
-</div>
-</li>
-<li><p>Add magnitude limit maps for each band:</p>
-<ul class="simple">
-<li><p>Files should be HEALPix format (<code class="docutils literal notranslate"><span class="pre">.hsp</span></code>) or <code class="docutils literal notranslate"><span class="pre">.fit</span></code></p></li>
-<li><p>Example: <code class="docutils literal notranslate"><span class="pre">des_y6_g_band_nside_128.hsp</span></code></p></li>
-<li><p>Optional: one may add new completeness and photometric errors data. If not provided, the ones in data/others will be used.</p></li>
-</ul>
-</li>
-<li><p>Create a corresponding survey configuration in <code class="docutils literal notranslate"><span class="pre">config/surveys/</span></code>:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_survey</span>
-<span class="nt">release</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">its_release</span>
-<span class="nt">survey_files</span><span class="p">:</span><span class="w"> </span>
-<span class="w">   </span><span class="c1"># Path to data files (leave empty for default location)</span>
-<span class="w">   </span><span class="nt">file_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span>
-
-<span class="w">   </span><span class="c1"># Band-specific magnitude limit maps</span>
-<span class="w">   </span><span class="nt">maglim_map_g</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_survey_maglim_g_band.hsp</span>
-<span class="w">   </span><span class="nt">maglim_map_r</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_survey_maglim_r_band.hsp</span>
-
-<span class="w">   </span><span class="c1"># Band-independent maps. Keep by defaults files for completeness, ebv map, and photometric errors</span>
-<span class="w">   </span><span class="nt">ebv_map</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ebv_sfd98_fullres_nside_4096_ring_equatorial.fits</span>
-<span class="w">   </span><span class="nt">completeness</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stellar_efficiency_cutr.csv</span>
-<span class="w">   </span><span class="nt">log_photo_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">photoerror_r.csv</span>
-</pre></div>
-</div>
-</li>
-<li><p>Update the data archive and upload to Zenodo</p></li>
-<li><p>Document the new survey in this document.</p></li>
-</ol>
-</section>
-</section>
-<section id="data-sources-and-credits">
-<h2>Data Sources and Credits<a class="headerlink" href="#data-sources-and-credits" title="Link to this heading">#</a></h2>
-<section id="des-y6-gold">
-<h3>DES Y6 Gold<a class="headerlink" href="#des-y6-gold" title="Link to this heading">#</a></h3>
-<p>We have added the DES Y6 Gold as a supported survey to use with streamsim.
-The survey dataset is described in <a class="reference external" href="https://arxiv.org/abs/2501.05739">Bechtol et al. 2025</a>, and the catalogs can are documented/publically available from <a class="reference external" href="https://des.ncsa.illinois.edu/releases">DESDM</a>.
-The maglim, completeness, and photoerror files should be downloaded and placed in the <code class="docutils literal notranslate"><span class="pre">data/surveys/des_y6/</span></code> folder and loaded in the following manner:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">des_y6</span><span class="o">=</span> <span class="n">surveys</span><span class="o">.</span><span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">survey</span> <span class="o">=</span> <span class="s1">&#39;des&#39;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s1">&#39;y6&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Any questions about the creation of these survey specific files can be addressed to Peter Ferguson.</p>
-<p><strong>To be completed</strong></p>
-</section>
+<p>Informations to modify the data base can be found in <a class="reference internal" href="update_data.html"><span class="std std-doc">Update data page</span></a>, which can be usefull to add <a class="reference internal" href="new_survey.html"><span class="std std-doc">new survey</span></a>.</p>
 </section>
 </section>
 
@@ -645,12 +559,12 @@ The maglim, completeness, and photoerror files should be downloaded and placed i
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="citation.html"
+       href="update_data.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Citation</p>
+        <p class="prev-next-title">Update StreamObs data base</p>
       </div>
     </a>
     <a class="right-next"
@@ -709,15 +623,7 @@ The maglim, completeness, and photoerror files should be downloaded and placed i
 </li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#for-developers">For Developers</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#updating-the-data-archive">Updating the Data Archive</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-new-surveys">Adding New Surveys</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-sources-and-credits">Data Sources and Credits</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#des-y6-gold">DES Y6 Gold</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#for-developers">For Developers</a></li>
 </ul>
   </nav></div>
 

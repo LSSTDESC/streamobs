@@ -144,6 +144,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../DES.html">DES</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../../LSST.html">LSST</a></li>
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../update_data.html">Update StreamObs data base</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
@@ -515,7 +530,9 @@
                     <span class="sa">f</span><span class="s2">&quot;flag_completeness_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2"> must be computed for detection in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2"> band.&quot;</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detection flag requires &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2">&#39; band to be in bands.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Detection flag requires &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2">&#39; band to be in bands.&quot;</span>
+                <span class="p">)</span>
 
         <span class="c1"># Build combined detection flags</span>
         <span class="c1"># Start with flux validity check (not BAD_MAG)</span>
@@ -524,9 +541,17 @@
             <span class="n">flag_valid_flux</span> <span class="o">&amp;=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;mag_g_obs&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;BAD_MAG&quot;</span>
 
         <span class="c1"># Combine with completeness</span>
-        <span class="n">flag_observed</span> <span class="o">=</span> <span class="n">flag_valid_flux</span> <span class="o">&amp;</span> <span class="n">flag_completeness_band</span> <span class="k">if</span> <span class="n">flag_completeness_band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">flag_valid_flux</span> 
+        <span class="n">flag_observed</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">flag_valid_flux</span> <span class="o">&amp;</span> <span class="n">flag_completeness_band</span>
+            <span class="k">if</span> <span class="n">flag_completeness_band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">else</span> <span class="n">flag_valid_flux</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
-            <span class="n">flag_perfect</span> <span class="o">=</span> <span class="n">flag_valid_flux</span> <span class="o">&amp;</span> <span class="n">flag_detection_only_band</span> <span class="k">if</span> <span class="n">flag_detection_only_band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">flag_valid_flux</span>
+            <span class="n">flag_perfect</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">flag_valid_flux</span> <span class="o">&amp;</span> <span class="n">flag_detection_only_band</span>
+                <span class="k">if</span> <span class="n">flag_detection_only_band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="k">else</span> <span class="n">flag_valid_flux</span>
+            <span class="p">)</span>
 
         <span class="c1"># Apply SNR cuts</span>
         <span class="n">detection_mag_cut</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;detection_mag_cut&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;g&quot;</span><span class="p">])</span>
