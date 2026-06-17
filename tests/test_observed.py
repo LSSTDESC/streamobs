@@ -89,6 +89,7 @@ class TestStreamInjectorProperties:
         injector3 = StreamInjector({"lsst_yr4": survey1_dict, "lsst_yr5": survey2_dict})
         test_injector_initialization_with_multiple_surveys(injector3)
 
+
 # ---------------------------------------------------------------------------
 # Injector behavior
 # ---------------------------------------------------------------------------
