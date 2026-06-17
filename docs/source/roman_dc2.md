@@ -44,12 +44,13 @@ Following the paper, three selections define the analysis sample:
    removes blended objects and contaminated photometry. It is deliberately stricter
    than parts of the paper's own analysis (which readmits flags 1–2), and it is the
    origin of the ~0.90 bright-end completeness plateau below;
-2. **true S/N > 5** in the detection image. The catalog's native S/N is computed
-   from the *reported* flux errors, which underestimate the real noise; the
-   detection-image error factor, measured against the truth in the same way as the
-   per-band factors below, is 1.71, so the selection is reported `det_sn` > 8.6.
-   Without this correction the catalog admits "detections" whose true significance
-   is well below 5σ, and the completeness extends ~1 mag past the true depth;
+2. **true S/N > 5 in F158**. Detection is treated as single-band F158, matching the
+   single-band F158 classifier below: a detection is kept when its forced F158 photometry
+   reaches a true S/N > 5. The reported `magerr_auto_H158` underestimates the real noise,
+   so the F158 error factor — measured against the truth in the same way as the per-band
+   factors below — of 1.59 sets the threshold at reported `magerr_auto_H158` < 0.137
+   (equivalently reported S/N > 8.0), keeping 69% of the catalog. Without this correction
+   the catalog admits detections whose true F158 significance is well below 5σ;
 3. **a positional match to a true object**, as defined above.
 
 ![True vs observed magnitude distributions per band](_static/roman_dc2/mag_distributions.png)
@@ -63,27 +64,69 @@ survey depth.*
 The completeness table `roman_stellar_efficiency_cutf158.csv` gives, in bins of
 true F158 magnitude for true stars:
 
-- `detection_eff` — the fraction with a clean (`flags==0`), true-S/N>5 detection
-  matched to them. The denominator is the full truth-star catalog, including
+- `detection_eff` — the fraction with a clean (`flags==0`), **true-S/N>5-in-F158**
+  detection matched to them. The denominator is the full truth-star catalog, including
   undetected stars, so this is a true completeness;
-- `classifiction_eff` — among detected stars, the fraction whose detection is
-  classified as a point source, for which we adopt SExtractor `class_star > 0.5`
-  (the median `class_star` of detected true stars is 0.94);
+- `classifiction_eff` — among those detected stars, the fraction whose detection is
+  classified as a point source by the **F158 size envelope** described below;
 - `classification_detection_eff` — the product: the probability that a true star
   appears in the catalog *and* is classified as a star.
 
-The bright plateau sits at ~0.90–0.95 rather than unity: stars blended with
-brighter neighbours either share a detection assigned to the neighbour or carry
-blend flags and are removed by the `flags==0` selection. This is a property of the
-adopted catalog cuts, not of the instrument. The combined efficiency crosses 50% at
-F158 ≈ 26.3 in the simulated (reference-depth) survey, ≈ 0.35 mag past the F158
-maglim — detection runs on the four-band median image, which reaches deeper than any
-single band.
+### Star classification: the F158 size envelope
+
+Rather than the scalar SExtractor `class_star > 0.5` cut, stars are classified with a
+single-band **size envelope**: a detection is a star when its windowed F158 semi-major
+axis `size_sb = √λ₁` (from the per-band second moments `x2/y2/xy_win_world_H158`) falls
+inside a magnitude-dependent band around the stellar locus,
+`lower(mag) < size_sb < upper(mag)`. The second moments are the only genuinely
+single-band morphology available — detection runs on the four-band median coadd, so
+`awin_world` and `class_star` themselves are combined-depth quantities — which keeps the
+classifier usable for a single-band injection. Working in log size, the band is symmetric
+about the per-magnitude stellar locus with a half-width `Δ(mag)` (in dex) that is tuned in
+each magnitude bin to a fixed **0.875 purity** target (the DES Y6 `0≤EXT_XGB≤1`
+"complete" stellar operating point of
+[Bechtol et al. 2025](https://arxiv.org/abs/2501.05739)), capped at the bright end by the
+stellar log-size scatter, and **frozen faintward of F158 = 24** at a fixed log offset — so
+the selection stays as complete as possible past the magnitude where size no longer
+separates stars from galaxies, rather than tightening into the noise. The upper boundary
+additionally flares toward bright magnitudes (reaching 0.15″ at F158 = 18) to keep bright,
+slightly-resolved stars whose measured size scatters above the locus.
+
+The envelope reaches the same purity/completeness as a `class_star` threshold that has
+been re-optimized per magnitude to the identical purity target, while needing only the
+single F158 band — and clearly beats the fixed `class_star > 0.5` cut, whose purity falls
+away at the faint end.
+
+![Star classifier comparison](_static/roman_dc2/classifier_comparison.png)
+
+*Left: the single-band F158 size–magnitude plane (greyscale: true galaxies; blue: true
+stars) with the size-envelope boundaries (blue), and the freeze magnitude marked. Right:
+classification efficiency (solid, left axis) and purity (dashed, right axis) against true
+F158 magnitude for the three classifiers — the F158 size envelope, the fixed
+`class_star > 0.5` cut, and a per-magnitude-optimized `class_star` threshold — all on the
+clean, true-S/N>5 sample.*
+
+The bright plateau sits at ~0.91 rather than unity, and is flat with magnitude — the
+signature of a selection cut, not a depth or noise effect (the F158 S/N > 5 gate costs
+nothing at the bright end, where stars trivially clear it). Decomposed against the truth,
+of the ~9% of bright (F158 18–21) true stars that are missing, **~7% are matched but
+carry SExtractor flags** — blended with a neighbour, sitting in a brighter object's wings,
+or saturation-flagged (the simulation saturates at ~1.1×10⁵ e⁻) — and are removed by the
+`flags==0` selection, while **~3% have no clean detection of their own** because the
+detection-centric match assigns their blend to the dominant (brighter) source. This is a
+property of the adopted catalog cuts, not of the instrument; readmitting flags 1–2 (as
+parts of the paper's own analysis do) would push the plateau toward unity at some cost in
+purity. Detection alone (true S/N > 5 in F158)
+crosses 50% at F158 ≈ 26.2, close to the F158 maglim (26.38) as expected for an F158
+S/N = 5 gate; the combined (detection × classification) efficiency crosses 50% earlier, at
+F158 ≈ 26.0 in the simulated (reference-depth) survey, with the single-band F158 size
+classification accounting for the additional faint-end loss.
 
 We characterize stellar contamination with the same machinery: for *true galaxies*
 that are detected and compact — measured semi-major axis `awin_world < 0.3″`, the
 truth catalog providing no intrinsic size — the fraction misclassified as stars is
-below 1% brighter than F158 ≈ 25.5 and rises to ~15–17% at the faint end.
+below 1% brighter than F158 ≈ 25.5 and rises to only ~5% toward the faint end (the
+F158 S/N > 5 detection keeps the faint detected-galaxy sample bright and compact).
 
 ![Star efficiency and galaxy misclassification vs true F158 mag](_static/roman_dc2/efficiency_f158.png)
 
@@ -191,10 +234,10 @@ the truth by a factor ≈2, the raw maps come out unphysically deep (medians
 27.6–27.9). The spatial structure is unaffected by a global error factor, so we keep
 it and **truth-anchor the absolute scale**: each band's map is shifted so that its
 median equals the magnitude at which the truth-based scatter of (observed − true)
-reaches S/N = 5. The anchored medians are **26.19 / 26.19 / 25.98 / 25.26** in
+reaches S/N = 5. The anchored medians are **26.28 / 26.38 / 26.38 / 25.35** in
 F106/F129/F158/F184. With this anchoring the photometric error model evaluates to
 exactly σ = 0.217 (S/N = 5) at `delta_mag = 0` — "maglim" means S/N = 5 in the same
-truth-based sense everywhere. These depths sit ~0.7–0.9 mag brighter than the
+truth-based sense everywhere. These depths sit ~0.5–0.85 mag brighter than the
 official expected point-source depths (26.9/26.2): the official values assume
 optimal PSF photometry, while these describe what the catalog's `mag_auto`
 photometry actually delivers in true-magnitude space.
@@ -209,7 +252,7 @@ to −38). The spatial structure traces the simulated dither/pass pattern.*
 The maps are released truth-anchored
 (`roman_dc2_maglim_f*_nside1024.fits.gz`), and the `delta_mag` axes of the
 completeness and photometric-error tables are keyed to the median of the F158 map
-(25.98), so maps and tables share a single convention in which maglim is the
+(26.38), so maps and tables share a single convention in which maglim is the
 true-scatter S/N=5 depth. A magnitude-limit map for a different footprint (e.g. an
 exposure-time-scaled map of the real HLWAS) must be expressed in this same
 convention — scaled relative to the DC2 depth — for the tables to apply. For

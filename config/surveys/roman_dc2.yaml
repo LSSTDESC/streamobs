@@ -24,7 +24,14 @@ survey_files:
     ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
     completeness: roman_stellar_efficiency_cutf158.csv
     completeness_band: f158 # the completeness has been obtained in the F158 band
-    log_photo_error: roman_photoerror_f158.csv
+
+    # Two-curve photometric error model (streamobs Survey.get_photo_error):
+    #   catalog = median reported SExtractor magerr  -> written as `magerr`,
+    #             drives the S/N cut;
+    #   sample  = truth-based scatter of (obs - true) -> drives the noise draw
+    #             (the true scatter is ~2x the reported magerr in the DC2 coadds).
+    log_photo_error_catalog: roman_photoerror_f158_catalog.csv
+    log_photo_error_sample: roman_photoerror_f158.csv
 
 survey_properties:
   # F184 is excluded: it is deep-tier-only in the community-defined HLWAS and

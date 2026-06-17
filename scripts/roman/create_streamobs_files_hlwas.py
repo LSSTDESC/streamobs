@@ -49,6 +49,7 @@ from astropy.io import fits
 from astropy.table import Table
 from scipy.spatial import cKDTree
 from scipy.stats import gaussian_kde
+from scipy.interpolate import PchipInterpolator
 
 try:                                  # running as a script (scripts/roman/)
     REPO = Path(__file__).resolve().parent.parent.parent
@@ -61,7 +62,8 @@ TRUTH_STARS_CACHE = DC2_DIR / "roman_dc2_truth_stars.parquet"
 
 BAND = "H158"                       # mock column name == Roman F158
 BANDS = ["Y106", "J129", "H158", "F184"]
-CLASS_STAR_CUT = 0.5                # class_star > cut  ->  "classified as a star"
+CLASS_STAR_CUT = 0.5                # baseline class_star cut, kept only for the classifier-comparison figure
+                                    # (the products now use the F158 size envelope; see classify_star below)
 FLAG_CUT = 1                        # flags < 1, i.e. flags == 0 (paper cut: removes 32% of detections)
 NSIDE = 1024
 SNR_DEPTH = 5                       # depth = mag at S/N = 5 (matches the catalog S/N>5 cut)
@@ -95,6 +97,7 @@ print(f"repo: {REPO}")
 
 usecols = (["alphawin_j2000", "deltawin_j2000", "mag_auto", "magerr_auto",
             "flags", "class_star", "det_sn", "awin_world",
+            "x2win_world_H158", "y2win_world_H158", "xywin_world_H158",
             "matched", "match_sep_arcsec", "truth_ind", "truth_gal_star",
             "truth_bb_mag"]
            + [f"truth_mag_{b}" for b in BANDS]
@@ -109,31 +112,139 @@ print(f"{len(cat):,} detections, {int(cat.matched.sum()):,} matched "
       f"({cat.matched.mean():.1%}); {int(((cat.truth_gal_star == 1) & cat.matched).sum()):,} matched-star rows")
 
 
-# ### Effective S/N = 5 detection cut
-# 
-# The catalog's S/N>5 cut uses the *reported* detection-image flux errors, which
-# underestimate the true noise (factor ~2, validated against the truth below). A real
-# S/N = 5 selection therefore corresponds to a higher reported S/N. We measure the
-# detection-image error factor from true stars — the scatter of
-# (`mag_auto` − `truth_bb_mag`), with the bright-end systematic floor (the broadband
-# truth proxy's color mismatch) removed in quadrature, against the median reported
-# `magerr_auto` — and select the catalog at reported `det_sn` > 5 × factor everywhere
-# (the error-validation plot below intentionally keeps the raw catalog: it is where
-# the correction factor comes from).
+# ## Star classifier: single-band F158 size envelope
+#
+# We classify stars with a single-band F158 **size envelope** rather than the scalar
+# SExtractor `class_star > 0.5` cut. A detection is a star iff
+# `lower(mag) < size_sb < upper(mag)`, where `size_sb = √λ₁·3600″` is the windowed
+# semi-major axis from the per-band second moments (`x2/y2/xy_win_world_H158`) — the
+# only genuinely single-band morphology (detection runs on the 4-band coadd, so
+# `awin_world`/`class_star` are combined-depth quantities). Working in `L = log10(size)`,
+# the band is symmetric about the per-magnitude stellar locus `L0(mag)` with half-width
+# `Δ(mag)` (dex), tuned per magnitude bin to the COMPLETE purity target (0.875; DES Y6
+# `0≤EXT_XGB≤1`), capped at the bright end by the stellar log-size scatter
+# (`N_SIG·σ_L`), single-peaked, PCHIP-splined, and **frozen faintward of mag 24** at a
+# fixed dex offset. The **upper** bound additionally **flares blueward of mag 23** (up to
+# 0.15″ at mag 18) to retain bright, slightly-resolved stars whose measured size
+# scatters above the locus.
+
+ENV_PURITY = 0.875                 # COMPLETE target (DES Y6 0<=EXT_XGB<=1)
+ENV_N_SIG = 4.0                    # bright-end cap: half-width <= N_SIG * stellar log-size scatter
+ENV_MAX_D = 0.6                    # absolute ceiling on the half-width (dex), safety only
+ENV_FREEZE = 24.0                  # hold Delta constant (fixed dex offset) faintward of this mag
+ENV_UP_KNEE, ENV_UP_BRIGHT, ENV_UP_BRIGHT_VAL = 23.0, 18.0, 0.15   # upper-bound bright flare (arcsec @ mag)
+SN_GATE = 1.0857 / 5.0             # magerr at S/N=5; gate the envelope fit to S/N>5 detections
+
+def _size_sb(df):
+    """Single-band F158 semi-major axis (arcsec) from windowed second moments."""
+    x2 = df["x2win_world_H158"].values; y2 = df["y2win_world_H158"].values; xy = df["xywin_world_H158"].values
+    half = 0.5 * (x2 + y2); root = np.sqrt(np.clip((0.5 * (x2 - y2)) ** 2 + xy ** 2, 0, None))
+    return np.sqrt(np.clip(half + root, 0, None)) * 3600.0
+
+cat["size_sb"] = _size_sb(cat)
+_env_base = (cat.matched & (cat["flags"] < FLAG_CUT) & np.isfinite(cat["size_sb"]) & (cat["size_sb"] > 0)
+             & np.isfinite(cat[f"mag_auto_{BAND}"]) & (cat[f"magerr_auto_{BAND}"] < SN_GATE))
+
+# stellar locus L0(mag) and robust log-size scatter sigma_L(mag) from clean true stars (S/N>5)
+_fit = cat.loc[_env_base & (cat.truth_gal_star == 1)]
+_Ls = np.log10(_fit["size_sb"].values); _ms = _fit[f"mag_auto_{BAND}"].values
+_lb = np.arange(17, 27.51, 0.25); _lm = 0.5 * (_lb[1:] + _lb[:-1])
+_mu = np.full(_lm.size, np.nan); _sg = np.full(_lm.size, np.nan)
+_sbin = np.digitize(_ms, _lb) - 1
+for i in range(_lm.size):
+    v = _Ls[_sbin == i]; v = v[np.isfinite(v)]
+    if v.size >= 30:
+        _mu[i] = np.median(v); _sg[i] = 1.4826 * np.median(np.abs(v - _mu[i])) + 1e-9
+_sm = lambda a: pd.Series(a).rolling(3, center=True, min_periods=1).median().ffill().bfill().to_numpy()
+_mu, _sg = _sm(_mu), _sm(_sg)
+L0_at = lambda m: np.interp(m, _lm, _mu)
+sigL_at = lambda m: np.interp(m, _lm, _sg)
+locus_lin = lambda m: 10.0 ** L0_at(m)
+
+# per-mag purity-target half-width Delta(mag): single-peaked, PCHIP-splined, frozen >24
+_eb = np.arange(18, 28.01, 0.25); _emid = 0.5 * (_eb[1:] + _eb[:-1]); _ebi = lambda m: np.digitize(m, _eb) - 1
+_fit_all = cat.loc[_env_base]
+_m_all = _fit_all[f"mag_auto_{BAND}"].values
+_d_all = np.abs(np.log10(_fit_all["size_sb"].values) - L0_at(_m_all))
+_lab_all = (_fit_all["truth_gal_star"].values == 1)
+def _fit_delta(X, keep=0.02):
+    mb = _ebi(_m_all); Dc = np.full(_emid.size, np.nan)
+    for i in range(_emid.size):
+        mm = mb == i; ns = _lab_all[mm].sum()
+        if mm.sum() < 200 or ns < 10:
+            continue
+        ds = _d_all[mm]; ls = _lab_all[mm]
+        qs = np.unique(np.nanquantile(ds, np.linspace(0, 1, 200))); best = qs[0]
+        for t in qs[::-1]:                                       # loose (wide) -> tight
+            s = ds < t; n = s.sum()
+            if n == 0:
+                continue
+            if (s & ls).sum() / n >= X and (s & ls).sum() / ns >= keep:
+                best = t; break
+        Dc[i] = best
+    valid = np.isfinite(Dc); xb = _emid[valid]
+    cap = np.minimum(ENV_N_SIG * sigL_at(xb), ENV_MAX_D)         # bright end tracks stellar scatter
+    Db = np.minimum(np.clip(Dc[valid], 0, None), cap)
+    Db = pd.Series(Db).rolling(5, center=True, min_periods=1).median().to_numpy().copy()
+    pk = int(np.argmax(Db))                                      # single-peaked: rise then only tighten
+    Db[:pk + 1] = np.maximum.accumulate(Db[:pk + 1]); Db[pk:] = np.minimum.accumulate(Db[pk:])
+    pch = PchipInterpolator(xb, Db); hi = min(ENV_FREEZE, xb[-1])
+    return (lambda m: pch(np.clip(np.asarray(m, float), xb[0], hi))), xb, Db
+
+Dfun, ENV_XB, ENV_DB = _fit_delta(ENV_PURITY)
+
+def env_upper_size(m):
+    """Upper size boundary (arcsec): symmetric band, flaring blueward of the knee."""
+    m = np.asarray(m, float)
+    base = locus_lin(m) * 10.0 ** Dfun(m)
+    u_knee = float(locus_lin(ENV_UP_KNEE) * 10.0 ** float(Dfun(ENV_UP_KNEE)))
+    frac = np.clip((ENV_UP_KNEE - m) / (ENV_UP_KNEE - ENV_UP_BRIGHT), 0.0, 1.0)
+    ramp = u_knee + (ENV_UP_BRIGHT_VAL - u_knee) * frac
+    return np.where(m < ENV_UP_KNEE, ramp, base)
+
+def env_lower_size(m):
+    """Lower size boundary (arcsec): tight, symmetric in dex about the locus."""
+    m = np.asarray(m, float)
+    return locus_lin(m) * 10.0 ** (-Dfun(m))
+
+def classify_star(df):
+    """Envelope star classifier: True where lower(mag) < size_sb < upper(mag)."""
+    sz = df["size_sb"].values if "size_sb" in getattr(df, "columns", []) else _size_sb(df)
+    m = df[f"mag_auto_{BAND}"].values
+    with np.errstate(invalid="ignore"):
+        ok = np.isfinite(sz) & (sz > 0) & np.isfinite(m)
+        return ok & (sz > env_lower_size(m)) & (sz < env_upper_size(m))
+
+cat["env_star"] = classify_star(cat)
+print(f"size-envelope classifier: Δ@21={float(Dfun(21)):.3f} Δ@24={float(Dfun(24)):.3f} dex (frozen), "
+      f"upper@18={float(env_upper_size(18.0)):.3f}″; {int(cat['env_star'].sum()):,} detections classified as stars")
+
+
+# ### F158 detection: true S/N > 5 in H
+#
+# Detection is single-band F158, matching the single-band F158 classifier: a source is
+# "detected" when its forced F158 photometry reaches **true S/N > 5**. The reported
+# `magerr_auto_H158` underestimates the true noise (factor ~2, validated against the truth
+# below), so a real S/N = 5 selection corresponds to a smaller reported error. We measure
+# the F158 error factor from true stars — the scatter of (`mag_auto_H158` − `truth_mag_H158`),
+# with the bright-end systematic floor removed in quadrature, over the median reported
+# `magerr_auto_H158` — and require true S/N > 5, i.e. reported `magerr_auto_H158` <
+# 0.2171 / factor (equivalently reported S/N > 5 × factor). The error-validation plot below
+# intentionally keeps the raw catalog: it is where the correction factor comes from.
 
 # In[ ]:
 
 
-def detection_image_error_factor(df):
-    """Truth-based inflation factor of the detection-image errors: scatter of
-    (mag_auto - truth_bb_mag) for clean true stars, with the bright-end systematic
-    floor removed in quadrature, over the median reported magerr_auto."""
+def band_error_factor(df, band):
+    """Truth-based inflation factor of the reported errors in one band: scatter of
+    (mag_auto_band - truth_mag_band) for clean true stars, with the bright-end systematic
+    floor removed in quadrature, over the median reported magerr_auto_band."""
     sub = df.loc[df.matched & (df.truth_gal_star == 1) & (df["flags"] < FLAG_CUT)
-                 & (df.class_star > CLASS_STAR_CUT),
-                 ["truth_bb_mag", "mag_auto", "magerr_auto"]].dropna()
-    mt = sub["truth_bb_mag"].values
-    res = sub["mag_auto"].values - mt
-    sg = sub["magerr_auto"].values
+                 & df["env_star"],
+                 [f"truth_mag_{band}", f"mag_auto_{band}", f"magerr_auto_{band}"]].dropna()
+    mt = sub[f"truth_mag_{band}"].values
+    res = sub[f"mag_auto_{band}"].values - mt
+    sg = sub[f"magerr_auto_{band}"].values
 
     def scat(sel):
         return (np.percentile(res[sel], 84) - np.percentile(res[sel], 16)) / 2
@@ -148,11 +259,107 @@ def detection_image_error_factor(df):
         ratios.append(s_noise / np.median(sg[sel]))
     return float(np.median(ratios))
 
-F_DET = detection_image_error_factor(cat)
-SN_CUT_EFF = SNR_DEPTH * F_DET
-det_ok = cat["det_sn"] > SN_CUT_EFF
-print(f"detection-image error factor = {F_DET:.2f} -> true S/N>{SNR_DEPTH} cut: "
-      f"reported det_sn > {SN_CUT_EFF:.1f} (keeps {det_ok.mean():.1%} of detections)")
+F_H = band_error_factor(cat, BAND)
+MAGERR_AT_SNR = (2.5 / np.log(10)) / SNR_DEPTH               # reported magerr at S/N=5 (=0.2171)
+det_ok = cat[f"magerr_auto_{BAND}"] < (MAGERR_AT_SNR / F_H)  # true S/N>5 in F158 (detection in H)
+print(f"F158 error factor = {F_H:.2f} -> true S/N>{SNR_DEPTH} in H: reported "
+      f"magerr_auto_{BAND} < {MAGERR_AT_SNR / F_H:.3f} (S/N > {SNR_DEPTH * F_H:.1f}); "
+      f"keeps {det_ok.mean():.1%} of detections")
+
+
+# ## Classifier comparison (documentation figure)
+#
+# Compare three star classifiers on the clean, detected sample (matched, `flags==0`,
+# true S/N>5): the F158 **size envelope**, the fixed **`class_star > 0.5`** cut, and a
+# **per-magnitude-optimized `class_star`** threshold (loosest threshold reaching the same
+# 0.875 purity target, in bins of observed F158 mag). Each classifier is applied
+# operationally (observed quantities only) and we report, against TRUE F158 magnitude,
+# its `classifiction_eff` (recall of true stars among the detected sample) and its
+# purity. The envelope matches the optimized-`class_star` curve while needing only the
+# single F158 band.
+
+_cmp = (cat.matched & (cat["flags"] < FLAG_CUT) & det_ok & np.isfinite(cat["size_sb"])
+        & np.isfinite(cat[f"mag_auto_{BAND}"]) & np.isfinite(cat[f"truth_mag_{BAND}"]))
+_obs = cat.loc[_cmp, f"mag_auto_{BAND}"].values
+_tru = cat.loc[_cmp, f"truth_mag_{BAND}"].values
+_cs = cat.loc[_cmp, "class_star"].values
+_isstar = (cat.loc[_cmp, "truth_gal_star"].values == 1)
+
+def _opt_classstar_thr(X=ENV_PURITY, keep=0.02):
+    """Per observed-mag bin, loosest (lowest) class_star threshold reaching purity>=X."""
+    mb = _ebi(_obs); thr = np.full(_emid.size, np.nan)
+    for i in range(_emid.size):
+        mm = mb == i; ns = _isstar[mm].sum()
+        if mm.sum() < 200 or ns < 10:
+            continue
+        s = _cs[mm]; lab = _isstar[mm]
+        qs = np.unique(np.nanquantile(s, np.linspace(0, 1, 200))); best = qs[-1]
+        for t in qs:                                      # raise threshold (purify) until target met
+            sel = s > t; n = sel.sum()
+            if n == 0:
+                continue
+            if (sel & lab).sum() / n >= X and (sel & lab).sum() / ns >= keep:
+                best = t; break
+        thr[i] = best
+    thr = pd.Series(thr).rolling(3, center=True, min_periods=1).median().ffill().bfill().to_numpy()
+    return np.maximum.accumulate(thr)                     # tighten (non-decreasing) faintward
+_csopt_thr = _opt_classstar_thr()
+
+_SELS = {
+    "F158 size envelope":   (cat.loc[_cmp, "env_star"].values,          "C0"),
+    "class_star > 0.5":     (_cs > 0.5,                                 "C1"),
+    "class_star optimized": (_cs > np.interp(_obs, _emid, _csopt_thr),  "C2"),
+}
+
+def _eff_pur(sel):
+    ib = np.digitize(_tru, MAG_BINS) - 1
+    eff = np.full(MAG_MID.size, np.nan); pur = np.full(MAG_MID.size, np.nan)
+    for i in range(MAG_MID.size):
+        mm = ib == i
+        if mm.sum() < 30:
+            continue
+        ss = sel & mm; ns = (mm & _isstar).sum()
+        if ns > 0:
+            eff[i] = (ss & _isstar).sum() / ns
+        if ss.sum() > 0:
+            pur[i] = (ss & _isstar).sum() / ss.sum()
+    return eff, pur
+
+fig, (axA, axB) = plt.subplots(1, 2, figsize=(14, 5.2))
+
+_ga = cat[(cat.truth_gal_star == 0) & _cmp]; _st = cat[(cat.truth_gal_star == 1) & _cmp]
+axA.hexbin(_ga[f"mag_auto_{BAND}"], _ga["size_sb"], gridsize=140, bins="log", cmap="Greys",
+           mincnt=1, yscale="log")
+_ssamp = _st.sample(min(len(_st), 25000), random_state=0)
+axA.scatter(_ssamp[f"mag_auto_{BAND}"], _ssamp["size_sb"], s=2, alpha=0.16, color="steelblue", lw=0,
+            label="true stars")
+_mf = np.linspace(18, 27.5, 400)
+axA.plot(_lm, 10.0 ** _mu, "k-", lw=1.5, label="stellar locus")
+axA.plot(_mf, env_upper_size(_mf), "-", color="C0", lw=2.2, label="size envelope")
+axA.plot(_mf, env_lower_size(_mf), "-", color="C0", lw=1.4, alpha=0.7)
+axA.axvline(ENV_FREEZE, color="0.5", lw=0.8, ls=(0, (4, 3)))
+axA.set(xlabel="observed F158 mag", ylabel=r"size_sb = $\sqrt{\lambda_1}$ [arcsec]",
+        xlim=(18, 27.5), ylim=(0.04, 0.9), title="single-band F158 size envelope")
+axA.legend(loc="upper left", markerscale=5, fontsize=9); axA.grid(alpha=0.22, which="both")
+
+axBr = axB.twinx()
+for nm, (sel, c) in _SELS.items():
+    eff, pur = _eff_pur(sel)
+    axB.plot(MAG_MID, eff, "-", color=c, lw=2.0)
+    axBr.plot(MAG_MID, pur, "--", color=c, lw=1.4)
+axBr.axhline(ENV_PURITY, color="0.5", ls=":", lw=0.8)
+axB.set(xlabel="true F158 mag", ylabel="classifiction_eff (solid)", xlim=(20, 27.5), ylim=(0, 1.05))
+axBr.set_ylabel("purity (dashed)"); axBr.set_ylim(0, 1.05)
+axB.grid(alpha=0.3)
+from matplotlib.lines import Line2D
+_lh = [Line2D([], [], color=c, lw=2) for _, (_, c) in _SELS.items()]
+_lh += [Line2D([], [], color="0.3", lw=2, ls="-"), Line2D([], [], color="0.3", lw=1.4, ls="--")]
+axB.legend(_lh, list(_SELS.keys()) + ["classifiction_eff", "purity"], loc="lower left", fontsize=8.5)
+axB.set_title("classifiction_eff & purity vs true mag")
+fig.suptitle("Star classifier comparison: F158 size envelope vs class_star (clean, true S/N>5)", y=1.02)
+fig.tight_layout()
+fig.savefig(FIG_DIR / "classifier_comparison.png", dpi=130, bbox_inches="tight")
+plt.show()
 
 
 # ## Truth-star denominator
@@ -220,7 +427,7 @@ print(f"{n_rows:,} truth-star rows -> {len(truth_stars):,} unique stars")
 # In[4]:
 
 
-sel = (cat.matched & (cat.class_star > CLASS_STAR_CUT) & (cat["flags"] < FLAG_CUT)
+sel = (cat.matched & cat["env_star"] & (cat["flags"] < FLAG_CUT)
        & det_ok)
 pe = cat.loc[sel, [f"truth_mag_{BAND}", f"mag_auto_{BAND}", f"magerr_auto_{BAND}"]].dropna()
 x, y = pe[f"truth_mag_{BAND}"].values, pe[f"magerr_auto_{BAND}"].values
@@ -246,7 +453,7 @@ ax.plot(MAG_MID, np.log10(hi), "r--", lw=1)
 ax.axhline(np.log10(2.5 / np.log(10) / SNR_DEPTH), color="w", ls=":", lw=1.5,
            label=f"S/N = {SNR_DEPTH}")
 ax.set(xlabel="true F158 mag", ylabel=r"$\log_{10}\,\sigma_{\rm F158}^{\rm obs}$ [mag]",
-       xlim=(15, 29), title=f"Observed F158 photo-error, class_star > {CLASS_STAR_CUT}, flags == 0")
+       xlim=(15, 29), title="Observed F158 photo-error, size-envelope stars, flags == 0")
 fig.colorbar(hb, ax=ax, label="N (log)")
 ax.legend(loc="upper left")
 fig.savefig(FIG_DIR / "photoerror_f158.png", dpi=130, bbox_inches="tight")
@@ -267,7 +474,7 @@ plt.show()
 
 
 sel_ts = (cat.matched & (cat.truth_gal_star == 1)
-          & (cat.class_star > CLASS_STAR_CUT) & (cat["flags"] < FLAG_CUT) & det_ok)
+          & cat["env_star"] & (cat["flags"] < FLAG_CUT) & det_ok)
 pe_ts = cat.loc[sel_ts, [f"truth_mag_{BAND}", f"mag_auto_{BAND}", f"magerr_auto_{BAND}"]].dropna()
 x, y = pe_ts[f"truth_mag_{BAND}"].values, pe_ts[f"magerr_auto_{BAND}"].values
 res = pe_ts[f"truth_mag_{BAND}"].values - pe_ts[f"mag_auto_{BAND}"].values   # truth - obs
@@ -315,7 +522,7 @@ axr.set(xlabel="true F158 mag", ylabel=r"$\sigma$(true $-$ obs) [mag]",
 axr.grid(alpha=0.3)
 axr.legend(loc="upper left", fontsize=9)
 
-fig.suptitle(f"True stars with class_star > {CLASS_STAR_CUT}, flags == 0", y=1.02)
+fig.suptitle("True stars passing the size envelope, flags == 0", y=1.02)
 fig.tight_layout()
 fig.savefig(FIG_DIR / "photoerror_f158_truestars.png", dpi=130, bbox_inches="tight")
 plt.show()
@@ -335,7 +542,7 @@ plt.show()
 # In[6]:
 
 
-vsel = (cat.matched & (cat.truth_gal_star == 1) & (cat.class_star > CLASS_STAR_CUT)
+vsel = (cat.matched & (cat.truth_gal_star == 1) & cat["env_star"]
         & (cat["flags"] < FLAG_CUT))
 fig, (axa, axb) = plt.subplots(2, 1, figsize=(7.5, 7.5), sharex=True,
                                gridspec_kw={"height_ratios": [2, 1]})
@@ -368,11 +575,12 @@ plt.show()
 
 # ## 2. Detection & classification efficiency for true stars
 # 
-# Denominator: all unique true stars. A star counts as **detected** if any S/N>5 detection
-# matched its `ind` at **true S/N > 5** (reported `det_sn` above the corrected cut)
-# **and passed the paper's `flags == 0` cut** (Troxel et al. selection 1 —
-# a star whose only detection is flagged would not appear in the science catalog); for
-# classification we take its nearest clean matched detection and ask whether `class_star > {cut}`.
+# Denominator: all unique true stars. A star counts as **detected** if any matched
+# detection reaches **true S/N > 5 in F158** (reported `magerr_auto_H158` below the
+# corrected threshold) **and passed the paper's `flags == 0` cut** (Troxel et al.
+# selection 1 — a star whose only detection is flagged would not appear in the science
+# catalog); for classification we take its nearest clean matched detection and ask whether
+# it passes the F158 size envelope.
 # 
 # **Gotcha (found 2026-06-11):** ~26% of truth stars have a *duplicate* truth entry at the
 # exact same position under a different `ind`, carrying only the J129 mag (other bands 0.0).
@@ -391,13 +599,14 @@ plt.show()
 
 star_dets = (cat.loc[cat.matched & (cat.truth_gal_star == 1) & (cat["flags"] < FLAG_CUT)
                      & det_ok,
-                     ["truth_ind", "match_sep_arcsec", "class_star"]]
+                     ["truth_ind", "match_sep_arcsec", "class_star", "env_star"]]
              .sort_values("match_sep_arcsec").drop_duplicates("truth_ind"))
 print(f"class_star of matched true stars: p10/50/90 = "
-      f"{np.percentile(star_dets.class_star, [10, 50, 90]).round(3)}")
+      f"{np.percentile(star_dets.class_star, [10, 50, 90]).round(3)}; "
+      f"{star_dets.env_star.mean():.1%} pass the size envelope")
 
 detected_ind = set(star_dets.truth_ind.astype("i8"))
-classified_ind = set(star_dets.loc[star_dets.class_star > CLASS_STAR_CUT, "truth_ind"].astype("i8"))
+classified_ind = set(star_dets.loc[star_dets.env_star, "truth_ind"].astype("i8"))
 
 # collapse duplicate truth entries (same exact position, different ind, single-band payload):
 # a position counts as detected/classified if ANY of its member inds matched
@@ -439,7 +648,7 @@ print(f"star sample for the efficiency curves: {ok.sum():,} "
 
 gal = (cat.loc[cat.matched & (cat.truth_gal_star == 0) & (cat["flags"] < FLAG_CUT)
                & det_ok,
-               ["truth_ind", "match_sep_arcsec", "class_star", "awin_world", f"truth_mag_{BAND}"]]
+               ["truth_ind", "match_sep_arcsec", "env_star", "awin_world", f"truth_mag_{BAND}"]]
        .sort_values("match_sep_arcsec").drop_duplicates("truth_ind"))
 gal["size_arcsec"] = gal.awin_world * 3600.0
 print(f"measured size of true galaxies p10/50/90 = "
@@ -447,7 +656,7 @@ print(f"measured size of true galaxies p10/50/90 = "
 
 small = gal[gal.size_arcsec < GAL_SIZE_MAX].dropna(subset=[f"truth_mag_{BAND}"])
 mg = small[f"truth_mag_{BAND}"].values
-fs = (small.class_star > CLASS_STAR_CUT).values
+fs = small["env_star"].values
 n_gal = np.histogram(mg, MAG_BINS)[0]
 n_false = np.histogram(mg[fs], MAG_BINS)[0]
 with np.errstate(invalid="ignore"):
@@ -461,7 +670,7 @@ ax.plot(MAG_MID, eff_false, "v--", ms=3, color="C3",
         label=f"galaxies < {GAL_SIZE_MAX}″: misclassified as stars")
 ax.set(xlabel="true F158 mag", ylabel="efficiency", xlim=(15, 29), ylim=(-0.02, 1.05),
        title=f"True stars (N={ok.sum():,}) and detected small galaxies (N={len(small):,}), "
-             f"class_star > {CLASS_STAR_CUT}")
+             f"F158 size envelope")
 ax.grid(alpha=0.3); ax.legend(loc="center left")
 fig.savefig(FIG_DIR / "efficiency_f158.png", dpi=130, bbox_inches="tight")
 plt.show()
@@ -566,7 +775,7 @@ def desqr_maglim(df, mag_col, magerr_col, nside=NSIDE, snr=SNR_DEPTH,
 # true-star convention used for all streamobs products: same sample as the
 # photo-error model, so the maps and the error model describe one population
 depth_src = cat[(cat["flags"] < FLAG_CUT) & cat.matched & det_ok
-                & (cat.truth_gal_star == 1) & (cat.class_star > CLASS_STAR_CUT)]
+                & (cat.truth_gal_star == 1) & cat["env_star"]]
 
 def truth_anchor_m5(df, b, snr=SNR_DEPTH):
     """Mag where the TRUTH-BASED scatter of (obs - true) reaches the S/N threshold.
@@ -666,7 +875,7 @@ print(f"reference maglim = measured map median = {MAGLIM_REF:.3f}")
 # star-classified sample is galaxy-dominated faintward of ~25.5 and would inflate
 # the faint-end errors (0.33 vs 0.15 mag at 25.5)
 sel = (cat.matched & (cat.truth_gal_star == 1)
-       & (cat.class_star > CLASS_STAR_CUT) & (cat["flags"] < FLAG_CUT) & det_ok)
+       & cat["env_star"] & (cat["flags"] < FLAG_CUT) & det_ok)
 pe = cat.loc[sel, ["alphawin_j2000", "deltawin_j2000", f"truth_mag_{BAND}",
                    f"mag_auto_{BAND}", f"magerr_auto_{BAND}"]].dropna()
 pix = hp.ang2pix(NSIDE, pe.alphawin_j2000.values, pe.deltawin_j2000.values, lonlat=True)
@@ -690,11 +899,23 @@ for i in range(dmid.size):
         med_logerr_rep[i] = np.median(logerr_reported[ib == i])
 keep = np.isfinite(log_scatter)
 
+# Two error curves for the streamobs two-curve model (Survey.get_photo_error):
+#   - SAMPLE  (roman_photoerror_f158.csv): truth-based scatter of (obs - true).
+#     Drives the NOISE DRAW (the true scatter is ~2x the reported magerr).
+#     Wired in the config as `log_photo_error_sample`.
+#   - CATALOG (roman_photoerror_f158_catalog.csv): median reported SExtractor
+#     magerr. Written as `magerr` and used for the S/N cut. Wired as
+#     `log_photo_error_catalog`.
 photoerr_tab = pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": log_scatter[keep]})
 fpe = OUT_DIR / "roman_photoerror_f158.csv"
 np.savetxt(fpe, photoerr_tab.values, delimiter=",", header="delta_mag,log_mag_err", fmt="%.6f")
-print(f"wrote {fpe.relative_to(REPO)}  ({len(photoerr_tab)} rows, "
+print(f"wrote {fpe.relative_to(REPO)}  (sample/true-scatter, {len(photoerr_tab)} rows, "
       f"delta_mag {photoerr_tab.delta_mag.min():.2f} .. {photoerr_tab.delta_mag.max():.2f})")
+
+catalog_tab = pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": med_logerr_rep[keep]})
+fpe_cat = OUT_DIR / "roman_photoerror_f158_catalog.csv"
+np.savetxt(fpe_cat, catalog_tab.values, delimiter=",", header="delta_mag,log_mag_err", fmt="%.6f")
+print(f"wrote {fpe_cat.relative_to(REPO)}  (catalog/reported magerr, {len(catalog_tab)} rows)")
 
 # --- stellar efficiency table ------------------------------------------------
 eff_tab = pd.DataFrame({
@@ -735,7 +956,9 @@ plt.show()
 # 
 # - Wire these into a `config/surveys/roman_hlwas.yaml` (mirroring `lsst_yr5.yaml`):
 #   `completeness: roman_stellar_efficiency_cutf158.csv`, `completeness_band: f158`,
-#   `log_photo_error: roman_photoerror_f158.csv`, `maglim_map_f158: roman_dc2_maglim_f158_nside1024.fits.gz`
+#   `log_photo_error_catalog: roman_photoerror_f158_catalog.csv` (reported magerr),
+#   `log_photo_error_sample: roman_photoerror_f158.csv` (truth-based scatter),
+#   `maglim_map_f158: roman_dc2_maglim_f158_nside1024.fits.gz`
 #   (or, for the full HLWAS footprint, a maglim map scaled from the exposure-time map —
 #   see `roman_hlwas_exptime_map.ipynb`; the DC2 map above characterizes the mock's depth).
 # - Caveats: the det→truth (detection-centric) match assigns a blended star to a single
