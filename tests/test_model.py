@@ -134,8 +134,8 @@ class TestStreamModelFull:
             "phi1",
             "phi2",
             "dist",
-            "lsst_g_true",
-            "lsst_r_true",
+            "lsst_yr4_g_true",
+            "lsst_yr4_r_true",
         }  # Not adding mu1, mu2, rv since not implemented yet
         self._verify_catalogue_content(samples, expected_columns)
 
@@ -147,8 +147,8 @@ class TestStreamModelFull:
             "phi1",
             "phi2",
             "dist",
-            "lsst_g_true",
-            "lsst_r_true",
+            "lsst_yr4_g_true",
+            "lsst_yr4_r_true",
         }  # Not adding mu1, mu2, rv since not implemented yet
         self._verify_catalogue_content(completed_catalog, expected_columns)
         assert len(completed_catalog) == len(
@@ -157,7 +157,7 @@ class TestStreamModelFull:
 
         # Verify that I can add a targeted column (e.g. dist) to the input catalog and complete the rest
         partial_catalog = completed_catalog.drop(
-            columns=["lsst_r_true", "dist", "lsst_g_true"]
+            columns=["lsst_yr4_r_true", "dist", "lsst_yr4_g_true"]
         ).reset_index(drop=True)
         completed_catalog = model.complete_catalog(
             catalog=partial_catalog,
@@ -173,8 +173,8 @@ class TestStreamModelFull:
             partial_catalog
         ), f"Completed catalog should have the same number of rows as the input catalog"
         assert (
-            "lsst_r_true" not in completed_catalog.columns
-        ), "Column 'lsst_r_true' should not be added when not requested"
+            "lsst_yr4_r_true" not in completed_catalog.columns
+        ), "Column 'lsst_yr4_r_true' should not be added when not requested"
 
 
 # ---------------------------------------------------------------------------
@@ -192,7 +192,7 @@ class TestCompleteCatalogPermutations:
     columns and individual NaN rows are never overwritten).
     """
 
-    MAGS = {"lsst_g_true", "lsst_r_true"}
+    MAGS = {"lsst_yr4_g_true", "lsst_yr4_r_true"}
 
     def test_empty_frame_fills_all_model_columns(self, stream_config_with_distance):
         """size=N with no catalog -> geometry, dist, and both bands are filled."""
@@ -230,12 +230,12 @@ class TestCompleteCatalogPermutations:
         """Providing one band and requesting both leaves the provided one intact."""
         model = StreamModel(stream_config_with_distance)
         g = np.array([20.0, 21.0, 22.0])
-        df = pd.DataFrame({"dist": [16.0] * 3, "lsst_g_true": g.copy()})
+        df = pd.DataFrame({"dist": [16.0] * 3, "lsst_yr4_g_true": g.copy()})
         out = model.complete_catalog(
             catalog=df, columns_to_add=list(self.MAGS), verbose=False
         )
-        assert np.allclose(out["lsst_g_true"].to_numpy(), g), "present band overwritten"
-        assert out["lsst_r_true"].notna().all(), "missing band not filled"
+        assert np.allclose(out["lsst_yr4_g_true"].to_numpy(), g), "present band overwritten"
+        assert out["lsst_yr4_r_true"].notna().all(), "missing band not filled"
 
     def test_present_columns_skip_sampling(self, stream_config_with_distance):
         """Both bands present -> values are returned untouched."""
@@ -243,23 +243,23 @@ class TestCompleteCatalogPermutations:
         g = np.array([20.0, 21.0])
         r = np.array([19.0, 19.5])
         df = pd.DataFrame(
-            {"dist": [16.0, 16.0], "lsst_g_true": g.copy(), "lsst_r_true": r.copy()}
+            {"dist": [16.0, 16.0], "lsst_yr4_g_true": g.copy(), "lsst_yr4_r_true": r.copy()}
         )
         out = model.complete_catalog(
             catalog=df, columns_to_add=list(self.MAGS), verbose=False
         )
-        assert np.allclose(out["lsst_g_true"].to_numpy(), g)
-        assert np.allclose(out["lsst_r_true"].to_numpy(), r)
+        assert np.allclose(out["lsst_yr4_g_true"].to_numpy(), g)
+        assert np.allclose(out["lsst_yr4_r_true"].to_numpy(), r)
 
     def test_partial_rows_only_missing_filled(self, stream_config_with_distance):
         """A band with some NaN rows keeps its finite rows; only NaNs are filled."""
         model = StreamModel(stream_config_with_distance)
         g = np.array([20.0, np.nan, 22.0])
-        df = pd.DataFrame({"dist": [16.0] * 3, "lsst_g_true": g.copy()})
+        df = pd.DataFrame({"dist": [16.0] * 3, "lsst_yr4_g_true": g.copy()})
         out = model.complete_catalog(
-            catalog=df, columns_to_add=["lsst_g_true"], verbose=False
+            catalog=df, columns_to_add=["lsst_yr4_g_true"], verbose=False
         )
-        filled = out["lsst_g_true"].to_numpy()
+        filled = out["lsst_yr4_g_true"].to_numpy()
         assert filled[0] == 20.0 and filled[2] == 22.0, "finite rows overwritten"
         assert np.isfinite(filled[1]), "NaN row not filled"
 
@@ -318,3 +318,57 @@ class TestCompleteCatalogPermutations:
             model.complete_catalog(
                 catalog=df, columns_to_add=list(self.MAGS), verbose=False
             )
+
+
+# ---------------------------------------------------------------------------
+# IsochroneModel — shared initial masses (user-supplied + `mass` column)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.model
+class TestIsochroneMasses:
+    """The shared initial masses can be reused/supplied and surface as `mass`."""
+
+    G = "lsst_yr4_g_true"
+    R = "lsst_yr4_r_true"
+
+    def test_sample_multisurvey_returns_and_reuses_masses(
+        self, stream_config_with_distance
+    ):
+        """Replaying the returned masses reproduces identical magnitudes."""
+        iso = StreamModel(stream_config_with_distance).isochrone
+        mags1, masses = iso.sample_multisurvey(50, 16.8, rng=np.random.default_rng(0))
+        assert masses.shape == (50,)
+        # Supplying those masses (no rng) is deterministic and reproduces mags1.
+        mags2, masses2 = iso.sample_multisurvey(50, 16.8, masses=masses)
+        assert np.allclose(masses, masses2)
+        for key in mags1:
+            assert np.allclose(mags1[key], mags2[key]), f"{key} not reproduced"
+
+    def test_sample_multisurvey_masses_length_validated(
+        self, stream_config_with_distance
+    ):
+        iso = StreamModel(stream_config_with_distance).isochrone
+        with pytest.raises(ValueError):
+            iso.sample_multisurvey(50, 16.8, masses=np.ones(49))
+
+    def test_complete_catalog_exposes_mass_column(self, stream_config_with_distance):
+        """A completed catalog carries the shared `mass` column."""
+        model = StreamModel(stream_config_with_distance)
+        out = model.complete_catalog(catalog=None, size=20, verbose=False)
+        assert "mass" in out.columns
+        assert out["mass"].notna().all()
+        assert np.issubdtype(out["mass"].dtype, np.floating)
+
+    def test_input_mass_column_drives_magnitudes(self, stream_config_with_distance):
+        """Providing a `mass` column makes the sampled mags match those masses."""
+        model = StreamModel(stream_config_with_distance)
+        iso = model.isochrone
+        _, masses = iso.sample_multisurvey(15, 16.8, rng=np.random.default_rng(3))
+        df = pd.DataFrame({"dist": [16.8] * 15, "mass": masses})
+        out = model.complete_catalog(
+            catalog=df, columns_to_add=[self.G, self.R], verbose=False
+        )
+        direct, _ = iso.sample_multisurvey(15, 16.8, masses=masses)
+        assert np.allclose(out[self.G].to_numpy(), direct[("lsst_yr4", "g")])
+        assert np.allclose(out[self.R].to_numpy(), direct[("lsst_yr4", "r")])

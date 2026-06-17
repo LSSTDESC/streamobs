@@ -36,10 +36,10 @@ inj = StreamInjector(["lsst", "roman"])
 # Single survey: `bands` is the shorthand (defaults to ['r', 'g']).
 out = inj.inject(df, bands=["r", "g"], stream_config=cfg, seed=42)
 
-# Several surveys: give the bands per survey.
+# Several surveys: give the bands per survey as a {survey: [bands]} dict.
 out = inj.inject(
     df,
-    survey_bands={"lsst": ["r", "g"], "roman": ["F106", "F158"]},
+    bands={"lsst": ["r", "g"], "roman": ["F106", "F158"]},
     stream_config=cfg,
     seed=42,
 )
@@ -106,7 +106,7 @@ from streamobs.observed import StreamInjector
 scene = yaml.safe_load(open("config/scenes/roman_rubin_demo.yaml"))
 inj = StreamInjector(scene["surveys"])              # {"lsst": "lsst", "roman": "roman"}
 cat = inj.inject(
-    df, survey_bands=scene["survey_bands"],         # {"lsst": [...], "roman": [...]}
+    df, bands=scene["survey_bands"],                # {"lsst": [...], "roman": [...]}
     stream_config=scene["stream"], seed=42,
 )
 ```

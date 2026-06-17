@@ -195,10 +195,18 @@ class StreamModel(ConfigurableModel):
             cols += [true_col(band_1, name), true_col(band_2, name)]
         return cols
 
-    def _sample_iso_mags(self, n, dist):
-        """Sample isochrone magnitudes as a ``{<survey>_<band>_true: values}`` dict."""
-        mags = self.isochrone.sample_multisurvey(n, dist)
-        return {true_col(band, name): vals for (name, band), vals in mags.items()}
+    def _sample_iso_mags(self, n, dist, masses=None):
+        """Sample isochrone magnitudes as a ``{column: values}`` dict.
+
+        Returns each survey's ``<namespace>_<band>_true`` columns plus the shared
+        ``mass`` column (the initial masses used for every band). When ``masses``
+        is given it is used directly instead of an IMF draw, so the sampled
+        magnitudes reproduce those exact stars.
+        """
+        mags, masses = self.isochrone.sample_multisurvey(n, dist, masses=masses)
+        cols = {true_col(band, name): vals for (name, band), vals in mags.items()}
+        cols["mass"] = masses
+        return cols
 
     def complete_catalog(
         self,
@@ -280,7 +288,14 @@ class StreamModel(ConfigurableModel):
         # Columns this method can fill using the configured model
         # Magnitude columns are survey-namespaced (<survey>_<band>_true).
         mag_cols = self._iso_mag_columns()
-        all_cols = ("phi1", "phi2", "dist") + tuple(mag_cols) + ("mu1", "mu2", "rv")
+        # The isochrone also produces the shared initial-mass column.
+        mass_cols = ("mass",) if self.isochrone is not None else ()
+        all_cols = (
+            ("phi1", "phi2", "dist")
+            + tuple(mag_cols)
+            + mass_cols
+            + ("mu1", "mu2", "rv")
+        )
         target_cols = (
             list(all_cols)
             if columns_to_add is None
@@ -371,17 +386,19 @@ class StreamModel(ConfigurableModel):
                     )
                     self._info(verbose, f"Filled {len(idx)} dist values.")
 
-        # magnitudes (need dist and isochrone)
+        # magnitudes + shared initial mass (need dist and isochrone)
         requested_mags = [c for c in mag_cols if c in target_cols]
-        if requested_mags:
-            # Only touch rows that are missing a requested band; existing values
+        want_mass = "mass" in target_cols and self.isochrone is not None
+        fill_targets = requested_mags + (["mass"] if want_mass else [])
+        if fill_targets:
+            # Only touch rows that are missing a requested column; existing values
             # are preserved (never overwritten).
-            missing = {c: self._missing_idx(df, c) for c in requested_mags}
+            missing = {c: self._missing_idx(df, c) for c in fill_targets}
             to_fill = {c: idx for c, idx in missing.items() if len(idx) > 0}
             if not to_fill:
                 self._info(
                     verbose,
-                    f"{requested_mags} already present; no sampling performed.",
+                    f"{fill_targets} already present; no sampling performed.",
                 )
             else:
                 # Verify distance availability
@@ -390,10 +407,16 @@ class StreamModel(ConfigurableModel):
                         "dist is required to sample apparent magnitudes; include 'dist' in `columns_to_add`, provide it in the catalog, or pass `dist=`."
                     )
                 dist_vals = df["dist"].to_numpy()
+                # Reuse a fully-present input `mass` column as the initial masses
+                # so the sampled magnitudes reproduce the user's simulation stars;
+                # otherwise draw fresh masses from the IMF.
+                masses_in = None
+                if "mass" in df.columns and df["mass"].notna().all():
+                    masses_in = df["mass"].to_numpy()
                 # One shared mass draw -> all bands; the newly filled cells are
                 # mutually colour-consistent. Assign only the missing rows so any
                 # bands/values already present are left untouched.
-                mags = self._sample_iso_mags(N, dist_vals)
+                mags = self._sample_iso_mags(N, dist_vals, masses=masses_in)
                 for col, idx in to_fill.items():
                     pos = df.index.get_indexer(idx)
                     if col not in df.columns:
@@ -401,7 +424,7 @@ class StreamModel(ConfigurableModel):
                     df.loc[idx, col] = np.asarray(mags[col])[pos]
                 self._info(
                     verbose,
-                    f"Filled magnitudes for {sorted(to_fill)} (missing rows only).",
+                    f"Filled {sorted(to_fill)} (missing rows only).",
                 )
 
         # velocities (need phi1 and velocity model)
@@ -653,9 +676,16 @@ class IsochroneModel(ConfigurableModel):
     :data:`ROMAN_VEGA_TO_AB`); other bands pass through unchanged.
     """
 
-    # Defaults for the shared isochrone mass grid (see ugali Isochrone.sample)
+    # Defaults for the shared isochrone mass grid (see ugali Isochrone.sample).
+    # Masses are drawn from this discretized grid, so ``_MASS_STEPS`` bounds the
+    # number of *distinct* masses a stream can contain. A convergence check
+    # (g/r magnitude percentiles + distinct-mass count for a 5000-star stream)
+    # showed 1000 steps yields only ~220 distinct masses (granular CMD) and
+    # ~0.03 mag median scatter, while 4000 steps roughly triples the distinct
+    # masses (~600) and tightens convergence to <0.015 mag — for a negligible
+    # one-time grid-sampling cost. Override per call via ``mass_steps=``.
     _MASS_MIN = 0.1
-    _MASS_STEPS = 1000
+    _MASS_STEPS = 4000
 
     def __init__(self, config, **kwargs):
         super().__init__(config, **kwargs)
@@ -663,50 +693,71 @@ class IsochroneModel(ConfigurableModel):
     def create_isochrone(self, config):
         """Construct the underlying ``ugali`` isochrone(s) from configuration.
 
+        Both configuration forms are normalized to a single ``{namespace:
+        factory_cfg}`` mapping and built through the same loop — a legacy flat
+        config simply becomes a one-entry mapping — so there is no separate
+        single- vs. multi-survey code path.
+
         Parameters
         ----------
         config : dict
             Isochrone factory configuration. A ``surveys`` key selects the
             multi-survey form; otherwise the single-survey (legacy) form is used.
         """
-        self.multi_survey = "surveys" in config
-        if self.multi_survey:
-            self._create_multisurvey_isochrones(config)
-        else:
-            self._create_single_isochrone(config)
+        survey_configs, shared = self._normalize_iso_config(config)
+        self._build_isochrones(survey_configs, shared)
 
-    def _build_iso(self, factory_config):
-        """Build one ``ugali`` isochrone with its distance modulus reset to 0."""
-        import ugali.isochrone
+    def _normalize_iso_config(self, config):
+        """Coerce either config form into ``({namespace: factory_cfg}, shared)``.
 
-        iso = ugali.isochrone.factory(**factory_config)
-        iso.params["distance_modulus"].set_bounds([0, 50])
-        iso.distance_modulus = 0
-        return iso
+        Multi-survey: the ``surveys`` mapping is returned verbatim (its keys are
+        the column namespaces) with the top-level keys as shared stellar params.
+        Single-survey (legacy flat): a one-entry mapping keyed by
+        ``{survey}_{release}`` (or just ``{survey}``), matching
+        :attr:`streamobs.surveys.Survey.namespace`, with no shared params.
+        """
+        if "surveys" in config:
+            self.multi_survey = True
+            shared = {k: v for k, v in config.items() if k != "surveys"}
+            return dict(config["surveys"]), shared
 
-    def _create_single_isochrone(self, config):
-        """Build a single isochrone from a legacy (flat) isochrone config."""
+        self.multi_survey = False
         if "distance_modulus" in config:
             warnings.warn(
                 'Please use the "distance_modulus" section of the configuration '
                 "file, instead of the isochrone section, to define a distance modulus."
             )
-        self.iso = self._build_iso(config)
-        self.survey_name = config.get("survey")
-        self.band_1 = config.get("band_1")
-        self.band_2 = config.get("band_2")
-        # Unified bookkeeping so the shared helpers work in both modes.
-        self.surveys = [self.survey_name]
-        self.isos = {self.survey_name: self.iso}
-        self.survey_bands = {self.survey_name: (self.band_1, self.band_2)}
+        survey = config.get("survey")
+        release = config.get("release")
+        namespace = f"{survey}_{release}" if release else survey
+        return {namespace: dict(config)}, {}
 
-    def _create_multisurvey_isochrones(self, config):
-        """Build one isochrone per survey, sharing the top-level stellar params."""
-        shared = {k: v for k, v in config.items() if k != "surveys"}
+    def _build_iso(self, factory_config):
+        """Build one ``ugali`` isochrone with its distance modulus reset to 0.
+
+        ``release`` is a column-namespacing concept (it distinguishes survey
+        versions in the output column names), not a ``ugali`` factory argument,
+        so it is stripped before the isochrone is constructed.
+        """
+        import ugali.isochrone
+
+        factory_config = {k: v for k, v in factory_config.items() if k != "release"}
+        iso = ugali.isochrone.factory(**factory_config)
+        iso.params["distance_modulus"].set_bounds([0, 50])
+        iso.distance_modulus = 0
+        return iso
+
+    def _build_isochrones(self, survey_configs, shared):
+        """Build one isochrone per namespace, sharing the top-level stellar params.
+
+        Drives both configuration forms (a legacy flat config is just a
+        one-entry ``survey_configs``). The first entry is the primary isochrone
+        that drives the shared mass draw and the legacy :meth:`sample`.
+        """
         self.isos = {}
         self.survey_bands = {}
         self.surveys = []
-        for name, scfg in config["surveys"].items():
+        for name, scfg in survey_configs.items():
             factory_config = {**shared, **scfg}
             self.isos[name] = self._build_iso(factory_config)
             self.survey_bands[name] = (scfg.get("band_1"), scfg.get("band_2"))
@@ -777,24 +828,48 @@ class IsochroneModel(ConfigurableModel):
             return abs_mag
         return abs_mag + np.asarray(distance_modulus, dtype=float)
 
-    def sample_multisurvey(self, nstars, distance_modulus, rng=None, **kwargs):
+    def sample_multisurvey(
+        self, nstars, distance_modulus, rng=None, masses=None, **kwargs
+    ):
         """Sample apparent magnitudes for every ``(survey, band)``.
 
-        A single shared draw of initial masses (see :meth:`sample_masses`) is
-        interpolated into each survey's bands, so the same physical star is
-        consistent across surveys.
+        A single shared set of initial masses is interpolated into each survey's
+        bands, so the same physical star is consistent across surveys. The masses
+        are drawn from the shared IMF (:meth:`sample_masses`) unless supplied via
+        ``masses``.
+
+        Parameters
+        ----------
+        nstars : int
+            Number of stars (and the required length of ``masses`` if given).
+        distance_modulus : float or array-like
+            Distance modulus per star (broadcast if scalar).
+        rng : numpy.random.Generator, optional
+            Used only when ``masses`` is None.
+        masses : array-like, optional
+            Initial stellar masses to use directly — e.g. an external
+            simulation's masses — instead of drawing from the IMF. Must have
+            length ``nstars``.
 
         Returns
         -------
-        dict
-            ``{(survey_name, band): apparent_magnitude_array}``.
+        dict, numpy.ndarray
+            ``{(survey_name, band): apparent_magnitude_array}`` and the initial
+            masses used (shape ``(nstars,)``).
         """
-        masses = self.sample_masses(
-            nstars,
-            rng=rng,
-            mass_min=kwargs.get("mass_min"),
-            mass_steps=kwargs.get("mass_steps"),
-        )
+        if masses is None:
+            masses = self.sample_masses(
+                nstars,
+                rng=rng,
+                mass_min=kwargs.get("mass_min"),
+                mass_steps=kwargs.get("mass_steps"),
+            )
+        else:
+            masses = np.asarray(masses, dtype=float)
+            if len(masses) != int(nstars):
+                raise ValueError(
+                    f"masses has length {len(masses)} but nstars={int(nstars)}."
+                )
         out = {}
         for name in self.surveys:
             band_1, band_2 = self.survey_bands[name]
@@ -803,9 +878,9 @@ class IsochroneModel(ConfigurableModel):
             abs_2 = self._to_ab(band_2, abs_2)
             out[(name, band_1)] = self._add_distance_modulus(abs_1, distance_modulus)
             out[(name, band_2)] = self._add_distance_modulus(abs_2, distance_modulus)
-        return out
+        return out, masses
 
-    def sample(self, nstars, distance_modulus, rng=None, **kwargs):
+    def sample(self, nstars, distance_modulus, rng=None, masses=None, **kwargs):
         """Simulate magnitudes in the two bands of the (primary) isochrone.
 
         Draws *exactly* ``nstars`` stars: a fixed set of initial masses is drawn
@@ -831,7 +906,9 @@ class IsochroneModel(ConfigurableModel):
             this returns the primary survey's two bands; use
             :meth:`sample_multisurvey` to get every survey's bands.
         """
-        mags = self.sample_multisurvey(nstars, distance_modulus, rng=rng, **kwargs)
+        mags, _ = self.sample_multisurvey(
+            nstars, distance_modulus, rng=rng, masses=masses, **kwargs
+        )
         return (
             mags[(self.survey_name, self.band_1)],
             mags[(self.survey_name, self.band_2)],

@@ -3,10 +3,14 @@ Column-name helpers for injected catalogs.
 
 These centralize the naming convention so the injector is not hard-coded to
 specific bands. Injected catalogs are **always** survey-namespaced —
-``<survey>_<band>_true`` (true / noiseless), ``<survey>_<band>_obs`` (observed /
-noisy), ``<survey>_<band>_err`` (reported error), and ``<survey>_flag_observed``
-— produced by :class:`~streamobs.observed.StreamInjector` whether it serves one
-survey or several (e.g. ``lsst_r_obs``, ``roman_F158_obs``).
+``<namespace>_<band>_true`` (true / noiseless), ``<namespace>_<band>_obs``
+(observed / noisy), ``<namespace>_<band>_err`` (reported error), and
+``<namespace>_flag_observed`` — produced by
+:class:`~streamobs.observed.StreamInjector` whether it serves one survey or
+several. The namespace is the survey's :attr:`~streamobs.surveys.Survey.namespace`
+(``{name}_{release}``), so it includes the release on every column kind
+(e.g. ``lsst_yr5_r_obs``, ``roman_dc2_F158_obs``) and the same survey at two
+releases never collides.
 
 The ``survey`` argument therefore identifies the namespace. ``survey=None`` is
 retained only as a low-level fallback that yields the bare ``<band>_…`` /

@@ -105,12 +105,12 @@ class TestStreamInjectorBehavior:
         expected_columns=[
             "ra",
             "dec",
-            "lsst_g_true",
-            "lsst_r_true",
-            "lsst_g_obs",
-            "lsst_r_obs",
-            "lsst_flag_observed",
-            "lsst_flag_perfect_galstarsep",
+            "lsst_yr4_g_true",
+            "lsst_yr4_r_true",
+            "lsst_yr4_g_obs",
+            "lsst_yr4_r_obs",
+            "lsst_yr4_flag_observed",
+            "lsst_yr4_flag_perfect_galstarsep",
         ],
     ):
         """Helper method to verify the content of the injected catalog."""
@@ -135,7 +135,9 @@ class TestStreamInjectorBehavior:
         self, mock_injector, stream_catalog, stream_config_with_distance, verbose
     ):
         """Test injection with a catalog that has some missing columns."""
-        data_without_mag = stream_catalog.drop(columns=["lsst_g_true", "lsst_r_true"])
+        data_without_mag = stream_catalog.drop(
+            columns=["lsst_yr4_g_true", "lsst_yr4_r_true"]
+        )
         injected_catalog = mock_injector.inject(
             data_without_mag,
             perfect_galstarsep=True,
@@ -230,3 +232,70 @@ class TestStreamInjectorBehavior:
         assert len(masks_before) > len(
             masks
         ), "Mask cache should have had entries before clearing"
+
+
+# ---------------------------------------------------------------------------
+# complete_data + bands/survey API
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.observed
+class TestCompleteDataAndAPI:
+    """complete_data (single + multi survey) and the unified bands/survey API."""
+
+    def test_complete_data_single_survey(self, mock_injector, stream_config_with_distance):
+        """complete_data fills ra/dec + true mags and preserves existing columns."""
+        df = pd.DataFrame({"phi1": [-3.0, 0.0, 3.0], "phi2": [0.0, 0.0, 0.0]})
+        out = mock_injector.complete_data(
+            df, bands=["g", "r"], stream_config=stream_config_with_distance, seed=1
+        )
+        for col in ["ra", "dec", "lsst_yr4_g_true", "lsst_yr4_r_true"]:
+            assert col in out.columns, f"missing {col}"
+        assert out[["lsst_yr4_g_true", "lsst_yr4_r_true"]].notna().all().all()
+        # Input is not mutated (complete_data works on a copy).
+        assert "ra" not in df.columns
+
+    def test_complete_data_multisurvey(
+        self, mock_multisurvey_injector, multisurvey_stream_config
+    ):
+        """Multi-survey complete_data fills every namespace from ONE mass draw.
+
+        Both namespaces are backed by the same ugali survey/bands, so the shared
+        masses must yield identical true magnitudes across them.
+        """
+        df = pd.DataFrame({"phi1": [-3.0, 0.0, 3.0], "phi2": [0.0, 0.0, 0.0]})
+        out = mock_multisurvey_injector.complete_data(
+            df,
+            bands={"lsst_yr4": ["g", "r"], "lsst_yr5": ["g", "r"]},
+            stream_config=multisurvey_stream_config,
+            seed=7,
+        )
+        for col in [
+            "ra",
+            "dec",
+            "lsst_yr4_g_true",
+            "lsst_yr4_r_true",
+            "lsst_yr5_g_true",
+            "lsst_yr5_r_true",
+        ]:
+            assert col in out.columns, f"missing {col}"
+        # Same physical star across surveys -> identical true mags.
+        assert np.allclose(out["lsst_yr4_g_true"], out["lsst_yr5_g_true"])
+        assert np.allclose(out["lsst_yr4_r_true"], out["lsst_yr5_r_true"])
+
+    def test_bands_list_rejected_for_multisurvey(self, mock_multisurvey_injector):
+        """A plain list of bands is ambiguous for a multi-survey injector."""
+        df = pd.DataFrame({"phi1": [0.0], "phi2": [0.0]})
+        with pytest.raises(ValueError):
+            mock_multisurvey_injector.complete_data(df, bands=["g", "r"])
+
+    def test_bands_dict_unknown_survey_raises(self, mock_injector):
+        """A bands dict referencing an unknown namespace is rejected."""
+        df = pd.DataFrame({"phi1": [0.0], "phi2": [0.0]})
+        with pytest.raises(ValueError):
+            mock_injector.complete_data(df, bands={"nope": ["g"]})
+
+    def test_detect_flag_requires_survey(self, mock_injector):
+        """`survey` is now a required argument of detect_flag."""
+        with pytest.raises(TypeError):
+            mock_injector.detect_flag(0, mag=np.array([20.0]), band="r")

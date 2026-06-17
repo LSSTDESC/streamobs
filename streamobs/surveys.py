@@ -139,6 +139,17 @@ class Survey:
             self.sys_error = {}
 
     @property
+    def namespace(self) -> str:
+        """Column-prefix namespace for this survey.
+
+        ``"{name}_{release}"`` when a release is set (e.g. ``"lsst_yr5"``,
+        ``"roman_dc2"``), otherwise just ``"{name}"``. This is the prefix used
+        for every injected column (``<namespace>_<band>_obs`` etc.), so the same
+        survey at two releases produces distinct, non-colliding columns.
+        """
+        return f"{self.name}_{self.release}" if self.release else self.name
+
+    @property
     def log_photo_error(self) -> Optional[Callable]:
         """Backward-compatible alias for the *catalog* (reported) error model."""
         return self.log_photo_error_catalog

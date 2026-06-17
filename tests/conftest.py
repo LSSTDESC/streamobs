@@ -59,6 +59,7 @@ def minimal_stream_config():
         "isochrone": {
             "name": "Marigo2017",  # isochrone set name
             "survey": "lsst",  # survey for filter set
+            "release": "yr4",  # release -> namespaces true columns as lsst_yr4_*
             "age": 12.0,  # Age in Gyr of the population
             "z": 0.0006,  # Metallicity of the population
             "band_1": "g",  # first band for color-magnitude
@@ -163,6 +164,41 @@ def mock_injector(mock_survey, verbose):
     from streamobs.observed import StreamInjector
 
     return StreamInjector(survey=mock_survey, verbose=verbose)
+
+
+@pytest.fixture(scope="session")
+def mock_multisurvey_injector(verbose):
+    """Injector serving two LSST releases (distinct namespaces lsst_yr4/lsst_yr5)."""
+    from streamobs.observed import StreamInjector
+
+    return StreamInjector(
+        [
+            {"survey": "lsst", "release": "yr4"},
+            {"survey": "lsst", "release": "yr5"},
+        ],
+        verbose=verbose,
+    )
+
+
+@pytest.fixture(scope="session")
+def multisurvey_stream_config(stream_config_with_distance):
+    """StreamModel config with a MULTI-survey isochrone keyed by namespace.
+
+    Both namespaces are backed by the same ugali survey (``lsst``) and bands, so
+    a shared mass draw yields identical true magnitudes across them — exactly the
+    'same physical star' invariant the injector relies on.
+    """
+    cfg = dict(stream_config_with_distance)
+    cfg["isochrone"] = {
+        "name": "Marigo2017",
+        "age": 12.0,
+        "z": 0.0006,
+        "surveys": {
+            "lsst_yr4": {"survey": "lsst", "band_1": "g", "band_2": "r"},
+            "lsst_yr5": {"survey": "lsst", "band_1": "g", "band_2": "r"},
+        },
+    }
+    return cfg
 
 
 @pytest.fixture(scope="session")
