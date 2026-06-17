@@ -277,10 +277,12 @@ class StreamModel(ConfigurableModel):
         - Dependencies: 'phi2' and 'dist' require 'phi1'. Magnitudes require
           'dist' and an isochrone model. Velocities require 'phi1' and a
           velocity model.
-        - Existing non-null values are preserved; only missing rows are filled,
-          except for magnitudes and velocities where the method intentionally
-          overwrites the whole columns to keep internal consistency (e.g.,
-          colors and kinematic coherence across rows).
+        - Existing non-null values are preserved: only the missing rows are
+          filled for ``phi1``/``phi2``/``dist``, the magnitude columns, and the
+          shared ``mass`` column (supplying some bands and requesting others
+          fills only the missing ones, colour-consistently). Velocities are the
+          exception — ``mu1``/``mu2``/``rv`` are recomputed for the whole columns
+          to keep kinematic coherence across rows.
         - When ``catalog`` is a CSV path and ``inplace`` is True, the original
           file is overwritten.
         """
