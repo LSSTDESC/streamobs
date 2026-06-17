@@ -978,6 +978,6 @@ class SplineStreamModel(StreamModel):
         """Instantiate spline-specific components and common sub-models."""
         self.density = self._create_linear_density()
         self.track = self._create_track()
-        self.distance_modulus = self._create_distance()
+        self.distance_modulus = self._create_distance_modulus()
         self.isochrone = self._create_isochrone()
         self.velocity = self._create_velocity()
