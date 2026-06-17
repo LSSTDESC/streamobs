@@ -14,10 +14,10 @@ def inverse_transfom_sample(vals, pdf, size):
     cdf /= cdf[-1]
     fn = scipy.interpolate.interp1d(cdf, list(range(0, len(cdf))))
     x_new = np.random.uniform(size=np.rint(size).astype(int))
-    x_new[
-        x_new < 1e-3
-    ] = 1e-3  # running into error that values close to 0 are flagged as being
-              # below interp range
+    x_new[x_new < 1e-3] = (
+        1e-3  # running into error that values close to 0 are flagged as being
+    )
+    # below interp range
     index = np.rint(fn(x_new)).astype(int)
     return vals[index]
 
