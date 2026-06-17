@@ -79,17 +79,19 @@ class StreamInjector:
         Parameters
         ----------
         survey : str, Survey, dict, or list
-            One survey or several. Accepted forms:
+            One survey or several. Every survey is namespaced by its own
+            :attr:`~streamobs.surveys.Survey.namespace` (``{name}_{release}``,
+            or just ``{name}`` with no release). Accepted forms:
 
-            - a survey-name string (e.g. ``'lsst'``) or a pre-loaded
-              :class:`~streamobs.surveys.Survey` — a single survey, namespaced
-              by its own name;
-            - a ``{namespace: spec}`` dict, where ``spec`` is a name string or a
-              ``Survey`` and the key is the column namespace;
-            - a list/tuple of specs, each namespaced by its survey's name.
+            - a survey-name string (e.g. ``'lsst'``), a
+              ``{"survey": ..., "release": ...}`` spec dict, or a pre-loaded
+              :class:`~streamobs.surveys.Survey` — a single survey;
+            - a list/tuple of such specs;
+            - a ``{key: spec}`` dict — the keys are containers only and are
+              **ignored**; the namespace is re-derived from each loaded survey.
         primary : str, optional
-            Namespace of the survey that drives the shared sky placement.
-            Defaults to the first survey.
+            Namespace (``{name}_{release}``) of the survey that drives the shared
+            sky placement. Defaults to the first survey.
         **kwargs
             Forwarded to :meth:`Survey.load` for any ``spec`` given as a name
             string (e.g. ``release``).

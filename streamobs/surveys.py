@@ -1397,8 +1397,9 @@ class SurveyFactory:
             Path to CSV file with columns:
 
             - 'delta_mag' : Magnitude difference from limit (mag - maglim)
-            - 'eff_star' : Detection efficiency only
-            - 'classifiction_eff' : Classification efficiency only
+            - 'detection_eff' : Detection efficiency only
+            - 'classification_eff' : Classification efficiency only (the legacy
+              misspelled header 'classifiction_eff' is also accepted)
             - 'classification_detection_eff' : Combined efficiency
 
         delta_saturation : float, optional
@@ -1406,8 +1407,9 @@ class SurveyFactory:
         selection : str, optional
             Which efficiency to use:
 
-            - 'detected' : Detection efficiency only (column 'eff_star')
-            - 'classified' : Classification efficiency only (column 'classifiction_eff')
+            - 'detected' : Detection efficiency only (column 'detection_eff')
+            - 'classified' : Classification efficiency only (column
+              'classification_eff', or legacy 'classifiction_eff')
             - 'both' : Combined detection and classification (column 'classification_detection_eff')
 
             Default is 'both'.
@@ -1436,7 +1438,12 @@ class SurveyFactory:
         if selection == "detected":
             efficiencies = data["detection_eff"]
         elif selection == "classified":
-            efficiencies = data["classifiction_eff"]
+            # Prefer the correct spelling; fall back to the legacy misspelled
+            # header ("classifiction_eff") in older/Zenodo data packages.
+            if "classification_eff" in data.dtype.names:
+                efficiencies = data["classification_eff"]
+            else:
+                efficiencies = data["classifiction_eff"]
         elif selection == "both":
             efficiencies = data["classification_detection_eff"]
         else:

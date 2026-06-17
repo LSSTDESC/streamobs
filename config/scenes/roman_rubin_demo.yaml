@@ -15,9 +15,11 @@
 # The same physical stars carry both `lsst_<band>_*` and `roman_<band>_*`
 # columns; each band's errors / detection come from that survey's own maps.
 
-# Surveys to inject. The mapping KEY is the column namespace (lsst_r_obs, ...).
-# Each value is a survey spec: a survey-name string here (loaded via
-# Survey.load); could also be a {name, release} once the loader supports it.
+# Surveys to inject. The column namespace is each survey's own {name}_{release}
+# (here just `lsst` / `roman` since these are loaded without a release) — the
+# mapping keys below are NOT used as the namespace; they are containers only.
+# Each value is a survey spec: a survey-name string (loaded via Survey.load), or
+# a {"survey": ..., "release": ...} dict.
 surveys:
   lsst: lsst
   roman: roman

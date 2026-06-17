@@ -6,9 +6,16 @@ survey.
 
 ## The scheme
 
-For a survey with namespace `<survey>` (the survey's name, or the key you gave it
-when constructing a multi-survey `StreamInjector`) and a photometric band
-`<band>`:
+Every column is prefixed with the survey's **namespace**, which is
+`{name}_{release}` (e.g. `lsst_yr5`, `roman_dc2`), or just `{name}` when the
+survey was loaded without a release. The namespace is always derived from the
+`Survey` itself ({attr}`streamobs.surveys.Survey.namespace`) and includes the
+release on **every** column kind, so the same survey at two releases produces
+distinct, non-colliding columns. When you construct a multi-survey injector from
+a `{key: spec}` dict the keys are containers only — they do **not** become the
+namespace (it is re-derived from each loaded `Survey`).
+
+For a survey with namespace `<survey>` and a photometric band `<band>`:
 
 | Column | Meaning |
 |---|---|
@@ -20,7 +27,8 @@ when constructing a multi-survey `StreamInjector`) and a photometric band
 
 Plus the shared, un-namespaced sky coordinates `ra`, `dec`.
 
-Examples: `lsst_r_obs`, `lsst_g_err`, `roman_F158_true`, `lsst_flag_observed`.
+Examples (LSST loaded with `release="yr5"`, Roman with `release="dc2"`):
+`lsst_yr5_r_obs`, `lsst_yr5_g_err`, `roman_dc2_F158_true`, `lsst_yr5_flag_observed`.
 
 These names are produced by the helpers in `streamobs.columns`
 (`true_col`, `obs_col`, `err_col`, `flag_col`, `perfect_flag_col`), which take a
