@@ -47,6 +47,47 @@ class TestStreamInjectorProperties:
         assert injector_direct.survey.name == "lsst", "Survey name must be 'lsst'"
         assert injector_direct.survey.release == "yr4", "Survey release must be 'yr4'"
 
+    def test_injector_multisurveys(self):
+        """Test that the injector can handle multiple surveys."""
+        # Create a second survey and injector
+        survey1_dict = {"survey": "lsst", "release": "yr4"}
+        survey2_dict = {"survey": "lsst", "release": "yr5"}
+        survey1 = Survey.load(**survey1_dict)
+        survey2 = Survey.load(**survey2_dict)
+
+        def test_injector_initialization_with_multiple_surveys(injector):
+            """Test that the injector initializes with multiple surveys."""
+            assert isinstance(
+                injector, StreamInjector
+            ), "Injector must be an instance of StreamInjector"
+            assert hasattr(
+                injector, "primary"
+            ), "Injector must have a 'primary' property"
+            assert isinstance(
+                injector.surveys, dict
+            ), "Survey property must be a dict of Survey instances"
+            assert all(
+                isinstance(value, Survey) for key, value in injector.surveys.items()
+            ), "All elements in survey dict must be Survey instances"
+            assert (
+                len(injector.surveys) == 2
+            ), f"Injector must have 2 surveys, got {len(injector.surveys)} with keys: {list(injector.surveys.keys())}"
+            assert isinstance(
+                injector.primary, Survey
+            ), "Primary survey must be a Survey instance"
+
+        # Intialize injectors for both surveys using list of survey objects
+        injector1 = StreamInjector(survey=[survey1, survey2])
+        test_injector_initialization_with_multiple_surveys(injector1)
+
+        # Initialize injectors for both surveys using list of survey dicts
+        injector3 = StreamInjector(survey=[survey1_dict, survey2_dict])
+        test_injector_initialization_with_multiple_surveys(injector3)
+
+        # Initialize injectors for both surveys using dicts # but I do not think
+        # this is more useful than the previous approach.
+        injector3 = StreamInjector({"lsst_yr4": survey1_dict, "lsst_yr5": survey2_dict})
+        test_injector_initialization_with_multiple_surveys(injector3)
 
 # ---------------------------------------------------------------------------
 # Injector behavior
