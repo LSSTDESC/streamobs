@@ -25,7 +25,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "numpydoc",
-    "myst_parser",
+    "myst_nb",
 ]
 
 templates_path = ["_templates"]

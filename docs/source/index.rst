@@ -86,7 +86,7 @@ Documentation Contents
    multisurvey
    citation
 
-   .. toctree::
+.. toctree::
    :maxdepth: 1
    :caption: Examples
 
