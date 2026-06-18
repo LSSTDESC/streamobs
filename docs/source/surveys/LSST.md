@@ -39,7 +39,7 @@ $$
 for which morphological star-galaxy separation becomes challenging near the survey magnitude limit.
 
 
-![Detection, classification and galaxy misclassification efficiencies](_static/lsst_dc2/LSST_efficiencies.png)
+![Detection, classification and galaxy misclassification efficiencies](../_static/lsst_dc2/LSST_efficiencies.png)
 
 *Detection efficiency, stellar classification efficiency, combined stellar efficiency, and galaxy contamination efficiency as a function of distance to the local magnitude limit.*
 
@@ -55,7 +55,7 @@ $$
 The photometric scatter increases rapidly near the magnitude limit and approaches a systematic floor of approximately 0.005 mag for bright sources.
 
 
-![LSST photometric error model](_static/lsst_dc2/LSST_errors.png)
+![LSST photometric error model](../_static/lsst_dc2/LSST_errors.png)
 
 *Photometric uncertainty as a function of distance to the local magnitude limit.
 An analytic approximation not used in StreamObs is overlaid on the DC2-derived
@@ -68,8 +68,8 @@ Depth maps describe the spatial variation of the LSST 5σ limiting magnitude acr
 
 Magnitude limits are obtained from [RubinSim](https://rubin-sim.lsst.io/) and propagated to `StreamObs` as `HEALPix` maps. Survey systematics are modeled through spatial variations in these limiting magnitudes, which drive both photometric uncertainties and selection functions.
 
-![LSST depth maps after 1 year of observation](_static/lsst_dc2/depth_maps_yr1.png)
-![LSST depth maps after 4 years of observation](_static/lsst_dc2/depth_maps_yr4.png)
+![LSST depth maps after 1 year of observation](../_static/lsst_dc2/depth_maps_yr1.png)
+![LSST depth maps after 4 years of observation](../_static/lsst_dc2/depth_maps_yr4.png)
 
 *LSST 5σ limiting magnitude maps in the g and r bands for Year 1 and Year 4 survey configurations.*
 
@@ -95,7 +95,7 @@ and are applied consistently when generating observed magnitudes.
 
 ### Using the survey in streamobs
 
-Configured by `config/surveys/lsst_dc2.yaml`, data in `data/surveys/lsst_dc2/`:
+Configured by `config/surveys/lsst_{releases}.yaml`, data in `data/surveys/lsst_{releases}/`:
 
 ```python
 from streamobs.surveys import SurveyFactory
