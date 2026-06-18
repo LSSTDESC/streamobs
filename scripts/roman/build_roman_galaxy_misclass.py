@@ -116,118 +116,12 @@ LSST_TRUTH_COLS = [
 
 
 # --------------------------------------------------------------------------- #
-# Roman F158 size envelope classifier (lifted from
-# scripts/roman/create_streamobs_files_hlwas.py so this script is self-contained
-# and uses the SAME classifier the products use).
+# Roman F158 size envelope classifier: imported from the shared module
+# scripts/roman/roman_star_classifier.py (the SINGLE source of truth, also imported
+# by create_streamobs_files_hlwas.py so the two cannot drift).
 # --------------------------------------------------------------------------- #
-from scipy.interpolate import PchipInterpolator
-
-ENV_PURITY = 0.875
-ENV_N_SIG = 4.0
-ENV_MAX_D = 0.6
-ENV_FREEZE = 24.0
-ENV_UP_KNEE, ENV_UP_BRIGHT, ENV_UP_BRIGHT_VAL = 23.0, 18.0, 0.15
-SN_GATE = 1.0857 / 5.0              # magerr at S/N=5; gate the envelope fit
-
-
-def size_sb(df):
-    """Single-band F158 semi-major axis (arcsec) from windowed second moments.
-
-    size_sb = sqrt(lambda1) * 3600", where lambda1 is the larger eigenvalue of
-    the windowed second-moment matrix (x2/y2/xy_win_world_H158). This is the
-    measured Roman F158 size -- the interim proxy and the same size the existing
-    classifier uses.
-    """
-    x2 = np.asarray(df["x2win_world_H158"]); y2 = np.asarray(df["y2win_world_H158"])
-    xy = np.asarray(df["xywin_world_H158"])
-    half = 0.5 * (x2 + y2)
-    root = np.sqrt(np.clip((0.5 * (x2 - y2)) ** 2 + xy ** 2, 0, None))
-    return np.sqrt(np.clip(half + root, 0, None)) * 3600.0
-
-
-def build_env_classifier(cat):
-    """Fit the F158 size envelope on clean true stars/galaxies, return classify_fn.
-
-    Returns ``classify_star(df) -> bool array`` (True where the detection lands
-    inside the stellar size band). Same algorithm as create_streamobs_files_hlwas.
-    """
-    cat = cat.copy()
-    cat["size_sb"] = size_sb(cat)
-    base = (cat["matched"] & (cat["flags"] < FLAG_CUT)
-            & np.isfinite(cat["size_sb"]) & (cat["size_sb"] > 0)
-            & np.isfinite(cat[f"mag_auto_{BAND}"])
-            & (cat[f"magerr_auto_{BAND}"] < SN_GATE))
-
-    fit = cat.loc[base & (cat["truth_gal_star"] == 1)]
-    Ls = np.log10(fit["size_sb"].values); ms = fit[f"mag_auto_{BAND}"].values
-    lb = np.arange(17, 27.51, 0.25); lm = 0.5 * (lb[1:] + lb[:-1])
-    mu = np.full(lm.size, np.nan); sg = np.full(lm.size, np.nan)
-    sbin = np.digitize(ms, lb) - 1
-    for i in range(lm.size):
-        v = Ls[sbin == i]; v = v[np.isfinite(v)]
-        if v.size >= 30:
-            mu[i] = np.median(v); sg[i] = 1.4826 * np.median(np.abs(v - mu[i])) + 1e-9
-    sm = lambda a: pd.Series(a).rolling(3, center=True, min_periods=1).median().ffill().bfill().to_numpy()
-    mu, sg = sm(mu), sm(sg)
-    L0_at = lambda m: np.interp(m, lm, mu)
-    sigL_at = lambda m: np.interp(m, lm, sg)
-    locus_lin = lambda m: 10.0 ** L0_at(m)
-
-    eb = np.arange(18, 28.01, 0.25); emid = 0.5 * (eb[1:] + eb[:-1])
-    ebi = lambda m: np.digitize(m, eb) - 1
-    fit_all = cat.loc[base]
-    m_all = fit_all[f"mag_auto_{BAND}"].values
-    d_all = np.abs(np.log10(fit_all["size_sb"].values) - L0_at(m_all))
-    lab_all = (fit_all["truth_gal_star"].values == 1)
-
-    def fit_delta(X, keep=0.02):
-        mb = ebi(m_all); Dc = np.full(emid.size, np.nan)
-        for i in range(emid.size):
-            mm = mb == i; ns = lab_all[mm].sum()
-            if mm.sum() < 200 or ns < 10:
-                continue
-            ds = d_all[mm]; ls = lab_all[mm]
-            qs = np.unique(np.nanquantile(ds, np.linspace(0, 1, 200))); best = qs[0]
-            for t in qs[::-1]:
-                s = ds < t; n = s.sum()
-                if n == 0:
-                    continue
-                if (s & ls).sum() / n >= X and (s & ls).sum() / ns >= keep:
-                    best = t; break
-            Dc[i] = best
-        valid = np.isfinite(Dc); xb = emid[valid]
-        cap = np.minimum(ENV_N_SIG * sigL_at(xb), ENV_MAX_D)
-        Db = np.minimum(np.clip(Dc[valid], 0, None), cap)
-        Db = pd.Series(Db).rolling(5, center=True, min_periods=1).median().to_numpy().copy()
-        pk = int(np.argmax(Db))
-        Db[:pk + 1] = np.maximum.accumulate(Db[:pk + 1]); Db[pk:] = np.minimum.accumulate(Db[pk:])
-        pch = PchipInterpolator(xb, Db); hi = min(ENV_FREEZE, xb[-1])
-        return (lambda m: pch(np.clip(np.asarray(m, float), xb[0], hi)))
-
-    Dfun = fit_delta(ENV_PURITY)
-
-    def env_upper_size(m):
-        m = np.asarray(m, float)
-        b = locus_lin(m) * 10.0 ** Dfun(m)
-        u_knee = float(locus_lin(ENV_UP_KNEE) * 10.0 ** float(Dfun(ENV_UP_KNEE)))
-        frac = np.clip((ENV_UP_KNEE - m) / (ENV_UP_KNEE - ENV_UP_BRIGHT), 0.0, 1.0)
-        ramp = u_knee + (ENV_UP_BRIGHT_VAL - u_knee) * frac
-        return np.where(m < ENV_UP_KNEE, ramp, b)
-
-    def env_lower_size(m):
-        m = np.asarray(m, float)
-        return locus_lin(m) * 10.0 ** (-Dfun(m))
-
-    def classify_star(df):
-        sz = np.asarray(df["size_sb"]) if "size_sb" in getattr(df, "columns", []) else size_sb(df)
-        m = np.asarray(df[f"mag_auto_{BAND}"])
-        with np.errstate(invalid="ignore"):
-            ok = np.isfinite(sz) & (sz > 0) & np.isfinite(m)
-            return ok & (sz > env_lower_size(m)) & (sz < env_upper_size(m))
-
-    print(f"  size-envelope classifier: Delta@21={float(Dfun(21)):.3f} "
-          f"Delta@24={float(Dfun(24)):.3f} dex (frozen)")
-    return classify_star
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from roman_star_classifier import size_sb, build_env_classifier  # noqa: E402
 
 
 # --------------------------------------------------------------------------- #
@@ -445,7 +339,10 @@ def main():
                 "truth_gal_star", "x2win_world_H158", "y2win_world_H158", "xywin_world_H158"]
     fit_cat = dset.to_table(columns=fit_cols,
                             filter=pads.field("matched") == True).to_pandas()
-    classify_star = build_env_classifier(fit_cat)
+    clf = build_env_classifier(fit_cat)
+    classify_star = clf.classify
+    print(f"  size-envelope classifier: Delta@21={float(clf.Dfun(21)):.3f} "
+          f"Delta@24={float(clf.Dfun(24)):.3f} dex (frozen)")
     del fit_cat
 
     # ----------------------------------------------------------------------- #

@@ -3,16 +3,27 @@ Build exposure-time-scaled magnitude-limit maps for the Roman HLWAS tiers.
 
 Reads the HLWAS F158 exposure-time HEALPix sparse maps (.hsp) from the
 roman_notebooks auxiliary data directory, applies a quasi-depth recipe to
-produce maglim maps in the same truth-anchored S/N=5 convention as the DC2
-F158 maglim map, and writes the results to data/surveys/roman_hlwas_<tier>/.
+produce maglim maps anchored to the DC2 truth-anchored F158 depth scale,
+and writes the results to data/surveys/roman_hlwas_<tier>/.
 
-Quasi-depth recipe (user-confirmed):
-    depth(pix) = median_reported_depth + 1.25 * log10( t(pix) / t_median )
+Quasi-depth recipe (Option B — DC2 truth-anchored, exposure-ratio scaling):
+    depth(pix) = DC2_REF_DEPTH + 1.25 * log10( t(pix) / DC2_REF_EXPTIME )
 
-where t_median is the median exposure time over the tier's footprint.  The
-resulting maps are expressed in the same convention as the DC2 F158 map
-(truth-anchored S/N=5, keyed to the DC2 median of 26.38 mag) so that the
-DC2-derived completeness and photometric-error tables apply unchanged.
+where:
+  DC2_REF_DEPTH    = median (over valid pixels) of the DC2 F158 maglim map
+                     (truth-anchored S/N=5, read from roman_dc2_maglim_f158_nside1024.fits.gz).
+  DC2_REF_EXPTIME  = 770.0 s  (DC2 HLIS reference per-pixel exposure =
+                     5.5 dithers × 140 s/exposure, Troxel et al. 2023
+                     arXiv:2209.06829, Sec. 3.1).
+  t(pix)           = per-pixel exposure time in seconds, read directly from
+                     the .hsp maps (already in seconds; quantized in ~107.5 s
+                     single-exposure units).
+
+This anchors all HLWAS tiers identically to the DC2 truth scale via the
+exposure-time ratio, without mixing ETC vintage references across tiers.
+The resulting maps are expressed in the same truth-anchored S/N=5 convention
+as the DC2 F158 map so that DC2-derived completeness and photometric-error
+tables apply unchanged.
 
 Input exposure-time maps:
     ~/software/roman_notebooks/notebooks/footprint_visualization/aux_data/
@@ -20,14 +31,6 @@ Input exposure-time maps:
 
     Source: https://github.com/spacetelescope/roman_notebooks/tree/main/
             notebooks/footprint_visualization/aux_data
-
-Median reported 5σ point-source depths used as reference (from STScI HLWAS
-community-survey page,
-https://roman-docs.stsci.edu/roman-community-defined-surveys/high-latitude-wide-area-survey):
-    wide   = 26.2 AB (F158)
-    medium = 26.4 AB (F158)
-    all    = 26.2 AB (wide-tier reference; the 'all' map median t equals the
-             wide median because the wide tier dominates the pixel count)
 
 Output:
     data/surveys/roman_hlwas_wide/roman_hlwas_wide_maglim_f158_nside1024.fits.gz
@@ -53,25 +56,43 @@ AUX_DATA_DIR = os.path.expanduser(
     "~/software/roman_notebooks/notebooks/footprint_visualization/aux_data"
 )
 
-# Tier configuration: (hsp filename, STScI 5-sigma reported depth, description)
+# DC2 reference exposure time: 5.5 dithers x 140 s/exposure (Troxel et al. 2023,
+# arXiv:2209.06829, Sec. 3.1).
+DC2_REF_EXPTIME = 770.0  # seconds
+
+# DC2 truth-anchored F158 median depth — read from the DC2 maglim map at runtime
+# (single source of truth; avoids hardcoding a value that could drift if the map
+# is regenerated).
+_dc2_f158_path = os.path.join(
+    REPO_ROOT, "data", "surveys", "roman_dc2", "roman_dc2_maglim_f158_nside1024.fits.gz"
+)
+_dc2_f158_map = hp.read_map(_dc2_f158_path, nest=False, verbose=False)
+_dc2_f158_valid = _dc2_f158_map > hp.UNSEEN + 1
+DC2_REF_DEPTH = float(np.median(_dc2_f158_map[_dc2_f158_valid]))
+del _dc2_f158_map, _dc2_f158_valid  # free memory
+
+# Tier configuration: only the .hsp filename is needed (depth formula uses
+# DC2_REF_DEPTH and DC2_REF_EXPTIME uniformly across all tiers).
 TIER_CONFIG = {
     "wide": {
         "hsp_file": "map_HLWAS-wide_F158.hsp",
-        "reported_depth": 26.2,
-        "depth_note": "STScI HLWAS page, wide tier F158 5-sigma depth",
+        "note": "HLWAS wide-tier F158 exposure-time map",
     },
     "medium": {
         "hsp_file": "map_HLWAS-medium_F158.hsp",
-        "reported_depth": 26.4,
-        "depth_note": "STScI HLWAS page, medium tier F158 5-sigma depth",
+        "note": (
+            "HLWAS medium-tier F158 exposure-time map. "
+            "Single-band F158 wide ≈ medium because medium's extra depth "
+            "vs wide is in additional HLWAS bands, not F158 alone."
+        ),
     },
     "all": {
         "hsp_file": "map_HLWAS-all_F158.hsp",
-        "reported_depth": 26.2,
-        "depth_note": (
-            "Wide-tier reference depth; 'all' map median t equals the wide median "
-            "because the wide tier dominates pixel count (deep+ultradeep are <0.5% "
-            "of pixels)"
+        "note": (
+            "HLWAS all-tiers stacked F158 exposure-time map "
+            "(wide + medium + deep + ultra-deep). "
+            "Deep/ultradeep pixels (<0.5% of footprint) yield a deeper tail; "
+            "map median stays near the wide/medium F158 level."
         ),
     },
 }
@@ -109,13 +130,12 @@ def load_exptime_map(hsp_path: str) -> np.ndarray:
 
 def build_maglim_map(
     exptime_arr: np.ndarray,
-    reported_depth: float,
     nside_out: int = NSIDE_OUT,
 ) -> tuple[np.ndarray, float, float]:
-    """Apply the quasi-depth recipe and degrade to output nside.
+    """Apply the Option B quasi-depth recipe and degrade to output nside.
 
-    Recipe:
-        depth(pix) = reported_depth + 1.25 * log10( t(pix) / t_median )
+    Recipe (DC2 truth-anchored, exposure-ratio scaling):
+        depth(pix) = DC2_REF_DEPTH + 1.25 * log10( t(pix) / DC2_REF_EXPTIME )
 
     Pixels with t <= 0 or NaN are set to NaN in the output.
 
@@ -123,8 +143,7 @@ def build_maglim_map(
     ----------
     exptime_arr : np.ndarray
         Full-sky exposure-time map at the input nside (RING ordering).
-    reported_depth : float
-        Median 5-sigma reported depth (AB mag) for this tier.
+        Values are in seconds, used directly.
     nside_out : int
         Output nside for the maglim map.
 
@@ -134,18 +153,21 @@ def build_maglim_map(
         Maglim map at nside_out (RING ordering, float32).  Unobserved pixels
         are NaN.
     t_median : float
-        Median exposure time over valid footprint pixels (seconds).
+        Median exposure time over valid footprint pixels (seconds, diagnostic only).
     maglim_median : float
         Median maglim over valid output pixels.
     """
-    # Compute t_median over valid (finite, positive) pixels at full resolution
+    # Identify valid pixels at full resolution
     valid_mask = np.isfinite(exptime_arr) & (exptime_arr > 0)
     t_vals = exptime_arr[valid_mask]
+
+    # t_median is a diagnostic — does NOT enter the depth formula
     t_median = float(np.median(t_vals))
 
-    # Apply recipe at full resolution (before degrading) to preserve spatial structure
+    # Apply Option B recipe at full resolution (before degrading) to preserve
+    # spatial structure.  t_vals are already in seconds — use directly.
     maglim_full = np.full_like(exptime_arr, np.nan)
-    maglim_full[valid_mask] = reported_depth + 1.25 * np.log10(t_vals / t_median)
+    maglim_full[valid_mask] = DC2_REF_DEPTH + 1.25 * np.log10(t_vals / DC2_REF_EXPTIME)
 
     # Degrade to output nside using mean (ud_grade fills unseen with mean of valid
     # sub-pixels; pixels with no valid sub-pixels remain at the fill value).
@@ -219,16 +241,18 @@ def symlink_dc2_tables(tier: str) -> None:
 
 def main() -> None:
     print("=" * 70)
-    print("Building Roman HLWAS maglim maps")
+    print("Building Roman HLWAS maglim maps (Option B: DC2 truth-anchored)")
     print("=" * 70)
     print(f"Output nside: {NSIDE_OUT}")
     print(f"Aux data dir: {AUX_DATA_DIR}")
+    print(f"DC2_REF_DEPTH (read from DC2 F158 map):  {DC2_REF_DEPTH:.6f} AB")
+    print(f"DC2_REF_EXPTIME:                          {DC2_REF_EXPTIME:.1f} s")
+    print(f"Recipe: depth(pix) = {DC2_REF_DEPTH:.4f} + 1.25 * log10( t(pix) / {DC2_REF_EXPTIME:.1f} )")
     print()
 
     for tier, cfg in TIER_CONFIG.items():
         print(f"--- Tier: {tier} ---")
         hsp_path = os.path.join(AUX_DATA_DIR, cfg["hsp_file"])
-        reported_depth = cfg["reported_depth"]
 
         if not os.path.exists(hsp_path):
             raise FileNotFoundError(
@@ -243,15 +267,14 @@ def main() -> None:
         nside_in = hp.get_nside(exptime_arr)
         n_valid_in = int(np.sum(np.isfinite(exptime_arr) & (exptime_arr > 0)))
         print(f"  Input nside: {nside_in}, valid pixels: {n_valid_in:,}")
-        print(f"  Reported depth (reference): {reported_depth:.1f} AB")
-        print(f"  Depth note: {cfg['depth_note']}")
+        print(f"  Note: {cfg['note']}")
 
         maglim_out, t_median, maglim_median = build_maglim_map(
-            exptime_arr, reported_depth, nside_out=NSIDE_OUT
+            exptime_arr, nside_out=NSIDE_OUT
         )
 
         n_valid_out = int(np.sum(np.isfinite(maglim_out)))
-        print(f"  t_median over footprint: {t_median:.1f} s")
+        print(f"  t_median over footprint (diagnostic): {t_median:.1f} s")
         print(f"  Output nside: {NSIDE_OUT}, valid pixels: {n_valid_out:,}")
         print(f"  >>> Measured maglim_median (F158, {tier}): {maglim_median:.4f}")
 

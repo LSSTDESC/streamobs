@@ -79,7 +79,7 @@ Documentation Contents
 .. toctree::
    :maxdepth: 2
    :caption: User Guide
-   
+
    about
    installation
    quickstart
@@ -92,6 +92,7 @@ Documentation Contents
 
    examples/tutorial_generate_datamocks
    examples/tutorial_inject_stream
+   examples/multisurvey_cmd
 
 .. toctree::
    :maxdepth: 2
@@ -116,6 +117,7 @@ Documentation Contents
 
    column_convention
    data
+   selection_function_methodology
    roman_dc2
    roman_hlwas
    modules

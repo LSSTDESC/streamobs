@@ -15,7 +15,7 @@
 # Add more curve keys or rules as needed.  The generator skips unknown rule types
 # with a warning so old correction files stay compatible with new generator versions.
 
-# ── f158_sample  (roman_photoerror_f158.csv) ─────────────────────────────────────
+# ── F158_sample  (roman_photoerror_f158.csv) ─────────────────────────────────────
 # The truth-based scatter curve shows small-sample noise in the last few bins (fewer
 # than ~60 true stars per 0.12 mag bin at these depths).  The smooth monotonic
 # climb stalls at delta_mag ≈ −0.40 (log_mag_err = −0.8285, σ ≈ 0.148 mag) and
@@ -25,17 +25,17 @@
 # holds the error at the ~S/N=6 level rather than implying a spurious brightening
 # or deepening.  Adjust delta_mag_min or value after inspecting the regenerated
 # raw curve.
-f158_sample:
+F158_sample:
   clamp_faint:
     delta_mag_min: -0.28   # clamp from this bin onward (4 bins affected)
     value: -0.8285          # log10(sigma) at delta_mag = -0.40 (sigma ≈ 0.148 mag)
 
-# ── f158_catalog  (roman_photoerror_f158_catalog.csv) ────────────────────────────
+# ── F158_catalog  (roman_photoerror_f158_catalog.csv) ────────────────────────────
 # The median reported-magerr curve is smooth throughout; the only imperfection is a
 # 0.003 dex reversal in the very last bin (delta_mag = +0.08 vs the bin at −0.04).
 # We clamp at delta_mag ≥ 0.0 so the curve is monotonically non-decreasing past the
 # S/N=5 boundary.  The effect on any downstream S/N cut is negligible (<0.4%).
-f158_catalog:
+F158_catalog:
   clamp_faint:
     delta_mag_min: 0.0     # clamp from this bin onward (1 bin affected)
     value: -0.8960          # log10(sigma) at delta_mag = -0.04 (sigma ≈ 0.127 mag)

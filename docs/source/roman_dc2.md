@@ -1,57 +1,32 @@
 # Roman DC2 Survey Files
 
-This page describes the construction of the Roman High Latitude Wide Area Survey
-(HLWAS) selection function shipped with streamobs: the stellar
-detection-and-classification completeness, the photometric error model, and the
-magnitude-limit (depth) maps, together with the conventions that tie them together.
+This page is the **data sheet** for the `roman / dc2` release: the survey-specific
+numbers, products, and figures. For **how** these products are derived (the matched
+detection→truth catalog, the size-envelope classifier, the two-curve photo-error
+model + afterburner, the truth-anchored depth maps, the analysis selections), see the
+survey-agnostic :doc:`selection_function_methodology`.
 
 ## The simulated survey
 
 All quantities are measured from the Roman–Rubin DC2 synthetic survey of
 [Troxel et al. (2023)](https://arxiv.org/abs/2209.06829): ~20 deg² of image-level
-simulations of the Roman High Latitude Imaging Survey reference design at full
-depth, reaching a 5σ point-source depth of ~26.9 AB in the F106/F129/F158 bands and
-26.2 AB in F184. Stars are drawn from a Galfast model of the Galaxy and galaxies
-from the cosmoDC2 extragalactic catalog. Object detection and photometry are
-performed with SExtractor on a median F106+F129+F158+F184 coadd detection image
-(segmentation at 2.5σ with a minimum area of 5 pixels; deblending with
-`DEBLEND_NTHRESH=48`, `DEBLEND_MINCONT=0.05`), with forced photometry in each band,
-over 1039 coadd tiles. The recommended catalog-level selection of S/N > 5 in the
-detection image is applied on top of this — i.e. the detection limit is a two-stage
-selection, not a single 5σ threshold. Each tile provides a
-detection catalog and a truth index listing every simulated object in the tile with
-its position, four-band magnitudes, and a star/galaxy label.
+simulations of the Roman High Latitude Imaging Survey reference design at full depth,
+reaching a 5σ point-source depth of ~26.9 AB in the F106/F129/F158 bands and 26.2 AB
+in F184. Stars are drawn from a Galfast model of the Galaxy and galaxies from the
+cosmoDC2 extragalactic catalog. Object detection and photometry are performed with
+SExtractor on a median F106+F129+F158+F184 coadd detection image (segmentation at
+2.5σ, minimum area 5 pixels; deblending `DEBLEND_NTHRESH=48`,
+`DEBLEND_MINCONT=0.05`), with forced photometry per band over 1039 coadd tiles. The
+recommended catalog-level selection of S/N > 5 in the detection image is applied on
+top of this. Each tile provides a detection catalog and a truth index of every
+simulated object with its position, four-band magnitudes, and a star/galaxy label.
 
-## Matched detection–truth catalog
-
-We match every detection to a true source, following the recipe of Troxel et al.:
-a detection is associated with the truth objects within 1″, and where several
-qualify, with the closest in magnitude among the up to three nearest on the sky.
-The magnitude comparison uses the detection's `mag_auto` (measured on the
-median-combined detection image) against a truth broadband magnitude formed from
-the mean flux across the four truth bands, which is the natural truth-side analog
-of the detection image. The match is detection-centric: each detection is assigned
-to its single dominant (typically brightest) true source, which keeps the
-observed↔true magnitude relation clean in the presence of blending, at the cost of
-assigning a blend to only one of its members.
-
-Following the paper, three selections define the analysis sample:
-
-1. **`flags == 0`** — objects with any SExtractor flag are removed (32% of
-   detections, matching the fraction quoted in the paper). This is the selection an
-   observer would apply to obtain a *pure stellar sample* from the data: the flag is
-   the bitwise OR of the detection and per-band measurement flags, so the cut
-   removes blended objects and contaminated photometry. It is deliberately stricter
-   than parts of the paper's own analysis (which readmits flags 1–2), and it is the
-   origin of the ~0.90 bright-end completeness plateau below;
-2. **true S/N > 5 in F158**. Detection is treated as single-band F158, matching the
-   single-band F158 classifier below: a detection is kept when its forced F158 photometry
-   reaches a true S/N > 5. The reported `magerr_auto_H158` underestimates the real noise,
-   so the F158 error factor — measured against the truth in the same way as the per-band
-   factors below — of 1.59 sets the threshold at reported `magerr_auto_H158` < 0.137
-   (equivalently reported S/N > 8.0), keeping 69% of the catalog. Without this correction
-   the catalog admits detections whose true F158 significance is well below 5σ;
-3. **a positional match to a true object**, as defined above.
+The matched detection→truth catalog is built by
+`scripts/roman/build_roman_dc2_det_truth.py`; its construction (the per-tile 1″
+positional match, the `flags == 0` + true-S/N>5 selections) is described in the
+:doc:`selection_function_methodology`. The measured **F158 error inflation factor**
+is 1.59, so the true-S/N>5 cut is set at reported `magerr_auto_H158` < 0.137,
+keeping 69% of the catalog.
 
 ![True vs observed magnitude distributions per band](_static/roman_dc2/mag_distributions.png)
 
@@ -59,123 +34,100 @@ Following the paper, three selections define the analysis sample:
 observed `mag_auto` of all S/N>5 detections. The turnover at ~26–26.5 reflects the
 survey depth.*
 
-## Stellar completeness
+## Stellar completeness and classification
 
-The completeness table `roman_stellar_efficiency_cutf158.csv` gives, in bins of
-true F158 magnitude for true stars:
-
-- `detection_eff` — the fraction with a clean (`flags==0`), **true-S/N>5-in-F158**
-  detection matched to them. The denominator is the full truth-star catalog, including
-  undetected stars, so this is a true completeness;
-- `classifiction_eff` — among those detected stars, the fraction whose detection is
-  classified as a point source by the **F158 size envelope** described below;
-- `classification_detection_eff` — the product: the probability that a true star
-  appears in the catalog *and* is classified as a star.
-
-### Star classification: the F158 size envelope
-
-Rather than the scalar SExtractor `class_star > 0.5` cut, stars are classified with a
-single-band **size envelope**: a detection is a star when its windowed F158 semi-major
-axis `size_sb = √λ₁` (from the per-band second moments `x2/y2/xy_win_world_H158`) falls
-inside a magnitude-dependent band around the stellar locus,
-`lower(mag) < size_sb < upper(mag)`. The second moments are the only genuinely
-single-band morphology available — detection runs on the four-band median coadd, so
-`awin_world` and `class_star` themselves are combined-depth quantities — which keeps the
-classifier usable for a single-band injection. Working in log size, the band is symmetric
-about the per-magnitude stellar locus with a half-width `Δ(mag)` (in dex) that is tuned in
-each magnitude bin to a fixed **0.875 purity** target (the DES Y6 `0≤EXT_XGB≤1`
-"complete" stellar operating point of
-[Bechtol et al. 2025](https://arxiv.org/abs/2501.05739)), capped at the bright end by the
-stellar log-size scatter, and **frozen faintward of F158 = 24** at a fixed log offset — so
-the selection stays as complete as possible past the magnitude where size no longer
-separates stars from galaxies, rather than tightening into the noise. The upper boundary
-additionally flares toward bright magnitudes (reaching 0.15″ at F158 = 18) to keep bright,
-slightly-resolved stars whose measured size scatters above the locus.
-
-The envelope reaches the same purity/completeness as a `class_star` threshold that has
-been re-optimized per magnitude to the identical purity target, while needing only the
-single F158 band — and clearly beats the fixed `class_star > 0.5` cut, whose purity falls
-away at the faint end.
+`roman_stellar_efficiency_cutf158.csv` gives, in bins of true F158 magnitude for true
+stars: `detection_eff` (fraction with a clean true-S/N>5-in-F158 detection, against
+the full truth-star denominator), `classifiction_eff` (fraction of those detected
+stars classified as point sources by the F158 size envelope), and
+`classification_detection_eff` (their product). The classifier and the misspelled
+`classifiction_eff` header are explained in the methodology page.
 
 ![Star classifier comparison](_static/roman_dc2/classifier_comparison.png)
 
-*Left: the single-band F158 size–magnitude plane (greyscale: true galaxies; blue: true
-stars) with the size-envelope boundaries (blue), and the freeze magnitude marked. Right:
-classification efficiency (solid, left axis) and purity (dashed, right axis) against true
-F158 magnitude for the three classifiers — the F158 size envelope, the fixed
-`class_star > 0.5` cut, and a per-magnitude-optimized `class_star` threshold — all on the
-clean, true-S/N>5 sample.*
+*Left: the single-band F158 size–magnitude plane (greyscale: true galaxies; blue:
+true stars) with the size-envelope boundaries and the freeze magnitude marked. Right:
+classification efficiency (solid) and purity (dashed) vs true F158 magnitude for the
+F158 size envelope, the fixed `class_star > 0.5` cut, and a per-magnitude-optimized
+`class_star` threshold, on the clean true-S/N>5 sample.*
 
-The bright plateau sits at ~0.91 rather than unity, and is flat with magnitude — the
-signature of a selection cut, not a depth or noise effect (the F158 S/N > 5 gate costs
-nothing at the bright end, where stars trivially clear it). Decomposed against the truth,
-of the ~9% of bright (F158 18–21) true stars that are missing, **~7% are matched but
-carry SExtractor flags** — blended with a neighbour, sitting in a brighter object's wings,
-or saturation-flagged (the simulation saturates at ~1.1×10⁵ e⁻) — and are removed by the
-`flags==0` selection, while **~3% have no clean detection of their own** because the
-detection-centric match assigns their blend to the dominant (brighter) source. This is a
-property of the adopted catalog cuts, not of the instrument; readmitting flags 1–2 (as
-parts of the paper's own analysis do) would push the plateau toward unity at some cost in
-purity. Detection alone (true S/N > 5 in F158)
-crosses 50% at F158 ≈ 26.2, close to the F158 maglim (26.38) as expected for an F158
-S/N = 5 gate; the combined (detection × classification) efficiency crosses 50% earlier, at
-F158 ≈ 26.0 in the simulated (reference-depth) survey, with the single-band F158 size
-classification accounting for the additional faint-end loss.
-
-We characterize stellar contamination with the same machinery: for *true galaxies*
-that are detected and compact — measured semi-major axis `awin_world < 0.3″`, the
-truth catalog providing no intrinsic size — the fraction misclassified as stars is
-below 1% brighter than F158 ≈ 25.5 and rises to only ~5% toward the faint end (the
-F158 S/N > 5 detection keeps the faint detected-galaxy sample bright and compact).
+The bright plateau sits at ~0.91 (not unity) and is flat with magnitude — the
+signature of the `flags == 0` cut, not depth: of the ~9% of bright (F158 18–21) true
+stars missing, ~7% are matched but flag-rejected (blends/wings/saturation) and ~3%
+have no clean detection because the detection-centric match assigned their blend to a
+brighter source. Detection alone crosses 50% at F158 ≈ 26.2 (≈ the F158 maglim 26.38,
+as expected for an F158 S/N=5 gate); the combined efficiency crosses 50% at F158 ≈
+26.0 at reference depth.
 
 ![Star efficiency and galaxy misclassification vs true F158 mag](_static/roman_dc2/efficiency_f158.png)
 
 *Detection and classification efficiency for true stars, with the misclassification
-rate of detected compact (<0.3″) true galaxies on the same axes.*
+rate of detected compact (<0.3″) true galaxies on the same axes (below 1% brighter
+than F158 ≈ 25.5, rising to ~5% toward the faint end).*
+
+The standalone galaxy-misclassification product (`roman_galaxy_misclass_cutf158.csv`,
+columns `delta_mag, mag_F158, classifiction_eff`) and the merged LSST↔Roman table
+(`roman_lsst_matched.parquet`) are built by
+`scripts/roman/build_roman_galaxy_misclass.py`. The compact-galaxy size currently
+uses the interim measured-Roman proxy (`SIZE_SOURCE=measured_roman`); the cosmoDC2
+true-size upgrade is wired but pending the NERSC `size_true` fetch.
 
 ## Photometric errors
 
-Because the truth is available, the reported photometric uncertainties can be
-validated directly: for true stars, the scatter of observed-minus-true magnitude
-should match the reported `magerr_auto`. It does not. The truth-based scatter —
-measured as half the 16th-to-84th percentile span of (m_obs − m_true) in bins of
-magnitude — exceeds the reported errors by a flat factor of ~1.9–2.0 at all
-magnitudes and in all four bands, the signature of SExtractor underestimating the
-correlated noise of the resampled, median-combined coadds.
+The reported `magerr_auto` underestimates the truth-based scatter of (obs − true) by
+a flat factor ≈2 in all four bands (underestimated correlated coadd noise), so the
+error model is built from the truth-based scatter — see the methodology page.
 
 ![Reported errors vs truth-based scatter](_static/roman_dc2/error_validation.png)
 
-*Truth-based scatter (solid) and median reported `magerr_auto` (dashed) for true
-stars per band, with their ratio in the lower panel: a constant factor ≈2 in every
-band.*
-
-The photometric error model `roman_photoerror_f158.csv` is therefore built from the
-**truth-based scatter**, not the reported errors: it tabulates the binned log10
-scatter of (observed − true) F158 magnitude against `delta_mag = m_true − maglim`,
-where the magnitude limit is evaluated at each object's position from the nside=1024
-depth map described below. The sample is **true stars that pass the star
-classification** — the population an injected stream star follows. (An
-observationally star-classified sample would not do: it is galaxy-dominated
-faintward of F158 ≈ 25.5, where misclassified compact galaxies roughly double the
-apparent scatter.) Tabulating against `delta_mag` rather than magnitude makes the
-model portable across regions (and surveys) of different depth, under the assumption
-that the error profile depends on magnitude only through the local depth.
+*Truth-based scatter (solid) vs median reported `magerr_auto` (dashed) for true stars
+per band; ratio ≈2 in every band (lower panel).*
 
 ![F158 photometric errors of true stars](_static/roman_dc2/photoerror_f158_truestars.png)
 
-*Left: reported F158 `magerr_auto` against true F158 magnitude for star-classified
-true stars, with the binned median and 16/84% curves of the reported errors and, in
-orange, the truth-based scatter adopted for the error model. Right: the binned
-scatter of (true − observed) — robust (p84−p16)/2 and plain standard deviation —
-against the median reported error: the reported errors under-cover the real scatter
-by a factor ≈2 everywhere.*
+*F158 errors for star-classified true stars: reported `magerr_auto` (red), the
+truth-based scatter adopted for the model (orange), and the (true − obs) scatter
+under-covered by the reported errors by ≈2 (right).*
+
+The two runtime curves are `roman_photoerror_f158.csv` (sample / truth-based scatter,
+drives the noise draw) and `roman_photoerror_f158_catalog.csv` (median reported
+magerr, drives the S/N cut). The afterburner corrections live in the tracked
+`config/surveys/roman_photoerror_corrections.yaml`:
+
+- **F158_sample** (`clamp_faint`): floor `log_mag_err` to −0.8285 for
+  `delta_mag ≥ −0.28` (holds the truth-scatter at its last well-sampled value,
+  σ ≈ 0.148, rather than propagating small-sample noise).
+- **F158_catalog** (`clamp_faint`): floor `log_mag_err` to −0.8960 for
+  `delta_mag ≥ 0.0` (removes a 0.003-dex reversal in the last bin).
+
+## Survey depth
+
+Depth maps are per-band, nside=1024 (ring), via the desqr recipe, then
+**truth-anchored** (median shifted to the S/N=5 magnitude of the truth-based
+scatter). The anchored medians are **26.28 / 26.38 / 26.38 / 25.35** in
+F106/F129/F158/F184. These sit ~0.5–0.85 mag brighter than the official expected
+point-source depths (26.9/26.2) because they describe what the catalog's `mag_auto`
+delivers in true-magnitude space, not optimal-PSF photometry.
+
+![Magnitude-limit maps per band at nside=1024](_static/roman_dc2/maglim_maps.png)
+
+*Truth-anchored S/N=5 maglim maps over the DC2 footprint (RA 51–56, Dec −42 to −38).*
+
+The `delta_mag` axes of the completeness and photo-error tables are keyed to the
+median of the F158 map (26.38), so maps and tables share one convention. A map for a
+different footprint (e.g. the exposure-scaled HLWAS tiers, :doc:`roman_hlwas`) must be
+expressed in this same DC2-relative convention.
+
+![Roman F158 vs LSST r selection-function tables](_static/roman_dc2/lsst_comparison.png)
+
+*Roman F158 photo-error and combined-efficiency tables vs the LSST r-band tables in
+the shared `delta_mag = mag − maglim` convention.*
 
 ## Zeropoints and extinction coefficients
 
-For reference, the official Roman WFI AB-magnitude zeropoints (effective-area curves
-of 2024-03-01, from the
+Official Roman WFI AB zeropoints (effective-area curves of 2024-03-01, from the
 [Roman technical information repository](https://github.com/RomanSpaceTelescope/roman-technical-information/blob/main/roman_technical_information/data/WideFieldInstrument/Imaging/ZeroPoints/Roman_zeropoints_20240301.ecsv);
-the range reflects detector-to-detector variation across WFI01–WFI18):
+range = detector-to-detector variation WFI01–WFI18):
 
 | Filter | AB zeropoint | mean |
 |---|---|---|
@@ -183,24 +135,14 @@ the range reflects detector-to-detector variation across WFI01–WFI18):
 | F129 | 26.30 – 26.47 | 26.37 |
 | F158 | 26.34 – 26.46 | 26.39 |
 
-These agree with the single-value zeropoints of Roman-STScI-000825 Table 3
-(Z = 26.3546, 26.3531, 26.3760 with detector-to-detector σ_Z ≈ 0.033–0.038 for
-F106/F129/F158).
+These agree with Roman-STScI-000825 Table 3 (Z = 26.3546/26.3531/26.3760,
+σ_Z ≈ 0.033–0.038). The mock's photometry is calibrated greyly; measured offsets are
++0.11/+0.10/+0.12 mag in F106/F129/F158. F184 needs an underived chromatic correction
+and is excluded (it is also deep-tier-only in the community-defined HLWAS).
 
-The mock's photometry is calibrated greyly (a constant per-band offset from bright
-stars, mimicking standard-star calibration); the measured offsets are +0.11/+0.10/+0.12
-mag in F106/F129/F158. F184 additionally requires a chromatic (color-dependent)
-correction that the simulation team did not derive, which is one reason F184 is
-excluded from the survey configuration (it is also deep-tier-only in the
-community-defined HLWAS).
-
-The extinction coefficients adopted in the configuration are the official STScI
-values from
+Adopted extinction coefficients are the official STScI values from
 [Roman-STScI-000825](https://www.stsci.edu/files/live/sites/www/files/home/roman/documentation/technical-documentation/_documents/Roman-STScI%E2%80%93000825.pdf)
-(Sharma, Table 3), computed by integrating a solar-parameter Phoenix spectrum
-through the WFI bandpasses with synphot (the change in apparent magnitude per unit
-E(B−V); for the narrow Roman bands the dependence on stellar parameters is
-negligible):
+(Sharma, Table 3):
 
 | Filter | A_band / E(B−V) |
 |---|---|
@@ -208,156 +150,45 @@ negligible):
 | F129 | 0.8497 |
 | F158 | 0.6140 |
 
-The *shape* of this law is independently validated against the simulation: the truth
-catalog's per-band dereddening corrections have band ratios of 1.88 (F106/F158) and
-1.37 (F129/F158), matching the official ratios (1.87, 1.38) to ~1%. (The absolute
-amplitudes cannot be cross-checked from the mock — its dust application is known to
-be incorrect, with Milky Way extinction absent from the Roman images — but the
-absolute extinction in typical high-latitude fields is small in any case:
-A_F158 ≈ 0.01 mag at E(B−V) = 0.013.)
-
-## Survey depth
-
-Depth maps are computed per band on a HEALPix nside=1024 grid (ring ordering) with
-the method of [desqr](https://github.com/kadrlica/desqr/blob/main/desqr/depth.py):
-after removing the bright end, the global slope of log10(magerr) versus magnitude
-is estimated from nearest-neighbour pairs (the peak of a kernel density estimate of
-the pairwise ratio); each object's magnitude is then extrapolated along that slope
-to the magnitude at which it would reach the threshold signal-to-noise, and the
-magnitude limit of a pixel is the median over its objects. We define depth at
-**S/N = 5**, consistent with the catalog's detection threshold, and use the same
-sample as the photometric error model (true stars passing the star classification),
-so the maps and the error model describe one population.
-
-Because the desqr extrapolation runs on the *reported* errors, which underestimate
-the truth by a factor ≈2, the raw maps come out unphysically deep (medians
-27.6–27.9). The spatial structure is unaffected by a global error factor, so we keep
-it and **truth-anchor the absolute scale**: each band's map is shifted so that its
-median equals the magnitude at which the truth-based scatter of (observed − true)
-reaches S/N = 5. The anchored medians are **26.28 / 26.38 / 26.38 / 25.35** in
-F106/F129/F158/F184. With this anchoring the photometric error model evaluates to
-exactly σ = 0.217 (S/N = 5) at `delta_mag = 0` — "maglim" means S/N = 5 in the same
-truth-based sense everywhere. These depths sit ~0.5–0.85 mag brighter than the
-official expected point-source depths (26.9/26.2): the official values assume
-optimal PSF photometry, while these describe what the catalog's `mag_auto`
-photometry actually delivers in true-magnitude space.
-
-![Magnitude-limit maps per band at nside=1024](_static/roman_dc2/maglim_maps.png)
-
-*Truth-anchored S/N=5 magnitude-limit maps over the DC2 footprint (RA 51–56, Dec −42
-to −38). The spatial structure traces the simulated dither/pass pattern.*
-
-### Depth convention
-
-The maps are released truth-anchored
-(`roman_dc2_maglim_f*_nside1024.fits.gz`), and the `delta_mag` axes of the
-completeness and photometric-error tables are keyed to the median of the F158 map
-(26.38), so maps and tables share a single convention in which maglim is the
-true-scatter S/N=5 depth. A magnitude-limit map for a different footprint (e.g. an
-exposure-time-scaled map of the real HLWAS) must be expressed in this same
-convention — scaled relative to the DC2 depth — for the tables to apply. For
-reference, the
-[STScI community-defined HLWAS median 5σ point-source depths](https://roman-docs.stsci.edu/roman-community-defined-surveys/high-latitude-wide-area-survey)
-are:
-
-| Tier | Area | 5σ point-source total depth (AB) |
-|---|---|---|
-| Wide | ~2700 deg² | F158 26.2 |
-| Medium | ~2400 deg² | F106 26.5, F129 26.4, F158 26.4 |
-| Deep | ~19.2 deg² | F106 27.7, F129 27.6, F158 27.5, F184 27.0, F213 25.9 |
-
-Substituting a shallower (e.g. wide-tier) map translates the completeness and error
-curves to the corresponding depths, under the assumption that the selection function
-depends on magnitude only through `mag − maglim`.
-
-![Roman F158 vs LSST r selection-function tables](_static/roman_dc2/lsst_comparison.png)
-
-*The Roman F158 photometric-error and combined-efficiency tables compared with the
-LSST r-band tables in the shared `delta_mag = mag − maglim` convention.*
+The *shape* is validated against the mock: the truth dereddening band ratios 1.88
+(F106/F158) and 1.37 (F129/F158) match the official ratios (1.87, 1.38) to ~1%.
+(Absolute amplitudes can't be cross-checked — the mock omits MW extinction — but
+A_F158 ≈ 0.01 mag at E(B−V) = 0.013 in typical high-latitude fields.)
 
 ## Using the survey in streamobs
 
-The survey is configured by `config/surveys/roman_dc2.yaml`, with data files in
-`data/surveys/roman_dc2/`:
+Configured by `config/surveys/roman_dc2.yaml`, data in `data/surveys/roman_dc2/`:
 
 ```python
 from streamobs.surveys import SurveyFactory
 survey = SurveyFactory.create_survey("roman", release="dc2")
 
-maglim = survey.get_maglim("f158", pixel=pix)
-completeness = survey.get_completeness("f158", mag, maglim)
-photo_error = survey.get_photo_error("f158", mag, maglim)
+maglim = survey.get_maglim("F158", pixel=pix)
+completeness = survey.get_completeness("F158", mag, maglim)
+photo_error = survey.get_photo_error("F158", mag, maglim)
 ```
 
-All tables, maps, and the figures on this page are regenerated by
-`scripts/roman/create_streamobs_files_hlwas.py` (the matched catalog itself by
-`scripts/roman/build_roman_dc2_det_truth.py`).
+All tables, maps, and figures are regenerated by
+`scripts/roman/create_streamobs_files_hlwas.py` (the matched catalog by
+`scripts/roman/build_roman_dc2_det_truth.py`; the galaxy-misclassification product by
+`scripts/roman/build_roman_galaxy_misclass.py`; the shared classifier in
+`scripts/roman/roman_star_classifier.py`).
 
-A `roman / hlwas` release (`config/surveys/roman_hlwas.yaml`) is reserved as a
-placeholder for the real HLWAS footprint: it will reuse these DC2-derived tables
-with an exposure-time-scaled magnitude-limit map expressed in the same
-truth-anchored convention.
-
-## Photometric-error afterburner
-
-The measured photo-error curves are derived from binned statistics (typically 20–200
-true stars per 0.12-mag bin near the faint end), so the last few bins carry
-small-sample scatter that can produce reversals or spikes in the monotonically
-increasing profile. To keep the runtime curves smooth and physically consistent
-without losing the measurement provenance, the generator applies a lightweight
-**afterburner** step:
-
-1. **Raw curves** — the unmodified binned outputs — are written to
-   `data/surveys/roman_dc2/roman_photoerror_f158_raw.csv` and
-   `roman_photoerror_f158_catalog_raw.csv`. These files are regenerated on every
-   run and stay alongside the cleaned files as a provenance record.
-2. **Corrections** are loaded from
-   `config/surveys/roman_photoerror_corrections.yaml`, a *tracked* file that lives
-   under version control so every manual edit is attributed and reversible. The
-   schema supports per-curve rules; the only rule currently implemented is
-   `clamp_faint`, which floors `log_mag_err` to a fixed value for all bins at or
-   beyond a chosen `delta_mag_min`.
-3. **Cleaned curves** — raw with corrections applied — are written to the runtime
-   filenames `roman_photoerror_f158.csv` and `roman_photoerror_f158_catalog.csv`
-   that `config/surveys/roman_dc2.yaml` points at.
-
-The default corrections applied are:
-
-- **f158_sample** (`clamp_faint`): the truth-based scatter stalls at
-  `delta_mag ≈ −0.40` (log_mag_err = −0.8285, σ ≈ 0.148 mag) and then
-  wobbles in the last four bins due to small-sample noise (fewer than ~60 true
-  stars per bin). The floor clamps all bins with `delta_mag ≥ −0.28` to
-  log_mag_err = −0.8285, holding the error at the last well-sampled value rather
-  than propagating noise toward fainter magnitudes.
-- **f158_catalog** (`clamp_faint`): the median reported-magerr curve is smooth
-  throughout; a 0.003 dex reversal appears in the very last bin
-  (`delta_mag = +0.08`). The floor clamps bins with `delta_mag ≥ 0.0` to
-  log_mag_err = −0.8960 (the value at `delta_mag = −0.04`), making the curve
-  monotonically non-decreasing past the S/N = 5 boundary.
-
-To adjust or extend the corrections, edit
-`config/surveys/roman_photoerror_corrections.yaml` and re-run the generator. The
-raw files will be overwritten with the new measurement; the cleaned files will
-reflect the updated rules.
+The real-footprint HLWAS tiers reuse these DC2-derived tables with exposure-scaled
+F158 maglim maps — see :doc:`roman_hlwas`.
 
 ## Caveats
 
-- The simulation is the *reference* HLIS design (deeper than the current
-  community-defined wide tier); wide-tier behaviour is obtained by translation in
-  `delta_mag`, not by an independent simulation.
-- The detection-centric match assigns a blend to its dominant source, so the
-  detection efficiency is slightly conservative for stars blended with brighter
-  neighbours.
-- Saturation is modeled in the simulation (pixels clip at ~1.1×10⁵ e⁻) and its
-  effects appear brighter than mag ≈ 17 — the dip in the classification efficiency
-  near mag 16.6 is its signature — and stars brighter than 15 are not chromatically
-  rendered. The configuration therefore sets `saturation: 17.0`; photometry of
-  brighter stars should not be trusted.
-- `mag_auto` carries a systematic offset with respect to the truth (≈ +0.1–0.2 mag
-  in F106/F129/F158 and ≈ +0.6 mag in F184 at the bright end, growing toward faint
-  magnitudes from aperture losses). The error model captures the scatter about this
+- The simulation is the *reference* HLIS design (deeper than the community-defined
+  wide tier); wide-tier behaviour is obtained by translation in `delta_mag`.
+- The detection-centric match assigns a blend to its dominant source, so detection
+  efficiency is slightly conservative for stars blended with brighter neighbours.
+- Saturation (pixels clip at ~1.1×10⁵ e⁻) appears brighter than mag ≈ 17 (the
+  classification dip near 16.6 is its signature); stars brighter than 15 are not
+  chromatically rendered. The config sets `saturation: 17.0`.
+- `mag_auto` carries a systematic offset vs truth (≈ +0.1–0.2 in F106/F129/F158,
+  ≈ +0.6 in F184 at the bright end). The error model captures the scatter about this
   offset, not the offset itself.
-- The detection catalogs are detector-optimistic: the coadds use the "simple"
-  detector model (read noise, dark current, saturation only — no cosmic rays,
-  persistence, interpixel capacitance, or hot pixels) and bright stars are not
-  masked (12 diffraction spikes remain in the images).
+- The detection catalogs are detector-optimistic (the "simple" detector model — read
+  noise, dark current, saturation only; no cosmic rays, persistence, IPC, hot pixels;
+  bright stars unmasked).

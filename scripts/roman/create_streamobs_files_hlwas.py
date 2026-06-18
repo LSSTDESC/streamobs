@@ -21,7 +21,8 @@ Outputs: data/surveys/roman_dc2/{roman_photoerror_f158.csv,
 # Troxel et al. 2023, [arXiv:2209.06829](https://arxiv.org/abs/2209.06829)).
 # 
 # **Note on band naming:** the mock labels the Roman bands `Y106, J129, H158, F184`;
-# `H158` is the Roman **F158** filter. Outputs are named `f158`.
+# `H158` is the Roman **F158** filter. Streamobs band keys are uppercase (`F158`);
+# output filenames use lowercase (`f158`) to stay consistent with the data files.
 # 
 # Products (mirroring the LSST files in `data/others/`):
 # 1. **Photometric error vs true mag** in F158 for true stars passing the star classification.
@@ -35,7 +36,7 @@ Outputs: data/surveys/roman_dc2/{roman_photoerror_f158.csv,
 # In[1]:
 
 
-import gzip, io, glob, os
+import gzip, io, glob, os, sys
 import multiprocessing as mp
 from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor
@@ -50,12 +51,15 @@ from astropy.io import fits
 from astropy.table import Table
 from scipy.spatial import cKDTree
 from scipy.stats import gaussian_kde
-from scipy.interpolate import PchipInterpolator
 
 try:                                  # running as a script (scripts/roman/)
     REPO = Path(__file__).resolve().parent.parent.parent
+    _SCRIPT_DIR = Path(__file__).resolve().parent
 except NameError:                     # running as a notebook (notebooks/)
     REPO = Path.cwd().resolve().parent if Path.cwd().name == "notebooks" else Path.cwd().resolve()
+    _SCRIPT_DIR = REPO / "scripts" / "roman"
+if str(_SCRIPT_DIR) not in sys.path:  # import the shared roman_star_classifier module
+    sys.path.insert(0, str(_SCRIPT_DIR))
 DC2_DIR = REPO / "data/surveys/roman_dc2"
 OUT_DIR = DC2_DIR   # products live with the DC2 data (survey release "dc2")
 CAT_PATH = DC2_DIR / "roman_dc2_det_truth.parquet"
@@ -129,92 +133,22 @@ print(f"{len(cat):,} detections, {int(cat.matched.sum()):,} matched "
 # 0.15″ at mag 18) to retain bright, slightly-resolved stars whose measured size
 # scatters above the locus.
 
-ENV_PURITY = 0.875                 # COMPLETE target (DES Y6 0<=EXT_XGB<=1)
-ENV_N_SIG = 4.0                    # bright-end cap: half-width <= N_SIG * stellar log-size scatter
-ENV_MAX_D = 0.6                    # absolute ceiling on the half-width (dex), safety only
-ENV_FREEZE = 24.0                  # hold Delta constant (fixed dex offset) faintward of this mag
-ENV_UP_KNEE, ENV_UP_BRIGHT, ENV_UP_BRIGHT_VAL = 23.0, 18.0, 0.15   # upper-bound bright flare (arcsec @ mag)
-SN_GATE = 1.0857 / 5.0             # magerr at S/N=5; gate the envelope fit to S/N>5 detections
+# The classifier itself lives in the shared module scripts/roman/roman_star_classifier.py
+# (the SINGLE source of truth, also imported by build_roman_galaxy_misclass.py so the two
+# cannot drift). We fit it on the matched det->truth catalog and pull the artifacts the
+# products + figures need (the size, the boundaries, the half-width Delta, the stellar locus).
+import roman_star_classifier as rsc
+from roman_star_classifier import (
+    ENV_PURITY,                                                # purity target (figure + class_star-opt)
+    ENV_FREEZE, ENV_UP_KNEE, ENV_UP_BRIGHT, ENV_UP_BRIGHT_VAL,  # plot annotations
+)
 
-def _size_sb(df):
-    """Single-band F158 semi-major axis (arcsec) from windowed second moments."""
-    x2 = df["x2win_world_H158"].values; y2 = df["y2win_world_H158"].values; xy = df["xywin_world_H158"].values
-    half = 0.5 * (x2 + y2); root = np.sqrt(np.clip((0.5 * (x2 - y2)) ** 2 + xy ** 2, 0, None))
-    return np.sqrt(np.clip(half + root, 0, None)) * 3600.0
-
+_size_sb = rsc.size_sb
 cat["size_sb"] = _size_sb(cat)
-_env_base = (cat.matched & (cat["flags"] < FLAG_CUT) & np.isfinite(cat["size_sb"]) & (cat["size_sb"] > 0)
-             & np.isfinite(cat[f"mag_auto_{BAND}"]) & (cat[f"magerr_auto_{BAND}"] < SN_GATE))
-
-# stellar locus L0(mag) and robust log-size scatter sigma_L(mag) from clean true stars (S/N>5)
-_fit = cat.loc[_env_base & (cat.truth_gal_star == 1)]
-_Ls = np.log10(_fit["size_sb"].values); _ms = _fit[f"mag_auto_{BAND}"].values
-_lb = np.arange(17, 27.51, 0.25); _lm = 0.5 * (_lb[1:] + _lb[:-1])
-_mu = np.full(_lm.size, np.nan); _sg = np.full(_lm.size, np.nan)
-_sbin = np.digitize(_ms, _lb) - 1
-for i in range(_lm.size):
-    v = _Ls[_sbin == i]; v = v[np.isfinite(v)]
-    if v.size >= 30:
-        _mu[i] = np.median(v); _sg[i] = 1.4826 * np.median(np.abs(v - _mu[i])) + 1e-9
-_sm = lambda a: pd.Series(a).rolling(3, center=True, min_periods=1).median().ffill().bfill().to_numpy()
-_mu, _sg = _sm(_mu), _sm(_sg)
-L0_at = lambda m: np.interp(m, _lm, _mu)
-sigL_at = lambda m: np.interp(m, _lm, _sg)
-locus_lin = lambda m: 10.0 ** L0_at(m)
-
-# per-mag purity-target half-width Delta(mag): single-peaked, PCHIP-splined, frozen >24
-_eb = np.arange(18, 28.01, 0.25); _emid = 0.5 * (_eb[1:] + _eb[:-1]); _ebi = lambda m: np.digitize(m, _eb) - 1
-_fit_all = cat.loc[_env_base]
-_m_all = _fit_all[f"mag_auto_{BAND}"].values
-_d_all = np.abs(np.log10(_fit_all["size_sb"].values) - L0_at(_m_all))
-_lab_all = (_fit_all["truth_gal_star"].values == 1)
-def _fit_delta(X, keep=0.02):
-    mb = _ebi(_m_all); Dc = np.full(_emid.size, np.nan)
-    for i in range(_emid.size):
-        mm = mb == i; ns = _lab_all[mm].sum()
-        if mm.sum() < 200 or ns < 10:
-            continue
-        ds = _d_all[mm]; ls = _lab_all[mm]
-        qs = np.unique(np.nanquantile(ds, np.linspace(0, 1, 200))); best = qs[0]
-        for t in qs[::-1]:                                       # loose (wide) -> tight
-            s = ds < t; n = s.sum()
-            if n == 0:
-                continue
-            if (s & ls).sum() / n >= X and (s & ls).sum() / ns >= keep:
-                best = t; break
-        Dc[i] = best
-    valid = np.isfinite(Dc); xb = _emid[valid]
-    cap = np.minimum(ENV_N_SIG * sigL_at(xb), ENV_MAX_D)         # bright end tracks stellar scatter
-    Db = np.minimum(np.clip(Dc[valid], 0, None), cap)
-    Db = pd.Series(Db).rolling(5, center=True, min_periods=1).median().to_numpy().copy()
-    pk = int(np.argmax(Db))                                      # single-peaked: rise then only tighten
-    Db[:pk + 1] = np.maximum.accumulate(Db[:pk + 1]); Db[pk:] = np.minimum.accumulate(Db[pk:])
-    pch = PchipInterpolator(xb, Db); hi = min(ENV_FREEZE, xb[-1])
-    return (lambda m: pch(np.clip(np.asarray(m, float), xb[0], hi))), xb, Db
-
-Dfun, ENV_XB, ENV_DB = _fit_delta(ENV_PURITY)
-
-def env_upper_size(m):
-    """Upper size boundary (arcsec): symmetric band, flaring blueward of the knee."""
-    m = np.asarray(m, float)
-    base = locus_lin(m) * 10.0 ** Dfun(m)
-    u_knee = float(locus_lin(ENV_UP_KNEE) * 10.0 ** float(Dfun(ENV_UP_KNEE)))
-    frac = np.clip((ENV_UP_KNEE - m) / (ENV_UP_KNEE - ENV_UP_BRIGHT), 0.0, 1.0)
-    ramp = u_knee + (ENV_UP_BRIGHT_VAL - u_knee) * frac
-    return np.where(m < ENV_UP_KNEE, ramp, base)
-
-def env_lower_size(m):
-    """Lower size boundary (arcsec): tight, symmetric in dex about the locus."""
-    m = np.asarray(m, float)
-    return locus_lin(m) * 10.0 ** (-Dfun(m))
-
-def classify_star(df):
-    """Envelope star classifier: True where lower(mag) < size_sb < upper(mag)."""
-    sz = df["size_sb"].values if "size_sb" in getattr(df, "columns", []) else _size_sb(df)
-    m = df[f"mag_auto_{BAND}"].values
-    with np.errstate(invalid="ignore"):
-        ok = np.isfinite(sz) & (sz > 0) & np.isfinite(m)
-        return ok & (sz > env_lower_size(m)) & (sz < env_upper_size(m))
+_clf = rsc.build_env_classifier(cat)
+classify_star = _clf.classify
+env_upper_size, env_lower_size, Dfun = _clf.env_upper_size, _clf.env_lower_size, _clf.Dfun
+_lm, _mu = _clf.locus_mag, _clf.locus_logsize   # stellar-locus curve, for the figure
 
 cat["env_star"] = classify_star(cat)
 print(f"size-envelope classifier: Δ@21={float(Dfun(21)):.3f} Δ@24={float(Dfun(24)):.3f} dex (frozen), "
@@ -966,8 +900,8 @@ def _apply_photoerr_corrections(tab, curve_id, corrections_path):
     return out
 
 print("Applying afterburner corrections ...")
-photoerr_clean = _apply_photoerr_corrections(photoerr_tab, "f158_sample", CORRECTIONS_FILE)
-catalog_clean = _apply_photoerr_corrections(catalog_tab, "f158_catalog", CORRECTIONS_FILE)
+photoerr_clean = _apply_photoerr_corrections(photoerr_tab, "F158_sample", CORRECTIONS_FILE)
+catalog_clean = _apply_photoerr_corrections(catalog_tab, "F158_catalog", CORRECTIONS_FILE)
 
 # Before/after comparison at the faint end (delta_mag >= -0.52)
 print("\nBefore/after comparison — faint end (delta_mag >= -0.52):")
@@ -1031,10 +965,10 @@ plt.show()
 # ## Next steps
 # 
 # - Wire these into a `config/surveys/roman_hlwas.yaml` (mirroring `lsst_yr5.yaml`):
-#   `completeness: roman_stellar_efficiency_cutf158.csv`, `completeness_band: f158`,
+#   `completeness: roman_stellar_efficiency_cutf158.csv`, `completeness_band: F158`,
 #   `log_photo_error_catalog: roman_photoerror_f158_catalog.csv` (reported magerr),
 #   `log_photo_error_sample: roman_photoerror_f158.csv` (truth-based scatter),
-#   `maglim_map_f158: roman_dc2_maglim_f158_nside1024.fits.gz`
+#   `maglim_map_F158: roman_dc2_maglim_f158_nside1024.fits.gz`
 #   (or, for the full HLWAS footprint, a maglim map scaled from the exposure-time map —
 #   see `roman_hlwas_exptime_map.ipynb`; the DC2 map above characterizes the mock's depth).
 # - Caveats: the det→truth (detection-centric) match assigns a blended star to a single
