@@ -18,7 +18,12 @@ survey_files:
     # tables are keyed to this map's median, so any replacement map (e.g. an
     # exposure-time-scaled HLWAS map) must be expressed in the same convention,
     # i.e. scaled relative to the DC2 depth.
+    maglim_map_F106: roman_dc2_maglim_f106_nside1024.fits.gz
+    maglim_map_F129: roman_dc2_maglim_f129_nside1024.fits.gz
     maglim_map_F158: roman_dc2_maglim_f158_nside1024.fits.gz
+    # NOTE: the completeness + photo-error tables below are F158-derived and applied
+    # to ALL bands band-independently (via delta_mag = maglim_band - true_mag), per
+    # the streamobs convention (e.g. LSST applies its r-band curves to g as well).
 
     # Band-independent maps
     ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits

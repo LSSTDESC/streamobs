@@ -37,19 +37,31 @@ _CONFIG_DIR = os.path.join(
 )
 
 
-def _hlwas_entry(tier, release):
+def _hlwas_entry(tier, release, bands=None):
     """Return a pytest.param (or plain dict) for an HLWAS tier.
 
     Skipped at fixture-load time if the tier's config YAML is absent.
     When the config exists, carries the same Roman-specific threshold overrides
     as the roman_dc2 entry (see comment there for the rationale).
+
+    Parameters
+    ----------
+    tier : str
+        Tier label (used only in the skip-reason message).
+    release : str
+        Release string passed to Survey.load() (e.g. 'hlwas_wide').
+    bands : list[str] or None
+        Expected bands and maglim bands.  Defaults to ['F158'] for wide/medium;
+        pass ['F106', 'F158'] for hlwas_all which has both maps.
     """
+    if bands is None:
+        bands = ["F158"]
     cfg_path = os.path.join(_CONFIG_DIR, f"roman_{release}.yaml")
     entry = {
         "survey": "roman",
         "release": release,
-        "expected_bands": ["F158"],
-        "expected_maglim": ["F158"],
+        "expected_bands": bands,
+        "expected_maglim": bands,
         # Roman-specific threshold relaxations (same rationale as roman_dc2)
         "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
@@ -121,7 +133,7 @@ SURVEY_REGISTRY = [
         "survey": "roman",
         "release": "dc2",
         "expected_bands": ["F106", "F129", "F158"],
-        "expected_maglim": ["F158"],
+        "expected_maglim": ["F106", "F129", "F158"],
         "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
@@ -130,7 +142,7 @@ SURVEY_REGISTRY = [
     # Roman HLWAS tiers — skipped until per-tier config files are present
     _hlwas_entry("hlwas_wide", "hlwas_wide"),
     _hlwas_entry("hlwas_medium", "hlwas_medium"),
-    _hlwas_entry("hlwas_all", "hlwas_all"),
+    _hlwas_entry("hlwas_all", "hlwas_all", bands=["F106", "F158"]),
 ]
 
 
