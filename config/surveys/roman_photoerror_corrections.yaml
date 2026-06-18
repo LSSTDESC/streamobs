@@ -1,0 +1,41 @@
+# Photometric-error afterburner corrections for the Roman DC2 photo-error curves.
+#
+# After the generator (scripts/roman/create_streamobs_files_hlwas.py) computes the
+# raw measured curves it applies these rules, then writes the cleaned results to the
+# runtime filenames that config/surveys/roman_dc2.yaml points at.  The raw curves
+# are preserved as *_raw.csv in the same directory for provenance.
+#
+# Schema: one key per curve (must match a curve_id used in the generator).  Each key
+# holds a mapping of correction rules applied in declaration order.
+#
+#   clamp_faint:
+#     delta_mag_min: <D>   # apply to rows where delta_mag >= D
+#     value:         <V>   # set log_mag_err = V for those rows (floor)
+#
+# Add more curve keys or rules as needed.  The generator skips unknown rule types
+# with a warning so old correction files stay compatible with new generator versions.
+
+# ── f158_sample  (roman_photoerror_f158.csv) ─────────────────────────────────────
+# The truth-based scatter curve shows small-sample noise in the last few bins (fewer
+# than ~60 true stars per 0.12 mag bin at these depths).  The smooth monotonic
+# climb stalls at delta_mag ≈ −0.40 (log_mag_err = −0.8285, σ ≈ 0.148 mag) and
+# then wobbles: the bin at −0.16 spikes up to −0.7796 while the next bin at −0.04
+# falls back to −0.9047.  We floor these noisy faint bins at the last well-sampled
+# value (delta_mag = −0.40, log_mag_err = −0.8285).  This is conservative: it
+# holds the error at the ~S/N=6 level rather than implying a spurious brightening
+# or deepening.  Adjust delta_mag_min or value after inspecting the regenerated
+# raw curve.
+f158_sample:
+  clamp_faint:
+    delta_mag_min: -0.28   # clamp from this bin onward (4 bins affected)
+    value: -0.8285          # log10(sigma) at delta_mag = -0.40 (sigma ≈ 0.148 mag)
+
+# ── f158_catalog  (roman_photoerror_f158_catalog.csv) ────────────────────────────
+# The median reported-magerr curve is smooth throughout; the only imperfection is a
+# 0.003 dex reversal in the very last bin (delta_mag = +0.08 vs the bin at −0.04).
+# We clamp at delta_mag ≥ 0.0 so the curve is monotonically non-decreasing past the
+# S/N=5 boundary.  The effect on any downstream S/N cut is negligible (<0.4%).
+f158_catalog:
+  clamp_faint:
+    delta_mag_min: 0.0     # clamp from this bin onward (1 bin affected)
+    value: -0.8960          # log10(sigma) at delta_mag = -0.04 (sigma ≈ 0.127 mag)
