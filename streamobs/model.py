@@ -830,9 +830,7 @@ class IsochroneModel(ConfigurableModel):
             return abs_mag
         return abs_mag + np.asarray(distance_modulus, dtype=float)
 
-    def sample(
-        self, nstars, distance_modulus, rng=None, masses=None, **kwargs
-    ):
+    def sample(self, nstars, distance_modulus, rng=None, masses=None, **kwargs):
         """Sample apparent magnitudes for every ``(survey, band)``.
 
         A single shared set of initial masses is interpolated into each survey's

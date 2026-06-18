@@ -1,9 +1,11 @@
 import numpy as np
 
-from streamobs.functions import (CubicSplineInterpolation,
-                                 FileCubicSplineInterpolation,
-                                 FileLinearDensityCubicSplineInterpolation,
-                                 LinearDensityCubicSplineInterpolation)
+from streamobs.functions import (
+    CubicSplineInterpolation,
+    FileCubicSplineInterpolation,
+    FileLinearDensityCubicSplineInterpolation,
+    LinearDensityCubicSplineInterpolation,
+)
 
 SPREAD_NODES = np.array([-13.0, -7.875, -2.75, 2.375, 7.5])
 

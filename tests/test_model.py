@@ -332,9 +332,7 @@ class TestIsochroneMasses:
     G = "lsst_g_true"
     R = "lsst_r_true"
 
-    def test_sample_returns_and_reuses_masses(
-        self, stream_config_with_distance
-    ):
+    def test_sample_returns_and_reuses_masses(self, stream_config_with_distance):
         """Replaying the returned masses reproduces identical magnitudes."""
         iso = StreamModel(stream_config_with_distance).isochrone
         mags1, masses = iso.sample(50, 16.8, rng=np.random.default_rng(0))
@@ -345,9 +343,7 @@ class TestIsochroneMasses:
         for key in mags1:
             assert np.allclose(mags1[key], mags2[key]), f"{key} not reproduced"
 
-    def test_sample_masses_length_validated(
-        self, stream_config_with_distance
-    ):
+    def test_sample_masses_length_validated(self, stream_config_with_distance):
         iso = StreamModel(stream_config_with_distance).isochrone
         with pytest.raises(ValueError):
             iso.sample(50, 16.8, masses=np.ones(49))

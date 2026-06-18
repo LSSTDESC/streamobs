@@ -2,6 +2,7 @@
 """
 More modular stream generation example.
 """
+
 import copy
 import os
 from importlib import reload
