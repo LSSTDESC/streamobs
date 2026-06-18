@@ -140,9 +140,12 @@ def _make_roman_dc2_catalog(n=20, rng=None):
     for a small-footprint survey.
 
     Band names are uppercase (F158, F106) matching the survey config.
-    Column names follow the namespace convention: roman_dc2_<band>_true.
+    True-column names use the name-only convention: roman_<band>_true
+    (true mags are release-independent; ``true_col("F158","roman_dc2")`` →
+    ``roman_F158_true``).
     """
     import pandas as pd
+    from streamobs.columns import true_col
 
     if rng is None:
         rng = np.random.default_rng(42)
@@ -150,7 +153,7 @@ def _make_roman_dc2_catalog(n=20, rng=None):
         {
             "ra": rng.uniform(51.1, 51.9, n),
             "dec": rng.uniform(-38.3, -37.7, n),
-            "roman_dc2_F158_true": rng.uniform(22.0, 25.5, n),
+            true_col("F158", "roman_dc2"): rng.uniform(22.0, 25.5, n),
         }
     )
 
@@ -179,13 +182,14 @@ class TestRomanDC2Injection:
             verbose=False,
         )
 
+        from streamobs.columns import true_col, obs_col, err_col, flag_col
         expected_cols = [
             "ra",
             "dec",
-            "roman_dc2_F158_true",
-            "roman_dc2_F158_obs",
-            "roman_dc2_F158_err",
-            "roman_dc2_flag_observed",
+            true_col("F158", "roman_dc2"),      # roman_F158_true  (name-only)
+            obs_col("F158", "roman_dc2"),        # roman_dc2_F158_obs (full namespace)
+            err_col("F158", "roman_dc2"),        # roman_dc2_F158_err (full namespace)
+            flag_col("roman_dc2"),               # roman_dc2_flag_observed
         ]
         missing = [c for c in expected_cols if c not in out.columns]
         assert not missing, f"Missing columns after inject: {missing}"
@@ -193,11 +197,13 @@ class TestRomanDC2Injection:
     @_skip_no_data
     def test_true_mags_preserved_after_inject(self, roman_dc2_injector):
         """True magnitudes supplied in the input must survive inject() unchanged."""
+        from streamobs.columns import true_col
         df = _make_roman_dc2_catalog(n=15)
-        true_in = df["roman_dc2_F158_true"].values.copy()
+        true_colname = true_col("F158", "roman_dc2")   # roman_F158_true
+        true_in = df[true_colname].values.copy()
         out = roman_dc2_injector.inject(df, bands=["F158"], verbose=False)
-        assert np.allclose(out["roman_dc2_F158_true"].values, true_in), (
-            "roman_dc2_F158_true changed during inject()"
+        assert np.allclose(out[true_colname].values, true_in), (
+            f"{true_colname} changed during inject()"
         )
 
     @_skip_no_data
@@ -221,55 +227,78 @@ class TestRomanDC2Injection:
         detected = out[observed == 1]
         if len(detected) == 0:
             pytest.skip("No detected stars in this footprint sample — increase n")
-        diffs = (detected["roman_dc2_F158_obs"] - detected["roman_dc2_F158_true"]).abs()
+        from streamobs.columns import true_col, obs_col
+        diffs = (detected[obs_col("F158", "roman_dc2")] - detected[true_col("F158", "roman_dc2")]).abs()
         assert diffs.mean() > 0, "Observed mags identical to true — noise not applied"
 
 
 # ---------------------------------------------------------------------------
-# Round-trip regression: complete_data → inject column-case consistency
+# Convention test: true = name-only, obs/flag = full namespace
 # ---------------------------------------------------------------------------
 
 
 @pytest.mark.surveys
-class TestRomanDC2RoundTripColumnCase:
-    """Regression: complete_data and inject must produce matching-case F158 columns.
+class TestRomanDC2TrueNameObsNamespaceConvention:
+    """Verify the true=name-only / obs=full-namespace column convention after inject.
 
-    Before the band-name normalisation (f158→F158 in config + inject args),
-    complete_data emitted roman_dc2_F158_true (uppercase, from ugali) while inject
-    emitted roman_dc2_f158_obs (lowercase, from the config key).  After the fix both
-    should be uppercase: roman_dc2_F158_true AND roman_dc2_F158_obs must coexist.
+    The convention (streamobs.columns):
+      - true_col("F158", "roman_dc2") → roman_F158_true   (survey *name* only;
+        true mags are release-independent)
+      - obs_col("F158",  "roman_dc2") → roman_dc2_F158_obs (full namespace)
+      - flag_col("roman_dc2")         → roman_dc2_flag_observed
+
+    After inject():
+      - roman_F158_true   MUST be present (name-only, uppercase band)
+      - roman_dc2_F158_obs MUST be present (full namespace, uppercase band)
+      - roman_dc2_F158_true MUST be absent (wrong — release on true col)
+      - roman_f158_obs      MUST be absent (wrong — lowercase band)
+      - roman_f158_true     MUST be absent (wrong — lowercase band)
 
     This test is skipped if roman_dc2 data files are absent.
     """
 
     @_skip_no_data
-    def test_true_and_obs_columns_have_matching_case(self, roman_dc2_injector):
-        """complete_data→inject round-trip: F158 true and obs columns both uppercase."""
+    def test_true_name_only_obs_namespace_convention(self, roman_dc2_injector):
+        """inject() must emit roman_F158_true (name-only) and roman_dc2_F158_obs
+        (full namespace); wrong-namespace true and lowercase variants absent."""
         import pandas as pd
+        from streamobs.columns import true_col, obs_col, flag_col
 
         rng = np.random.default_rng(7)
         n = 25
-        # Pre-supply true magnitudes using the now-uppercase column name
+        # Pre-supply true magnitudes using the correct name-only column name
         df = pd.DataFrame(
             {
                 "ra": rng.uniform(51.1, 51.9, n),
                 "dec": rng.uniform(-38.3, -37.7, n),
-                "roman_dc2_F158_true": rng.uniform(22.0, 25.5, n),
+                true_col("F158", "roman_dc2"): rng.uniform(22.0, 25.5, n),
             }
         )
         out = roman_dc2_injector.inject(df, bands=["F158"], verbose=False)
 
-        # Both columns must be present with matching case
-        assert "roman_dc2_F158_true" in out.columns, (
-            "roman_dc2_F158_true missing after inject — uppercase true column lost"
+        # Correct columns must be present
+        assert true_col("F158", "roman_dc2") in out.columns, (
+            f"{true_col('F158','roman_dc2')} missing — name-only true column lost"
         )
-        assert "roman_dc2_F158_obs" in out.columns, (
-            "roman_dc2_F158_obs missing after inject — band key is still lowercase"
+        assert obs_col("F158", "roman_dc2") in out.columns, (
+            f"{obs_col('F158','roman_dc2')} missing — full-namespace obs column absent"
+        )
+        assert flag_col("roman_dc2") in out.columns, (
+            f"{flag_col('roman_dc2')} missing after inject"
         )
 
-        # Confirm the old lowercase obs column is NOT present (the bug is gone)
+        # Wrong-form columns must be absent
+        assert "roman_dc2_F158_true" not in out.columns, (
+            "roman_dc2_F158_true present — release must NOT appear on true columns"
+        )
+        assert "roman_f158_obs" not in out.columns, (
+            "roman_f158_obs present — lowercase band key not fully removed"
+        )
         assert "roman_dc2_f158_obs" not in out.columns, (
-            "roman_dc2_f158_obs still present — lowercase band key not fully removed"
+            "roman_dc2_f158_obs present — lowercase band key not fully removed"
+        )
+        assert "roman_f158_true" not in out.columns, (
+            "roman_f158_true present — lowercase band in true column"
         )
 
 

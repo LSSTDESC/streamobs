@@ -43,8 +43,11 @@ translates the curves to the corresponding depth.
 > `classifiction_eff` (the misspelling is intentional and load-bearing — the loader
 > greps that exact string). Keep it when re-deriving products for other surveys.
 
-> **Column namespacing.** Injected columns follow the `{name}_{release}` convention
-> (e.g. `roman_dc2_F158_mag`), so multiple releases can coexist in one catalog.
+> **Column namespacing.** True-magnitude columns use the survey *name* only
+> (`roman_F158_true`; true mags are release-independent), while observed/error/flag
+> columns use the full `{name}_{release}` namespace
+> (`roman_dc2_F158_obs`, `roman_dc2_flag_observed`), so multiple releases can coexist
+> in one catalog.
 
 ## The matched detection→truth catalog
 
