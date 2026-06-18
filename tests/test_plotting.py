@@ -19,7 +19,9 @@ from streamobs.plotting import plot_inject
 
 @pytest.mark.observed
 class TestPlotInject:
-    def test_plot_inject_namespaced_columns(self, mock_injector, stream_catalog, verbose):
+    def test_plot_inject_namespaced_columns(
+        self, mock_injector, stream_catalog, verbose
+    ):
         """plot_inject consumes the namespaced injector output without error."""
         cat = mock_injector.inject(stream_catalog, bands=["g", "r"], verbose=verbose)
         # mock_injector is LSST/yr4 -> namespace lsst_yr4; columns are lsst_yr4_*.
