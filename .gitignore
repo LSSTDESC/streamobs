@@ -149,3 +149,5 @@ build_*_nb.py
 scripts/**/build_*_nb.py
 
 artifacts/
+# Staged data archive for upload (built by bin/build_data_archive.py)
+/archive/
