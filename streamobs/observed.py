@@ -183,7 +183,7 @@ class StreamInjector:
         if isinstance(spec, dict):
             return Survey.load(**{**kwargs, **spec})
         raise ValueError(
-            'Each survey spec must be a Survey, a name string, or a '
+            "Each survey spec must be a Survey, a name string, or a "
             '{"survey": ..., "release": ...} dict.'
         )
 

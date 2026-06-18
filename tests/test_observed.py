@@ -135,9 +135,7 @@ class TestStreamInjectorBehavior:
         self, mock_injector, stream_catalog, stream_config_with_distance, verbose
     ):
         """Test injection with a catalog that has some missing columns."""
-        data_without_mag = stream_catalog.drop(
-            columns=["lsst_g_true", "lsst_r_true"]
-        )
+        data_without_mag = stream_catalog.drop(columns=["lsst_g_true", "lsst_r_true"])
         injected_catalog = mock_injector.inject(
             data_without_mag,
             perfect_galstarsep=True,
@@ -243,7 +241,9 @@ class TestStreamInjectorBehavior:
 class TestCompleteDataAndAPI:
     """complete_data (single + multi survey) and the unified bands/survey API."""
 
-    def test_complete_data_single_survey(self, mock_injector, stream_config_with_distance):
+    def test_complete_data_single_survey(
+        self, mock_injector, stream_config_with_distance
+    ):
         """complete_data fills ra/dec + true mags and preserves existing columns."""
         df = pd.DataFrame({"phi1": [-3.0, 0.0, 3.0], "phi2": [0.0, 0.0, 0.0]})
         out = mock_injector.complete_data(
@@ -277,11 +277,9 @@ class TestCompleteDataAndAPI:
             "lsst_r_true",
         ]:
             assert col in out.columns, f"missing {col}"
-        
+
         # Verify that we have a single column for each true magnitude, not one per survey.
         assert out[["lsst_g_true", "lsst_r_true"]].notna().all().all()
-        
-
 
     def test_bands_list_rejected_for_multisurvey(self, mock_multisurvey_injector):
         """A plain list of bands is ambiguous for a multi-survey injector."""

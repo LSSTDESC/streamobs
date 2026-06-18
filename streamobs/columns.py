@@ -31,7 +31,7 @@ def true_col(band, survey_namespace=None):
         survey_name = survey_namespace.split("_")[0]
     else:
         survey_name = None
-        
+
     return f"{survey_name}_{band}_true" if survey_name else f"{band}_true"
 
 
@@ -52,4 +52,8 @@ def flag_col(survey_namespace=None):
 
 def perfect_flag_col(survey_namespace=None):
     """Column holding the perfect star/galaxy-separation flag (band-independent)."""
-    return f"{survey_namespace}_flag_perfect_galstarsep" if survey_namespace else "flag_perfect_galstarsep"
+    return (
+        f"{survey_namespace}_flag_perfect_galstarsep"
+        if survey_namespace
+        else "flag_perfect_galstarsep"
+    )
