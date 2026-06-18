@@ -142,3 +142,10 @@ docs/source/roman_multisurvey_plan.md
 # Local-only Roman HLWAS derivation notebook (kept un-tracked; script is the source)
 notebooks/create_streamobs_files_hlwas.ipynb
 scripts/roman/script_to_notebook.py
+
+# Local-only notebook generators (kept un-tracked; the production scripts/products
+# are the source of truth, not the rendered notebooks they build)
+build_*_nb.py
+scripts/**/build_*_nb.py
+
+artifacts/
