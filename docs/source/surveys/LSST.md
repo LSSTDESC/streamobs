@@ -7,6 +7,7 @@ Current estimation of LSST performances are done using DC2 simulations (expected
 performances for LSST year 5), and extrapolated for year 1 to 5.
 
 ## LSST DC2 Survey Files
+More information about the LSST simulations can be found in Pélissier et. all (2026).
 
 This page is the **data sheet** for the `lsst / dc2` release: the survey-specific numbers, products, and figures. For **how** these products are derived (matched truth catalogs, completeness estimation, photometric-error calibration, depth-map construction, and analysis selections), see the survey-agnostic :doc:`selection_function_methodology`.
 
