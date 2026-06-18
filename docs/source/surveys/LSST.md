@@ -9,8 +9,6 @@ performances for LSST year 5), and extrapolated for year 1 to 5.
 ## LSST DC2 Survey Files
 More information about the LSST simulations can be found in Pélissier et. all (2026).
 
-This page is the **data sheet** for the `lsst / dc2` release: the survey-specific numbers, products, and figures. For **how** these products are derived (matched truth catalogs, completeness estimation, photometric-error calibration, depth-map construction, and analysis selections), see the survey-agnostic :doc:`selection_function_methodology`.
-
 ### The simulated survey
 
 All quantities are measured from the LSST Dark Energy Science Collaboration Data Challenge 2 (DC2) simulations, a realistic realization of the expected Rubin LSST survey performance based on five years of observations. DC2 contains both truth and measured catalogs, enabling direct characterization of survey selection effects and photometric performance.
@@ -33,7 +31,7 @@ Compact galaxies can be incorrectly classified as stars, producing an important 
 The galaxy contamination model is derived from true galaxies with
 
 $$
-{\rm size_true} < 0.3\ {\rm arcsec},
+{\rm size\_true} < 0.3\ {\rm arcsec},
 $$
 
 for which morphological star-galaxy separation becomes challenging near the survey magnitude limit.
