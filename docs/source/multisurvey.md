@@ -193,7 +193,7 @@ all surveys — the same physical star). You can also go the other way and suppl
 your own masses: pass a fully-populated `mass` column in the input catalog and the
 isochrone uses *those* masses instead of drawing fresh ones, so the sampled
 magnitudes reproduce your simulation's exact stars. At the model level
-{meth}`streamobs.model.IsochroneModel.sample_multisurvey` accepts a `masses=`
+{meth}`streamobs.model.IsochroneModel.sample` accepts a `masses=`
 array and returns the masses it used. The mass grid resolution is controlled by
 `IsochroneModel._MASS_STEPS` (default 4000) and a per-call `mass_steps=` override.
 

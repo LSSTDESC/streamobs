@@ -303,26 +303,21 @@ namespaced); `tests/test_observed.py` + `tests/test_model.py` green.
   plus shared `name`/`age`/`z`/... at top level), building one `ugali` isochrone
   per survey (`self.isos`, `self.survey_bands`).
 - ✅ New `sample_masses(...)` draws the initial masses *once* from the primary
-  isochrone's IMF (exactly `nstars`), and `sample_multisurvey(...)` interpolates
+  isochrone's IMF (exactly `nstars`), and `sample(...)` interpolates
   those shared masses into every survey's bands → `{(survey, band):
-  apparent_mag}` (same physical star, consistent across surveys). The legacy
-  `sample(nstars, dm)` still returns the `(mag_band_1, mag_band_2)` tuple (the
-  primary survey's two bands) so existing callers are unchanged.
+  apparent_mag}` (same physical star, consistent across surveys).
 - ✅ `_to_ab(band, mag)` converts Roman bands Vega→AB **unconditionally** using
   the `ROMAN_VEGA_TO_AB` table (no config flag; non-Roman bands pass through).
-  Applied in the shared `sample_multisurvey` path. See the Vega→AB section above.
+  Applied in the shared `sample` path. See the Vega→AB section above.
 - ✅ `StreamModel.sample`/`complete_catalog` derive their magnitude columns from
   the isochrone via `_iso_mag_columns()` / `_sample_iso_mags()`, which **always**
   emit `<survey>_<band>_true` (a single-survey isochrone simply has one survey;
   `IsochroneModel` tracks `surveys`/`survey_bands` in both config forms). Naming
   routes through `columns.true_col`.
 
-**Note on the chosen API:** the plan originally named the dict-returning method
-`sample` and a tuple `sample_legacy`; to avoid `sample()` changing return *type*
-by config (a foot-gun for existing callers), the implementation keeps
-`IsochroneModel.sample()` as the `(mag_1, mag_2)` tuple and adds
-`sample_multisurvey()` for the dict. `StreamModel` always goes through
-`sample_multisurvey()` (a single-survey isochrone is just the one-survey case),
+**Note on the API:** `IsochroneModel.sample()` returns
+`{(survey, band): apparent_mag}` and the masses used. `StreamModel` always goes
+through `sample()` (a single-survey isochrone is just the one-survey case),
 so the emitted columns are uniformly `<survey>_<band>_true`.
 
 **Validated:** model tests green; a two-isochrone multi-survey config produces

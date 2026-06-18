@@ -80,7 +80,6 @@ def _survey_id(entry):
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.surveys
 @pytest.fixture(
     scope="module", params=SURVEY_REGISTRY, ids=[_survey_id(e) for e in SURVEY_REGISTRY]
 )

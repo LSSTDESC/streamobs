@@ -203,7 +203,7 @@ class StreamModel(ConfigurableModel):
         is given it is used directly instead of an IMF draw, so the sampled
         magnitudes reproduce those exact stars.
         """
-        mags, masses = self.isochrone.sample_multisurvey(n, dist, masses=masses)
+        mags, masses = self.isochrone.sample(n, dist, masses=masses)
         cols = {true_col(band, name): vals for (name, band), vals in mags.items()}
         cols["mass"] = masses
         return cols
@@ -671,7 +671,7 @@ class IsochroneModel(ConfigurableModel):
       is built per survey from the *same* stellar population, so a single shared
       draw of initial masses (:meth:`sample_masses`) is interpolated into every
       survey's bands — giving the same physical star consistent magnitudes
-      across surveys. :meth:`sample_multisurvey` returns
+      across surveys. :meth:`sample` returns
       ``{(survey, band): apparent_mag}``.
 
     Roman bands are always converted from Vega to AB (see
@@ -830,7 +830,7 @@ class IsochroneModel(ConfigurableModel):
             return abs_mag
         return abs_mag + np.asarray(distance_modulus, dtype=float)
 
-    def sample_multisurvey(
+    def sample(
         self, nstars, distance_modulus, rng=None, masses=None, **kwargs
     ):
         """Sample apparent magnitudes for every ``(survey, band)``.
@@ -881,40 +881,6 @@ class IsochroneModel(ConfigurableModel):
             out[(name, band_1)] = self._add_distance_modulus(abs_1, distance_modulus)
             out[(name, band_2)] = self._add_distance_modulus(abs_2, distance_modulus)
         return out, masses
-
-    def sample(self, nstars, distance_modulus, rng=None, masses=None, **kwargs):
-        """Simulate magnitudes in the two bands of the (primary) isochrone.
-
-        Draws *exactly* ``nstars`` stars: a fixed set of initial masses is drawn
-        once from the isochrone IMF (:meth:`sample_masses`) and interpolated into
-        the two bands. This differs from the historical behaviour, where
-        ``nstars`` was converted to a total stellar mass and ``ugali``'s
-        ``simulate`` returned a random-length IMF realization (count generally
-        ``!= nstars``). The fixed-count semantics are required so the *same
-        physical star* can be shared across surveys (see
-        :meth:`sample_multisurvey`).
-
-        Parameters
-        ----------
-        nstars : int
-            Number of stars to simulate (returns exactly this many).
-        distance_modulus : float or array-like
-            Distance modulus per star (broadcast if scalar).
-
-        Returns
-        -------
-        tuple of numpy.ndarray
-            ``(mag_band_1, mag_band_2)`` arrays. For a multi-survey isochrone
-            this returns the primary survey's two bands; use
-            :meth:`sample_multisurvey` to get every survey's bands.
-        """
-        mags, _ = self.sample_multisurvey(
-            nstars, distance_modulus, rng=rng, masses=masses, **kwargs
-        )
-        return (
-            mags[(self.survey_name, self.band_1)],
-            mags[(self.survey_name, self.band_2)],
-        )
 
     def _dist_to_modulus(self, distance):
         """

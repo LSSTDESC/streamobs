@@ -332,25 +332,25 @@ class TestIsochroneMasses:
     G = "lsst_g_true"
     R = "lsst_r_true"
 
-    def test_sample_multisurvey_returns_and_reuses_masses(
+    def test_sample_returns_and_reuses_masses(
         self, stream_config_with_distance
     ):
         """Replaying the returned masses reproduces identical magnitudes."""
         iso = StreamModel(stream_config_with_distance).isochrone
-        mags1, masses = iso.sample_multisurvey(50, 16.8, rng=np.random.default_rng(0))
+        mags1, masses = iso.sample(50, 16.8, rng=np.random.default_rng(0))
         assert masses.shape == (50,)
         # Supplying those masses (no rng) is deterministic and reproduces mags1.
-        mags2, masses2 = iso.sample_multisurvey(50, 16.8, masses=masses)
+        mags2, masses2 = iso.sample(50, 16.8, masses=masses)
         assert np.allclose(masses, masses2)
         for key in mags1:
             assert np.allclose(mags1[key], mags2[key]), f"{key} not reproduced"
 
-    def test_sample_multisurvey_masses_length_validated(
+    def test_sample_masses_length_validated(
         self, stream_config_with_distance
     ):
         iso = StreamModel(stream_config_with_distance).isochrone
         with pytest.raises(ValueError):
-            iso.sample_multisurvey(50, 16.8, masses=np.ones(49))
+            iso.sample(50, 16.8, masses=np.ones(49))
 
     def test_complete_catalog_exposes_mass_column(self, stream_config_with_distance):
         """A completed catalog carries the shared `mass` column."""
@@ -364,11 +364,11 @@ class TestIsochroneMasses:
         """Providing a `mass` column makes the sampled mags match those masses."""
         model = StreamModel(stream_config_with_distance)
         iso = model.isochrone
-        _, masses = iso.sample_multisurvey(15, 16.8, rng=np.random.default_rng(3))
+        _, masses = iso.sample(15, 16.8, rng=np.random.default_rng(3))
         df = pd.DataFrame({"dist": [16.8] * 15, "mass": masses})
         out = model.complete_catalog(
             catalog=df, columns_to_add=[self.G, self.R], verbose=False
         )
-        direct, _ = iso.sample_multisurvey(15, 16.8, masses=masses)
+        direct, _ = iso.sample(15, 16.8, masses=masses)
         assert np.allclose(out[self.G].to_numpy(), direct[("lsst_yr4", "g")])
         assert np.allclose(out[self.R].to_numpy(), direct[("lsst_yr4", "r")])
