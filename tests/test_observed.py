@@ -105,8 +105,8 @@ class TestStreamInjectorBehavior:
         expected_columns=[
             "ra",
             "dec",
-            "lsst_yr4_g_true",
-            "lsst_yr4_r_true",
+            "lsst_g_true",
+            "lsst_r_true",
             "lsst_yr4_g_obs",
             "lsst_yr4_r_obs",
             "lsst_yr4_flag_observed",
@@ -136,7 +136,7 @@ class TestStreamInjectorBehavior:
     ):
         """Test injection with a catalog that has some missing columns."""
         data_without_mag = stream_catalog.drop(
-            columns=["lsst_yr4_g_true", "lsst_yr4_r_true"]
+            columns=["lsst_g_true", "lsst_r_true"]
         )
         injected_catalog = mock_injector.inject(
             data_without_mag,
@@ -249,9 +249,9 @@ class TestCompleteDataAndAPI:
         out = mock_injector.complete_data(
             df, bands=["g", "r"], stream_config=stream_config_with_distance, seed=1
         )
-        for col in ["ra", "dec", "lsst_yr4_g_true", "lsst_yr4_r_true"]:
+        for col in ["ra", "dec", "lsst_g_true", "lsst_r_true"]:
             assert col in out.columns, f"missing {col}"
-        assert out[["lsst_yr4_g_true", "lsst_yr4_r_true"]].notna().all().all()
+        assert out[["lsst_g_true", "lsst_r_true"]].notna().all().all()
         # Input is not mutated (complete_data works on a copy).
         assert "ra" not in df.columns
 
@@ -273,15 +273,15 @@ class TestCompleteDataAndAPI:
         for col in [
             "ra",
             "dec",
-            "lsst_yr4_g_true",
-            "lsst_yr4_r_true",
-            "lsst_yr5_g_true",
-            "lsst_yr5_r_true",
+            "lsst_g_true",
+            "lsst_r_true",
         ]:
             assert col in out.columns, f"missing {col}"
-        # Same physical star across surveys -> identical true mags.
-        assert np.allclose(out["lsst_yr4_g_true"], out["lsst_yr5_g_true"])
-        assert np.allclose(out["lsst_yr4_r_true"], out["lsst_yr5_r_true"])
+        
+        # Verify that we have a single column for each true magnitude, not one per survey.
+        assert out[["lsst_g_true", "lsst_r_true"]].notna().all().all()
+        
+
 
     def test_bands_list_rejected_for_multisurvey(self, mock_multisurvey_injector):
         """A plain list of bands is ambiguous for a multi-survey injector."""

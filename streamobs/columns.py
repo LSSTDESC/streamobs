@@ -23,26 +23,33 @@ retained only as a low-level fallback that yields the bare ``<band>_…`` /
 """
 
 
-def true_col(band, survey=None):
+def true_col(band, survey_namespace=None):
     """Column holding the *true* (noiseless) apparent magnitude for ``band``."""
-    return f"{survey}_{band}_true" if survey else f"{band}_true"
+
+    # Split survey_namespace "{name}_{release}" into survey and release if needed
+    if isinstance(survey_namespace, str):
+        survey_name = survey_namespace.split("_")[0]
+    else:
+        survey_name = None
+        
+    return f"{survey_name}_{band}_true" if survey_name else f"{band}_true"
 
 
-def obs_col(band, survey=None):
+def obs_col(band, survey_namespace=None):
     """Column holding the *observed* (noisy) magnitude for ``band``."""
-    return f"{survey}_{band}_obs" if survey else f"{band}_obs"
+    return f"{survey_namespace}_{band}_obs" if survey_namespace else f"{band}_obs"
 
 
-def err_col(band, survey=None):
+def err_col(band, survey_namespace=None):
     """Column holding the reported magnitude error for ``band``."""
-    return f"{survey}_{band}_err" if survey else f"{band}_err"
+    return f"{survey_namespace}_{band}_err" if survey_namespace else f"{band}_err"
 
 
-def flag_col(survey=None):
+def flag_col(survey_namespace=None):
     """Column holding the detection flag (band-independent)."""
-    return f"{survey}_flag_observed" if survey else "flag_observed"
+    return f"{survey_namespace}_flag_observed" if survey_namespace else "flag_observed"
 
 
-def perfect_flag_col(survey=None):
+def perfect_flag_col(survey_namespace=None):
     """Column holding the perfect star/galaxy-separation flag (band-independent)."""
-    return f"{survey}_flag_perfect_galstarsep" if survey else "flag_perfect_galstarsep"
+    return f"{survey_namespace}_flag_perfect_galstarsep" if survey_namespace else "flag_perfect_galstarsep"
