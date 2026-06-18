@@ -74,7 +74,7 @@ Magnitude limits are obtained from [RubinSim](https://rubin-sim.lsst.io/) and pr
 
 ### Extinction coefficients
 
-Dust extinction is modeled using the Schlegel, Finkbeiner & Davis (1998) reddening maps.
+Dust extinction is modeled using the Schlegel et. all (1998) reddening maps.
 
 The adopted extinction coefficients are
 
