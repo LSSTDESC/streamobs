@@ -92,19 +92,19 @@ class TestRomanDC2SurveyLoading:
 
     @_skip_no_data
     def test_bands_present(self, roman_dc2_survey):
-        for band in ("f106", "f129", "f158"):
+        for band in ("F106", "F129", "F158"):
             assert band in roman_dc2_survey.bands, (
                 f"Expected band '{band}' in roman_dc2.bands={roman_dc2_survey.bands}"
             )
 
     @_skip_no_data
     def test_f158_maglim_map_loaded(self, roman_dc2_survey):
-        assert "f158" in roman_dc2_survey.maglim_maps, "f158 maglim map missing"
-        assert roman_dc2_survey.maglim_maps["f158"] is not None
+        assert "F158" in roman_dc2_survey.maglim_maps, "F158 maglim map missing"
+        assert roman_dc2_survey.maglim_maps["F158"] is not None
 
     @_skip_no_data
     def test_completeness_band_is_f158(self, roman_dc2_survey):
-        assert roman_dc2_survey.completeness_band == "f158"
+        assert roman_dc2_survey.completeness_band == "F158"
 
     @_skip_no_data
     def test_ebv_map_loaded(self, roman_dc2_survey):
@@ -113,7 +113,7 @@ class TestRomanDC2SurveyLoading:
     @_skip_no_data
     def test_extinction_coefficients(self, roman_dc2_survey):
         # From roman_dc2.yaml survey_properties
-        expected = {"f106": 1.1495, "f129": 0.8497, "f158": 0.6140}
+        expected = {"F106": 1.1495, "F129": 0.8497, "F158": 0.6140}
         for band, coeff in expected.items():
             assert band in roman_dc2_survey.coeff_extinc, (
                 f"Extinction coefficient missing for band '{band}'"
@@ -139,7 +139,7 @@ def _make_roman_dc2_catalog(n=20, rng=None):
     requires searching for a valid great-circle frame — expensive and unreliable
     for a small-footprint survey.
 
-    Band names are lowercase (f158, f106) matching the survey config.
+    Band names are uppercase (F158, F106) matching the survey config.
     Column names follow the namespace convention: roman_dc2_<band>_true.
     """
     import pandas as pd
@@ -150,7 +150,7 @@ def _make_roman_dc2_catalog(n=20, rng=None):
         {
             "ra": rng.uniform(51.1, 51.9, n),
             "dec": rng.uniform(-38.3, -37.7, n),
-            "roman_dc2_f158_true": rng.uniform(22.0, 25.5, n),
+            "roman_dc2_F158_true": rng.uniform(22.0, 25.5, n),
         }
     )
 
@@ -168,23 +168,23 @@ class TestRomanDC2Injection:
     def test_inject_produces_namespaced_columns(self, roman_dc2_injector):
         """After inject(), every band column must be prefixed roman_dc2_<band>_*.
 
-        Only f158 is injected here because f106/f129 don't have dedicated maglim
+        Only F158 is injected here because F106/F129 don't have dedicated maglim
         maps in the roman_dc2 config (the survey has completeness + photo-error
-        only for f158, which is the detection/completeness band).
+        only for F158, which is the detection/completeness band).
         """
         df = _make_roman_dc2_catalog(n=20)
         out = roman_dc2_injector.inject(
             df,
-            bands=["f158"],
+            bands=["F158"],
             verbose=False,
         )
 
         expected_cols = [
             "ra",
             "dec",
-            "roman_dc2_f158_true",
-            "roman_dc2_f158_obs",
-            "roman_dc2_f158_err",
+            "roman_dc2_F158_true",
+            "roman_dc2_F158_obs",
+            "roman_dc2_F158_err",
             "roman_dc2_flag_observed",
         ]
         missing = [c for c in expected_cols if c not in out.columns]
@@ -194,17 +194,17 @@ class TestRomanDC2Injection:
     def test_true_mags_preserved_after_inject(self, roman_dc2_injector):
         """True magnitudes supplied in the input must survive inject() unchanged."""
         df = _make_roman_dc2_catalog(n=15)
-        true_in = df["roman_dc2_f158_true"].values.copy()
-        out = roman_dc2_injector.inject(df, bands=["f158"], verbose=False)
-        assert np.allclose(out["roman_dc2_f158_true"].values, true_in), (
-            "roman_dc2_f158_true changed during inject()"
+        true_in = df["roman_dc2_F158_true"].values.copy()
+        out = roman_dc2_injector.inject(df, bands=["F158"], verbose=False)
+        assert np.allclose(out["roman_dc2_F158_true"].values, true_in), (
+            "roman_dc2_F158_true changed during inject()"
         )
 
     @_skip_no_data
     def test_flag_observed_is_boolean(self, roman_dc2_injector):
         """roman_dc2_flag_observed must exist and be boolean-like (0/1 or bool)."""
         df = _make_roman_dc2_catalog(n=20)
-        out = roman_dc2_injector.inject(df, bands=["f158"], verbose=False)
+        out = roman_dc2_injector.inject(df, bands=["F158"], verbose=False)
         flags = out["roman_dc2_flag_observed"]
         unique_vals = set(flags.dropna().unique())
         assert unique_vals.issubset({0, 1, True, False}), (
@@ -216,13 +216,61 @@ class TestRomanDC2Injection:
         """Observed magnitudes must differ from true (noise was applied)."""
         rng = np.random.default_rng(99)
         df = _make_roman_dc2_catalog(n=30, rng=rng)
-        out = roman_dc2_injector.inject(df, bands=["f158"], verbose=False, seed=99)
+        out = roman_dc2_injector.inject(df, bands=["F158"], verbose=False, seed=99)
         observed = out["roman_dc2_flag_observed"]
         detected = out[observed == 1]
         if len(detected) == 0:
             pytest.skip("No detected stars in this footprint sample — increase n")
-        diffs = (detected["roman_dc2_f158_obs"] - detected["roman_dc2_f158_true"]).abs()
+        diffs = (detected["roman_dc2_F158_obs"] - detected["roman_dc2_F158_true"]).abs()
         assert diffs.mean() > 0, "Observed mags identical to true — noise not applied"
+
+
+# ---------------------------------------------------------------------------
+# Round-trip regression: complete_data → inject column-case consistency
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.surveys
+class TestRomanDC2RoundTripColumnCase:
+    """Regression: complete_data and inject must produce matching-case F158 columns.
+
+    Before the band-name normalisation (f158→F158 in config + inject args),
+    complete_data emitted roman_dc2_F158_true (uppercase, from ugali) while inject
+    emitted roman_dc2_f158_obs (lowercase, from the config key).  After the fix both
+    should be uppercase: roman_dc2_F158_true AND roman_dc2_F158_obs must coexist.
+
+    This test is skipped if roman_dc2 data files are absent.
+    """
+
+    @_skip_no_data
+    def test_true_and_obs_columns_have_matching_case(self, roman_dc2_injector):
+        """complete_data→inject round-trip: F158 true and obs columns both uppercase."""
+        import pandas as pd
+
+        rng = np.random.default_rng(7)
+        n = 25
+        # Pre-supply true magnitudes using the now-uppercase column name
+        df = pd.DataFrame(
+            {
+                "ra": rng.uniform(51.1, 51.9, n),
+                "dec": rng.uniform(-38.3, -37.7, n),
+                "roman_dc2_F158_true": rng.uniform(22.0, 25.5, n),
+            }
+        )
+        out = roman_dc2_injector.inject(df, bands=["F158"], verbose=False)
+
+        # Both columns must be present with matching case
+        assert "roman_dc2_F158_true" in out.columns, (
+            "roman_dc2_F158_true missing after inject — uppercase true column lost"
+        )
+        assert "roman_dc2_F158_obs" in out.columns, (
+            "roman_dc2_F158_obs missing after inject — band key is still lowercase"
+        )
+
+        # Confirm the old lowercase obs column is NOT present (the bug is gone)
+        assert "roman_dc2_f158_obs" not in out.columns, (
+            "roman_dc2_f158_obs still present — lowercase band key not fully removed"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -368,7 +416,7 @@ class TestRomanDC2Efficiencies:
         """At bright magnitudes (well above saturation), completeness ≈ 1."""
         maglim = 26.0
         bright_mags = np.array([20.0, 21.0, 22.0])
-        comp = roman_dc2_survey.get_completeness("f158", bright_mags, maglim)
+        comp = roman_dc2_survey.get_completeness("F158", bright_mags, maglim)
         assert np.all(comp > 0.5), (
             f"Completeness should be >0.5 for bright stars: {comp}"
         )
@@ -379,7 +427,7 @@ class TestRomanDC2Efficiencies:
         # saturation is 17.0 per roman_dc2.yaml
         maglim = 26.0
         sat_mags = np.array([10.0, 12.0, 15.0])
-        comp = roman_dc2_survey.get_completeness("f158", sat_mags, maglim)
+        comp = roman_dc2_survey.get_completeness("F158", sat_mags, maglim)
         assert np.all(comp == 0.0), (
             f"Completeness should be 0 below saturation: {comp}"
         )

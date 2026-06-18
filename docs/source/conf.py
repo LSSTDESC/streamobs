@@ -25,7 +25,18 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "numpydoc",
-    "myst_nb",
+    "myst_nb",  # supersedes myst_parser; .md files still parse via myst_nb
+]
+
+# myst-nb: notebooks committed with outputs, not re-executed at build time
+nb_execution_mode = "off"
+
+# Enable MyST extensions. `colon_fence` lets admonition directives written as
+# ::: {note} ... ::: render inside notebook markdown cells (the backtick-fenced
+# ```{note} form is otherwise treated as a literal code block in .ipynb cells).
+myst_enable_extensions = [
+    "colon_fence",
+    "dollarmath",
 ]
 
 templates_path = ["_templates"]

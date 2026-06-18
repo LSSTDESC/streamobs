@@ -48,8 +48,8 @@ def _hlwas_entry(tier, release):
     entry = {
         "survey": "roman",
         "release": release,
-        "expected_bands": ["f158"],
-        "expected_maglim": ["f158"],
+        "expected_bands": ["F158"],
+        "expected_maglim": ["F158"],
         # Roman-specific threshold relaxations (same rationale as roman_dc2)
         "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
@@ -120,8 +120,8 @@ SURVEY_REGISTRY = [
     {
         "survey": "roman",
         "release": "dc2",
-        "expected_bands": ["f106", "f129", "f158"],
-        "expected_maglim": ["f158"],
+        "expected_bands": ["F106", "F129", "F158"],
+        "expected_maglim": ["F158"],
         "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
