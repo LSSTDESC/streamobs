@@ -298,6 +298,48 @@ placeholder for the real HLWAS footprint: it will reuse these DC2-derived tables
 with an exposure-time-scaled magnitude-limit map expressed in the same
 truth-anchored convention.
 
+## Photometric-error afterburner
+
+The measured photo-error curves are derived from binned statistics (typically 20–200
+true stars per 0.12-mag bin near the faint end), so the last few bins carry
+small-sample scatter that can produce reversals or spikes in the monotonically
+increasing profile. To keep the runtime curves smooth and physically consistent
+without losing the measurement provenance, the generator applies a lightweight
+**afterburner** step:
+
+1. **Raw curves** — the unmodified binned outputs — are written to
+   `data/surveys/roman_dc2/roman_photoerror_f158_raw.csv` and
+   `roman_photoerror_f158_catalog_raw.csv`. These files are regenerated on every
+   run and stay alongside the cleaned files as a provenance record.
+2. **Corrections** are loaded from
+   `config/surveys/roman_photoerror_corrections.yaml`, a *tracked* file that lives
+   under version control so every manual edit is attributed and reversible. The
+   schema supports per-curve rules; the only rule currently implemented is
+   `clamp_faint`, which floors `log_mag_err` to a fixed value for all bins at or
+   beyond a chosen `delta_mag_min`.
+3. **Cleaned curves** — raw with corrections applied — are written to the runtime
+   filenames `roman_photoerror_f158.csv` and `roman_photoerror_f158_catalog.csv`
+   that `config/surveys/roman_dc2.yaml` points at.
+
+The default corrections applied are:
+
+- **f158_sample** (`clamp_faint`): the truth-based scatter stalls at
+  `delta_mag ≈ −0.40` (log_mag_err = −0.8285, σ ≈ 0.148 mag) and then
+  wobbles in the last four bins due to small-sample noise (fewer than ~60 true
+  stars per bin). The floor clamps all bins with `delta_mag ≥ −0.28` to
+  log_mag_err = −0.8285, holding the error at the last well-sampled value rather
+  than propagating noise toward fainter magnitudes.
+- **f158_catalog** (`clamp_faint`): the median reported-magerr curve is smooth
+  throughout; a 0.003 dex reversal appears in the very last bin
+  (`delta_mag = +0.08`). The floor clamps bins with `delta_mag ≥ 0.0` to
+  log_mag_err = −0.8960 (the value at `delta_mag = −0.04`), making the curve
+  monotonically non-decreasing past the S/N = 5 boundary.
+
+To adjust or extend the corrections, edit
+`config/surveys/roman_photoerror_corrections.yaml` and re-run the generator. The
+raw files will be overwritten with the new measurement; the cleaned files will
+reflect the updated rules.
+
 ## Caveats
 
 - The simulation is the *reference* HLIS design (deeper than the current

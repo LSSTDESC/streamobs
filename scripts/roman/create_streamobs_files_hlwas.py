@@ -45,6 +45,7 @@ import pandas as pd
 import healpy as hp
 import matplotlib.pyplot as plt
 import pyarrow.parquet as pq
+import yaml
 from astropy.io import fits
 from astropy.table import Table
 from scipy.spatial import cKDTree
@@ -907,15 +908,86 @@ keep = np.isfinite(log_scatter)
 #     magerr. Written as `magerr` and used for the S/N cut. Wired as
 #     `log_photo_error_catalog`.
 photoerr_tab = pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": log_scatter[keep]})
-fpe = OUT_DIR / "roman_photoerror_f158.csv"
-np.savetxt(fpe, photoerr_tab.values, delimiter=",", header="delta_mag,log_mag_err", fmt="%.6f")
-print(f"wrote {fpe.relative_to(REPO)}  (sample/true-scatter, {len(photoerr_tab)} rows, "
-      f"delta_mag {photoerr_tab.delta_mag.min():.2f} .. {photoerr_tab.delta_mag.max():.2f})")
-
 catalog_tab = pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": med_logerr_rep[keep]})
+
+# --- photometric-error afterburner ------------------------------------------
+# Write the UNTOUCHED measured curves as *_raw.csv (provenance), then apply the
+# human-authored corrections from config/surveys/roman_photoerror_corrections.yaml
+# and save the cleaned result to the runtime filenames the config points at.
+CORRECTIONS_FILE = REPO / "config/surveys/roman_photoerror_corrections.yaml"
+
+fpe_raw = OUT_DIR / "roman_photoerror_f158_raw.csv"
+np.savetxt(fpe_raw, photoerr_tab.values, delimiter=",", header="delta_mag,log_mag_err", fmt="%.6f")
+print(f"wrote {fpe_raw.relative_to(REPO)}  (raw sample curve, {len(photoerr_tab)} rows)")
+
+fpe_cat_raw = OUT_DIR / "roman_photoerror_f158_catalog_raw.csv"
+np.savetxt(fpe_cat_raw, catalog_tab.values, delimiter=",", header="delta_mag,log_mag_err", fmt="%.6f")
+print(f"wrote {fpe_cat_raw.relative_to(REPO)}  (raw catalog curve, {len(catalog_tab)} rows)")
+
+def _apply_photoerr_corrections(tab, curve_id, corrections_path):
+    """Apply afterburner corrections from a YAML file to a photo-error DataFrame.
+
+    Parameters
+    ----------
+    tab : pd.DataFrame
+        Photo-error table with columns ``delta_mag`` and ``log_mag_err``.
+    curve_id : str
+        Key in the corrections YAML (e.g. ``"f158_sample"``).
+    corrections_path : Path
+        Path to the corrections YAML.
+
+    Returns
+    -------
+    pd.DataFrame
+        Copy of *tab* with corrections applied.
+    """
+    if not corrections_path.exists():
+        print(f"  [afterburner] corrections file not found: {corrections_path} — skipping")
+        return tab.copy()
+    with open(corrections_path) as fh:
+        corr = yaml.safe_load(fh)
+    rules = corr.get(curve_id, {})
+    if not rules:
+        print(f"  [afterburner] no rules for curve '{curve_id}' — no changes")
+        return tab.copy()
+    out = tab.copy()
+    for rule_name, params in rules.items():
+        if rule_name == "clamp_faint":
+            d_min = float(params["delta_mag_min"])
+            v = float(params["value"])
+            mask = out["delta_mag"] >= d_min
+            n_before = int(mask.sum())
+            out.loc[mask, "log_mag_err"] = np.maximum(out.loc[mask, "log_mag_err"], v)
+            print(f"  [afterburner] {curve_id}: clamp_faint "
+                  f"delta_mag>={d_min:.3f} -> log_mag_err=max(raw,{v:.4f})  "
+                  f"({n_before} bins affected)")
+        else:
+            print(f"  [afterburner] WARNING: unknown rule '{rule_name}' for curve '{curve_id}' — skipped")
+    return out
+
+print("Applying afterburner corrections ...")
+photoerr_clean = _apply_photoerr_corrections(photoerr_tab, "f158_sample", CORRECTIONS_FILE)
+catalog_clean = _apply_photoerr_corrections(catalog_tab, "f158_catalog", CORRECTIONS_FILE)
+
+# Before/after comparison at the faint end (delta_mag >= -0.52)
+print("\nBefore/after comparison — faint end (delta_mag >= -0.52):")
+print(f"  {'delta_mag':>10}  {'raw_sample':>12}  {'clean_sample':>14}  {'raw_catalog':>12}  {'clean_catalog':>14}")
+for dm in photoerr_tab["delta_mag"][photoerr_tab["delta_mag"] >= -0.52].values:
+    raw_s = float(photoerr_tab.loc[photoerr_tab["delta_mag"] == dm, "log_mag_err"].values[0])
+    cln_s = float(photoerr_clean.loc[photoerr_clean["delta_mag"] == dm, "log_mag_err"].values[0])
+    raw_c = float(catalog_tab.loc[catalog_tab["delta_mag"] == dm, "log_mag_err"].values[0])
+    cln_c = float(catalog_clean.loc[catalog_clean["delta_mag"] == dm, "log_mag_err"].values[0])
+    tag = "  <-- changed" if (cln_s != raw_s or cln_c != raw_c) else ""
+    print(f"  {dm:+10.3f}  {raw_s:+12.4f}  {cln_s:+14.4f}  {raw_c:+12.4f}  {cln_c:+14.4f}{tag}")
+
+fpe = OUT_DIR / "roman_photoerror_f158.csv"
+np.savetxt(fpe, photoerr_clean.values, delimiter=",", header="delta_mag,log_mag_err", fmt="%.6f")
+print(f"\nwrote {fpe.relative_to(REPO)}  (cleaned sample/true-scatter, {len(photoerr_clean)} rows, "
+      f"delta_mag {photoerr_clean.delta_mag.min():.2f} .. {photoerr_clean.delta_mag.max():.2f})")
+
 fpe_cat = OUT_DIR / "roman_photoerror_f158_catalog.csv"
-np.savetxt(fpe_cat, catalog_tab.values, delimiter=",", header="delta_mag,log_mag_err", fmt="%.6f")
-print(f"wrote {fpe_cat.relative_to(REPO)}  (catalog/reported magerr, {len(catalog_tab)} rows)")
+np.savetxt(fpe_cat, catalog_clean.values, delimiter=",", header="delta_mag,log_mag_err", fmt="%.6f")
+print(f"wrote {fpe_cat.relative_to(REPO)}  (cleaned catalog/reported magerr, {len(catalog_clean)} rows)")
 
 # --- stellar efficiency table ------------------------------------------------
 eff_tab = pd.DataFrame({
@@ -938,12 +1010,16 @@ lsst_eff = np.genfromtxt(REPO / "data/others/lsst_stellar_efficiency_cutr.csv", 
 
 fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
 axes[0].plot(lsst_pe["delta_mag"], lsst_pe["log_mag_err"], "-", color="0.6", label="LSST r")
-axes[0].plot(photoerr_tab.delta_mag, photoerr_tab.log_mag_err, "C3o-", ms=3,
-             label="Roman F158 (truth-based scatter)")
-axes[0].plot(dmid[keep], med_logerr_rep[keep], "C0--", lw=1.5,
-             label="Roman F158 reported magerr (underestimated)")
+axes[0].plot(photoerr_tab.delta_mag, photoerr_tab.log_mag_err, "C3:", ms=3, lw=1.2,
+             label="Roman F158 sample (raw)")
+axes[0].plot(photoerr_clean.delta_mag, photoerr_clean.log_mag_err, "C3o-", ms=3, lw=2.0,
+             label="Roman F158 sample (cleaned)")
+axes[0].plot(catalog_tab.delta_mag, catalog_tab.log_mag_err, "C0:", lw=1.2,
+             label="Roman F158 catalog (raw)")
+axes[0].plot(catalog_clean.delta_mag, catalog_clean.log_mag_err, "C0--", lw=1.5,
+             label="Roman F158 catalog (cleaned)")
 axes[0].set(xlabel=r"$\Delta$mag = mag $-$ maglim", ylabel=r"$\log_{10}\sigma$ [mag]")
-axes[0].legend(); axes[0].grid(alpha=0.3)
+axes[0].legend(fontsize=8); axes[0].grid(alpha=0.3)
 axes[1].plot(lsst_eff["delta_mag"], lsst_eff["classification_detection_eff"], "-", color="0.6", label="LSST r")
 axes[1].plot(eff_tab.delta_mag, eff_tab.classification_detection_eff, "C3o-", ms=3, label="Roman F158")
 axes[1].set(xlabel=r"$\Delta$mag = mag $-$ maglim", ylabel="classification_detection_eff")
