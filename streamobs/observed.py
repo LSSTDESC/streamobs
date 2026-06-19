@@ -476,7 +476,6 @@ class StreamInjector:
                     rng=rng,
                     seed=seed,
                     perfect_galstarsep=False,
-                    source_type=source_type,
                     **kwargs,
                 )
                 if perfect_galstarsep and source_type == "stars":
@@ -488,7 +487,6 @@ class StreamInjector:
                         rng=rng,
                         seed=seed,
                         perfect_galstarsep=True,
-                        source_type=source_type,
                         **kwargs,
                     )
 
@@ -1181,7 +1179,7 @@ class StreamInjector:
         combined completeness (detection × classification) or detection-only
         efficiency when ``perfect_galstarsep=True``. For galaxies
         (``source_type='galaxies'``), uses
-        :meth:`~streamobs.surveys.Survey.get_gal_misclassification` and
+        :meth:`~streamobs.surveys.Survey.get_gal_misclassification_detection` and
         ignores ``perfect_galstarsep``.
 
         Parameters
@@ -1228,7 +1226,7 @@ class StreamInjector:
 
         source_type = kwargs.get("source_type", "stars")
         if source_type == "galaxies":
-            compl = survey.get_gal_misclassification(band, mag, maglim)
+            compl = survey.get_gal_misclassification_detection(band, mag, maglim)
         else:
             perfect_galstarsep = kwargs.get("perfect_galstarsep", False)
             if perfect_galstarsep:
