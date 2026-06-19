@@ -104,9 +104,16 @@ Documentation Contents
 
 
 .. toctree::
+   :maxdepth: 1
+   :caption: Background generation
+
+   background
+   build_background_resources
+
+.. toctree::
    :maxdepth: 2
    :caption: For developers
-   
+
    modifying_streamobs
    new_survey
    update_data

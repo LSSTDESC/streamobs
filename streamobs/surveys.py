@@ -120,6 +120,7 @@ class Survey:
     delta_saturation: Optional[float] = None
     log_photo_error_catalog: Optional[Callable] = None
     log_photo_error_sample: Optional[Callable] = None
+    gal_misclassification: Optional[Callable] = None
 
     # Band-independent maps
     ebv_map: Optional[np.ndarray] = None
@@ -549,6 +550,62 @@ class Survey:
             1.0,
             func(delta_mag),
         )  # 1 padded
+
+        compl = np.where(
+            magnitude < self.saturation[band], 0.0, compl
+        )  # saturation at the bright end
+
+        compl = np.where(
+            (maglim < self.saturation[band]) | np.isnan(maglim), 0.0, compl
+        )  # not observed if the area is not covered
+
+        return compl
+
+    def get_gal_misclassification(
+        self, band: str, magnitude: float, maglim: float, **kwargs
+    ) -> float:
+        """
+        Get galaxy misclassification efficiency (probability a galaxy passes stellar selection).
+
+        Mirrors :meth:`get_efficiency` for the ``"completeness"`` type, but
+        **without 1-padding at the bright end**: bright galaxies are not forced
+        to efficiency = 1 when their delta_mag falls below the saturation
+        threshold. This reproduces the behaviour of ``custom_get_completeness``
+        used for galaxies in external background-generation scripts.
+
+        Parameters
+        ----------
+        band : str
+            Band identifier (e.g., 'g', 'r').
+        magnitude : float or np.ndarray
+            True apparent magnitude(s) including extinction.
+        maglim : float or np.ndarray
+            Magnitude limit(s) at the source position(s).
+        **kwargs
+            delta_saturation : float, optional
+                Override the survey's default saturation threshold.
+
+        Returns
+        -------
+        float or np.ndarray
+            Misclassification probability in [0, 1].
+
+        Raises
+        ------
+        ValueError
+            If :attr:`gal_misclassification` has not been loaded.
+        """
+        if self.gal_misclassification is None:
+            raise ValueError(
+                "gal_misclassification function not loaded for this survey. "
+                "Load it via SurveyFactory.set_gal_misclassification() or the "
+                "'gal_misclassification' config key."
+            )
+
+        delta_mag = magnitude - maglim
+
+        # No 1-padding: apply the interpolator directly
+        compl = self.gal_misclassification(delta_mag)
 
         compl = np.where(
             magnitude < self.saturation[band], 0.0, compl
@@ -1165,6 +1222,27 @@ class SurveyFactory:
                 if verbose:
                     print("No classification efficiency file found, skipping.")
 
+        # Load galaxy misclassification efficiency (optional)
+        if "gal_misclassification" in survey_config:
+            try:
+                cls._load_file(
+                    survey,
+                    survey_config,
+                    "gal_misclassification",
+                    "Galaxy misclassification efficiency",
+                    lambda f: cls.set_completeness(
+                        f,
+                        delta_saturation=survey.delta_saturation,
+                        selection="missclassified",
+                    ),
+                    data_path_survey,
+                    data_path_others,
+                    **kwargs,
+                )
+            except Exception as e:
+                if verbose:
+                    print(f"Could not load galaxy misclassification file: {e}")
+
         # Load photometric error model(s), same for all bands. Two curves:
         #   - catalog : reported error vs delta_mag (the survey's photoerror file).
         #               Written as magerr and used for the S/N cut. Always loaded.
@@ -1401,6 +1479,8 @@ class SurveyFactory:
             - 'classification_eff' : Classification efficiency only (the legacy
               misspelled header 'classifiction_eff' is also accepted)
             - 'classification_detection_eff' : Combined efficiency
+            - 'gal_misclassification_eff' : Galaxy misclassification efficiency
+              (probability a galaxy passes stellar selection)
 
         delta_saturation : float, optional
             Magnitude difference threshold for saturation. Default is -10.4.
@@ -1410,7 +1490,10 @@ class SurveyFactory:
             - 'detected' : Detection efficiency only (column 'detection_eff')
             - 'classified' : Classification efficiency only (column
               'classification_eff', or legacy 'classifiction_eff')
-            - 'both' : Combined detection and classification (column 'classification_detection_eff')
+            - 'both' : Combined detection and classification (column
+              'classification_detection_eff')
+            - 'missclassified' : Galaxy misclassification efficiency (column
+              'gal_misclassification_eff')
 
             Default is 'both'.
 
@@ -1422,7 +1505,7 @@ class SurveyFactory:
         Raises
         ------
         ValueError
-            If selection is not one of 'detected', 'classified', or 'both'.
+            If selection is not one of the recognised values.
 
         Notes
         -----
@@ -1446,9 +1529,12 @@ class SurveyFactory:
                 efficiencies = data["classifiction_eff"]
         elif selection == "both":
             efficiencies = data["classification_detection_eff"]
+        elif selection == "missclassified":
+            efficiencies = data["gal_misclassification_eff"]
         else:
             raise ValueError(
-                f"Invalid selection '{selection}'. Must be 'detected', 'classified', or 'both'"
+                f"Invalid selection '{selection}'. Must be 'detected', 'classified', "
+                "'both', or 'missclassified'."
             )
 
         # Extend efficiency to bright end (force to zero at saturation)

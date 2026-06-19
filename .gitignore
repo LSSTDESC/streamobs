@@ -128,9 +128,15 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Claude Code settings (local only)
+.claude/
+
 # Surveys files
 data/surveys/*
 data/others/*
+
+# Background resources (precomputed CMD grids — built locally, not tracked)
+data/background/
 .DS_Store
 # External reference repos (design references only, not part of streamobs)
 /survey_systematics_in_LSST_streams/

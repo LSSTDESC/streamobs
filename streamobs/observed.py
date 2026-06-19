@@ -244,6 +244,12 @@ class StreamInjector:
             perfect_galstarsep : bool, optional
                 If True, also computes a flag assuming perfect star/galaxy separation
                 (detection efficiency only, no classification losses). Default is False.
+                Only applies when ``source_type='stars'``.
+            source_type : str, optional
+                Type of source being injected. Either ``'stars'`` (default) or
+                ``'galaxies'``. When ``'galaxies'``, the detection flag uses
+                :meth:`~streamobs.surveys.Survey.get_gal_misclassification`
+                instead of the star completeness function.
             verbose : bool, optional
                 Whether to print progress information. Default is True.
 
@@ -362,7 +368,7 @@ class StreamInjector:
             Seed used to build an RNG when ``rng`` is None.
         **kwargs
             ``nside``, ``detection_mag_cut``, ``dust_correction``,
-            ``perfect_galstarsep``, ``verbose`` (see :meth:`inject`).
+            ``perfect_galstarsep``, ``source_type``, ``verbose`` (see :meth:`inject`).
 
         Returns
         -------
@@ -461,6 +467,7 @@ class StreamInjector:
 
             # Compute detection flag for completeness-band (reference band)
             if band == survey.completeness_band:
+                source_type = kwargs.get("source_type", "stars")
                 flag_completeness_band = self.detect_flag(
                     pix_maglim,
                     survey=survey,
@@ -469,9 +476,10 @@ class StreamInjector:
                     rng=rng,
                     seed=seed,
                     perfect_galstarsep=False,
+                    source_type=source_type,
                     **kwargs,
                 )
-                if perfect_galstarsep:
+                if perfect_galstarsep and source_type == "stars":
                     flag_detection_only_band = self.detect_flag(
                         pix_maglim,
                         survey=survey,
@@ -480,6 +488,7 @@ class StreamInjector:
                         rng=rng,
                         seed=seed,
                         perfect_galstarsep=True,
+                        source_type=source_type,
                         **kwargs,
                     )
 
@@ -1166,10 +1175,14 @@ class StreamInjector:
 
     def detect_flag(self, pix, survey, mag=None, band="r", **kwargs):
         """
-        Apply the survey selection to determine detection flags for stars.
+        Apply the survey selection to determine detection flags.
 
-        This method uses the survey completeness function and random sampling
-        to determine which stars would be detected by the survey.
+        For stars (``source_type='stars'``, the default), uses the survey's
+        combined completeness (detection × classification) or detection-only
+        efficiency when ``perfect_galstarsep=True``. For galaxies
+        (``source_type='galaxies'``), uses
+        :meth:`~streamobs.surveys.Survey.get_gal_misclassification` and
+        ignores ``perfect_galstarsep``.
 
         Parameters
         ----------
@@ -1180,8 +1193,7 @@ class StreamInjector:
         band : str, optional
             Band to consider for detection. Default is 'r'.
         survey : Survey
-            Survey whose completeness/detection-efficiency curves to use
-            (required).
+            Survey whose efficiency curves to use (required).
         **kwargs
             Additional keyword arguments:
 
@@ -1189,13 +1201,17 @@ class StreamInjector:
                 Random number generator instance.
             seed : int, optional
                 Random seed if rng is not provided.
+            source_type : str, optional
+                ``'stars'`` (default) or ``'galaxies'``.
             perfect_galstarsep : bool, optional
-                If True, assumes perfect star/galaxy separation. Default is False.
+                If True and ``source_type='stars'``, uses detection-only
+                efficiency (no classification losses). Ignored for galaxies.
+                Default is False.
 
         Returns
         -------
         np.ndarray
-            Boolean array: True for detected stars, False otherwise.
+            Boolean array: True for detected objects, False otherwise.
 
         Raises
         ------
@@ -1208,16 +1224,18 @@ class StreamInjector:
             seed = kwargs.pop("seed", None)
             rng = np.random.default_rng(seed)
 
-        # Select the appropriate magnitude and map depending on the band
         maglim = survey.get_maglim(band, pixel=pix)
 
-        perfect_galstarsep = kwargs.get("perfect_galstarsep", False)
-        if perfect_galstarsep:
-            compl = survey.get_detection_efficiency(band, mag, maglim)
+        source_type = kwargs.get("source_type", "stars")
+        if source_type == "galaxies":
+            compl = survey.get_gal_misclassification(band, mag, maglim)
         else:
-            compl = survey.get_completeness(band, mag, maglim)
+            perfect_galstarsep = kwargs.get("perfect_galstarsep", False)
+            if perfect_galstarsep:
+                compl = survey.get_detection_efficiency(band, mag, maglim)
+            else:
+                compl = survey.get_completeness(band, mag, maglim)
 
-        # Set the threshold using completeness
         threshold = rng.uniform(size=len(mag)) <= compl
 
         return threshold
