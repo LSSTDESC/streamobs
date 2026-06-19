@@ -691,6 +691,7 @@ class IsochroneModel(ConfigurableModel):
 
     def __init__(self, config, **kwargs):
         super().__init__(config, **kwargs)
+        self.create_isochrone(config)
 
     def create_isochrone(self, config):
         """Construct the underlying ``ugali`` isochrone(s) from configuration.
