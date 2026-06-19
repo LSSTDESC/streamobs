@@ -360,7 +360,9 @@ class StreamModel(ConfigurableModel):
             if len(idx) > 0:
                 if self.track is None:
                     raise ValueError("Track model is required to sample phi2")
-                df.loc[idx, "phi2"] = self.track.sample(df.loc[idx, "phi1"].to_numpy(), rng=rng)
+                df.loc[idx, "phi2"] = self.track.sample(
+                    df.loc[idx, "phi1"].to_numpy(), rng=rng
+                )
                 self._info(verbose, f"Filled {len(idx)} phi2 values.")
 
         # dist (needs phi1)
