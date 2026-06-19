@@ -28,23 +28,20 @@ class BackgroundStorage:
         ``{package_root}/data/background/``.
     survey_name : str, optional
         Survey identifier (e.g. ``'lsst'``).  Used in the file path.
-    release : str, optional
-        Survey release string (e.g. ``'yr5'``).  Used in the file path.
 
     Examples
     --------
-    >>> storage = BackgroundStorage(survey_name='lsst', release='yr5')
+    >>> storage = BackgroundStorage(survey_name='lsst')
     >>> path = storage.get_path('stars', ('g', 'r'))
-    >>> # -> .../data/background/lsst_yr5/stars_gr.parquet
+    >>> # -> .../data/background/lsst/stars_gr.parquet
     """
 
-    def __init__(self, base_path=None, survey_name="lsst", release=None, **kwargs):
+    def __init__(self, base_path=None, survey_name="lsst", **kwargs):
         if base_path is None:
             _pkg_root = os.path.join(os.path.dirname(__file__), "..", "..", "data")
             base_path = os.path.join(_pkg_root, "background")
         self.base_path = base_path
         self.survey_name = survey_name
-        self.release = release
 
     def get_path(self, source_type: str, bands: tuple) -> str:
         """
@@ -61,14 +58,11 @@ class BackgroundStorage:
         -------
         str
             Absolute path to the parquet file, e.g.
-            ``{base_path}/lsst_yr5/stars_gr.parquet``.
+            ``{base_path}/lsst/stars_gr.parquet``.
         """
-        survey_key = (
-            f"{self.survey_name}_{self.release}" if self.release else self.survey_name
-        )
         bands_str = "".join(bands)
         filename = f"{source_type}_{bands_str}.parquet"
-        return os.path.join(self.base_path, survey_key, filename)
+        return os.path.join(self.base_path, self.survey_name, filename)
 
     def save_data(
         self,
