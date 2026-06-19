@@ -271,7 +271,9 @@ class StreamInjector:
 
         # Set the seed for reproducibility
         seed = kwargs.pop("seed", None)
-        rng = np.random.default_rng(seed)
+        rng = kwargs.pop("rng", None)
+        if rng is None:
+            rng = np.random.default_rng(seed)
 
         # Shared sky placement + shared true-magnitude fill (masses sampled once
         # across all surveys). This is the same completion exposed publicly as
@@ -698,6 +700,7 @@ class StreamInjector:
                 inplace=True,
                 verbose=verbose,
                 dist=dist,
+                rng=rng,
             )
 
         # Convert (phi1, phi2) -> (ra, dec) using the primary survey footprint.

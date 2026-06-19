@@ -38,27 +38,27 @@ ZIP_PATH = OUT / "data.zip"
 # Directories (path relative to data/) skipped entirely — derivation source /
 # intermediates, not needed to load or inject a survey at runtime.
 EXCLUDE_DIRS = {
-    "surveys/lsst_dc2",        # external LSST DC2 skims (contamination derivation)
-    "surveys/roman_dc2/det",   # raw Roman mock SExtractor detections
-    "surveys/roman_dc2/truth", # raw Roman mock truth tiles
-    "surveys/roman_hlwas",     # bare placeholder dir: raw HLWAS exptime maps (build
-                               # *inputs*); the runtime products are the derived
-                               # maglim maps in roman_hlwas_{wide,medium,all}/
+    "surveys/lsst_dc2",  # external LSST DC2 skims (contamination derivation)
+    "surveys/roman_dc2/det",  # raw Roman mock SExtractor detections
+    "surveys/roman_dc2/truth",  # raw Roman mock truth tiles
+    "surveys/roman_hlwas",  # bare placeholder dir: raw HLWAS exptime maps (build
+    # *inputs*); the runtime products are the derived
+    # maglim maps in roman_hlwas_{wide,medium,all}/
 }
 # Directory basename globs skipped wherever they appear.
 EXCLUDE_DIR_GLOBS = ["*_tiles", "*_tiles_*", "__pycache__"]
 
 # File basename globs skipped — large / derivation / provenance / non-runtime.
 EXCLUDE_FILE_GLOBS = [
-    "*.parquet",                 # det_truth, lsst_matched, cosmodc2_size, truth_stars
-    "andy_*.fits",               # reference matched catalogs (4.8 GB)
-    "cosmoDC2_*",                # cosmoDC2 size skims (derivation input)
-    "dc2_object_*",              # LSST DC2 object skims
-    "dc2_run2.2i_truth_*",       # LSST DC2 truth skims
-    "*_raw.csv",                 # photo-error provenance (raw, pre-afterburner)
+    "*.parquet",  # det_truth, lsst_matched, cosmodc2_size, truth_stars
+    "andy_*.fits",  # reference matched catalogs (4.8 GB)
+    "cosmoDC2_*",  # cosmoDC2 size skims (derivation input)
+    "dc2_object_*",  # LSST DC2 object skims
+    "dc2_run2.2i_truth_*",  # LSST DC2 truth skims
+    "*_raw.csv",  # photo-error provenance (raw, pre-afterburner)
     "roman_galaxy_misclass_*.csv",  # analysis output (injector does not consume it)
-    "map_HLWAS-*",               # raw HLWAS exposure-time maps (build inputs)
-    "*_rough_maglim*",           # intermediate rough maglim maps
+    "map_HLWAS-*",  # raw HLWAS exposure-time maps (build inputs)
+    "*_rough_maglim*",  # intermediate rough maglim maps
     "*.README.md",
     ".DS_Store",
 ]
@@ -87,8 +87,7 @@ def collect():
         rel_root = "" if rel_root == "." else rel_root
         # prune excluded directories in place (don't descend — avoids the huge dirs)
         dirs[:] = [
-            d for d in sorted(dirs)
-            if not _excluded_dir(f"{rel_root}/{d}".lstrip("/"))
+            d for d in sorted(dirs) if not _excluded_dir(f"{rel_root}/{d}".lstrip("/"))
         ]
         for fname in sorted(files):
             rel = f"{rel_root}/{fname}".lstrip("/")
@@ -107,10 +106,15 @@ def collect():
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--list", action="store_true", help="dry run: list included/skipped, no copy")
-    ap.add_argument("--no-zip", action="store_true", help="stage into archive/data/ but don't zip")
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    ap.add_argument(
+        "--list", action="store_true", help="dry run: list included/skipped, no copy"
+    )
+    ap.add_argument(
+        "--no-zip", action="store_true", help="stage into archive/data/ but don't zip"
+    )
     args = ap.parse_args()
 
     kept, skipped = collect()
@@ -147,7 +151,9 @@ def main():
         for rel, _ in kept:
             zf.write(STAGE / rel, arcname=f"data/{rel}")
     print(f"Wrote {ZIP_PATH}  ({ZIP_PATH.stat().st_size/1024/1024:.1f} MB)")
-    print("\nNext: upload archive/data.zip and update BASE_DATA_URL in bin/download_data.py")
+    print(
+        "\nNext: upload archive/data.zip and update BASE_DATA_URL in bin/download_data.py"
+    )
     return 0
 
 

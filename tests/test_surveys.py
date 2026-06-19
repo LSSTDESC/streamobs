@@ -426,13 +426,13 @@ class TestSurveyProperties:
             bright_threshold = loaded_survey._test_entry.get(
                 "bright_completeness_threshold", 0.9
             )
-            assert np.all(
-                comp_bright > bright_threshold
-            ), (
+            assert np.all(comp_bright > bright_threshold), (
                 f"Completeness should be near 1 (>{bright_threshold}) for magnitudes "
                 f"well above saturation in band '{completeness_band}'"
             )
-        skip_faint_check = loaded_survey._test_entry.get("skip_faint_completeness_check", False)
+        skip_faint_check = loaded_survey._test_entry.get(
+            "skip_faint_completeness_check", False
+        )
         if len(faint_mag) > 0 and not skip_faint_check:
             comp_faint = loaded_survey.get_completeness(
                 completeness_band, faint_mag, base_maglim
@@ -467,7 +467,9 @@ class TestSurveyProperties:
             faint_mag = faint_magnitudes[faint_magnitudes > sat]
 
             bright_mag_mean, faint_mag_mean = None, None
-            skip_sat_check = loaded_survey._test_entry.get("skip_sat_photoerr_check", False)
+            skip_sat_check = loaded_survey._test_entry.get(
+                "skip_sat_photoerr_check", False
+            )
             if len(sat_mag) > 0 and not skip_sat_check:
                 err_sat = loaded_survey.get_photo_error(band, sat_mag, base_maglim)
                 assert np.all(
@@ -493,7 +495,9 @@ class TestSurveyProperties:
                     faint_mag_mean > bright_mag_mean
                 ), f"Mean photo error should increase with magnitude in band '{band}'"
 
-            skip_snr_check = loaded_survey._test_entry.get("skip_snr_maglim_check", False)
+            skip_snr_check = loaded_survey._test_entry.get(
+                "skip_snr_maglim_check", False
+            )
             if not skip_snr_check:
                 error_at_maglim = loaded_survey.get_photo_error(
                     band, base_maglim, base_maglim

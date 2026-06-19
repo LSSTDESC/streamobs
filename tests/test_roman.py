@@ -67,7 +67,6 @@ def roman_dc2_injector(roman_dc2_survey):
     return StreamInjector(survey=roman_dc2_survey, verbose=False)
 
 
-
 # ---------------------------------------------------------------------------
 # Survey loading
 # ---------------------------------------------------------------------------
@@ -93,9 +92,9 @@ class TestRomanDC2SurveyLoading:
     @_skip_no_data
     def test_bands_present(self, roman_dc2_survey):
         for band in ("F106", "F129", "F158"):
-            assert band in roman_dc2_survey.bands, (
-                f"Expected band '{band}' in roman_dc2.bands={roman_dc2_survey.bands}"
-            )
+            assert (
+                band in roman_dc2_survey.bands
+            ), f"Expected band '{band}' in roman_dc2.bands={roman_dc2_survey.bands}"
 
     @_skip_no_data
     def test_f158_maglim_map_loaded(self, roman_dc2_survey):
@@ -115,12 +114,10 @@ class TestRomanDC2SurveyLoading:
         # From roman_dc2.yaml survey_properties
         expected = {"F106": 1.1495, "F129": 0.8497, "F158": 0.6140}
         for band, coeff in expected.items():
-            assert band in roman_dc2_survey.coeff_extinc, (
-                f"Extinction coefficient missing for band '{band}'"
-            )
-            assert np.isclose(
-                roman_dc2_survey.coeff_extinc[band], coeff, rtol=1e-3
-            ), (
+            assert (
+                band in roman_dc2_survey.coeff_extinc
+            ), f"Extinction coefficient missing for band '{band}'"
+            assert np.isclose(roman_dc2_survey.coeff_extinc[band], coeff, rtol=1e-3), (
                 f"Extinction coefficient for '{band}': "
                 f"expected {coeff}, got {roman_dc2_survey.coeff_extinc[band]}"
             )
@@ -145,6 +142,7 @@ def _make_roman_dc2_catalog(n=20, rng=None):
     ``roman_F158_true``).
     """
     import pandas as pd
+
     from streamobs.columns import true_col
 
     if rng is None:
@@ -182,14 +180,15 @@ class TestRomanDC2Injection:
             verbose=False,
         )
 
-        from streamobs.columns import true_col, obs_col, err_col, flag_col
+        from streamobs.columns import err_col, flag_col, obs_col, true_col
+
         expected_cols = [
             "ra",
             "dec",
-            true_col("F158", "roman_dc2"),      # roman_F158_true  (name-only)
-            obs_col("F158", "roman_dc2"),        # roman_dc2_F158_obs (full namespace)
-            err_col("F158", "roman_dc2"),        # roman_dc2_F158_err (full namespace)
-            flag_col("roman_dc2"),               # roman_dc2_flag_observed
+            true_col("F158", "roman_dc2"),  # roman_F158_true  (name-only)
+            obs_col("F158", "roman_dc2"),  # roman_dc2_F158_obs (full namespace)
+            err_col("F158", "roman_dc2"),  # roman_dc2_F158_err (full namespace)
+            flag_col("roman_dc2"),  # roman_dc2_flag_observed
         ]
         missing = [c for c in expected_cols if c not in out.columns]
         assert not missing, f"Missing columns after inject: {missing}"
@@ -198,13 +197,14 @@ class TestRomanDC2Injection:
     def test_true_mags_preserved_after_inject(self, roman_dc2_injector):
         """True magnitudes supplied in the input must survive inject() unchanged."""
         from streamobs.columns import true_col
+
         df = _make_roman_dc2_catalog(n=15)
-        true_colname = true_col("F158", "roman_dc2")   # roman_F158_true
+        true_colname = true_col("F158", "roman_dc2")  # roman_F158_true
         true_in = df[true_colname].values.copy()
         out = roman_dc2_injector.inject(df, bands=["F158"], verbose=False)
-        assert np.allclose(out[true_colname].values, true_in), (
-            f"{true_colname} changed during inject()"
-        )
+        assert np.allclose(
+            out[true_colname].values, true_in
+        ), f"{true_colname} changed during inject()"
 
     @_skip_no_data
     def test_flag_observed_is_boolean(self, roman_dc2_injector):
@@ -213,9 +213,9 @@ class TestRomanDC2Injection:
         out = roman_dc2_injector.inject(df, bands=["F158"], verbose=False)
         flags = out["roman_dc2_flag_observed"]
         unique_vals = set(flags.dropna().unique())
-        assert unique_vals.issubset({0, 1, True, False}), (
-            f"roman_dc2_flag_observed contains unexpected values: {unique_vals}"
-        )
+        assert unique_vals.issubset(
+            {0, 1, True, False}
+        ), f"roman_dc2_flag_observed contains unexpected values: {unique_vals}"
 
     @_skip_no_data
     def test_obs_mags_differ_from_true(self, roman_dc2_injector):
@@ -227,8 +227,12 @@ class TestRomanDC2Injection:
         detected = out[observed == 1]
         if len(detected) == 0:
             pytest.skip("No detected stars in this footprint sample — increase n")
-        from streamobs.columns import true_col, obs_col
-        diffs = (detected[obs_col("F158", "roman_dc2")] - detected[true_col("F158", "roman_dc2")]).abs()
+        from streamobs.columns import obs_col, true_col
+
+        diffs = (
+            detected[obs_col("F158", "roman_dc2")]
+            - detected[true_col("F158", "roman_dc2")]
+        ).abs()
         assert diffs.mean() > 0, "Observed mags identical to true — noise not applied"
 
 
@@ -262,7 +266,8 @@ class TestRomanDC2TrueNameObsNamespaceConvention:
         """inject() must emit roman_F158_true (name-only) and roman_dc2_F158_obs
         (full namespace); wrong-namespace true and lowercase variants absent."""
         import pandas as pd
-        from streamobs.columns import true_col, obs_col, flag_col
+
+        from streamobs.columns import flag_col, obs_col, true_col
 
         rng = np.random.default_rng(7)
         n = 25
@@ -277,29 +282,29 @@ class TestRomanDC2TrueNameObsNamespaceConvention:
         out = roman_dc2_injector.inject(df, bands=["F158"], verbose=False)
 
         # Correct columns must be present
-        assert true_col("F158", "roman_dc2") in out.columns, (
-            f"{true_col('F158','roman_dc2')} missing — name-only true column lost"
-        )
-        assert obs_col("F158", "roman_dc2") in out.columns, (
-            f"{obs_col('F158','roman_dc2')} missing — full-namespace obs column absent"
-        )
-        assert flag_col("roman_dc2") in out.columns, (
-            f"{flag_col('roman_dc2')} missing after inject"
-        )
+        assert (
+            true_col("F158", "roman_dc2") in out.columns
+        ), f"{true_col('F158','roman_dc2')} missing — name-only true column lost"
+        assert (
+            obs_col("F158", "roman_dc2") in out.columns
+        ), f"{obs_col('F158','roman_dc2')} missing — full-namespace obs column absent"
+        assert (
+            flag_col("roman_dc2") in out.columns
+        ), f"{flag_col('roman_dc2')} missing after inject"
 
         # Wrong-form columns must be absent
-        assert "roman_dc2_F158_true" not in out.columns, (
-            "roman_dc2_F158_true present — release must NOT appear on true columns"
-        )
-        assert "roman_f158_obs" not in out.columns, (
-            "roman_f158_obs present — lowercase band key not fully removed"
-        )
-        assert "roman_dc2_f158_obs" not in out.columns, (
-            "roman_dc2_f158_obs present — lowercase band key not fully removed"
-        )
-        assert "roman_f158_true" not in out.columns, (
-            "roman_f158_true present — lowercase band in true column"
-        )
+        assert (
+            "roman_dc2_F158_true" not in out.columns
+        ), "roman_dc2_F158_true present — release must NOT appear on true columns"
+        assert (
+            "roman_f158_obs" not in out.columns
+        ), "roman_f158_obs present — lowercase band key not fully removed"
+        assert (
+            "roman_dc2_f158_obs" not in out.columns
+        ), "roman_dc2_f158_obs present — lowercase band key not fully removed"
+        assert (
+            "roman_f158_true" not in out.columns
+        ), "roman_f158_true present — lowercase band in true column"
 
 
 # ---------------------------------------------------------------------------
@@ -358,9 +363,9 @@ class TestRomanVegaToAB:
         iso_model = self._make_iso_model()
         mags = np.array([20.0, 21.0, 22.0])
         ab_mags = iso_model._to_ab("g", mags)
-        assert np.allclose(ab_mags, mags), (
-            "Non-Roman band 'g' should not be modified by _to_ab"
-        )
+        assert np.allclose(
+            ab_mags, mags
+        ), "Non-Roman band 'g' should not be modified by _to_ab"
 
     def test_all_roman_bands_have_positive_offset(self):
         """Every Roman band in ROMAN_VEGA_TO_AB must have a positive offset
@@ -368,9 +373,9 @@ class TestRomanVegaToAB:
         from streamobs.model import ROMAN_VEGA_TO_AB
 
         for band, offset in ROMAN_VEGA_TO_AB.items():
-            assert offset > 0, (
-                f"Roman band {band} has non-positive Vega→AB offset: {offset}"
-            )
+            assert (
+                offset > 0
+            ), f"Roman band {band} has non-positive Vega→AB offset: {offset}"
 
     def test_ab_mags_greater_than_vega(self):
         """AB mags must be strictly larger (numerically dimmer in flux) than Vega
@@ -381,9 +386,9 @@ class TestRomanVegaToAB:
         mags_vega = np.array([20.0])
         for band in ("F106", "F129", "F158", "F184"):
             mags_ab = iso_model._to_ab(band, mags_vega)
-            assert mags_ab[0] > mags_vega[0], (
-                f"AB mag should be larger than Vega for Roman band {band}"
-            )
+            assert (
+                mags_ab[0] > mags_vega[0]
+            ), f"AB mag should be larger than Vega for Roman band {band}"
 
 
 # ---------------------------------------------------------------------------
@@ -397,33 +402,33 @@ class TestRomanDC2Efficiencies:
 
     @_skip_no_data
     def test_completeness_callable(self, roman_dc2_survey):
-        assert callable(roman_dc2_survey.completeness), (
-            "roman_dc2.completeness must be callable"
-        )
+        assert callable(
+            roman_dc2_survey.completeness
+        ), "roman_dc2.completeness must be callable"
 
     @_skip_no_data
     def test_efficiency_detection_callable(self, roman_dc2_survey):
-        assert callable(roman_dc2_survey.efficiency_detection), (
-            "roman_dc2.efficiency_detection must be callable"
-        )
+        assert callable(
+            roman_dc2_survey.efficiency_detection
+        ), "roman_dc2.efficiency_detection must be callable"
 
     @_skip_no_data
     def test_efficiency_classification_callable(self, roman_dc2_survey):
-        assert callable(roman_dc2_survey.efficiency_classification), (
-            "roman_dc2.efficiency_classification must be callable"
-        )
+        assert callable(
+            roman_dc2_survey.efficiency_classification
+        ), "roman_dc2.efficiency_classification must be callable"
 
     @_skip_no_data
     def test_log_photo_error_catalog_callable(self, roman_dc2_survey):
-        assert callable(roman_dc2_survey.log_photo_error_catalog), (
-            "roman_dc2.log_photo_error_catalog must be callable"
-        )
+        assert callable(
+            roman_dc2_survey.log_photo_error_catalog
+        ), "roman_dc2.log_photo_error_catalog must be callable"
 
     @_skip_no_data
     def test_log_photo_error_sample_callable(self, roman_dc2_survey):
-        assert callable(roman_dc2_survey.log_photo_error_sample), (
-            "roman_dc2.log_photo_error_sample must be callable"
-        )
+        assert callable(
+            roman_dc2_survey.log_photo_error_sample
+        ), "roman_dc2.log_photo_error_sample must be callable"
 
     @_skip_no_data
     def test_two_curve_photo_error_differ(self, roman_dc2_survey):
@@ -446,9 +451,9 @@ class TestRomanDC2Efficiencies:
         maglim = 26.0
         bright_mags = np.array([20.0, 21.0, 22.0])
         comp = roman_dc2_survey.get_completeness("F158", bright_mags, maglim)
-        assert np.all(comp > 0.5), (
-            f"Completeness should be >0.5 for bright stars: {comp}"
-        )
+        assert np.all(
+            comp > 0.5
+        ), f"Completeness should be >0.5 for bright stars: {comp}"
 
     @_skip_no_data
     def test_completeness_below_saturation_zero(self, roman_dc2_survey):
@@ -457,9 +462,7 @@ class TestRomanDC2Efficiencies:
         maglim = 26.0
         sat_mags = np.array([10.0, 12.0, 15.0])
         comp = roman_dc2_survey.get_completeness("F158", sat_mags, maglim)
-        assert np.all(comp == 0.0), (
-            f"Completeness should be 0 below saturation: {comp}"
-        )
+        assert np.all(comp == 0.0), f"Completeness should be 0 below saturation: {comp}"
 
     @_skip_no_data
     def test_classifiction_eff_fallback_via_csv(self):
@@ -471,7 +474,9 @@ class TestRomanDC2Efficiencies:
         """
         from streamobs.surveys import SurveyFactory
 
-        csv_path = os.path.join(_ROMAN_DC2_DATA_DIR, "roman_stellar_efficiency_cutf158.csv")
+        csv_path = os.path.join(
+            _ROMAN_DC2_DATA_DIR, "roman_stellar_efficiency_cutf158.csv"
+        )
         if not os.path.exists(csv_path):
             pytest.skip(f"efficiency CSV not found: {csv_path}")
 
@@ -484,6 +489,6 @@ class TestRomanDC2Efficiencies:
         delta_mags = np.linspace(-3.0, 0.0, 10)
         vals = func(delta_mags)
         assert np.all(np.isfinite(vals)), "Efficiency values should be finite"
-        assert np.all((vals >= 0.0) & (vals <= 1.0)), (
-            f"Efficiency values should be in [0, 1]: {vals}"
-        )
+        assert np.all(
+            (vals >= 0.0) & (vals <= 1.0)
+        ), f"Efficiency values should be in [0, 1]: {vals}"
