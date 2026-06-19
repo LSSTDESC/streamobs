@@ -121,6 +121,7 @@ class Survey:
     log_photo_error_catalog: Optional[Callable] = None
     log_photo_error_sample: Optional[Callable] = None
     gal_misclassification: Optional[Callable] = None
+    gal_misclassification_detection: Optional[Callable] = None
 
     # Band-independent maps
     ebv_map: Optional[np.ndarray] = None
@@ -528,37 +529,72 @@ class Survey:
         get_detection_efficiency : Convenience wrapper for detection-only.
         get_classification_efficiency : Convenience wrapper for classification-only.
         """
-        if type == "completeness":
-            func = self.completeness
-        elif type == "detection_efficiency":
-            func = self.efficiency_detection
-        elif type == "classification_efficiency":
-            func = self.efficiency_classification
-        else:
-            raise ValueError(f"Efficiency type '{type}' not recognized.")
-        if func is None:
-            raise ValueError(f"Efficiency function for type '{type}' not loaded")
-
         delta_saturation = kwargs.get("delta_saturation", self.delta_saturation)
-
-        # Calculate delta_mag
         delta_mag = magnitude - maglim
 
-        # Apply saturation condition: 1 padding for objects fainter than saturation but equivalent mag brighter than saturation0
+        if type in ("missclassified", "detected_missclassified"):
+            # Galaxy-related efficiencies: no 1-padding at the bright end.
+            if type == "missclassified":
+                func = self.gal_misclassification
+                if func is None:
+                    raise ValueError(
+                        "Efficiency function for type 'missclassified' not loaded."
+                    )
+            else:  # detected_missclassified
+                func = getattr(self, "gal_misclassification_detection", None)
+                if func is None:
+                    # Fallback: missclassification × detection efficiency.
+                    mis = self.gal_misclassification
+                    det = getattr(self, "efficiency_detection", None)
+                    if mis is None or det is None:
+                        raise ValueError(
+                            "Efficiency function for type 'detected_missclassified' not "
+                            "loaded and cannot be derived (need both 'missclassified' and "
+                            "'detection_efficiency')."
+                        )
+                    func = lambda dm: mis(dm) * det(dm)  # noqa: E731
+            compl = func(delta_mag)
+            compl = np.where(magnitude < self.saturation[band], 0.0, compl)
+            compl = np.where(
+                (maglim < self.saturation[band]) | np.isnan(maglim), 0.0, compl
+            )
+            return compl
+
+        if type in ("completeness", "classification_detection"):
+            func = self.completeness
+            if func is None:
+                # Fallback: compute classification × detection on the fly.
+                det = getattr(self, "efficiency_detection", None)
+                cls_ = getattr(self, "efficiency_classification", None)
+                if det is None or cls_ is None:
+                    raise ValueError(
+                        "Efficiency function for type 'completeness' not loaded and "
+                        "cannot be derived (need both detection and classification)."
+                    )
+                func = lambda dm: det(dm) * cls_(dm)  # noqa: E731
+        elif type == "detection_efficiency":
+            func = getattr(self, "efficiency_detection", None)
+        elif type == "classification_efficiency":
+            func = getattr(self, "efficiency_classification", None)
+        else:
+            raise ValueError(
+                f"Efficiency type '{type}' not recognized. Valid types: "
+                "'completeness', 'classification_detection', 'detection_efficiency', "
+                "'classification_efficiency', 'missclassified', 'detected_missclassified'."
+            )
+        if func is None:
+            raise ValueError(f"Efficiency function for type '{type}' not loaded.")
+
+        # 1-padding: bright sources (well above saturation) are always detected.
         compl = np.where(
             (magnitude > self.saturation[band]) & (delta_mag <= delta_saturation),
             1.0,
             func(delta_mag),
-        )  # 1 padded
-
-        compl = np.where(
-            magnitude < self.saturation[band], 0.0, compl
-        )  # saturation at the bright end
-
+        )
+        compl = np.where(magnitude < self.saturation[band], 0.0, compl)
         compl = np.where(
             (maglim < self.saturation[band]) | np.isnan(maglim), 0.0, compl
-        )  # not observed if the area is not covered
-
+        )
         return compl
 
     def get_gal_misclassification(
@@ -595,28 +631,45 @@ class Survey:
         ValueError
             If :attr:`gal_misclassification` has not been loaded.
         """
-        if self.gal_misclassification is None:
-            raise ValueError(
-                "gal_misclassification function not loaded for this survey. "
-                "Load it via SurveyFactory.set_gal_misclassification() or the "
-                "'gal_misclassification' config key."
-            )
+        return self.get_efficiency(band, magnitude, maglim, type="missclassified", **kwargs)
 
-        delta_mag = magnitude - maglim
+    def get_gal_misclassification_detection(
+        self, band: str, magnitude: float, maglim: float, **kwargs
+    ) -> float:
+        """
+        Get galaxy misclassification × detection efficiency.
 
-        # No 1-padding: apply the interpolator directly
-        compl = self.gal_misclassification(delta_mag)
+        Mirrors :meth:`get_efficiency` for the ``"detected_missclassified"`` type,
+        but **without 1-padding at the bright end**: bright galaxies are not forced
+        to efficiency = 1 when their delta_mag falls below the saturation
+        threshold. This reproduces the behaviour of ``custom_get_completeness``
+        used for galaxies in external background-generation scripts.
 
-        compl = np.where(
-            magnitude < self.saturation[band], 0.0, compl
-        )  # saturation at the bright end
+        Parameters
+        ----------
+        band : str
+            Band identifier (e.g., 'g', 'r').
+        magnitude : float or np.ndarray
+            True apparent magnitude(s) including extinction.
+        maglim : float or np.ndarray
+            Magnitude limit(s) at the source position(s).
+        **kwargs
+            delta_saturation : float, optional
+                Override the survey's default saturation threshold.
 
-        compl = np.where(
-            (maglim < self.saturation[band]) | np.isnan(maglim), 0.0, compl
-        )  # not observed if the area is not covered
+        Returns
+        -------
+        float or np.ndarray
+            Misclassification × detection probability in [0, 1].
 
-        return compl
-
+        Raises
+        ------
+        ValueError
+            If :attr:`gal_misclassification_detection` has not been loaded.
+        """
+        return self.get_efficiency(
+            band, magnitude, maglim, type="detected_missclassified", **kwargs
+        )
 
 class SurveyFactory:
     """
@@ -1243,6 +1296,26 @@ class SurveyFactory:
                 if verbose:
                     print(f"Could not load galaxy misclassification file: {e}")
 
+            # Also try to load the combined detection × misclassification from the same file.
+            try:
+                cls._load_file(
+                    survey,
+                    survey_config,
+                    "gal_misclassification_detection",
+                    "Galaxy misclassification × detection efficiency",
+                    lambda f: cls.set_completeness(
+                        f,
+                        delta_saturation=survey.delta_saturation,
+                        selection="detected_missclassified",
+                    ),
+                    data_path_survey,
+                    data_path_others,
+                    filename=survey_config.get("gal_misclassification"),
+                    **kwargs,
+                )
+            except Exception:
+                pass  # column absent — fallback to product at call time
+
         # Load photometric error model(s), same for all bands. Two curves:
         #   - catalog : reported error vs delta_mag (the survey's photoerror file).
         #               Written as magerr and used for the S/N cut. Always loaded.
@@ -1479,7 +1552,7 @@ class SurveyFactory:
             - 'classification_eff' : Classification efficiency only (the legacy
               misspelled header 'classifiction_eff' is also accepted)
             - 'classification_detection_eff' : Combined efficiency
-            - 'gal_misclassification_eff' : Galaxy misclassification efficiency
+            - 'missclassification_eff' : Galaxy misclassification efficiency
               (probability a galaxy passes stellar selection)
 
         delta_saturation : float, optional
@@ -1493,7 +1566,7 @@ class SurveyFactory:
             - 'both' : Combined detection and classification (column
               'classification_detection_eff')
             - 'missclassified' : Galaxy misclassification efficiency (column
-              'gal_misclassification_eff')
+              'missclassification_eff')
 
             Default is 'both'.
 
@@ -1530,7 +1603,9 @@ class SurveyFactory:
         elif selection == "both":
             efficiencies = data["classification_detection_eff"]
         elif selection == "missclassified":
-            efficiencies = data["gal_misclassification_eff"]
+            efficiencies = data["missclassification_eff"]
+        elif selection == "detected_missclassified":
+            efficiencies = data["missclassification_detection_eff"]
         else:
             raise ValueError(
                 f"Invalid selection '{selection}'. Must be 'detected', 'classified', "
