@@ -337,9 +337,33 @@ class TestCompleteCatalogPermutations:
         out = model.complete_catalog(
             catalog=df, columns_to_add=columns_to_add, verbose=False
         )
+        # masses is supplied directly, so rng is unused here -- omit it rather
+        # than implying it affects the result.
         direct, _ = iso.sample(15, 16.8, masses=masses)
+        # MAGS is a set, so list(self.MAGS) order is not guaranteed; look up
+        # each column by its known name instead of relying on position.
         assert np.allclose(out["lsst_g_true"].to_numpy(), direct[("lsst_yr4", "g")])
         assert np.allclose(out["lsst_r_true"].to_numpy(), direct[("lsst_yr4", "r")])
+
+    def test_reproductivility_complete_catalog(self, stream_config_with_distance):
+        """Repeated calls to complete_catalog with the same RNG seed yield identical results."""
+        model1 = StreamModel(stream_config_with_distance)
+        model2 = StreamModel(stream_config_with_distance)
+        # Two independently-seeded generators, not the same shared instance --
+        # reusing one `rng` object across both calls would advance its state
+        # between calls and never agree.
+        out1 = model1.complete_catalog(
+            catalog=None, size=10, verbose=False, rng=np.random.default_rng(0)
+        )
+        out2 = model2.complete_catalog(
+            catalog=None, size=10, verbose=False, rng=np.random.default_rng(0)
+        )
+
+        for col in out1.columns:
+            assert np.allclose(
+                out1[col].to_numpy(), out2[col].to_numpy()
+            ), f"Column {col} differs between runs"
+
 
 # ---------------------------------------------------------------------------
 # IsochroneModel — shared initial masses (user-supplied + `mass` column)

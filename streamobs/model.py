@@ -124,13 +124,17 @@ class StreamModel(ConfigurableModel):
         else:
             return None
 
-    def sample(self, size):
+    def sample(self, size, rng=None):
         """Sample stream stars and derived quantities.
 
         Parameters
         ----------
         size : int
             Number of stars to generate.
+        rng : numpy.random.Generator, optional
+            Random number generator shared across every sub-model so the same
+            seed reproduces an identical catalog. A fresh, unseeded generator
+            is created (and *not* shared with other calls) if omitted.
 
         Returns
         -------
@@ -139,20 +143,21 @@ class StreamModel(ConfigurableModel):
             ``rv``, and the isochrone magnitude columns ``<survey>_<band>_true``
             (per survey/band). Some may be None if the sub-model is absent.
         """
+        rng = np.random.default_rng() if rng is None else rng
 
         # Sample phi1 and phi2
-        phi1 = self.density.sample(size)
-        phi2 = self.track.sample(phi1)
+        phi1 = self.density.sample(size, rng=rng)
+        phi2 = self.track.sample(phi1, rng=rng)
 
         # Sample distances
         if self.distance_modulus:
-            dist = self.distance_modulus.sample(phi1)
+            dist = self.distance_modulus.sample(phi1, rng=rng)
         else:
             dist = None
 
         # Sample kinematics
         if self.velocity:
-            mu1, mu2, rv = self.velocity.sample(phi1)
+            mu1, mu2, rv = self.velocity.sample(phi1, rng=rng)
         else:
             mu1, mu2, rv = None, None, None
 
@@ -170,7 +175,7 @@ class StreamModel(ConfigurableModel):
 
         # Sample magnitudes from isochrone (band-/survey-general columns)
         if self.isochrone:
-            mag_data = self._sample_iso_mags(size, dist)
+            mag_data = self._sample_iso_mags(size, dist, rng=rng)
         else:
             mag_data = {}  # no isochrone -> no magnitude columns
         for col, vals in mag_data.items():
@@ -195,7 +200,7 @@ class StreamModel(ConfigurableModel):
             cols += [true_col(band_1, name), true_col(band_2, name)]
         return cols
 
-    def _sample_iso_mags(self, n, dist, masses=None):
+    def _sample_iso_mags(self, n, dist, masses=None, rng=None):
         """Sample isochrone magnitudes as a ``{column: values}`` dict.
 
         Returns each survey's ``<namespace>_<band>_true`` columns plus the shared
@@ -203,7 +208,7 @@ class StreamModel(ConfigurableModel):
         is given it is used directly instead of an IMF draw, so the sampled
         magnitudes reproduce those exact stars.
         """
-        mags, masses = self.isochrone.sample(n, dist, masses=masses)
+        mags, masses = self.isochrone.sample(n, dist, masses=masses, rng=rng)
         cols = {true_col(band, name): vals for (name, band), vals in mags.items()}
         cols["mass"] = masses
         return cols
@@ -217,6 +222,7 @@ class StreamModel(ConfigurableModel):
         save_path=None,
         verbose=True,
         dist=None,
+        rng=None,
     ):
         """Complete only the requested columns in a catalog.
 
@@ -259,6 +265,11 @@ class StreamModel(ConfigurableModel):
             that needs a ``dist`` value; an array must have one entry per row.
             When given, ``phi1`` and a ``distance_modulus`` model are **not**
             required to fill magnitudes. Only missing ``dist`` rows are set.
+        rng : numpy.random.Generator, optional
+            Random number generator shared across every sub-model call in this
+            method, so passing the same seed reproduces an identical completed
+            catalog. A fresh, unseeded generator is created (and not shared
+            with other calls) if omitted.
 
         Returns
         -------
@@ -286,6 +297,8 @@ class StreamModel(ConfigurableModel):
         - When ``catalog`` is a CSV path and ``inplace`` is True, the original
           file is overwritten.
         """
+        rng = np.random.default_rng() if rng is None else rng
+
         # Supported outputs and capability filtering
         # Columns this method can fill using the configured model
         # Magnitude columns are survey-namespaced (<survey>_<band>_true).
@@ -334,7 +347,7 @@ class StreamModel(ConfigurableModel):
             if len(idx) > 0:
                 if self.density is None:
                     raise ValueError("Density model is required to sample phi1")
-                df.loc[idx, "phi1"] = self.density.sample(len(idx))
+                df.loc[idx, "phi1"] = self.density.sample(len(idx), rng=rng)
                 self._info(verbose, f"Filled {len(idx)} phi1 values.")
 
         # phi2 (needs phi1)
@@ -347,7 +360,7 @@ class StreamModel(ConfigurableModel):
             if len(idx) > 0:
                 if self.track is None:
                     raise ValueError("Track model is required to sample phi2")
-                df.loc[idx, "phi2"] = self.track.sample(df.loc[idx, "phi1"].to_numpy())
+                df.loc[idx, "phi2"] = self.track.sample(df.loc[idx, "phi1"].to_numpy(), rng=rng)
                 self._info(verbose, f"Filled {len(idx)} phi2 values.")
 
         # dist (needs phi1)
@@ -384,7 +397,7 @@ class StreamModel(ConfigurableModel):
                         )
 
                     df.loc[idx, "dist"] = self.distance_modulus.sample(
-                        df.loc[idx, "phi1"].to_numpy()
+                        df.loc[idx, "phi1"].to_numpy(), rng=rng
                     )
                     self._info(verbose, f"Filled {len(idx)} dist values.")
 
@@ -418,7 +431,7 @@ class StreamModel(ConfigurableModel):
                 # One shared mass draw -> all bands; the newly filled cells are
                 # mutually colour-consistent. Assign only the missing rows so any
                 # bands/values already present are left untouched.
-                mags = self._sample_iso_mags(N, dist_vals, masses=masses_in)
+                mags = self._sample_iso_mags(N, dist_vals, masses=masses_in, rng=rng)
                 for col, idx in to_fill.items():
                     pos = df.index.get_indexer(idx)
                     if col not in df.columns:
@@ -438,7 +451,7 @@ class StreamModel(ConfigurableModel):
             else:
                 if "phi1" not in df.columns or df["phi1"].isna().any():
                     raise ValueError("phi1 required to sample velocities")
-                mu1, mu2, rv = self.velocity.sample(df["phi1"].to_numpy())
+                mu1, mu2, rv = self.velocity.sample(df["phi1"].to_numpy(), rng=rng)
                 if "rv" in df.columns or "mu1" in df.columns or "mu2" in df.columns:
                     self._info(
                         verbose,
@@ -589,20 +602,23 @@ class DensityModel(ConfigurableModel):
         type_ = kwargs.pop("type").lower()
         self.density = sampler_factory(type_, **kwargs)
 
-    def sample(self, size):
+    def sample(self, size, rng=None):
         """Draw ``phi1`` samples.
 
         Parameters
         ----------
         size : int
             Number of samples.
+        rng : numpy.random.Generator, optional
+            Random number generator for reproducible sampling. A fresh,
+            unseeded generator is used if omitted.
 
         Returns
         -------
         numpy.ndarray
             Sampled ``phi1`` values.
         """
-        return self.density.sample(size)
+        return self.density.sample(size, rng=rng)
 
 
 class TrackModel(ConfigurableModel):
@@ -634,13 +650,16 @@ class TrackModel(ConfigurableModel):
 
         self._sampler = sampler_factory(type_, **kwargs)
 
-    def sample(self, x):
+    def sample(self, x, rng=None):
         """Sample ``phi2`` at given ``phi1`` positions ``x``.
 
         Parameters
         ----------
         x : array-like
             ``phi1`` positions where to sample ``phi2``.
+        rng : numpy.random.Generator, optional
+            Random number generator for reproducible sampling. A fresh,
+            unseeded generator is used if omitted.
 
         Returns
         -------
@@ -649,7 +668,7 @@ class TrackModel(ConfigurableModel):
         """
         size = len(x)
         self._create_sampler(x)
-        return self._sampler.sample(size)
+        return self._sampler.sample(size, rng=rng)
 
 
 class DistanceModel(ConfigurableModel):
@@ -899,7 +918,7 @@ class IsochroneModel(ConfigurableModel):
 class VelocityModel(ConfigurableModel):
     """Placeholder for velocity model."""
 
-    def sample(self, phi1):
+    def sample(self, phi1, rng=None):
         """Placeholder"""
         warnings.warn("VelocityModel not implemented!")
 
