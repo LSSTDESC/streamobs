@@ -1275,8 +1275,13 @@ class SurveyFactory:
                 if verbose:
                     print("No classification efficiency file found, skipping.")
 
-        # Load galaxy misclassification efficiency (optional)
-        if "gal_misclassification" in survey_config:
+        # Load galaxy misclassification efficiency (optional).
+        # Uses the explicit 'gal_misclassification' config key when present,
+        # otherwise falls back to the completeness file (same CSV, different column).
+        _gal_mis_file = survey_config.get(
+            "gal_misclassification", survey_config.get("completeness")
+        )
+        if _gal_mis_file is not None:
             try:
                 cls._load_file(
                     survey,
@@ -1290,13 +1295,13 @@ class SurveyFactory:
                     ),
                     data_path_survey,
                     data_path_others,
+                    filename=_gal_mis_file,
                     **kwargs,
                 )
-            except Exception as e:
-                if verbose:
-                    print(f"Could not load galaxy misclassification file: {e}")
+            except Exception:
+                pass  # column absent in this survey's file — silently skip
 
-            # Also try to load the combined detection × misclassification from the same file.
+            # Also try the combined detection × misclassification from the same file.
             try:
                 cls._load_file(
                     survey,
@@ -1310,7 +1315,7 @@ class SurveyFactory:
                     ),
                     data_path_survey,
                     data_path_others,
-                    filename=survey_config.get("gal_misclassification"),
+                    filename=_gal_mis_file,
                     **kwargs,
                 )
             except Exception:
