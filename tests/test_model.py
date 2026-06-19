@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from streamobs.model import DensityModel, StreamModel, TrackModel
+from streamobs.model import DensityModel, StreamModel, TrackModel, IsochroneModel
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -319,35 +319,6 @@ class TestCompleteCatalogPermutations:
                 catalog=df, columns_to_add=list(self.MAGS), verbose=False
             )
 
-
-# ---------------------------------------------------------------------------
-# IsochroneModel — shared initial masses (user-supplied + `mass` column)
-# ---------------------------------------------------------------------------
-
-
-@pytest.mark.model
-class TestIsochroneMasses:
-    """The shared initial masses can be reused/supplied and surface as `mass`."""
-
-    G = "lsst_g_true"
-    R = "lsst_r_true"
-
-    def test_sample_returns_and_reuses_masses(self, stream_config_with_distance):
-        """Replaying the returned masses reproduces identical magnitudes."""
-        iso = StreamModel(stream_config_with_distance).isochrone
-        mags1, masses = iso.sample(50, 16.8, rng=np.random.default_rng(0))
-        assert masses.shape == (50,)
-        # Supplying those masses (no rng) is deterministic and reproduces mags1.
-        mags2, masses2 = iso.sample(50, 16.8, masses=masses)
-        assert np.allclose(masses, masses2)
-        for key in mags1:
-            assert np.allclose(mags1[key], mags2[key]), f"{key} not reproduced"
-
-    def test_sample_masses_length_validated(self, stream_config_with_distance):
-        iso = StreamModel(stream_config_with_distance).isochrone
-        with pytest.raises(ValueError):
-            iso.sample(50, 16.8, masses=np.ones(49))
-
     def test_complete_catalog_exposes_mass_column(self, stream_config_with_distance):
         """A completed catalog carries the shared `mass` column."""
         model = StreamModel(stream_config_with_distance)
@@ -362,9 +333,165 @@ class TestIsochroneMasses:
         iso = model.isochrone
         _, masses = iso.sample(15, 16.8, rng=np.random.default_rng(3))
         df = pd.DataFrame({"dist": [16.8] * 15, "mass": masses})
+        columns_to_add = list(self.MAGS)
         out = model.complete_catalog(
-            catalog=df, columns_to_add=[self.G, self.R], verbose=False
+            catalog=df, columns_to_add=columns_to_add, verbose=False
         )
         direct, _ = iso.sample(15, 16.8, masses=masses)
-        assert np.allclose(out[self.G].to_numpy(), direct[("lsst_yr4", "g")])
-        assert np.allclose(out[self.R].to_numpy(), direct[("lsst_yr4", "r")])
+        assert np.allclose(out["lsst_g_true"].to_numpy(), direct[("lsst_yr4", "g")])
+        assert np.allclose(out["lsst_r_true"].to_numpy(), direct[("lsst_yr4", "r")])
+
+# ---------------------------------------------------------------------------
+# IsochroneModel — shared initial masses (user-supplied + `mass` column)
+# ---------------------------------------------------------------------------
+
+
+
+@pytest.fixture
+def single_survey_iso_config(stream_config_with_distance):
+    """Legacy flat config: single survey/release, namespace = 'lsst_yr4'."""
+    return stream_config_with_distance['isochrone']
+
+@pytest.fixture
+def multi_survey_iso_config(multisurvey_stream_config):
+    """Multi-survey config: two namespaces sharing the same ugali survey/bands."""
+    return multisurvey_stream_config['isochrone']
+
+
+@pytest.mark.model
+class TestIsochroneModel:
+    """All standalone IsochroneModel behaviour: construction, mass sampling,
+    and apparent-magnitude sampling for both the single-survey (legacy) and
+    multi-survey config forms.
+    """
+
+    # -- construction / config normalization ------------------------------
+
+    def test_single_survey_sets_legacy_attrs(self, single_survey_iso_config):
+        iso = IsochroneModel(single_survey_iso_config)
+        assert iso.multi_survey is False
+        assert iso.surveys == ["lsst_yr4"]
+        assert iso.survey_name == "lsst_yr4"
+        assert iso.band_1 == "g", "Legacy band_1 must be the first survey's band_1"
+        assert iso.band_2 == "r", "Legacy band_2 must be the first survey's band_2"
+
+    def test_single_survey_without_release_uses_bare_namespace(self):
+        iso = IsochroneModel(
+            {"name": "Marigo2017", "survey": "lsst", "age": 12.0, "z": 0.0006,
+             "band_1": "g", "band_2": "r"}
+        )
+        assert iso.surveys == ["lsst"], "Legacy single-survey config without release should yield bare namespace"
+        assert iso.survey_name == "lsst", "Legacy survey_name must be the bare namespace when no release is given"
+
+    def test_multi_survey_sets_namespace_attrs(self, multi_survey_iso_config):
+        iso = IsochroneModel(multi_survey_iso_config)
+        assert iso.multi_survey is True
+        assert set(iso.surveys) == {"lsst_yr4", "lsst_yr5"}
+        assert iso.survey_bands["lsst_yr4"] == ("g", "r")
+        assert iso.survey_bands["lsst_yr5"] == ("g", "r")
+
+    def test_multi_survey_primary_iso_is_first_entry(self, multi_survey_iso_config):
+        """The first `surveys` entry drives the legacy/shared attrs (survey_name, iso, band_1/2)."""
+        iso = IsochroneModel(multi_survey_iso_config)
+        assert iso.survey_name == iso.surveys[0], "Legacy survey_name must be the first survey's"
+        assert iso.iso is iso.isos[iso.survey_name], "Primary isochrone must be the first survey's"
+
+    # -- mass sampling ------------------------------------------------------
+
+    def test_sample_masses_returns_requested_length(self, single_survey_iso_config, rng):
+        iso = IsochroneModel(single_survey_iso_config)
+        masses = iso.sample_masses(50, rng=rng)
+        assert len(masses) == 50, "sample_masses must return the requested number of masses"
+
+    def test_sample_masses_reproducible_with_same_rng_state(self, single_survey_iso_config):
+        iso = IsochroneModel(single_survey_iso_config)
+        m1 = iso.sample_masses(30, rng=np.random.default_rng(0))
+        m2 = iso.sample_masses(30, rng=np.random.default_rng(0))
+        assert np.array_equal(m1, m2), "Same RNG state should produce identical mass draws"
+
+    def test_sample_masses_positive(self, single_survey_iso_config, rng):
+        iso = IsochroneModel(single_survey_iso_config)
+        masses = iso.sample_masses(100, rng=rng)
+        assert np.all(masses > 0), "All sampled masses must be positive"
+
+    # -- sample(): single-survey (legacy) form ------------------------------
+
+    def test_sample_returns_dict_keyed_by_namespace_and_band(
+        self, single_survey_iso_config, rng
+    ):
+        iso = IsochroneModel(single_survey_iso_config)
+        mags, masses = iso.sample(20, distance_modulus=16.8, rng=rng)
+        assert set(mags.keys()) == {("lsst_yr4", "g"), ("lsst_yr4", "r")}, "Returned mags dict must have keys for each namespace and band"
+        assert len(masses) == 20, "Returned masses array must have the requested length"
+        for arr in mags.values():
+            assert arr.shape == (20,), "Each magnitude array must have the requested length"
+
+    def test_sample_with_explicit_masses_is_deterministic(self, single_survey_iso_config, rng):
+        """No rng needed when masses are supplied; same masses -> same mags."""
+        iso = IsochroneModel(single_survey_iso_config)
+        masses = iso.sample_masses(25, rng=rng)
+
+        mags1, masses1 = iso.sample(25, distance_modulus=16.8, masses=masses)
+        mags2, masses2 = iso.sample(25, distance_modulus=16.8, masses=masses)
+
+        assert np.array_equal(masses1, masses2)
+        for key in mags1:
+            assert np.allclose(mags1[key], mags2[key]), f"Magnitudes for {key} differ when using the same masses"
+
+    def test_sample_rejects_mismatched_mass_length(self, single_survey_iso_config):
+        iso = IsochroneModel(single_survey_iso_config)
+        with pytest.raises(ValueError):
+            iso.sample(50, distance_modulus=16.8, masses=np.ones(49))
+
+    def test_distance_modulus_shifts_magnitudes(self, single_survey_iso_config):
+        """Apparent mag at dm=17 must be exactly 1 mag fainter than at dm=16, same masses."""
+        iso = IsochroneModel(single_survey_iso_config)
+        masses = iso.sample_masses(20, rng=np.random.default_rng(1))
+
+        mags_near, _ = iso.sample(20, distance_modulus=16.0, masses=masses)
+        mags_far, _ = iso.sample(20, distance_modulus=17.0, masses=masses)
+
+        for key in mags_near:
+            assert np.allclose(mags_far[key] - mags_near[key], 1.0), f"Distance modulus shift failed for {key}: expected 1.0, got {mags_far[key] - mags_near[key]}" 
+
+    def test_distance_modulus_none_returns_absolute_magnitudes(self, single_survey_iso_config):
+        """distance_modulus=None must be a no-op (apparent == absolute mag)."""
+        iso = IsochroneModel(single_survey_iso_config)
+        masses = iso.sample_masses(20, rng=np.random.default_rng(2))
+
+        mags_dm0, _ = iso.sample(20, distance_modulus=0.0, masses=masses)
+        mags_none, _ = iso.sample(20, distance_modulus=None, masses=masses)
+
+        for key in mags_dm0:
+            assert np.allclose(mags_dm0[key], mags_none[key]), f"distance_modulus=None should yield same mags as dm=0 for {key}"
+
+    # -- sample(): multi-survey form, "same physical star" invariant -------
+
+    def test_sample_returns_all_namespace_band_keys(self, multi_survey_iso_config, rng):
+        iso = IsochroneModel(multi_survey_iso_config)
+        mags, masses = iso.sample(30, distance_modulus=16.8, rng=rng)
+        assert set(mags.keys()) == {
+            ("lsst_yr4", "g"), ("lsst_yr4", "r"),
+            ("lsst_yr5", "g"), ("lsst_yr5", "r"),
+        }, f"Expected keys for all namespaces and bands, got {set(mags.keys())}"
+
+    def test_shared_mass_draw_gives_identical_mags_across_namespaces(
+        self, multi_survey_iso_config, rng
+    ):
+        """lsst_yr4 and lsst_yr5 wrap the same ugali survey/bands, so a single
+        shared mass draw must give bit-for-bit identical magnitudes in both --
+        this is the core 'same physical star, consistent across surveys'
+        contract the multi-survey path exists for."""
+        iso = IsochroneModel(multi_survey_iso_config)
+        mags, masses = iso.sample(30, distance_modulus=16.8, rng=rng)
+
+        assert np.array_equal(mags[("lsst_yr4", "g")], mags[("lsst_yr5", "g")]), "Shared mass draw should yield identical g mags across namespaces"
+        assert np.array_equal(mags[("lsst_yr4", "r")], mags[("lsst_yr5", "r")]), "Shared mass draw should yield identical r mags across namespaces"
+
+    def test_explicit_masses_shared_across_namespaces(self, multi_survey_iso_config):
+        iso = IsochroneModel(multi_survey_iso_config)
+        masses = iso.sample_masses(15, rng=np.random.default_rng(5))
+        mags, _ = iso.sample(15, distance_modulus=16.8, masses=masses)
+
+        assert np.array_equal(mags[("lsst_yr4", "g")], mags[("lsst_yr5", "g")]), "Explicit masses should yield identical g mags across namespaces"
+        assert np.array_equal(mags[("lsst_yr4", "r")], mags[("lsst_yr5", "r")]), "Explicit masses should yield identical r mags across namespaces"
