@@ -231,6 +231,83 @@ class TestStreamInjectorBehavior:
             masks
         ), "Mask cache should have had entries before clearing"
 
+    def test_mag_sampling_reproducibility(self, mock_injector, seed):
+        """Test that magnitude sampling is reproducible with the same random seed.
+        Created for debug, but kept since it is a useful test of the sampling function.
+        """
+        apparent_mag = np.array([20.0, 21.0, 22.0])
+        mag_err = np.array([0.1, 0.2, 0.3])
+        sample_with_rng1 = mock_injector.sample_measured_magnitudes(
+                apparent_mag,
+                mag_err,
+                rng=np.random.default_rng(seed),
+            )
+        sample_with_rng1 = pd.to_numeric(sample_with_rng1, errors='coerce')
+
+        sample_with_seed1 = mock_injector.sample_measured_magnitudes(
+                apparent_mag,
+                mag_err,
+                seed=seed,
+            )
+        sample_with_seed1 = pd.to_numeric(sample_with_seed1, errors='coerce')
+
+        sample_with_rng2 = mock_injector.sample_measured_magnitudes(
+                apparent_mag,
+                mag_err,
+                rng=np.random.default_rng(seed),
+            )
+        sample_with_rng2 = pd.to_numeric(sample_with_rng2, errors='coerce')
+
+        sample_with_seed2 = mock_injector.sample_measured_magnitudes(
+                apparent_mag,
+                mag_err,
+                seed=seed,
+            )
+        sample_with_seed2 = pd.to_numeric(sample_with_seed2, errors='coerce')
+
+        assert np.allclose(sample_with_rng1, sample_with_seed1, equal_nan=True), "Samples with rng and seed should be the same"
+        assert np.allclose(sample_with_rng1, sample_with_rng2, equal_nan=True), "Samples with the same rng should be the same"
+        assert np.allclose(sample_with_seed1, sample_with_seed2, equal_nan=True), "Samples with the same seed should be the same"
+
+    def test_injection_reproducibility(self, mock_injector, stream_catalog, seed, verbose):
+        """Test that injection is reproducible with the same random seed."""
+        injected_catalog_1 = mock_injector.inject(
+            stream_catalog, perfect_galstarsep=True, seed=seed, verbose=verbose
+        )
+        injected_catalog_2 = mock_injector.inject(
+            stream_catalog, perfect_galstarsep=True, seed=seed, verbose=verbose
+        )
+
+        rng = np.random.default_rng(seed)
+        injected_catalog_rng1 = mock_injector.inject(
+            stream_catalog, perfect_galstarsep=True, rng=rng, verbose=verbose
+        )
+        rng = np.random.default_rng(seed)
+        injected_catalog_rng2 = mock_injector.inject(
+            stream_catalog, perfect_galstarsep=True, rng=rng, verbose=verbose
+        )
+    
+        for cols in injected_catalog_1.columns:
+            assert cols in injected_catalog_2.columns, f"Column {cols} missing in second injection"
+            assert cols in injected_catalog_rng1.columns, f"Column {cols} missing in rng1 injection"
+            assert cols in injected_catalog_rng2.columns, f"Column {cols} missing in rng2 injection"
+            col1 = pd.to_numeric(injected_catalog_1[cols], errors='coerce')
+            col2 = pd.to_numeric(injected_catalog_2[cols], errors='coerce')
+            col_rng1 = pd.to_numeric(injected_catalog_rng1[cols], errors='coerce')
+            col_rng2 = pd.to_numeric(injected_catalog_rng2[cols], errors='coerce')
+            if (col1 is not None and col2 is not None) and cols not in ['mu1', 'mu2', "rv"]: # velocities not implemented
+                assert np.allclose(
+                    col1, col2, equal_nan=True
+                ), f"Column {cols} values differ between injections with the same seed"
+            if (col1 is not None and col_rng1 is not None) and cols not in ['mu1', 'mu2', "rv"]: # velocities not implemented
+                assert np.allclose(
+                    col1, col_rng1, equal_nan=True
+                ), f"Column {cols} values differ between injections with seed and rng with the same seed"
+            if (col_rng1 is not None and col_rng2 is not None) and cols not in ['mu1', 'mu2', "rv"]: # velocities not implemented
+                assert np.allclose(
+                    col_rng1, col_rng2, equal_nan=True
+                ), f"Column {cols} values differ between injections with the same rng"
+
 
 # ---------------------------------------------------------------------------
 # complete_data + bands/survey API
