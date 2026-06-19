@@ -2,10 +2,6 @@
 Full-injection background pipeline using known catalogs.
 """
 
-import copy
-
-import numpy as np
-
 from ..observed import StreamInjector
 from ..surveys import Survey
 from ..utils import load_catalog
@@ -16,32 +12,27 @@ class BackgroundCatalogInjector:
     Thin wrapper around :class:`~streamobs.observed.StreamInjector` for
     background catalog injection.
 
-    Provides :meth:`inject_stars` and :meth:`inject_galaxies` convenience
-    methods that each call :meth:`~streamobs.observed.StreamInjector.inject`
-    with the correct ``source_type``. Survey preparation — deep-copying,
-    zeroing dust, setting uniform magnitude limits — is handled by the single
-    :meth:`_prepare_survey` method and is shared between both injection modes.
+    Exposes :meth:`inject_stars` and :meth:`inject_galaxies` so the caller
+    does not need to pass ``source_type`` explicitly.  All injection logic
+    lives in :class:`~streamobs.observed.StreamInjector`.
 
     Parameters
     ----------
     survey : Survey
         Survey instance to inject into.
     **kwargs
-        Forwarded to :meth:`_prepare_survey` at construction time (e.g.
-        ``no_dust``, ``uniform_maglim``).
+        Forwarded to :class:`~streamobs.observed.StreamInjector`.
 
     Examples
     --------
-    Inject a stars catalog with a uniform magnitude limit:
-
-    >>> injector = BackgroundCatalogInjector(survey, no_dust=True,
-    ...                                      uniform_maglim={'g': 26.0, 'r': 26.5})
+    >>> injector = BackgroundCatalogInjector(survey)
     >>> obs_stars = injector.inject_stars(catalog_df, bands=['g', 'r'])
+    >>> obs_gals  = injector.inject_galaxies(catalog_df, bands=['g', 'r'])
     """
 
     def __init__(self, survey: Survey, **kwargs):
         self._survey = survey
-        self._kwargs = kwargs
+        self.streaminjector = StreamInjector(self._survey, **kwargs)
 
     def inject_stars(self, catalog, bands=None, **kwargs) -> "pd.DataFrame":
         """
@@ -50,10 +41,7 @@ class BackgroundCatalogInjector:
         Parameters
         ----------
         catalog : pd.DataFrame or str
-            True stellar catalog. Accepts a DataFrame or a path to parquet/CSV
-            (loaded via :func:`~streamobs.utils.load_catalog`). Must contain
-            sky coordinates (``ra``/``dec`` or ``phi1``/``phi2``) and true
-            magnitude columns.
+            True stellar catalog. Accepts a DataFrame or a path to parquet/CSV.
         bands : list of str, optional
             Photometric bands to inject. Defaults to ``['r', 'g']``.
         **kwargs
@@ -64,7 +52,10 @@ class BackgroundCatalogInjector:
         pd.DataFrame
             Observed catalog with survey-namespaced magnitude and flag columns.
         """
-        ...
+        catalog = load_catalog(catalog)
+        return self.streaminjector.inject(
+            catalog, bands=bands, source_type="stars", **kwargs
+        )
 
     def inject_galaxies(self, catalog, bands=None, **kwargs) -> "pd.DataFrame":
         """
@@ -79,7 +70,6 @@ class BackgroundCatalogInjector:
         ----------
         catalog : pd.DataFrame or str
             True galaxy catalog. Accepts a DataFrame or a path to parquet/CSV.
-            Must contain sky coordinates and true magnitude columns.
         bands : list of str, optional
             Photometric bands to inject. Defaults to ``['r', 'g']``.
         **kwargs
@@ -90,4 +80,7 @@ class BackgroundCatalogInjector:
         pd.DataFrame
             Observed catalog with survey-namespaced magnitude and flag columns.
         """
-        ...
+        catalog = load_catalog(catalog)
+        return self.streaminjector.inject(
+            catalog, bands=bands, source_type="galaxies", **kwargs
+        )
