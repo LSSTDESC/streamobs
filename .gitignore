@@ -154,6 +154,9 @@ scripts/roman/script_to_notebook.py
 build_*_nb.py
 scripts/**/build_*_nb.py
 
+# local-only development notebooks
+notebooks/dev.ipynb
+
 artifacts/
 # Staged data archive for upload (built by bin/build_data_archive.py)
 /archive/

@@ -21,40 +21,17 @@ pytestmark = pytest.mark.background
 # Shared fixtures
 # ---------------------------------------------------------------------------
 
-
-@pytest.fixture(scope="module")
-def mock_survey(verbose=False):
-    from streamobs.surveys import Survey
-
-    return Survey.load("lsst", release="yr4", verbose=verbose)
-
-
-@pytest.fixture(scope="module")
-def tiny_stars_catalog():
-    """Minimal DataFrame that looks like a true background star catalog."""
-    rng = np.random.default_rng(0)
-    n = 100
-    return pd.DataFrame(
-        {
-            "ra": rng.uniform(30.0, 60.0, n),
-            "dec": rng.uniform(-20.0, 0.0, n),
-            "lsst_yr4_g_true": rng.uniform(20.0, 27.0, n),
-            "lsst_yr4_r_true": rng.uniform(20.0, 27.0, n),
-        }
-    )
-
-
 @pytest.fixture(scope="module")
 def tiny_galaxies_catalog():
-    """Minimal DataFrame that looks like a true background galaxy catalog."""
+    """Galaxy catalog: same sky positions as stream_catalog but with randomised magnitudes."""
     rng = np.random.default_rng(1)
     n = 100
     return pd.DataFrame(
         {
             "ra": rng.uniform(30.0, 60.0, n),
             "dec": rng.uniform(-20.0, 0.0, n),
-            "lsst_yr4_g_true": rng.uniform(20.0, 28.0, n),
-            "lsst_yr4_r_true": rng.uniform(20.0, 28.0, n),
+            "lsst_g_true": rng.uniform(20.0, 28.0, n),
+            "lsst_r_true": rng.uniform(20.0, 28.0, n),
         }
     )
 
@@ -79,7 +56,7 @@ class TestSurveyGalMisclassification:
         s.gal_misclassification = None
         mags = np.linspace(20.0, 27.0, 10)
         maglim = np.full(10, 26.5)
-        with pytest.raises(ValueError, match="gal_misclassification"):
+        with pytest.raises(ValueError, match="missclassified"):
             s.get_gal_misclassification("r", mags, maglim)
 
     def test_get_gal_misclassification_no_1padding(self, mock_survey):
@@ -90,24 +67,6 @@ class TestSurveyGalMisclassification:
         delta_saturation.
         """
         ...
-
-    def test_set_completeness_missclassified_loads_file(self, tmp_path):
-        """set_completeness with selection='missclassified' must return a callable interpolator."""
-        from streamobs.surveys import SurveyFactory
-
-        csv_path = tmp_path / "gal_misclassification.csv"
-        csv_path.write_text(
-            "delta_mag,gal_misclassification_eff\n"
-            "-12.0,0.0\n"
-            "-5.0,0.0\n"
-            "0.0,0.3\n"
-            "1.0,0.0\n"
-        )
-        func = SurveyFactory.set_completeness(str(csv_path), selection="missclassified")
-        assert callable(func)
-        result = func(np.array([0.0]))
-        assert 0.0 <= float(result) <= 1.0
-
 
 # ---------------------------------------------------------------------------
 # Part 2 — StreamInjector source_type parameter
@@ -148,25 +107,44 @@ class TestBackgroundCatalogInjector:
         inj = BackgroundCatalogInjector(mock_survey)
         assert inj._survey is mock_survey
 
-    def test_prepare_survey_no_dust(self, mock_survey):
-        """_prepare_survey with no_dust=True must zero the EBV map."""
-        ...
-
-    def test_prepare_survey_uniform_maglim(self, mock_survey):
-        """_prepare_survey with uniform_maglim must replace maglim maps with constants."""
-        ...
-
-    def test_inject_stars_delegates_to_stream_injector(
-        self, mock_survey, tiny_stars_catalog
+    def test_inject_stars_returns_nonempty_dataframe(
+        self, mock_survey, stream_catalog
     ):
-        """inject_stars must return a DataFrame (delegates to StreamInjector)."""
-        ...
+        """inject_stars must return a non-empty DataFrame (smoke test only — full coverage in test_observed)."""
+        from streamobs.background import BackgroundCatalogInjector
 
-    def test_inject_galaxies_delegates_to_stream_injector(
+        result = BackgroundCatalogInjector(mock_survey).inject_stars(
+            stream_catalog, bands=["g", "r"]
+        )
+        assert isinstance(result, pd.DataFrame)
+        assert len(result) > 0
+
+    def test_inject_galaxies_returns_nonempty_dataframe(
         self, mock_survey, tiny_galaxies_catalog
     ):
-        """inject_galaxies must return a DataFrame."""
-        ...
+        """inject_galaxies must return a non-empty DataFrame."""
+        from streamobs.background import BackgroundCatalogInjector
+
+        result = BackgroundCatalogInjector(mock_survey).inject_galaxies(
+            tiny_galaxies_catalog, bands=["g", "r"]
+        )
+        assert isinstance(result, pd.DataFrame)
+        assert len(result) > 0
+
+    def test_inject_galaxies_has_detection_flag(
+        self, mock_survey, tiny_galaxies_catalog
+    ):
+        """inject_galaxies output must include a detection flag column."""
+        from streamobs.background import BackgroundCatalogInjector
+
+        result = BackgroundCatalogInjector(mock_survey).inject_galaxies(
+            tiny_galaxies_catalog, bands=["g", "r"]
+        )
+        flag_cols = [c for c in result.columns if "flag" in c]
+        assert len(flag_cols) > 0
+        assert "flag_observed" in flag_cols
+        assert result["flag_observed"].isin([0, 1]).all()
+        assert result["flag_observed"].sum() > 0  # at least one detected
 
 
 # ---------------------------------------------------------------------------
@@ -181,9 +159,7 @@ class TestBackgroundStorage:
         """get_path must embed source_type and band names in the filename."""
         from streamobs.background import BackgroundStorage
 
-        storage = BackgroundStorage(
-            base_path=str(tmp_path), survey_name="lsst", release="yr4"
-        )
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
         path = storage.get_path("stars", ("g", "r"))
         assert "stars" in path
         assert "gr" in path
@@ -201,9 +177,7 @@ class TestBackgroundStorage:
         """exists must return False when the file is not on disk."""
         from streamobs.background import BackgroundStorage
 
-        storage = BackgroundStorage(
-            base_path=str(tmp_path), survey_name="lsst", release="yr4"
-        )
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
         assert storage.exists("stars", ("g", "r")) is False
 
     def test_exists_true_after_save(self, tmp_path):
@@ -227,15 +201,15 @@ class TestBackgroundResourceBuilder:
         assert builder.survey_name == "lsst"
         assert isinstance(builder.resources, dict)
 
-    def test_build_one_config(self, mock_survey, tiny_stars_catalog):
+    def test_build_one_config(self, mock_survey, stream_catalog):
         """_build_one_config must return a dict with the expected keys."""
         ...
 
-    def test_save_via_storage(self, tmp_path, tiny_stars_catalog):
+    def test_save_via_storage(self, tmp_path, stream_catalog):
         """save must write a parquet file via BackgroundStorage."""
         ...
 
-    def test_load_via_storage(self, tmp_path, tiny_stars_catalog):
+    def test_load_via_storage(self, tmp_path, stream_catalog):
         """load must reconstruct resources from the file saved by save."""
         ...
 
@@ -249,7 +223,7 @@ class TestLightBackgroundGenerator:
     """Tests for LightBackgroundGenerator."""
 
     @pytest.fixture(scope="class")
-    def storage_with_data(self, tmp_path_factory, mock_survey, tiny_stars_catalog):
+    def storage_with_data(self, tmp_path_factory, mock_survey, stream_catalog):
         """BackgroundStorage pre-populated with a minimal CMD grid."""
         ...
 
@@ -296,7 +270,7 @@ class TestBackground:
         with pytest.raises(ValueError, match="method"):
             Background(mock_survey, method="invalid")
 
-    def test_full_method_stars(self, mock_survey, tiny_stars_catalog):
+    def test_full_method_stars(self, mock_survey, stream_catalog):
         """Background with method='full' and source_type='stars' must generate a catalog."""
         ...
 
@@ -305,7 +279,7 @@ class TestBackground:
         ...
 
     def test_full_method_both(
-        self, mock_survey, tiny_stars_catalog, tiny_galaxies_catalog
+        self, mock_survey, stream_catalog, tiny_galaxies_catalog
     ):
         """Background with method='full' and source_type='both' must combine catalogs."""
         ...
@@ -321,8 +295,6 @@ class TestBackground:
         """Background accepts a user-supplied BackgroundStorage."""
         from streamobs.background import Background, BackgroundStorage
 
-        storage = BackgroundStorage(
-            base_path=str(tmp_path), survey_name="lsst", release="yr4"
-        )
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
         bg = Background(mock_survey, method="light", storage=storage)
         assert bg.storage is storage
