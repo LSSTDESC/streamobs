@@ -316,6 +316,8 @@ class TestBackgroundResourceBuilder:
         H = result["cmd_hist"]
         assert (H >= 0).all(), "Counts must be non-negative"
         assert np.all(H == np.floor(H)), "Counts must be integer-valued"
+        assert not np.any(np.isnan(H)), "Counts must not be NaN"
+        assert np.sum(H) > 0, "Counts must not be all zero"
 
     def test_cmd_sum_leq_n_ref(self, mock_survey, bright_star_catalog):
         """Total histogram count must not exceed the input catalog size."""
@@ -332,7 +334,7 @@ class TestBackgroundResourceBuilder:
                                          source_type="stars", maglim_r=21.0, maglim_g=20.5)
         result_faint  = self._one_config(mock_survey, stream_catalog,
                                          source_type="stars", maglim_r=26.0, maglim_g=25.5)
-        assert result_faint["cmd_hist"].sum() >= result_bright["cmd_hist"].sum()
+        assert result_faint["cmd_hist"].sum() >= result_bright["cmd_hist"].sum(), "A fainter maglim must detect at least as many stars"
 
     def test_larger_maglim_gives_more_counts_galaxies(self, mock_survey, galaxy_lf_catalog):
         """A fainter maglim must misclassify more galaxies when the LF is steep.
@@ -356,7 +358,7 @@ class TestBackgroundResourceBuilder:
         result = self._one_config(mock_survey, bright_star_catalog, maglim_r=maglim_r, maglim_g=23.5)
         mag_edges = result["mag_edges"]
         mag_centers = (mag_edges[:-1] + mag_edges[1:]) / 2
-        well_above = mag_centers > maglim_r + 3
+        well_above = mag_centers > maglim_r + 2
         assert result["cmd_hist"][:, well_above].sum() == 0, \
             "Counts 3+ mag above the limit must be zero"
 
@@ -449,6 +451,16 @@ class TestBackgroundResourceBuilder:
         assert "galaxies" in loaded.resources
         assert (26.0, 25.5) in loaded.resources["stars"]
         assert (26.0, 25.5) in loaded.resources["galaxies"]
+
+        # Verify that the loaded histograms match the originals.
+        for st in ["stars", "galaxies"]:
+            original = builder.resources[st][(26.0, 25.5)]
+            loaded_result = loaded.resources[st][(26.0, 25.5)]
+            np.testing.assert_allclose(loaded_result["cmd_hist"], original["cmd_hist"])
+            np.testing.assert_allclose(loaded_result["color_edges"], original["color_edges"])
+            np.testing.assert_allclose(loaded_result["mag_edges"], original["mag_edges"])
+            assert loaded_result["n_ref"] == original["n_ref"]
+            assert loaded_result["area_ref_deg2"] == original["area_ref_deg2"]
 
 
 # ---------------------------------------------------------------------------
