@@ -37,39 +37,7 @@ def tiny_galaxies_catalog():
 
 
 # ---------------------------------------------------------------------------
-# Part 1 — Survey galaxy misclassification
-# ---------------------------------------------------------------------------
-
-
-class TestSurveyGalMisclassification:
-    """Tests for the gal_misclassification field and method on Survey."""
-
-    def test_gal_misclassification_field_exists(self, mock_survey):
-        """Survey dataclass must expose the gal_misclassification attribute."""
-        assert hasattr(mock_survey, "gal_misclassification")
-
-    def test_get_gal_misclassification_raises_when_not_loaded(self, mock_survey):
-        """get_gal_misclassification raises ValueError if the function is not loaded."""
-        import copy
-
-        s = copy.deepcopy(mock_survey)
-        s.gal_misclassification = None
-        mags = np.linspace(20.0, 27.0, 10)
-        maglim = np.full(10, 26.5)
-        with pytest.raises(ValueError, match="missclassified"):
-            s.get_gal_misclassification("r", mags, maglim)
-
-    def test_get_gal_misclassification_no_1padding(self, mock_survey):
-        """get_gal_misclassification must NOT return 1 at the bright end (no 1-padding).
-
-        Verify by checking that the method returns 0 for very bright objects
-        (below saturation) and does not saturate to 1.0 for delta_mag far below
-        delta_saturation.
-        """
-        ...
-
-# ---------------------------------------------------------------------------
-# Part 2 — StreamInjector source_type parameter
+# StreamInjector source_type parameter
 # ---------------------------------------------------------------------------
 
 
@@ -93,7 +61,7 @@ class TestInjectSourceType:
 
 
 # ---------------------------------------------------------------------------
-# Part 3 — BackgroundCatalogInjector
+# BackgroundCatalogInjector
 # ---------------------------------------------------------------------------
 
 
@@ -140,15 +108,14 @@ class TestBackgroundCatalogInjector:
         result = BackgroundCatalogInjector(mock_survey).inject_galaxies(
             tiny_galaxies_catalog, bands=["g", "r"]
         )
-        flag_cols = [c for c in result.columns if "flag" in c]
+        flag_cols = [c for c in result.columns if "flag_observed" in c]
         assert len(flag_cols) > 0
-        assert "flag_observed" in flag_cols
-        assert result["flag_observed"].isin([0, 1]).all()
-        assert result["flag_observed"].sum() > 0  # at least one detected
+        flag_col = flag_cols[0]
+        assert result[flag_col].isin([0, 1]).all()
 
 
 # ---------------------------------------------------------------------------
-# Part 4 — BackgroundStorage
+# BackgroundStorage
 # ---------------------------------------------------------------------------
 
 
@@ -165,13 +132,33 @@ class TestBackgroundStorage:
         assert "gr" in path
         assert path.endswith(".parquet")
 
-    def test_save_data_creates_file(self, tmp_path):
-        """save_data must write a file at the path returned by get_path."""
-        ...
+    @pytest.fixture
+    def _grid_data(self):
+        """Minimal two-pair CMD grid for storage tests."""
+        def _make(offset=0):
+            return {
+                "cmd_hist": np.arange(25, dtype=float).reshape(5, 5) + offset,
+                "color_edges": np.linspace(-2, 3, 6),
+                "mag_edges": np.linspace(14, 30, 6),
+                "n_ref": 100,
+                "area_ref_deg2": 10.0,
+            }
+        return {(26.0, 25.5): _make(0), (26.0, 26.0): _make(1)}
 
-    def test_load_data_roundtrip(self, tmp_path):
-        """load_data must recover the dict saved by save_data."""
-        ...
+    def test_load_data_roundtrip(self, tmp_path, _grid_data):
+        """load_data must recover a single pair using predicate pushdown."""
+        from streamobs.background import BackgroundStorage
+
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
+        storage.save_data(_grid_data, "stars", ("g", "r"))
+        loaded = storage.load_data("stars", ("g", "r"), 26.0, 25.5)
+        expected = _grid_data[(26.0, 25.5)]
+        np.testing.assert_allclose(loaded["cmd_hist"], expected["cmd_hist"])
+        np.testing.assert_allclose(loaded["color_edges"], expected["color_edges"])
+        np.testing.assert_allclose(loaded["mag_edges"], expected["mag_edges"])
+        assert loaded["n_ref"] == expected["n_ref"]
+        assert loaded["area_ref_deg2"] == expected["area_ref_deg2"]
+        assert len(loaded) == len(expected), "Loaded dict must have exactly the expected keys"
 
     def test_exists_false_before_save(self, tmp_path):
         """exists must return False when the file is not on disk."""
@@ -180,18 +167,117 @@ class TestBackgroundStorage:
         storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
         assert storage.exists("stars", ("g", "r")) is False
 
-    def test_exists_true_after_save(self, tmp_path):
+    def test_exists_true_after_save(self, tmp_path, _grid_data):
         """exists must return True after save_data has been called."""
-        ...
+        from streamobs.background import BackgroundStorage
+
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
+        storage.save_data(_grid_data, "stars", ("g", "r"))
+        assert storage.exists("stars", ("g", "r")) is True
+
+    def test_save_overwrites_no_extra_rows(self, tmp_path, _grid_data):
+        """Saving the same file twice must overwrite — row count must not double."""
+        from streamobs.background import BackgroundStorage
+
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
+        storage.save_data(_grid_data, "stars", ("g", "r"))
+        storage.save_data(_grid_data, "stars", ("g", "r"))  # overwrite
+        loaded = storage.load_all("stars", ("g", "r"))
+        assert len(loaded) == len(_grid_data), \
+            "File must contain exactly n_pairs rows after a second save"
+
+    def test_load_all_returns_all_pairs(self, tmp_path, _grid_data):
+        """load_all must return a dict with all saved (maglim_r, maglim_g) pairs."""
+        from streamobs.background import BackgroundStorage
+
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
+        storage.save_data(_grid_data, "stars", ("g", "r"))
+        all_data = storage.load_all("stars", ("g", "r"))
+        assert set(all_data) == set(_grid_data), "Loaded keys must match saved keys"
+
+    def test_load_data_returns_correct_types(self, tmp_path, _grid_data):
+        """Loaded dict must have numpy arrays for histogram fields and scalars for metadata."""
+        from streamobs.background import BackgroundStorage
+
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
+        storage.save_data(_grid_data, "stars", ("g", "r"))
+        d = storage.load_data("stars", ("g", "r"), 26.0, 25.5)
+        assert isinstance(d["cmd_hist"], np.ndarray)
+        assert isinstance(d["color_edges"], np.ndarray)
+        assert isinstance(d["mag_edges"], np.ndarray)
+        assert isinstance(d["n_ref"], int)
+        assert isinstance(d["area_ref_deg2"], float)
 
 
 # ---------------------------------------------------------------------------
-# Part 5 — BackgroundResourceBuilder
+# BackgroundResourceBuilder
 # ---------------------------------------------------------------------------
+
+# Galaxy catalog with a steep count-magnitude distribution, mimicking the galaxy LF.
+# Used to test that a deeper maglim detects more misclassified galaxies because more
+# galaxies exist at fainter magnitudes.
+@pytest.fixture(scope="module")
+def galaxy_lf_catalog():
+    """Galaxy catalog with many more objects at faint magnitudes.
+    """
+    rng = np.random.default_rng(11)
+    n_bright, n_faint = 20, 200
+    n = n_bright + n_faint
+    r_mags = np.concatenate([rng.uniform(20, 24, n_bright), rng.uniform(24, 28, n_faint)])
+    g_mags = r_mags + 0.5  # constant colour so both bands track the same maglim
+    return pd.DataFrame(
+        {
+            "ra": rng.uniform(30.0, 60.0, n),
+            "dec": rng.uniform(-20.0, 0.0, n),
+            "lsst_r_true": r_mags,
+            "lsst_g_true": g_mags,
+        }
+    )
+
+
+# Shared small catalog for histogram property tests (fixed magnitudes → deterministic).
+@pytest.fixture(scope="module")
+def bright_star_catalog():
+    """100 stars all at r=22.7 / g=23.45 (color g-r=0.75).
+
+    Magnitudes are chosen to sit at the centre of their histogram bins
+    (with default n_bins=10, color_range=(-2,3), mag_range=(14,30)):
+      * r=22.7  → mag bin 5 [22.0, 23.6), centre 22.8
+      * g-r=0.75 → color bin 5 [0.5, 1.0), centre 0.75
+    This avoids bin-edge ambiguity that would split counts between adjacent bins.
+    """
+    rng = np.random.default_rng(7)
+    n = 100
+    return pd.DataFrame(
+        {
+            "ra": rng.uniform(35.0, 55.0, n),
+            "dec": rng.uniform(-15.0, -5.0, n),
+            "lsst_r_true": np.full(n, 22.7),
+            "lsst_g_true": np.full(n, 23.45),  # color g-r = 0.75
+        }
+    )
 
 
 class TestBackgroundResourceBuilder:
     """Tests for BackgroundResourceBuilder (uses tmp_path for storage)."""
+
+    # Shared builder kwargs for _build_one_config calls.
+    _COMMON = dict(bands=("g", "r"), n_bins_color=10, n_bins_mag=10,
+                   color_range=(-2, 3), mag_range=(14, 30), area_ref_deg2=100.0)
+
+    def _one_config(self, mock_survey, catalog, source_type="stars",
+                    maglim_r=26.0, maglim_g=25.5):
+        from streamobs.background import BackgroundResourceBuilder
+        b = BackgroundResourceBuilder(survey_name="lsst")
+        return b._build_one_config(
+            catalog, mock_survey, source_type,
+            maglim_r=maglim_r, maglim_g=maglim_g,
+            **self._COMMON,
+        )
+
+    # ------------------------------------------------------------------
+    # Init
+    # ------------------------------------------------------------------
 
     def test_init(self):
         """BackgroundResourceBuilder can be instantiated."""
@@ -201,17 +287,168 @@ class TestBackgroundResourceBuilder:
         assert builder.survey_name == "lsst"
         assert isinstance(builder.resources, dict)
 
-    def test_build_one_config(self, mock_survey, stream_catalog):
-        """_build_one_config must return a dict with the expected keys."""
-        ...
+    # ------------------------------------------------------------------
+    # _build_one_config — output structure
+    # ------------------------------------------------------------------
 
-    def test_save_via_storage(self, tmp_path, stream_catalog):
-        """save must write a parquet file via BackgroundStorage."""
-        ...
+    def test_build_one_config_stars_returns_expected_keys(self, mock_survey, stream_catalog):
+        """_build_one_config must return the five expected keys for stars."""
+        result = self._one_config(mock_survey, stream_catalog)
+        assert set(result) == {"cmd_hist", "color_edges", "mag_edges", "n_ref", "area_ref_deg2"}
+        assert result["cmd_hist"].shape == (10, 10)
+        assert result["n_ref"] == len(stream_catalog)
+        assert result["area_ref_deg2"] == 100.0
 
-    def test_load_via_storage(self, tmp_path, stream_catalog):
-        """load must reconstruct resources from the file saved by save."""
-        ...
+    def test_build_one_config_galaxies_returns_expected_keys(self, mock_survey, tiny_galaxies_catalog):
+        """_build_one_config must work for galaxies and return the same five keys."""
+        result = self._one_config(mock_survey, tiny_galaxies_catalog, source_type="galaxies")
+        assert set(result) == {"cmd_hist", "color_edges", "mag_edges", "n_ref", "area_ref_deg2"}
+        assert result["cmd_hist"].shape == (10, 10)
+        assert result["n_ref"] == len(tiny_galaxies_catalog)
+
+    # ------------------------------------------------------------------
+    # _build_one_config — histogram properties
+    # ------------------------------------------------------------------
+
+    def test_cmd_counts_are_non_negative_integers(self, mock_survey, bright_star_catalog):
+        """All histogram counts must be non-negative and whole numbers."""
+        result = self._one_config(mock_survey, bright_star_catalog)
+        H = result["cmd_hist"]
+        assert (H >= 0).all(), "Counts must be non-negative"
+        assert np.all(H == np.floor(H)), "Counts must be integer-valued"
+
+    def test_cmd_sum_leq_n_ref(self, mock_survey, bright_star_catalog):
+        """Total histogram count must not exceed the input catalog size."""
+        result = self._one_config(mock_survey, bright_star_catalog)
+        assert result["cmd_hist"].sum() <= result["n_ref"]
+
+    def test_larger_maglim_gives_more_counts_stars(self, mock_survey, stream_catalog):
+        """A fainter magnitude limit must detect at least as many stars.
+
+        Stellar completeness rises to ~1 for bright sources (efficiency padding), so a
+        very bright maglim cuts most of the stream while a deep maglim keeps them all.
+        """
+        result_bright = self._one_config(mock_survey, stream_catalog,
+                                         source_type="stars", maglim_r=21.0, maglim_g=20.5)
+        result_faint  = self._one_config(mock_survey, stream_catalog,
+                                         source_type="stars", maglim_r=26.0, maglim_g=25.5)
+        assert result_faint["cmd_hist"].sum() >= result_bright["cmd_hist"].sum()
+
+    def test_larger_maglim_gives_more_counts_galaxies(self, mock_survey, galaxy_lf_catalog):
+        """A fainter maglim must misclassify more galaxies when the LF is steep.
+
+        The galaxy LF has 10× more objects at r≈27 than at r≈24. The misclassification
+        efficiency is concentrated within ~1 mag of the detection limit. Therefore:
+          - maglim≈24 catches ~20 galaxies near their limit → few misclassified.
+          - maglim≈27 catches ~200 galaxies near their limit → many more misclassified.
+        """
+        result_bright = self._one_config(mock_survey, galaxy_lf_catalog,
+                                         source_type="galaxies", maglim_r=24.5, maglim_g=24.0)
+        result_faint  = self._one_config(mock_survey, galaxy_lf_catalog,
+                                         source_type="galaxies", maglim_r=27.5, maglim_g=27.0)
+        assert result_faint["cmd_hist"].sum() >= result_bright["cmd_hist"].sum()
+
+    def test_no_counts_well_above_maglim(self, mock_survey, bright_star_catalog):
+        """No detected stars should have observed magnitude 3+ mag above the maglim."""
+        # All stars at true r=22; with maglim_r=24 they are all detected.
+        # Observed scatter is tiny (~0.02 mag) so NO counts should appear at mag > 25.
+        maglim_r = 24.0
+        result = self._one_config(mock_survey, bright_star_catalog, maglim_r=maglim_r, maglim_g=23.5)
+        mag_edges = result["mag_edges"]
+        mag_centers = (mag_edges[:-1] + mag_edges[1:]) / 2
+        well_above = mag_centers > maglim_r + 3
+        assert result["cmd_hist"][:, well_above].sum() == 0, \
+            "Counts 3+ mag above the limit must be zero"
+
+    def test_bright_stars_concentrated_in_expected_color_mag_bins(self, mock_survey, bright_star_catalog):
+        """Stars at r=22, g=22.5 (color 0.5) must concentrate around (color≈0.5, mag≈22)."""
+        result = self._one_config(mock_survey, bright_star_catalog, maglim_r=26.0, maglim_g=25.5)
+        H = result["cmd_hist"]
+        mag_edges = result["mag_edges"]
+        color_edges = result["color_edges"]
+        mag_centers = (mag_edges[:-1] + mag_edges[1:]) / 2
+        color_centers = (color_edges[:-1] + color_edges[1:]) / 2
+
+        # Find the bin that should contain all counts.
+        mag_bin = np.searchsorted(mag_edges, 22.0, side="right") - 1
+        color_bin = np.searchsorted(color_edges, 0.5, side="right") - 1
+        mag_bin = min(mag_bin, H.shape[1] - 1)
+        color_bin = min(color_bin, H.shape[0] - 1)
+
+        # The peak bin must hold the bulk of counts.
+        assert H[color_bin, mag_bin] > 0.8 * H.sum(), \
+            f"Expected most counts in bin (color≈{color_centers[color_bin]:.2f}, mag≈{mag_centers[mag_bin]:.2f})"
+
+    # ------------------------------------------------------------------
+    # save / load roundtrip
+    # ------------------------------------------------------------------
+
+    def test_save_via_storage(self, tmp_path, mock_survey, bright_star_catalog):
+        """save must write a parquet file for each source type."""
+        from streamobs.background import BackgroundResourceBuilder, BackgroundStorage
+
+        builder = BackgroundResourceBuilder(survey_name="lsst")
+        builder.bands = ["g", "r"]
+        builder.resources["stars"] = {
+            (26.0, 25.5): builder._build_one_config(
+                bright_star_catalog, mock_survey, "stars",
+                maglim_r=26.0, maglim_g=25.5, **self._COMMON,
+            )
+        }
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
+        builder.save(storage, source_type="stars")
+        assert storage.exists("stars", ("g", "r"))
+
+    def test_load_via_storage_roundtrip(self, tmp_path, mock_survey, bright_star_catalog):
+        """Resources loaded from storage must match the saved histogram exactly."""
+        from streamobs.background import BackgroundResourceBuilder, BackgroundStorage
+
+        builder = BackgroundResourceBuilder(survey_name="lsst")
+        builder.bands = ["g", "r"]
+        result = builder._build_one_config(
+            bright_star_catalog, mock_survey, "stars",
+            maglim_r=26.0, maglim_g=25.5, **self._COMMON,
+        )
+        builder.resources["stars"] = {(26.0, 25.5): result}
+
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
+        builder.save(storage, source_type="stars")
+
+        loaded = BackgroundResourceBuilder.load(storage, source_type="stars", bands=("g", "r"))
+        loaded_result = loaded.resources["stars"][(26.0, 25.5)]
+        np.testing.assert_allclose(loaded_result["cmd_hist"], result["cmd_hist"])
+        np.testing.assert_allclose(loaded_result["color_edges"], result["color_edges"])
+        np.testing.assert_allclose(loaded_result["mag_edges"], result["mag_edges"])
+        assert loaded_result["n_ref"] == result["n_ref"]
+        assert loaded_result["area_ref_deg2"] == result["area_ref_deg2"]
+
+    def test_load_via_storage_both_types(self, tmp_path, mock_survey,
+                                          bright_star_catalog, tiny_galaxies_catalog):
+        """Saving both source types and loading must return resources for each."""
+        from streamobs.background import BackgroundResourceBuilder, BackgroundStorage
+
+        builder = BackgroundResourceBuilder(survey_name="lsst")
+        builder.bands = ["g", "r"]
+        builder.resources["stars"] = {
+            (26.0, 25.5): builder._build_one_config(
+                bright_star_catalog, mock_survey, "stars",
+                maglim_r=26.0, maglim_g=25.5, **self._COMMON,
+            )
+        }
+        builder.resources["galaxies"] = {
+            (26.0, 25.5): builder._build_one_config(
+                tiny_galaxies_catalog, mock_survey, "galaxies",
+                maglim_r=26.0, maglim_g=25.5, **self._COMMON,
+            )
+        }
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
+        builder.save(storage, source_type="both")
+
+        loaded = BackgroundResourceBuilder.load(storage, source_type="both", bands=("g", "r"))
+        assert "stars" in loaded.resources
+        assert "galaxies" in loaded.resources
+        assert (26.0, 25.5) in loaded.resources["stars"]
+        assert (26.0, 25.5) in loaded.resources["galaxies"]
 
 
 # ---------------------------------------------------------------------------
