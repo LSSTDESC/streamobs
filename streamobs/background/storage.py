@@ -27,6 +27,10 @@ class BackgroundStorage:
     Bin edges are derived from ``(edge_min, edge_max, n_bins)`` on load.
     Bin centers are not stored; compute them from edges when needed.
 
+    When reading for a specific ``(maglim_r, maglim_g)`` pair, pyarrow
+    predicate pushdown is used so that only the relevant row groups are
+    read from disk — the full file is never loaded into memory.
+
     Parameters
     ----------
     base_path : str, optional
@@ -122,7 +126,61 @@ class BackgroundStorage:
             os.remove(path)
         df.to_parquet(path, compression=compression, index=False)
 
-    def load_data(self, source_type: str, bands: tuple, **kwargs) -> dict:
+    def _load_table(
+        self,
+        source_type: str,
+        bands: tuple,
+        maglim_r: float = None,
+        maglim_g: float = None,
+    ):
+        """Read the parquet file, optionally filtering to a single row.
+
+        When ``maglim_r`` and ``maglim_g`` are given, pyarrow predicate
+        pushdown is applied so only the matching row groups are read.
+        When both are ``None``, the full file is returned.
+        """
+        path = self.get_path(source_type, bands)
+        filters = None
+        if maglim_r is not None and maglim_g is not None:
+            filters = [
+                ("maglim_r", "=", round(float(maglim_r), 4)),
+                ("maglim_g", "=", round(float(maglim_g), 4)),
+            ]
+        return pq.read_table(path, filters=filters)
+
+    def load_data(
+        self,
+        source_type: str,
+        bands: tuple,
+        maglim_r: float,
+        maglim_g: float,
+    ) -> dict:
+        """
+        Load the CMD histogram for a specific ``(maglim_r, maglim_g)`` pair.
+
+        Uses pyarrow predicate pushdown — only the relevant row groups are
+        read from disk.
+
+        Parameters
+        ----------
+        source_type : str
+            ``'stars'`` or ``'galaxies'``.
+        bands : tuple of str
+            Band names, e.g. ``('g', 'r')``.
+        maglim_r : float
+            Magnitude limit for the reference band.
+        maglim_g : float
+            Magnitude limit for the colour band.
+
+        Returns
+        -------
+        dict
+            ``{'cmd_hist', 'color_edges', 'mag_edges', 'n_ref', 'area_ref_deg2'}``.
+        """
+        row = self._load_table(source_type, bands, maglim_r, maglim_g).to_pandas().iloc[0]
+        return self._row_to_dict(row)
+
+    def load_all(self, source_type: str, bands: tuple) -> dict:
         """
         Load the full CMD histogram grid from the parquet file.
 
@@ -155,10 +213,6 @@ class BackgroundStorage:
         bool
         """
         return os.path.exists(self.get_path(source_type, bands))
-
-    def _load_table(self, source_type: str, bands: tuple):
-        """Read the parquet file and return a pyarrow Table."""
-        return pq.read_table(self.get_path(source_type, bands))
 
     @staticmethod
     def _row_to_dict(row) -> dict:

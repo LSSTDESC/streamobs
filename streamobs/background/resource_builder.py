@@ -5,6 +5,7 @@ Builder for precomputed background color–magnitude diagram (CMD) resources.
 import copy
 
 import numpy as np
+import pandas as pd
 
 from ..columns import flag_col, obs_col
 from ..surveys import Survey, SurveyFactory
@@ -18,26 +19,25 @@ class BackgroundResourceBuilder:
     Build precomputed CMD histogram grids for fast background generation.
 
     Drives :class:`BackgroundCatalogInjector` on uniform surveys (no dust,
-    constant magnitude limits) at a 2-D meshgrid of ``(maglim_r, maglim_g)``
-    pairs.  The resulting 2-D color–magnitude histograms are stored via
-    :class:`BackgroundStorage` and later consumed by
+    constant magnitude limits) at a 2D grid of ``(maglim_r, maglim_g)`` pairs
+    filtered by ``|maglim_r - maglim_g| < max_delta``.  The resulting 2-D
+    color–magnitude histograms are stored via :class:`BackgroundStorage` and
+    later consumed by
     :class:`~streamobs.background.generator.LightBackgroundGenerator`.
 
     Parameters
     ----------
     survey_name : str, optional
         Survey identifier (e.g. ``'lsst'``).
-    release : str, optional
-        Survey release string (e.g. ``'yr5'``).
     **kwargs
-        Forwarded to :meth:`~streamobs.surveys.SurveyFactory.create_survey`.
+        Forwarded to :meth:`~streamobs.surveys.Survey.load` when ``build()``
+        loads the survey (e.g. ``release='yr4'``).
 
     Examples
     --------
-    >>> builder = BackgroundResourceBuilder('lsst', release='yr5')
+    >>> builder = BackgroundResourceBuilder('lsst', release='yr4')
     >>> builder.build(
     ...     catalog_stars=df_stars,
-    ...     catalog_galaxies=df_gals,
     ...     bands=('g', 'r'),
     ...     maglim_min=24.0,
     ...     maglim_max=27.0,
@@ -45,13 +45,12 @@ class BackgroundResourceBuilder:
     ...     max_delta=1.0,
     ...     area_ref_deg2=100.0,
     ... )
-    >>> storage = BackgroundStorage(survey_name='lsst', release='yr5')
+    >>> storage = BackgroundStorage(survey_name='lsst')
     >>> builder.save(storage)
     """
 
-    def __init__(self, survey_name="lsst", release=None, **kwargs):
+    def __init__(self, survey_name="lsst", **kwargs):
         self.survey_name = survey_name
-        self.release = release
         self._kwargs = kwargs
         # Nested dict: {source_type: {(maglim_r, maglim_g): config_dict}}
         self.resources: dict = {}
@@ -77,17 +76,18 @@ class BackgroundResourceBuilder:
         """
         Build CMD histograms for all ``(maglim_r, maglim_g)`` grid configurations.
 
-        For each combination of source type and magnitude limit pair, injects
-        the catalog into a uniform (no-dust, constant-maglim) survey and
-        computes a 2-D histogram of ``(color, mag_ref_band)``.
+        Creates a 2D meshgrid of magnitude limits over ``[maglim_min,
+        maglim_max]`` for both bands, retains only pairs satisfying
+        ``|maglim_r - maglim_g| < max_delta``, then injects the catalog into
+        a dust-free uniform survey for each retained pair.
 
         Parameters
         ----------
         catalog_stars : pd.DataFrame or str, optional
-            True stellar catalog.  Required when ``source_type`` is
+            True stellar catalog. Required when ``source_type`` is
             ``'stars'`` or ``'both'``.
         catalog_galaxies : pd.DataFrame or str, optional
-            True galaxy catalog.  Required when ``source_type`` is
+            True galaxy catalog. Required when ``source_type`` is
             ``'galaxies'`` or ``'both'``.
         bands : tuple of str, optional
             Two band names ``(band_g, band_r)`` where color = band_g − band_r and
@@ -265,15 +265,13 @@ class BackgroundResourceBuilder:
             Modified deep copy.
         """
         s = copy.deepcopy(survey)
-        if uniform_maglim is not None or no_dust:
-            if s.ebv_map is not None:
-                s.ebv_map = np.zeros_like(s.ebv_map)
         if uniform_maglim is not None:
-            for band, val in uniform_maglim.items():
-                if band in s.maglim_maps and s.maglim_maps[band] is not None:
-                    s.maglim_maps[band] = np.full_like(
-                        s.maglim_maps[band], float(val), dtype=float
-                    )
+            no_dust = True
+            for band, value in uniform_maglim.items():
+                if band in s.maglim_maps:
+                    s.maglim_maps[band] = np.full_like(s.maglim_maps[band], value)
+        if no_dust and s.ebv_map is not None:
+            s.ebv_map = np.zeros_like(s.ebv_map)
         return s
 
     def _compute_cmd_histogram(
@@ -346,14 +344,17 @@ class BackgroundResourceBuilder:
         storage : BackgroundStorage
             Storage backend to use.
         source_type : str, optional
-            Which source types to save. Default ``'both'``.
+            ``'stars'``, ``'galaxies'``, or ``'both'``. Default ``'both'``.
         **kwargs
             Forwarded to :meth:`BackgroundStorage.save_data`.
         """
-        active = ["stars", "galaxies"] if source_type == "both" else [source_type]
-        for st in active:
-            if st in self.resources:
-                storage.save_data(self.resources[st], st, self.bands, **kwargs)
+        if self.bands is None:
+            raise RuntimeError("No resources to save — call build() first.")
+        types = ["stars", "galaxies"] if source_type == "both" else [source_type]
+        for st in types:
+            if st not in self.resources:
+                continue
+            storage.save_data(self.resources[st], st, self.bands, **kwargs)
 
     @classmethod
     def load(
@@ -371,19 +372,20 @@ class BackgroundResourceBuilder:
         storage : BackgroundStorage
             Storage backend to read from.
         source_type : str, optional
-            Which source types to load. Default ``'both'``.
+            ``'stars'``, ``'galaxies'``, or ``'both'``. Default ``'both'``.
         bands : tuple of str, optional
-            Band names used when the resources were saved. Default ``('g', 'r')``.
+            Band names used when the resources were built. Default ``('g', 'r')``.
 
         Returns
         -------
         BackgroundResourceBuilder
             Populated instance with :attr:`resources` filled.
         """
-        instance = cls()
-        instance.bands = bands
-        active = ["stars", "galaxies"] if source_type == "both" else [source_type]
-        for st in active:
-            if storage.exists(st, bands):
-                instance.resources[st] = storage.load_data(st, bands)
+        instance = cls(survey_name=storage.survey_name)
+        instance.bands = list(bands)
+        types = ["stars", "galaxies"] if source_type == "both" else [source_type]
+        for st in types:
+            data = storage.load_all(st, bands, **kwargs)
+            if data:
+                instance.resources[st] = data
         return instance
