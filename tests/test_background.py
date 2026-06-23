@@ -211,13 +211,29 @@ class TestBackgroundStorage:
         assert os.path.isfile(storage.get_path("stars", ("g", "r")))
 
     def test_load_data_roundtrip(self, tmp_path):
-        """load_data must recover the dict saved by save_data."""
+        """load_data(maglim_r, maglim_g) must recover a single pair via predicate pushdown."""
         from streamobs.background import BackgroundStorage
 
         storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
         grid = _make_fake_grid()
         storage.save_data(grid, "stars", ("g", "r"))
-        loaded = storage.load_data("stars", ("g", "r"))
+
+        for (mr, mg), expected in grid.items():
+            loaded = storage.load_data("stars", ("g", "r"), mr, mg)
+            assert np.allclose(loaded["cmd_hist"], expected["cmd_hist"])
+            assert np.allclose(loaded["color_edges"], expected["color_edges"])
+            assert np.allclose(loaded["mag_edges"], expected["mag_edges"])
+            assert loaded["n_ref"] == expected["n_ref"]
+            assert np.isclose(loaded["area_ref_deg2"], expected["area_ref_deg2"])
+
+    def test_load_all_roundtrip(self, tmp_path):
+        """load_all must recover the full grid saved by save_data."""
+        from streamobs.background import BackgroundStorage
+
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
+        grid = _make_fake_grid()
+        storage.save_data(grid, "stars", ("g", "r"))
+        loaded = storage.load_all("stars", ("g", "r"))
 
         assert set(loaded.keys()) == set(grid.keys())
         for key in grid:

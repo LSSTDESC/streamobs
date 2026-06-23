@@ -164,9 +164,7 @@ class LightBackgroundGenerator:
     def _load_resources(self, source_type: str):
         """Load CMD grid for *source_type* from storage and cache it."""
         if source_type not in self._resources:
-            self._resources[source_type] = self.storage.load_data(
-                source_type, self.bands
-            )
+            self._resources[source_type] = self.storage.load_all(source_type, self.bands)
 
     def _generate_one_type(
         self,

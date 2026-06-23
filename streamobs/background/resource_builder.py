@@ -385,5 +385,5 @@ class BackgroundResourceBuilder:
         active = ["stars", "galaxies"] if source_type == "both" else [source_type]
         for st in active:
             if storage.exists(st, bands):
-                instance.resources[st] = storage.load_data(st, bands)
+                instance.resources[st] = storage.load_all(st, bands)
         return instance
