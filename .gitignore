@@ -160,3 +160,7 @@ notebooks/dev.ipynb
 artifacts/
 # Staged data archive for upload (built by bin/build_data_archive.py)
 /archive/
+
+
+# Development stuff
+.vscode/
