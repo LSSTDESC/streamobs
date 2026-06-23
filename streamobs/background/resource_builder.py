@@ -5,9 +5,9 @@ Builder for precomputed background color–magnitude diagram (CMD) resources.
 import copy
 
 import numpy as np
-import pandas as pd
 
-from ..surveys import Survey
+from ..columns import flag_col, obs_col
+from ..surveys import Survey, SurveyFactory
 from ..utils import load_catalog
 from .catalog_injector import BackgroundCatalogInjector
 from .storage import BackgroundStorage
@@ -18,42 +18,44 @@ class BackgroundResourceBuilder:
     Build precomputed CMD histogram grids for fast background generation.
 
     Drives :class:`BackgroundCatalogInjector` on uniform surveys (no dust,
-    constant magnitude limits) at a 2D grid of ``(maglim_r, maglim_g)`` pairs
-    filtered by ``|maglim_r - maglim_g| < max_delta``.  The resulting 2-D
-    color–magnitude histograms are stored via :class:`BackgroundStorage` and
-    later consumed by
+    constant magnitude limits) at a 2-D meshgrid of ``(maglim_r, maglim_g)``
+    pairs.  The resulting 2-D color–magnitude histograms are stored via
+    :class:`BackgroundStorage` and later consumed by
     :class:`~streamobs.background.generator.LightBackgroundGenerator`.
 
     Parameters
     ----------
     survey_name : str, optional
         Survey identifier (e.g. ``'lsst'``).
+    release : str, optional
+        Survey release string (e.g. ``'yr5'``).
     **kwargs
-        Forwarded to :meth:`~streamobs.surveys.Survey.load` when ``build()``
-        loads the survey (e.g. ``release='yr4'``).
+        Forwarded to :meth:`~streamobs.surveys.SurveyFactory.create_survey`.
 
     Examples
     --------
-    >>> builder = BackgroundResourceBuilder('lsst', release='yr4')
+    >>> builder = BackgroundResourceBuilder('lsst', release='yr5')
     >>> builder.build(
     ...     catalog_stars=df_stars,
+    ...     catalog_galaxies=df_gals,
     ...     bands=('g', 'r'),
-    ...     maglim_min=23.5,
+    ...     maglim_min=24.0,
     ...     maglim_max=27.0,
     ...     maglim_step=0.5,
     ...     max_delta=1.0,
     ...     area_ref_deg2=100.0,
     ... )
-    >>> storage = BackgroundStorage(survey_name='lsst')
+    >>> storage = BackgroundStorage(survey_name='lsst', release='yr5')
     >>> builder.save(storage)
     """
 
-    def __init__(self, survey_name="lsst", **kwargs):
+    def __init__(self, survey_name="lsst", release=None, **kwargs):
         self.survey_name = survey_name
+        self.release = release
         self._kwargs = kwargs
-        # {source_type: {(maglim_r, maglim_g): result_dict}}
+        # Nested dict: {source_type: {(maglim_r, maglim_g): config_dict}}
         self.resources: dict = {}
-        self.bands = None
+        self.bands = ("g", "r")
 
     def build(
         self,
@@ -73,142 +75,133 @@ class BackgroundResourceBuilder:
         **kwargs,
     ):
         """
-        Build CMD histograms for all ``(maglim_r, maglim_g)`` grid pairs.
+        Build CMD histograms for all ``(maglim_r, maglim_g)`` grid configurations.
 
-        Creates a 2D meshgrid of magnitude limits over ``[maglim_min,
-        maglim_max]`` for both bands, retains only pairs satisfying
-        ``|maglim_r - maglim_g| < max_delta``, then injects the catalog into
-        a dust-free uniform survey for each retained pair.
+        For each combination of source type and magnitude limit pair, injects
+        the catalog into a uniform (no-dust, constant-maglim) survey and
+        computes a 2-D histogram of ``(color, mag_ref_band)``.
 
         Parameters
         ----------
         catalog_stars : pd.DataFrame or str, optional
-            True stellar catalog. Required when ``source_type`` is
+            True stellar catalog.  Required when ``source_type`` is
             ``'stars'`` or ``'both'``.
         catalog_galaxies : pd.DataFrame or str, optional
-            True galaxy catalog. Required when ``source_type`` is
+            True galaxy catalog.  Required when ``source_type`` is
             ``'galaxies'`` or ``'both'``.
         bands : tuple of str, optional
-            ``(band_color, band_ref)`` where color = band_color - band_ref and
-            ``band_ref`` is the magnitude axis. Default ``('g', 'r')``.
+            Two band names ``(band_g, band_r)`` where color = band_g − band_r and
+            band_r is the reference magnitude axis. Default ``('g', 'r')``.
         maglim_min : float, optional
-            Minimum magnitude limit for both bands. Default ``23.5``.
+            Minimum magnitude limit for the grid. Default ``23.5``.
         maglim_max : float, optional
-            Maximum magnitude limit for both bands. Default ``27.0``.
+            Maximum magnitude limit for the grid. Default ``27.0``.
         maglim_step : float, optional
-            Grid step for magnitude limits. Default ``0.5``.
+            Step size between grid values. Default ``0.5``.
         max_delta : float, optional
-            Maximum allowed ``|maglim_r - maglim_g|``. Default ``1.0``.
+            Keep only pairs with ``|maglim_r − maglim_g| < max_delta``.
+            Default ``1.0``.
         n_bins_color : int, optional
             Number of color histogram bins. Default ``50``.
         n_bins_mag : int, optional
             Number of magnitude histogram bins. Default ``50``.
         color_range : tuple of float, optional
-            ``(min, max)`` for the color axis. Identical across all grid
-            points so the generator can interpolate. Default ``(-2, 3)``.
+            ``(min, max)`` of the color axis. Default ``(-2, 3)``.
         mag_range : tuple of float, optional
-            ``(min, max)`` for the magnitude axis. Default ``(14, 30)``.
-        area_ref_deg2 : float
-            Sky area of the input catalog in deg². Stored with every grid
-            point so the generator can scale counts to arbitrary pixel sizes.
+            ``(min, max)`` of the magnitude axis. Default ``(14, 30)``.
+        area_ref_deg2 : float, optional
+            Sky area of the reference simulation in deg².
         source_type : str, optional
             ``'stars'``, ``'galaxies'``, or ``'both'``. Default ``'both'``.
         **kwargs
-            Forwarded to
-            :meth:`BackgroundCatalogInjector.inject_stars` /
-            :meth:`BackgroundCatalogInjector.inject_galaxies`.
+            Forwarded to the catalog injector.
 
         Returns
         -------
         self
-            Returns the builder for chaining.
         """
-        if area_ref_deg2 is None:
-            raise ValueError("area_ref_deg2 must be provided (sky area of the input catalog in deg²).")
+        survey = SurveyFactory.create_survey(
+            self.survey_name, release=self.release, **self._kwargs
+        )
+        self.bands = bands
 
-        survey = Survey.load(self.survey_name, **self._kwargs)
-        self.bands = list(bands)
-
-        # Resolve active (source_type, catalog) pairs
-        active = []
-        if source_type in ("stars", "both"):
-            if catalog_stars is None:
-                raise ValueError("catalog_stars is required for source_type='stars' or 'both'.")
-            active.append(("stars", load_catalog(catalog_stars)))
-        if source_type in ("galaxies", "both"):
-            if catalog_galaxies is None:
-                raise ValueError("catalog_galaxies is required for source_type='galaxies' or 'both'.")
-            active.append(("galaxies", load_catalog(catalog_galaxies)))
-
-        # Build 2D meshgrid and filter by delta threshold
+        # Build 2-D meshgrid of (maglim_r, maglim_g) pairs
         maglim_1d = np.arange(maglim_min, maglim_max + maglim_step / 2, maglim_step)
         mg_r, mg_g = np.meshgrid(maglim_1d, maglim_1d)
-        mask = np.abs(mg_r - mg_g) < max_delta
-        pairs = list(zip(mg_r[mask].ravel(), mg_g[mask].ravel()))
+        mask_delta = np.abs(mg_r - mg_g) < max_delta
+        pairs = list(zip(mg_r[mask_delta].ravel(), mg_g[mask_delta].ravel()))
 
-        for st, catalog in active:
+        active = ["stars", "galaxies"] if source_type == "both" else [source_type]
+
+        for st in active:
+            cat = load_catalog(catalog_stars if st == "stars" else catalog_galaxies)
             self.resources.setdefault(st, {})
             for maglim_r, maglim_g in pairs:
+                mr_key = round(float(maglim_r), 4)
+                mg_key = round(float(maglim_g), 4)
                 result = self._build_one_config(
-                    catalog,
-                    survey,
-                    st,
-                    bands,
-                    maglim_r,
-                    maglim_g,
-                    n_bins_color,
-                    n_bins_mag,
-                    color_range,
-                    mag_range,
-                    area_ref_deg2,
+                    catalog=cat,
+                    survey=survey,
+                    source_type=st,
+                    bands=bands,
+                    maglim_r=mr_key,
+                    maglim_g=mg_key,
+                    n_bins_color=n_bins_color,
+                    n_bins_mag=n_bins_mag,
+                    color_range=color_range,
+                    mag_range=mag_range,
+                    area_ref_deg2=area_ref_deg2,
                     **kwargs,
                 )
-                self.resources[st][(maglim_r, maglim_g)] = result
+                self.resources[st][(mr_key, mg_key)] = result
 
         return self
 
     def _build_one_config(
         self,
         catalog,
-        survey,
-        source_type,
-        bands,
-        maglim_r,
-        maglim_g,
-        n_bins_color,
-        n_bins_mag,
-        color_range,
-        mag_range,
-        area_ref_deg2,
+        survey: Survey,
+        source_type: str,
+        bands: tuple,
+        maglim_r: float,
+        maglim_g: float,
+        n_bins_color: int,
+        n_bins_mag: int,
+        color_range=(-2, 3),
+        mag_range=(14, 30),
+        area_ref_deg2=None,
         **kwargs,
     ) -> dict:
         """
         Build the CMD histogram for a single ``(maglim_r, maglim_g)`` pair.
+
+        Creates a uniform survey (no dust, constant maglim), injects the catalog,
+        and histograms the detected sources.
 
         Parameters
         ----------
         catalog : pd.DataFrame
             True background catalog (stars or galaxies).
         survey : Survey
-            Unmodified loaded survey — ``_prepare_survey`` makes the copy.
+            Loaded survey instance to prepare.
         source_type : str
             ``'stars'`` or ``'galaxies'``.
         bands : tuple of str
-            ``(band_color, band_ref)``.
+            ``(band_g, band_r)`` — color = band_g_obs − band_r_obs.
         maglim_r : float
-            Magnitude limit for the reference band (``bands[1]``).
+            Magnitude limit for band_r.
         maglim_g : float
-            Magnitude limit for the colour band (``bands[0]``).
+            Magnitude limit for band_g.
         n_bins_color : int
             Number of color bins.
         n_bins_mag : int
             Number of magnitude bins.
         color_range : tuple of float
-            Fixed color axis range.
+            Color axis range.
         mag_range : tuple of float
-            Fixed magnitude axis range.
-        area_ref_deg2 : float
-            Sky area of the catalog in deg².
+            Magnitude axis range.
+        area_ref_deg2 : float, optional
+            Reference area in deg² for count normalisation.
         **kwargs
             Forwarded to the injector.
 
@@ -219,18 +212,30 @@ class BackgroundResourceBuilder:
             'mag_edges': np.ndarray, 'n_ref': int, 'area_ref_deg2': float}``
         """
         prepared = self._prepare_survey(
-            survey, uniform_maglim={bands[0]: maglim_g, bands[1]: maglim_r}
+            survey,
+            uniform_maglim={bands[0]: float(maglim_g), bands[1]: float(maglim_r)},
         )
         inj = BackgroundCatalogInjector(prepared)
         if source_type == "stars":
-            obs = inj.inject_stars(catalog, bands=list(bands), **kwargs)
+            observed = inj.inject_stars(catalog, bands=list(bands), **kwargs)
         else:
-            obs = inj.inject_galaxies(catalog, bands=list(bands), **kwargs)
+            observed = inj.inject_galaxies(catalog, bands=list(bands), **kwargs)
 
+        namespace = prepared.namespace
         hist = self._compute_cmd_histogram(
-            obs, survey.namespace, bands, n_bins_color, n_bins_mag, color_range, mag_range
+            observed,
+            namespace,
+            bands,
+            n_bins_color,
+            n_bins_mag,
+            color_range=color_range,
+            mag_range=mag_range,
         )
-        return {**hist, "n_ref": len(catalog), "area_ref_deg2": area_ref_deg2}
+        return {
+            **hist,
+            "n_ref": len(catalog),
+            "area_ref_deg2": float(area_ref_deg2) if area_ref_deg2 is not None else 1.0,
+        }
 
     def _prepare_survey(
         self,
@@ -240,34 +245,35 @@ class BackgroundResourceBuilder:
         **kwargs,
     ) -> Survey:
         """
-        Return a modified deep copy of the survey for background injection.
+        Return a deep-copied, modified survey for background injection.
 
         Parameters
         ----------
         survey : Survey
             Survey to copy and modify.
         no_dust : bool, optional
-            If True, zero the EBV map. Default ``False``.
+            If True, zero the EBV map.  Default ``False``.
         uniform_maglim : dict, optional
-            ``{band: value}`` mapping to replace per-pixel magnitude limit maps
-            with constant arrays, e.g. ``{'g': 26.0, 'r': 26.5}``.
-            When provided, ``no_dust`` is implicitly set to True.
+            ``{band: value}`` mapping to replace per-pixel maglim maps with
+            constant arrays.  When provided, ``no_dust`` is implied.
         **kwargs
             Reserved for future use.
 
         Returns
         -------
         Survey
-            Modified copy of the survey.
+            Modified deep copy.
         """
         s = copy.deepcopy(survey)
+        if uniform_maglim is not None or no_dust:
+            if s.ebv_map is not None:
+                s.ebv_map = np.zeros_like(s.ebv_map)
         if uniform_maglim is not None:
-            no_dust = True
-            for band, value in uniform_maglim.items():
-                if band in s.maglim_maps:
-                    s.maglim_maps[band] = np.full_like(s.maglim_maps[band], value)
-        if no_dust and s.ebv_map is not None:
-            s.ebv_map = np.zeros_like(s.ebv_map)
+            for band, val in uniform_maglim.items():
+                if band in s.maglim_maps and s.maglim_maps[band] is not None:
+                    s.maglim_maps[band] = np.full_like(
+                        s.maglim_maps[band], float(val), dtype=float
+                    )
         return s
 
     def _compute_cmd_histogram(
@@ -277,33 +283,27 @@ class BackgroundResourceBuilder:
         bands: tuple,
         n_bins_color: int,
         n_bins_mag: int,
-        color_range: tuple,
-        mag_range: tuple,
+        color_range=(-2, 3),
+        mag_range=(14, 30),
     ) -> dict:
         """
         Build a 2-D color–magnitude histogram from an observed catalog.
 
-        Color is ``mag_bands[0]_obs - mag_bands[1]_obs``; the magnitude axis
-        is ``mag_bands[1]_obs``.  Only detected sources (flag == 1) are
-        histogrammed.
+        Color = ``mag_band_g_obs − mag_band_r_obs``; magnitude = ``mag_band_r_obs``.
+        Only objects with ``flag_observed == 1`` are counted.
 
         Parameters
         ----------
         observed_df : pd.DataFrame
-            Output of the catalog injector.
+            Output of the catalog injector (observed magnitudes + flags).
         namespace : str
-            Survey column namespace, e.g. ``'lsst_yr4'``. Needed to find the
-            columns of interest.
+            Survey namespace prefix (e.g. ``'lsst_yr4'``).
         bands : tuple of str
-            ``(band_color, band_ref)``.
-        n_bins_color : int
-            Number of color bins.
-        n_bins_mag : int
-            Number of magnitude bins.
-        color_range : tuple of float
-            Fixed ``(min, max)`` for the color axis.
-        mag_range : tuple of float
-            Fixed ``(min, max)`` for the magnitude axis.
+            ``(band_g, band_r)``.
+        n_bins_color, n_bins_mag : int
+            Number of histogram bins on each axis.
+        color_range, mag_range : tuple of float
+            Axis ranges.
 
         Returns
         -------
@@ -311,24 +311,31 @@ class BackgroundResourceBuilder:
             ``{'cmd_hist': np.ndarray (n_bins_color × n_bins_mag),
             'color_edges': np.ndarray, 'mag_edges': np.ndarray}``
         """
-        flag_col = f"{namespace}_flag_observed"
-        col0 = f"{namespace}_{bands[0]}_obs"
-        col1 = f"{namespace}_{bands[1]}_obs"
+        color_edges = np.linspace(color_range[0], color_range[1], n_bins_color + 1)
+        mag_edges = np.linspace(mag_range[0], mag_range[1], n_bins_mag + 1)
 
-        detected = observed_df[observed_df[flag_col] == 1]
+        mask = observed_df[flag_col(namespace)] == 1
+        detected = observed_df[mask]
 
-        mag1 = pd.to_numeric(detected[col1], errors='coerce')
-        mag0 = pd.to_numeric(detected[col0], errors='coerce')
-        color = (mag0 - mag1).values
-        mag = mag1.values
+        if len(detected) == 0:
+            return {
+                "cmd_hist": np.zeros((n_bins_color, n_bins_mag)),
+                "color_edges": color_edges,
+                "mag_edges": mag_edges,
+            }
 
-        H, xedges, yedges = np.histogram2d(
-            color,
-            mag,
+        color = (
+            detected[obs_col(bands[0], namespace)].astype(float)
+            - detected[obs_col(bands[1], namespace)].astype(float)
+        )
+        mag = detected[obs_col(bands[1], namespace)].astype(float)
+
+        H, xe, ye = np.histogram2d(
+            color, mag,
             bins=[n_bins_color, n_bins_mag],
             range=[color_range, mag_range],
         )
-        return {"cmd_hist": H, "color_edges": xedges, "mag_edges": yedges}
+        return {"cmd_hist": H, "color_edges": xe, "mag_edges": ye}
 
     def save(self, storage: BackgroundStorage, source_type="both", **kwargs):
         """
@@ -339,17 +346,14 @@ class BackgroundResourceBuilder:
         storage : BackgroundStorage
             Storage backend to use.
         source_type : str, optional
-            ``'stars'``, ``'galaxies'``, or ``'both'``. Default ``'both'``.
+            Which source types to save. Default ``'both'``.
         **kwargs
             Forwarded to :meth:`BackgroundStorage.save_data`.
         """
-        if self.bands is None:
-            raise RuntimeError("No resources to save — call build() first.")
-        types = ["stars", "galaxies"] if source_type == "both" else [source_type]
-        for st in types:
-            if st not in self.resources:
-                continue
-            storage.save_data(self.resources[st], st, self.bands, **kwargs)
+        active = ["stars", "galaxies"] if source_type == "both" else [source_type]
+        for st in active:
+            if st in self.resources:
+                storage.save_data(self.resources[st], st, self.bands, **kwargs)
 
     @classmethod
     def load(
@@ -367,20 +371,19 @@ class BackgroundResourceBuilder:
         storage : BackgroundStorage
             Storage backend to read from.
         source_type : str, optional
-            ``'stars'``, ``'galaxies'``, or ``'both'``. Default ``'both'``.
+            Which source types to load. Default ``'both'``.
         bands : tuple of str, optional
-            Band names used when the resources were built. Default ``('g', 'r')``.
+            Band names used when the resources were saved. Default ``('g', 'r')``.
 
         Returns
         -------
         BackgroundResourceBuilder
             Populated instance with :attr:`resources` filled.
         """
-        instance = cls(survey_name=storage.survey_name)
-        instance.bands = list(bands)
-        types = ["stars", "galaxies"] if source_type == "both" else [source_type]
-        for st in types:
-            data = storage.load_all(st, bands, **kwargs)
-            if data:
-                instance.resources[st] = data
+        instance = cls()
+        instance.bands = bands
+        active = ["stars", "galaxies"] if source_type == "both" else [source_type]
+        for st in active:
+            if storage.exists(st, bands):
+                instance.resources[st] = storage.load_all(st, bands)
         return instance
