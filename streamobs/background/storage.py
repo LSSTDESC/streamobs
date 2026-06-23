@@ -15,11 +15,12 @@ class BackgroundStorage:
 
     One compressed parquet file per ``(source_type, bands)`` combination,
     e.g. ``stars_gr.parquet``.  Inside that file there is one row per
-    ``(maglim_r, maglim_g)`` grid point.
+    ``(maglim_b2, maglim_b1)`` grid point, where ``b1 = bands[0]`` (color
+    band) and ``b2 = bands[1]`` (reference/magnitude band).
 
-    **File format** — one row per ``(maglim_r, maglim_g)`` pair::
+    **File format** — one row per ``(maglim_b2, maglim_b1)`` pair::
 
-        maglim_r | maglim_g | n_ref | area_ref_deg2
+        maglim_b2 | maglim_b1 | n_ref | area_ref_deg2
         | color_edge_min | color_edge_max | n_color
         | mag_edge_min   | mag_edge_max   | n_mag
         | counts  (list of n_color × n_mag floats, row-major)
@@ -27,7 +28,7 @@ class BackgroundStorage:
     Bin edges are derived from ``(edge_min, edge_max, n_bins)`` on load.
     Bin centers are not stored; compute them from edges when needed.
 
-    When reading for a specific ``(maglim_r, maglim_g)`` pair, pyarrow
+    When reading for a specific ``(maglim_b2, maglim_b1)`` pair, pyarrow
     predicate pushdown is used so that only the relevant row groups are
     read from disk — the full file is never loaded into memory.
 
@@ -86,9 +87,9 @@ class BackgroundStorage:
         Parameters
         ----------
         data : dict
-            Full grid keyed by ``(maglim_r, maglim_g)``, each value being
+            Full grid keyed by ``(maglim_b2, maglim_b1)``, each value being
             a dict with keys ``cmd_hist``, ``color_edges``, ``mag_edges``,
-            ``n_ref``, ``area_ref_deg2``.
+            ``n_ref``, ``area_ref_deg2``.  ``b1 = bands[0]``, ``b2 = bands[1]``.
         source_type : str
             ``'stars'`` or ``'galaxies'``.
         bands : tuple of str
@@ -100,13 +101,13 @@ class BackgroundStorage:
         compression = kwargs.get("compression", "zstd")
 
         rows = []
-        for (maglim_r, maglim_g), d in data.items():
+        for (maglim_b2, maglim_b1), d in data.items():
             color_edges = d["color_edges"]
             mag_edges = d["mag_edges"]
             rows.append(
                 {
-                    "maglim_r": round(float(maglim_r), 4),
-                    "maglim_g": round(float(maglim_g), 4),
+                    "maglim_b2": round(float(maglim_b2), 4),
+                    "maglim_b1": round(float(maglim_b1), 4),
                     "n_ref": int(d["n_ref"]),
                     "area_ref_deg2": float(d["area_ref_deg2"]),
                     "color_edge_min": float(color_edges[0]),
@@ -130,11 +131,11 @@ class BackgroundStorage:
         self,
         source_type: str,
         bands: tuple,
-        maglim_r: float,
-        maglim_g: float,
+        maglim_b2: float,
+        maglim_b1: float,
     ) -> dict:
         """
-        Load the CMD histogram for a specific ``(maglim_r, maglim_g)`` pair.
+        Load the CMD histogram for a specific ``(maglim_b2, maglim_b1)`` pair.
 
         Uses pyarrow predicate pushdown — only the relevant row groups are
         read from disk.
@@ -145,17 +146,17 @@ class BackgroundStorage:
             ``'stars'`` or ``'galaxies'``.
         bands : tuple of str
             Band names, e.g. ``('g', 'r')``.
-        maglim_r : float
-            Magnitude limit for the reference band.
-        maglim_g : float
-            Magnitude limit for the colour band.
+        maglim_b2 : float
+            Magnitude limit for ``bands[1]`` (reference band).
+        maglim_b1 : float
+            Magnitude limit for ``bands[0]`` (color band).
 
         Returns
         -------
         dict
             ``{'cmd_hist', 'color_edges', 'mag_edges', 'n_ref', 'area_ref_deg2'}``.
         """
-        row = self._load_table(source_type, bands, maglim_r, maglim_g).to_pandas().iloc[0]
+        row = self._load_table(source_type, bands, maglim_b2, maglim_b1).to_pandas().iloc[0]
         return self._row_to_dict(row)
 
     def load_all(self, source_type: str, bands: tuple) -> dict:
@@ -165,12 +166,12 @@ class BackgroundStorage:
         Returns
         -------
         dict
-            ``{(maglim_r, maglim_g): {'cmd_hist', 'color_edges', 'mag_edges',
-            'n_ref', 'area_ref_deg2'}}``
+            ``{(maglim_b2, maglim_b1): {'cmd_hist', 'color_edges', 'mag_edges',
+            'n_ref', 'area_ref_deg2'}}`` where ``b1 = bands[0]``, ``b2 = bands[1]``.
         """
         df = self._load_table(source_type, bands).to_pandas()
         return {
-            (row["maglim_r"], row["maglim_g"]): self._row_to_dict(row)
+            (row["maglim_b2"], row["maglim_b1"]): self._row_to_dict(row)
             for _, row in df.iterrows()
         }
 
@@ -196,21 +197,21 @@ class BackgroundStorage:
         self,
         source_type: str,
         bands: tuple,
-        maglim_r: float = None,
-        maglim_g: float = None,
+        maglim_b2: float = None,
+        maglim_b1: float = None,
     ):
         """Read the parquet file, optionally filtering to a single row.
 
-        When ``maglim_r`` and ``maglim_g`` are given, pyarrow predicate
+        When ``maglim_b2`` and ``maglim_b1`` are given, pyarrow predicate
         pushdown is applied so only the matching row groups are read.
         When both are ``None``, the full file is returned.
         """
         path = self.get_path(source_type, bands)
         filters = None
-        if maglim_r is not None and maglim_g is not None:
+        if maglim_b2 is not None and maglim_b1 is not None:
             filters = [
-                ("maglim_r", "=", round(float(maglim_r), 4)),
-                ("maglim_g", "=", round(float(maglim_g), 4)),
+                ("maglim_b2", "=", round(float(maglim_b2), 4)),
+                ("maglim_b1", "=", round(float(maglim_b1), 4)),
             ]
         return pq.read_table(path, filters=filters)
 

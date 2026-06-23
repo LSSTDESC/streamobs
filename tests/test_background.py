@@ -211,7 +211,7 @@ class TestBackgroundStorage:
         assert os.path.isfile(storage.get_path("stars", ("g", "r")))
 
     def test_load_data_roundtrip(self, tmp_path):
-        """load_data(maglim_r, maglim_g) must recover a single pair via predicate pushdown."""
+        """load_data(maglim_b2, maglim_b1) must recover a single pair via predicate pushdown."""
         from streamobs.background import BackgroundStorage
 
         storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
@@ -285,8 +285,8 @@ class TestBackgroundResourceBuilder:
             survey=mock_survey,
             source_type="stars",
             bands=("g", "r"),
-            maglim_r=26.0,
-            maglim_g=26.5,
+            maglim_b2=26.0,
+            maglim_b1=26.5,
             n_bins_color=10,
             n_bins_mag=10,
             color_range=(-2, 3),

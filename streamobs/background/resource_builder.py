@@ -18,8 +18,9 @@ class BackgroundResourceBuilder:
     Build precomputed CMD histogram grids for fast background generation.
 
     Drives :class:`BackgroundCatalogInjector` on uniform surveys (no dust,
-    constant magnitude limits) at a 2-D meshgrid of ``(maglim_r, maglim_g)``
-    pairs.  The resulting 2-D color–magnitude histograms are stored via
+    constant magnitude limits) at a 2-D meshgrid of ``(maglim_b2, maglim_b1)``
+    pairs (``b1 = bands[0]``, ``b2 = bands[1]``).  The resulting 2-D
+    color–magnitude histograms are stored via
     :class:`BackgroundStorage` and later consumed by
     :class:`~streamobs.background.generator.LightBackgroundGenerator`.
 
@@ -53,7 +54,7 @@ class BackgroundResourceBuilder:
         self.survey_name = survey_name
         self.release = release
         self._kwargs = kwargs
-        # Nested dict: {source_type: {(maglim_r, maglim_g): config_dict}}
+        # Nested dict: {source_type: {(maglim_b2, maglim_b1): config_dict}}
         self.resources: dict = {}
         self.bands = ("g", "r")
 
@@ -75,7 +76,7 @@ class BackgroundResourceBuilder:
         **kwargs,
     ):
         """
-        Build CMD histograms for all ``(maglim_r, maglim_g)`` grid configurations.
+        Build CMD histograms for all ``(maglim_b2, maglim_b1)`` grid configurations.
 
         For each combination of source type and magnitude limit pair, injects
         the catalog into a uniform (no-dust, constant-maglim) survey and
@@ -90,8 +91,8 @@ class BackgroundResourceBuilder:
             True galaxy catalog.  Required when ``source_type`` is
             ``'galaxies'`` or ``'both'``.
         bands : tuple of str, optional
-            Two band names ``(band_g, band_r)`` where color = band_g − band_r and
-            band_r is the reference magnitude axis. Default ``('g', 'r')``.
+            Two band names ``(bands[0], bands[1])`` where color = bands[0] − bands[1]
+            and bands[1] is the reference magnitude axis. Default ``('g', 'r')``.
         maglim_min : float, optional
             Minimum magnitude limit for the grid. Default ``23.5``.
         maglim_max : float, optional
@@ -99,7 +100,7 @@ class BackgroundResourceBuilder:
         maglim_step : float, optional
             Step size between grid values. Default ``0.5``.
         max_delta : float, optional
-            Keep only pairs with ``|maglim_r − maglim_g| < max_delta``.
+            Keep only pairs with ``|maglim_b2 − maglim_b1| < max_delta``.
             Default ``1.0``.
         n_bins_color : int, optional
             Number of color histogram bins. Default ``50``.
@@ -125,27 +126,27 @@ class BackgroundResourceBuilder:
         )
         self.bands = bands
 
-        # Build 2-D meshgrid of (maglim_r, maglim_g) pairs
+        # Build 2-D meshgrid of (maglim_b2, maglim_b1) pairs
         maglim_1d = np.arange(maglim_min, maglim_max + maglim_step / 2, maglim_step)
-        mg_r, mg_g = np.meshgrid(maglim_1d, maglim_1d)
-        mask_delta = np.abs(mg_r - mg_g) < max_delta
-        pairs = list(zip(mg_r[mask_delta].ravel(), mg_g[mask_delta].ravel()))
+        mg_b2, mg_b1 = np.meshgrid(maglim_1d, maglim_1d)
+        mask_delta = np.abs(mg_b2 - mg_b1) < max_delta
+        pairs = list(zip(mg_b2[mask_delta].ravel(), mg_b1[mask_delta].ravel()))
 
         active = ["stars", "galaxies"] if source_type == "both" else [source_type]
 
         for st in active:
             cat = load_catalog(catalog_stars if st == "stars" else catalog_galaxies)
             self.resources.setdefault(st, {})
-            for maglim_r, maglim_g in pairs:
-                mr_key = round(float(maglim_r), 4)
-                mg_key = round(float(maglim_g), 4)
+            for maglim_b2, maglim_b1 in pairs:
+                mb2_key = round(float(maglim_b2), 4)
+                mb1_key = round(float(maglim_b1), 4)
                 result = self._build_one_config(
                     catalog=cat,
                     survey=survey,
                     source_type=st,
                     bands=bands,
-                    maglim_r=mr_key,
-                    maglim_g=mg_key,
+                    maglim_b2=mb2_key,
+                    maglim_b1=mb1_key,
                     n_bins_color=n_bins_color,
                     n_bins_mag=n_bins_mag,
                     color_range=color_range,
@@ -153,7 +154,7 @@ class BackgroundResourceBuilder:
                     area_ref_deg2=area_ref_deg2,
                     **kwargs,
                 )
-                self.resources[st][(mr_key, mg_key)] = result
+                self.resources[st][(mb2_key, mb1_key)] = result
 
         return self
 
@@ -163,8 +164,8 @@ class BackgroundResourceBuilder:
         survey: Survey,
         source_type: str,
         bands: tuple,
-        maglim_r: float,
-        maglim_g: float,
+        maglim_b2: float,
+        maglim_b1: float,
         n_bins_color: int,
         n_bins_mag: int,
         color_range=(-2, 3),
@@ -173,7 +174,7 @@ class BackgroundResourceBuilder:
         **kwargs,
     ) -> dict:
         """
-        Build the CMD histogram for a single ``(maglim_r, maglim_g)`` pair.
+        Build the CMD histogram for a single ``(maglim_b2, maglim_b1)`` pair.
 
         Creates a uniform survey (no dust, constant maglim), injects the catalog,
         and histograms the detected sources.
@@ -187,11 +188,11 @@ class BackgroundResourceBuilder:
         source_type : str
             ``'stars'`` or ``'galaxies'``.
         bands : tuple of str
-            ``(band_g, band_r)`` — color = band_g_obs − band_r_obs.
-        maglim_r : float
-            Magnitude limit for band_r.
-        maglim_g : float
-            Magnitude limit for band_g.
+            ``(bands[0], bands[1])`` — color = bands[0]_obs − bands[1]_obs.
+        maglim_b2 : float
+            Magnitude limit for ``bands[1]`` (reference band).
+        maglim_b1 : float
+            Magnitude limit for ``bands[0]`` (color band).
         n_bins_color : int
             Number of color bins.
         n_bins_mag : int
@@ -213,7 +214,7 @@ class BackgroundResourceBuilder:
         """
         prepared = self._prepare_survey(
             survey,
-            uniform_maglim={bands[0]: float(maglim_g), bands[1]: float(maglim_r)},
+            uniform_maglim={bands[0]: float(maglim_b1), bands[1]: float(maglim_b2)},
         )
         inj = BackgroundCatalogInjector(prepared)
         if source_type == "stars":
