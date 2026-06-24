@@ -170,8 +170,7 @@ print(
 # cannot drift). We fit it on the matched det->truth catalog and pull the artifacts the
 # products + figures need (the size, the boundaries, the half-width Delta, the stellar locus).
 import roman_star_classifier as rsc
-from roman_star_classifier import \
-    ENV_PURITY  # purity target (figure + class_star-opt)
+from roman_star_classifier import ENV_PURITY  # purity target (figure + class_star-opt)
 from roman_star_classifier import ENV_UP_BRIGHT_VAL  # plot annotations
 from roman_star_classifier import ENV_FREEZE, ENV_UP_BRIGHT, ENV_UP_KNEE
 

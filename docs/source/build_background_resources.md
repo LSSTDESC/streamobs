@@ -1,6 +1,6 @@
 # Building background resources
 
-The {doc}`light background method <background_light>` reads precomputed CMD
+The [light background method](background_light.md) reads precomputed CMD
 histograms from parquet files in `data/background/`. These files are not tracked
 by git and must be built once per survey by the package developer, and then
 included in the data base.

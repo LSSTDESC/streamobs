@@ -307,8 +307,7 @@ class TestBackgroundResourceBuilder:
 
     def test_save_via_storage(self, tmp_path, stream_catalog):
         """save must write a parquet file via BackgroundStorage."""
-        from streamobs.background import (BackgroundResourceBuilder,
-                                          BackgroundStorage)
+        from streamobs.background import BackgroundResourceBuilder, BackgroundStorage
 
         builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
         builder.build(
@@ -328,8 +327,7 @@ class TestBackgroundResourceBuilder:
 
     def test_load_via_storage(self, tmp_path, stream_catalog):
         """load must reconstruct resources from the file saved by save."""
-        from streamobs.background import (BackgroundResourceBuilder,
-                                          BackgroundStorage)
+        from streamobs.background import BackgroundResourceBuilder, BackgroundStorage
 
         builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
         builder.build(
@@ -424,8 +422,7 @@ class TestLightBackgroundGenerator:
 
     def test_init(self, fast_survey, tmp_path):
         """LightBackgroundGenerator can be instantiated."""
-        from streamobs.background import (BackgroundStorage,
-                                          LightBackgroundGenerator)
+        from streamobs.background import BackgroundStorage, LightBackgroundGenerator
 
         storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
         gen = LightBackgroundGenerator(storage, fast_survey)
@@ -591,9 +588,11 @@ class TestLightBackgroundGenerator:
         """
         import pandas as pd
 
-        from streamobs.background import (BackgroundResourceBuilder,
-                                          BackgroundStorage,
-                                          LightBackgroundGenerator)
+        from streamobs.background import (
+            BackgroundResourceBuilder,
+            BackgroundStorage,
+            LightBackgroundGenerator,
+        )
 
         # Synthetic catalog with columns matching true_col(band, "lsst_yr4") → "lsst_<band>_true"
         rng = np.random.default_rng(0)

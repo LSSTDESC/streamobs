@@ -11,8 +11,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from streamobs.model import (DensityModel, IsochroneModel, StreamModel,
-                             TrackModel)
+from streamobs.model import DensityModel, IsochroneModel, StreamModel, TrackModel
 
 # ---------------------------------------------------------------------------
 # Helpers

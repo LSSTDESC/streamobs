@@ -31,7 +31,7 @@ The output is a tuple `(catalog, meta)`:
 - Spatial distribution correlated with survey depth and dust.
 - Magnitude distribution consistent with the survey selection function.
 
-**What it does not give you** (use the {doc}`injection method <background_injection>` for these)
+**What it does not give you** (use the [injection method](background_injection.md) for these)
 
 - Per-object magnitude errors or noise.
 - More than two photometric bands.
@@ -61,4 +61,4 @@ catalog, meta = bg.generate(
 )
 ```
 
-The resource files must exist for the requested survey. See {doc}`build_background_resources` for how to build them.
+The resource files must exist for the requested survey. See [doc](build_background_resources.md) for how to build them.

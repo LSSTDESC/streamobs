@@ -6,8 +6,8 @@ Two methods are available:
 
 | Method | Speed | What you need | Page |
 |--------|-------|---------------|------|
-| `'light'` *(default)* | Fast | Precomputed CMD resource files (included with other `StreamObs` data) | {doc}`background_light` |
-| `'injection'` | Slow | True background catalogs | {doc}`background_injection` |
+| `'light'` *(default)* | Fast | Precomputed CMD resource files *(included with other `StreamObs` data)* | [background_light](background_light.md) |
+| `'injection'` | Slow | True background catalogs | [background_injection](background_injection.md) |
 
 ## Quick start
 
