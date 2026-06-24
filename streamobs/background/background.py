@@ -4,6 +4,8 @@ Top-level background generation wrapper.
 
 import os
 
+import pandas as pd
+
 from ..surveys import Survey
 from .catalog_injector import BackgroundCatalogInjector
 from .generator import LightBackgroundGenerator
@@ -14,52 +16,30 @@ class Background:
     """
     High-level wrapper for background generation.
 
-    Dispatches to either the full injection method
-    (:class:`BackgroundCatalogInjector`) or the fast light method
-    (:class:`LightBackgroundGenerator`) depending on ``method``.  Stars and
-    galaxies are treated independently so users can build custom combinations.
-
-    When ``method='light'`` and ``storage=None``, the class falls back to the
-    bundled package-level resource files (if present).
+    Dispatches to :class:`BackgroundCatalogInjector` (``method='injection'``)
+    or :class:`LightBackgroundGenerator` (``method='light'``) depending on the
+    chosen method.  Stars and galaxies are handled independently.
 
     Parameters
     ----------
     survey : Survey
         Survey instance defining the observation conditions.
-    source_type : str, optional
-        Which background components to generate: ``'stars'``, ``'galaxies'``,
-        or ``'both'``. Default ``'both'``.
-    method : str, optional
-        Generation method: ``'light'`` (fast, uses precomputed CMD grids) or
-        ``'full'`` (runs the complete injection pipeline). Default ``'light'``.
+    source_type : {'stars', 'galaxies', 'both'}, optional
+        Which components to generate. Default ``'both'``.
+    method : {'light', 'injection'}, optional
+        ``'light'`` uses precomputed CMD grids (fast);
+        ``'injection'`` runs the full injection pipeline. Default ``'light'``.
     storage : BackgroundStorage, optional
-        Resource storage for the light method.  When ``None``, package-bundled
-        resources are used (via :meth:`_default_storage`).
+        Resource storage for the light method.  ``None`` falls back to
+        bundled package resources via :meth:`_default_storage`.
+    bands : tuple of str, optional
+        Band pair forwarded to the light generator. Default ``('g', 'r')``.
     catalog_stars : pd.DataFrame, optional
-        True stellar catalog. Required when ``method='full'`` and
-        ``source_type`` includes stars.
+        Required when ``method='injection'`` and source_type includes stars.
     catalog_galaxies : pd.DataFrame, optional
-        True galaxy catalog. Required when ``method='full'`` and
-        ``source_type`` includes galaxies.
+        Required when ``method='injection'`` and source_type includes galaxies.
     **kwargs
         Forwarded to the underlying injector or generator.
-
-    Examples
-    --------
-    Light method with bundled defaults::
-
-        bg = Background(survey, source_type='both', method='light')
-        catalog = bg.generate(phi1_limits=(-20, 20), phi2_limits=(-2, 2), gc_frame=frame)
-
-    Full injection with user-supplied catalogs::
-
-        bg = Background(
-            survey,
-            method='full',
-            source_type='stars',
-            catalog_stars=df_stars,
-        )
-        catalog = bg.generate(phi1_limits=(-20, 20), phi2_limits=(-2, 2))
     """
 
     def __init__(
@@ -68,6 +48,7 @@ class Background:
         source_type: str = "both",
         method: str = "light",
         storage: BackgroundStorage = None,
+        bands: tuple = ("g", "r"),
         catalog_stars=None,
         catalog_galaxies=None,
         **kwargs,
@@ -76,12 +57,13 @@ class Background:
             raise ValueError(
                 f"source_type must be 'stars', 'galaxies', or 'both', got '{source_type}'."
             )
-        if method not in ("light", "full"):
-            raise ValueError(f"method must be 'light' or 'full', got '{method}'.")
+        if method not in ("light", "injection"):
+            raise ValueError(f"method must be 'light' or 'injection', got '{method}'.")
 
         self.survey = survey
         self.source_type = source_type
         self.method = method
+        self.bands = bands
         self.catalog_stars = catalog_stars
         self.catalog_galaxies = catalog_galaxies
         self._kwargs = kwargs
@@ -96,9 +78,9 @@ class Background:
         phi2_limits,
         gc_frame=None,
         **kwargs,
-    ) -> "pd.DataFrame":
+    ):
         """
-        Generate a background catalog for the given stream sky region.
+        Generate a background catalog for the given sky region.
 
         Parameters
         ----------
@@ -107,47 +89,56 @@ class Background:
         phi2_limits : tuple of float
             ``(phi2_min, phi2_max)`` in degrees.
         gc_frame : gala.coordinates.GreatCircleICRSFrame, optional
-            Great-circle frame. Required for the light method and when the
-            full method needs coordinate conversion.
+            Great-circle frame. Required for ``method='light'``.
         **kwargs
             Forwarded to the underlying generator or injector.
 
         Returns
         -------
         pd.DataFrame
-            Background catalog. Column names follow the survey namespace
-            convention for the full method; for the light method columns are
-            ``phi1``, ``phi2``, ``color``, ``mag``, ``source_type``.
+            For ``method='injection'``: survey-namespaced magnitude and flag
+            columns plus ``source_type``.
+        tuple of (pd.DataFrame, dict)
+            For ``method='light'``: catalog with ``phi1``, ``phi2``,
+            ``mag_<band>``, ``source_type`` columns, plus a metadata dict.
         """
-        if self.method == "full":
-            return self._generate_full(phi1_limits, phi2_limits, gc_frame, **kwargs)
+        if self.method == "injection":
+            return self._generate_injection(phi1_limits, phi2_limits, gc_frame, **kwargs)
         return self._generate_light(phi1_limits, phi2_limits, gc_frame, **kwargs)
 
-    def _generate_full(
+    def _generate_injection(
         self,
         phi1_limits,
         phi2_limits,
         gc_frame,
         **kwargs,
-    ) -> "pd.DataFrame":
-        """
-        Generate background via full catalog injection.
-
-        For each active source type (controlled by :attr:`source_type`), uses
-        :class:`BackgroundCatalogInjector` to inject the corresponding true
-        catalog into the survey. The results are concatenated.
-
-        Parameters
-        ----------
-        phi1_limits, phi2_limits : tuple of float
-        gc_frame : gala.coordinates.GreatCircleICRSFrame or None
-        **kwargs
-
-        Returns
-        -------
-        pd.DataFrame
-        """
-        ...
+    ) -> pd.DataFrame:
+        """Inject catalogs for each active source type and concatenate."""
+        inj = BackgroundCatalogInjector(self.survey)
+        call_kwargs = {**self._kwargs, **kwargs}
+        parts = []
+        if self.source_type in ("stars", "both"):
+            if self.catalog_stars is None:
+                raise ValueError(
+                    "catalog_stars is required when method='injection' and "
+                    f"source_type='{self.source_type}'."
+                )
+            df = inj.inject_stars(self.catalog_stars, bands=list(self.bands), **call_kwargs)
+            df = df.copy()
+            df["source_type"] = "stars"
+            parts.append(df)
+        if self.source_type in ("galaxies", "both"):
+            if self.catalog_galaxies is None:
+                raise ValueError(
+                    "catalog_galaxies is required when method='injection' and "
+                    f"source_type='{self.source_type}'."
+                )
+            df = inj.inject_galaxies(self.catalog_galaxies, bands=list(self.bands), **call_kwargs)
+            df = df.copy()
+            df["source_type"] = "galaxies"
+            parts.append(df)
+        del df
+        return pd.concat(parts, ignore_index=True)
 
     def _generate_light(
         self,
@@ -155,39 +146,18 @@ class Background:
         phi2_limits,
         gc_frame,
         **kwargs,
-    ) -> "pd.DataFrame":
-        """
-        Generate background via the fast light method.
-
-        Delegates to :class:`LightBackgroundGenerator` using
-        :attr:`storage`.
-
-        Parameters
-        ----------
-        phi1_limits, phi2_limits : tuple of float
-        gc_frame : gala.coordinates.GreatCircleICRSFrame
-        **kwargs
-
-        Returns
-        -------
-        pd.DataFrame
-        """
-        ...
+    ):
+        """Delegate to LightBackgroundGenerator."""
+        gen = LightBackgroundGenerator(self.storage, self.survey, bands=self.bands)
+        return gen.generate(
+            phi1_limits=phi1_limits,
+            phi2_limits=phi2_limits,
+            gc_frame=gc_frame,
+            source_type=self.source_type,
+            **{**self._kwargs, **kwargs},
+        )
 
     @staticmethod
     def _default_storage(survey: Survey) -> BackgroundStorage:
-        """
-        Return a :class:`BackgroundStorage` pointing to bundled package resources.
-
-        Parameters
-        ----------
-        survey : Survey
-
-        Returns
-        -------
-        BackgroundStorage
-        """
-        return BackgroundStorage(
-            survey_name=survey.name,
-            release=survey.release,
-        )
+        """Return a BackgroundStorage pointing to bundled package resources."""
+        return BackgroundStorage(survey_name=survey.name)

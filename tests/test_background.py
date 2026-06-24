@@ -755,21 +755,7 @@ class TestBackground:
 
         with pytest.raises(ValueError, match="method"):
             Background(mock_survey, method="invalid")
-
-    def test_full_method_stars(self, mock_survey, stream_catalog):
-        """Background with method='full' and source_type='stars' must generate a catalog."""
-        ...
-
-    def test_full_method_galaxies(self, mock_survey, tiny_galaxies_catalog):
-        """Background with method='full' and source_type='galaxies' must generate a catalog."""
-        ...
-
-    def test_full_method_both(
-        self, mock_survey, stream_catalog, tiny_galaxies_catalog
-    ):
-        """Background with method='full' and source_type='both' must combine catalogs."""
-        ...
-
+            
     def test_light_method_default_storage(self, mock_survey):
         """Background with method='light' and storage=None must fall back to _default_storage."""
         from streamobs.background import Background
@@ -784,3 +770,19 @@ class TestBackground:
         storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
         bg = Background(mock_survey, method="light", storage=storage)
         assert bg.storage is storage
+
+    def test_injection_requires_catalog_stars(self, mock_survey):
+        """generate() raises ValueError when catalog_stars is missing."""
+        from streamobs.background import Background
+
+        bg = Background(mock_survey, method="injection", source_type="stars")
+        with pytest.raises(ValueError, match="catalog_stars"):
+            bg.generate(phi1_limits=(-10, 10), phi2_limits=(-2, 2))
+
+    def test_injection_requires_catalog_galaxies(self, mock_survey):
+        """generate() raises ValueError when catalog_galaxies is missing."""
+        from streamobs.background import Background
+
+        bg = Background(mock_survey, method="injection", source_type="galaxies")
+        with pytest.raises(ValueError, match="catalog_galaxies"):
+            bg.generate(phi1_limits=(-10, 10), phi2_limits=(-2, 2))
