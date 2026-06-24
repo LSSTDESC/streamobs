@@ -65,13 +65,13 @@ class BackgroundResourceBuilder:
         catalog_galaxies=None,
         bands=("g", "r"),
         maglim_min=23.5,
-        maglim_max=27.0,
+        maglim_max=27.5,
         maglim_step=0.5,
         max_delta=1.0,
-        n_bins_color=50,
-        n_bins_mag=50,
-        color_range=(-2, 3),
-        mag_range=(14, 30),
+        n_bins_color=125,
+        n_bins_mag=125,
+        color_range=(-0.5, 2.0),
+        mag_range=(16.0, 28.0),
         area_ref_deg2=None,
         source_type="both",
         **kwargs,
@@ -104,13 +104,13 @@ class BackgroundResourceBuilder:
             Keep only pairs with ``|maglim_b2 − maglim_b1| < max_delta``.
             Default ``1.0``.
         n_bins_color : int, optional
-            Number of color histogram bins. Default ``50``.
+            Number of color histogram bins. Default ``125``.
         n_bins_mag : int, optional
-            Number of magnitude histogram bins. Default ``50``.
+            Number of magnitude histogram bins. Default ``125``.
         color_range : tuple of float, optional
-            ``(min, max)`` of the color axis. Default ``(-2, 3)``.
+            ``(min, max)`` of the color axis. Default ``(-0.5, 2.0)``.
         mag_range : tuple of float, optional
-            ``(min, max)`` of the magnitude axis. Default ``(14, 30)``.
+            ``(min, max)`` of the magnitude axis. Default ``(16.0, 28.0)``.
         area_ref_deg2 : float, optional
             Sky area of the reference simulation in deg².
         source_type : str, optional
@@ -169,8 +169,8 @@ class BackgroundResourceBuilder:
         maglim_b1: float,
         n_bins_color: int,
         n_bins_mag: int,
-        color_range=(-2, 3),
-        mag_range=(14, 30),
+        color_range=(-0.5, 2.0),
+        mag_range=(16.0, 28.0),
         area_ref_deg2=None,
         **kwargs,
     ) -> dict:
