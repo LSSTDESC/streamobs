@@ -108,7 +108,8 @@ Documentation Contents
    :caption: Background generation
 
    background
-   build_background_resources
+   background_light
+   background_injection
 
 .. toctree::
    :maxdepth: 2
@@ -117,6 +118,7 @@ Documentation Contents
    modifying_streamobs
    new_survey
    update_data
+   build_background_resources
 
 .. toctree::
    :maxdepth: 2

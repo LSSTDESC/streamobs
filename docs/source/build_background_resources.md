@@ -1,70 +1,71 @@
-# Building background resources (developer guide)
+# Building background resources
 
-The **light background method** reads precomputed color–magnitude diagram
-(CMD) histograms from parquet files stored in `data/background/`.  These
-files are not tracked by git and must be built locally (or provided by the
-package maintainers).
+The {doc}`light background method <background_light>` reads precomputed CMD
+histograms from parquet files in `data/background/`. These files are not tracked
+by git and must be built once per survey by the package developer, and then
+included in the data base.
 
-## What the resources are
+## File format
 
-For each combination of ``(source_type, bands)``, one parquet file is
-stored with a long-format table:
+One parquet file per `(source_type, bands)` combination (e.g. `stars_gr.parquet`), located at:
 
 ```
-maglim_r | maglim_g | color_center | mag_center | count | n_ref | area_ref_deg2
+data/background/{survey_name}/{source_type}_{bands}.parquet
 ```
 
-Each row represents one cell of a 2-D CMD histogram at a specific magnitude
-limit pair.  The generator looks up the nearest ``(maglim_r, maglim_g)``
-entry at runtime and samples from it.
+Each row corresponds to one `(maglim_b2, maglim_b1)` grid point (`b2 = bands[1]` = reference band, `b1 = bands[0]` = color band) and stores the full 2-D CMD histogram in compressed form.
 
-## How to build resources
+## What you need
 
-### 1. Prepare input catalogs
+- A DataFrame of **true** (pre-observation) positions and magnitudes for each population. These are not part of `streamobs`.
+- Required columns: `ra`, `dec`, `<survey>_<band>_true` for each band (e.g. `lsst_g_true`, `lsst_r_true`).
+- A loaded `Survey` object for the target survey/release.
 
-You need a DataFrame of **true** (pre-observation) positions and magnitudes
-for stars and/or galaxies.  These catalogs are not part of `streamobs` and
-must be supplied by the developer.
+## Building the grid
 
 ```python
 import pandas as pd
-df_stars = pd.read_parquet('/path/to/true_stars.parquet')
-df_galaxies = pd.read_parquet('/path/to/true_galaxies.parquet')
-```
-
-### 2. Run the builder
-
-```python
 from streamobs.background import BackgroundResourceBuilder, BackgroundStorage
 
-builder = BackgroundResourceBuilder(survey_name='lsst', release='yr5')
+df_stars    = pd.read_parquet('/path/to/true_stars.parquet')
+df_galaxies = pd.read_parquet('/path/to/true_galaxies.parquet')
+
+builder = BackgroundResourceBuilder(survey_name='lsst', release='yr4')
 builder.build(
     catalog_stars=df_stars,
     catalog_galaxies=df_galaxies,
     bands=('g', 'r'),
-    maglim_ref_values=[25.0, 25.5, 26.0, 26.5, 27.0],
-    delta_range=(-1.0, 1.0),
-    delta_step=0.1,
+    maglim_min=23.5,    # lower end of the magnitude limit grid
+    maglim_max=27.0,    # upper end
+    maglim_step=0.1,    # step size between grid points
+    max_delta=1.0,      # discard pairs with |maglim_b2 - maglim_b1| >= max_delta
+    n_bins_color=50,
+    n_bins_mag=50,
+    color_range=(-2, 3),
+    mag_range=(14, 30),
+    area_ref_deg2=1.0,   # sky area of the truth catalog in deg²
     source_type='both',
 )
 ```
 
-### 3. Save to disk
+Each `(maglim_b2, maglim_b1)` pair within `max_delta` is injected independently into a uniform copy of the survey (no dust, constant magnitude limits). The result is a 2-D histogram of detected objects in `(color, mag_ref)` space.
+
+## Saving to disk
 
 ```python
-storage = BackgroundStorage(survey_name='lsst', release='yr5')
-builder.save(storage)
+storage = BackgroundStorage(base_path='data/background', survey_name='lsst')
+builder.save(storage, source_type='both')
 ```
 
-Files are written to `data/background/lsst_yr5/` — one parquet per
-``(source_type, bands)`` combination, e.g. `stars_gr.parquet`.
+This writes `data/background/lsst/stars_gr.parquet` and `data/background/lsst/galaxies_gr.parquet`.
 
-## File naming convention
+## Grid size guidance
 
-`BackgroundStorage.get_path(source_type, bands)` returns the full path:
+| Parameter | Typical value | Effect |
+|---|---|---|
+| `maglim_step` | 0.1 mag | Smaller → more accurate interpolation, longer build time |
+| `max_delta` | 1.0 mag | Keeps only grid points near the diagonal |
+| `n_bins_color`, `n_bins_mag` | 50 | Resolution of each CMD histogram |
+| `area_ref_deg2` | 1 deg² | Larger → lower Poisson noise in each histogram cell |
 
-```
-data/background/{survey_name}_{release}/{source_type}_{bands_str}.parquet
-```
-
-Example: `data/background/lsst_yr5/galaxies_gr.parquet`.
+The build time scales as `O(N_pairs × N_catalog)`. For a 0.5 mag step grid over [23.5, 27.0] with `max_delta=1.0` there are roughly 50 pairs per source type.

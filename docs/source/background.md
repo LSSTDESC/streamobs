@@ -1,50 +1,28 @@
-# Generating background
+# Background generation
 
-`streamobs` provides two complementary ways to generate a background catalog
-(stars and/or galaxies) for a stream realization.
+`streamobs` models two background populations: **stars** (field stars passing stellar selection) and **misclassified galaxies** (galaxies passing a star–galaxy separator). Both can be generated together or independently via `source_type`.
 
-| Method | Speed | Requirements |
-|--------|-------|--------------|
-| `'light'` | Fast | Precomputed CMD resource files |
-| `'full'` | Slow | True background catalogs |
+Two methods are available:
 
-## Quick start — light method
+| Method | Speed | What you need | Page |
+|--------|-------|---------------|------|
+| `'light'` *(default)* | Fast | Precomputed CMD resource files (included with other `StreamObs` data) | {doc}`background_light` |
+| `'injection'` | Slow | True background catalogs | {doc}`background_injection` |
+
+## Quick start
 
 ```python
 from streamobs.surveys import Survey
 from streamobs.background import Background
 
-survey = Survey.load('lsst', release='yr5')
-bg = Background(survey, source_type='both', method='light')
+survey = Survey.load('lsst', release='yr4')
+bg = Background(survey, source_type='both', method='light')   # default
 
-catalog = bg.generate(
+catalog, meta = bg.generate(
     phi1_limits=(-20, 20),
     phi2_limits=(-2, 2),
-    gc_frame=frame,          # gala GreatCircleICRSFrame
+    gc_frame=frame,   # gala GreatCircleICRSFrame
 )
 ```
 
-## Stars only or galaxies only
-
-```python
-bg_stars = Background(survey, source_type='stars', method='light')
-bg_gals  = Background(survey, source_type='galaxies', method='light')
-```
-
-## Full injection method
-
-Requires a DataFrame of true background objects for each population:
-
-```python
-bg = Background(
-    survey,
-    method='full',
-    source_type='both',
-    catalog_stars=df_true_stars,
-    catalog_galaxies=df_true_galaxies,
-)
-catalog = bg.generate(phi1_limits=(-20, 20), phi2_limits=(-2, 2))
-```
-
-See [build_background_resources.md](build_background_resources.md) to learn
-how to build or rebuild the resource files used by the light method.
+Use `source_type='stars'` or `source_type='galaxies'` to restrict to one population.
