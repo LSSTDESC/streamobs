@@ -564,6 +564,79 @@ class TestLightBackgroundGenerator:
             "Interpolated histogram does not match equal-weight mean of 4 corners"
         )
 
+
+    def test_interpolation_vs_ground_truth(self, mock_survey, tmp_path):
+        """Bilinear interpolation at (26.0, 26.0) must match direct injection within tolerances.
+
+        Builds a 2×2 CMD grid at corners {25.9, 26.1}², interpolates at the centre,
+        then compares against a CMD built by direct injection at (26.0, 26.0).
+        Thresholds: total-count bias < 5 % and per-bin correlation > 0.95.
+        """
+        import pandas as pd
+        from streamobs.background import (
+            BackgroundResourceBuilder,
+            BackgroundStorage,
+            LightBackgroundGenerator,
+        )
+
+        # Synthetic catalog with columns matching true_col(band, "lsst_yr4") → "lsst_<band>_true"
+        rng = np.random.default_rng(0)
+        n = 50000
+        r_mag = rng.uniform(18.0, 28.0, n)
+        cat = pd.DataFrame({
+            "ra":          rng.uniform(0.0, 360.0, n),
+            "dec":         rng.uniform(-90.0, 0.0, n),
+            "lsst_r_true": r_mag,
+            "lsst_g_true": r_mag + rng.uniform(0.4, 0.7, n),
+        })
+
+        builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
+        common_kw = dict(
+            catalog=cat,
+            survey=mock_survey,
+            source_type="stars",
+            bands=("g", "r"),
+            n_bins_color=40,
+            n_bins_mag=40,
+            color_range=(-1, 3),
+            mag_range=(15, 27),
+            area_ref_deg2=100.0,
+        )
+
+        # Build 2×2 corner grid
+        corners = [(25.9, 25.9), (25.9, 26.1), (26.1, 25.9), (26.1, 26.1)]
+        grid = {
+            (mb2, mb1): builder._build_one_config(maglim_b2=mb2, maglim_b1=mb1, **common_kw)
+            for mb2, mb1 in corners
+        }
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
+        storage.save_data(grid, "stars", ("g", "r"))
+
+        # Ground-truth CMD built by direct injection at the centre point
+        truth = builder._build_one_config(maglim_b2=26.0, maglim_b1=26.0, **common_kw)
+
+        # Interpolated CMD from the 2×2 grid
+        gen = LightBackgroundGenerator(storage, mock_survey, bands=("g", "r"))
+        gen._load_resources("stars")
+        interp = gen._interpolate_cmd(26.0, 26.0, "stars")
+
+        h_truth  = truth["cmd_hist"]
+        h_interp = interp["cmd_hist"]
+
+        # Total-count bias ≤ 5 %
+        n_truth  = h_truth.sum()
+        assert n_truth > 0, "Ground-truth CMD is empty — catalog may not match survey namespace"
+        assert abs(h_interp.sum() - n_truth) / n_truth < 0.02, (
+            f"Total-count bias {abs(h_interp.sum() - n_truth) / n_truth:.1%} exceeds 2 %"
+        )
+
+        # Per-bin correlation ≥ 0.95 on non-empty bins
+        mask = (h_truth > 0) | (h_interp > 0)
+        assert mask.sum() > 0, "No non-empty bins found in either histogram"
+        corr = np.corrcoef(h_truth[mask], h_interp[mask])[0, 1]
+        assert corr > 0.95, f"Per-bin correlation {corr:.4f} below 0.95"
+
+
     # ------------------------------------------------------------------
     # Count monotonicity: maglim depth
     # ------------------------------------------------------------------
@@ -660,78 +733,6 @@ class TestLightBackgroundGenerator:
         assert meta["nside"] == maglim_nside, (
             f"meta['nside'] should be capped to {maglim_nside}, got {meta['nside']}"
         )
-
-    def test_interpolation_vs_ground_truth(self, mock_survey, tmp_path):
-        """Bilinear interpolation at (26.0, 26.0) must match direct injection within tolerances.
-
-        Builds a 2×2 CMD grid at corners {25.9, 26.1}², interpolates at the centre,
-        then compares against a CMD built by direct injection at (26.0, 26.0).
-        Thresholds: total-count bias < 5 % and per-bin correlation > 0.95.
-        """
-        import pandas as pd
-        from streamobs.background import (
-            BackgroundResourceBuilder,
-            BackgroundStorage,
-            LightBackgroundGenerator,
-        )
-
-        # Synthetic catalog with columns matching true_col(band, "lsst_yr4") → "lsst_<band>_true"
-        rng = np.random.default_rng(0)
-        n = 50000
-        r_mag = rng.uniform(18.0, 28.0, n)
-        cat = pd.DataFrame({
-            "ra":          rng.uniform(0.0, 360.0, n),
-            "dec":         rng.uniform(-90.0, 0.0, n),
-            "lsst_r_true": r_mag,
-            "lsst_g_true": r_mag + rng.uniform(0.4, 0.7, n),
-        })
-
-        builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
-        common_kw = dict(
-            catalog=cat,
-            survey=mock_survey,
-            source_type="stars",
-            bands=("g", "r"),
-            n_bins_color=40,
-            n_bins_mag=40,
-            color_range=(-1, 3),
-            mag_range=(15, 27),
-            area_ref_deg2=100.0,
-        )
-
-        # Build 2×2 corner grid
-        corners = [(25.9, 25.9), (25.9, 26.1), (26.1, 25.9), (26.1, 26.1)]
-        grid = {
-            (mb2, mb1): builder._build_one_config(maglim_b2=mb2, maglim_b1=mb1, **common_kw)
-            for mb2, mb1 in corners
-        }
-        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
-        storage.save_data(grid, "stars", ("g", "r"))
-
-        # Ground-truth CMD built by direct injection at the centre point
-        truth = builder._build_one_config(maglim_b2=26.0, maglim_b1=26.0, **common_kw)
-
-        # Interpolated CMD from the 2×2 grid
-        gen = LightBackgroundGenerator(storage, mock_survey, bands=("g", "r"))
-        gen._load_resources("stars")
-        interp = gen._interpolate_cmd(26.0, 26.0, "stars")
-
-        h_truth  = truth["cmd_hist"]
-        h_interp = interp["cmd_hist"]
-
-        # Total-count bias ≤ 5 %
-        n_truth  = h_truth.sum()
-        assert n_truth > 0, "Ground-truth CMD is empty — catalog may not match survey namespace"
-        assert abs(h_interp.sum() - n_truth) / n_truth < 0.02, (
-            f"Total-count bias {abs(h_interp.sum() - n_truth) / n_truth:.1%} exceeds 2 %"
-        )
-
-        # Per-bin correlation ≥ 0.95 on non-empty bins
-        mask = (h_truth > 0) | (h_interp > 0)
-        assert mask.sum() > 0, "No non-empty bins found in either histogram"
-        corr = np.corrcoef(h_truth[mask], h_interp[mask])[0, 1]
-        assert corr > 0.95, f"Per-bin correlation {corr:.4f} below 0.95"
-
 
 # ---------------------------------------------------------------------------
 # Part 7 — Background (top-level wrapper)
