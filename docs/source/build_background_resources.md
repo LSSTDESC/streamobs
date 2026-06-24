@@ -41,8 +41,8 @@ builder.build(
     max_delta=1.0,      # discard pairs with |maglim_b2 - maglim_b1| >= max_delta
     n_bins_color=50,
     n_bins_mag=50,
-    color_range=(-2, 3),
-    mag_range=(14, 30),
+    color_range=(-1, 2),
+    mag_range=(15, 30),
     area_ref_deg2=1.0,   # sky area of the truth catalog in deg²
     source_type='both',
 )
