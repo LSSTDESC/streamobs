@@ -3,10 +3,11 @@ Builder for precomputed background color–magnitude diagram (CMD) resources.
 """
 
 import copy
+import warnings
 
 import numpy as np
 
-from ..columns import flag_col, obs_col
+from ..columns import flag_col, obs_col, true_col
 from ..surveys import Survey, SurveyFactory
 from ..utils import load_catalog
 from .catalog_injector import BackgroundCatalogInjector
@@ -216,6 +217,9 @@ class BackgroundResourceBuilder:
             survey,
             uniform_maglim={bands[0]: float(maglim_b1), bands[1]: float(maglim_b2)},
         )
+
+        catalog = self._prepare_catalog(catalog, bands,area_ref_deg2=area_ref_deg2,survey=prepared, uniform_maglim={bands[0]: float(maglim_b1), bands[1]: float(maglim_b2)})
+
         inj = BackgroundCatalogInjector(prepared)
         if source_type == "stars":
             observed = inj.inject_stars(catalog, bands=list(bands), **kwargs)
@@ -277,6 +281,155 @@ class BackgroundResourceBuilder:
                     )
         return s
 
+
+    def _prepare_catalog(
+        self,
+        catalog,
+        bands: tuple,
+        area_ref_deg2=None,
+        uniform_maglim: dict = None,
+        survey: Survey = None,
+    ) -> "pd.DataFrame":
+        """
+        Prepare the catalog for injection.
+        Samples positions if they are missing, and checks that the catalog covers
+        approximately the requested reference area.
+        Also checks that the required true magnitude columns are present.
+        """
+        cat = catalog.copy()
+
+        # Precompute patch bounds with spherical projection correction.
+        # A naive square [0, side]×[0, side] in (ra, dec) does not have area
+        # equal to side² because equal RA intervals span less sky at higher
+        # declinations.  The exact solid angle of a patch [0, ra_ext]×[0, side]
+        # is  ra_ext × sin(side_rad) × (180/π)  deg², so we invert this to
+        # obtain ra_ext given the target area.
+        if area_ref_deg2 is not None:
+            side_deg = np.sqrt(area_ref_deg2)
+            sin_max = np.sin(np.radians(side_deg))
+            ra_extent_deg = area_ref_deg2 / (sin_max * (180.0 / np.pi))
+
+        # Check if positions are present; if not, assign them.
+        needs_positions = (
+            ("ra" not in cat.columns or "dec" not in cat.columns)
+        )
+
+        if needs_positions:
+            if uniform_maglim is not None:
+                if area_ref_deg2 is None:
+                    raise ValueError(
+                        "area_ref_deg2 must be provided when catalog has no positions."
+                    )
+                # Sample dec uniformly in solid angle (i.e. uniform in sin(dec))
+                # so the distribution is isotropic on the sphere, not compressed
+                # toward dec=0.  RA is sampled over the projection-corrected
+                # extent so the enclosed solid angle equals area_ref_deg2.
+                cat["dec"] = np.degrees(
+                    np.arcsin(np.random.uniform(0.0, sin_max, size=len(cat)))
+                )
+                cat["ra"] = np.random.uniform(0.0, ra_extent_deg, size=len(cat))
+            else:
+                raise ValueError("Positions are required when the survey is not uniform.")
+
+        if area_ref_deg2 is not None:
+            area_estimated, pixel_area_deg2, nside_used = self._estimate_area_deg2(
+                cat["ra"].to_numpy(), cat["dec"].to_numpy(), area_ref_deg2
+            )
+            rel_error = abs(area_estimated - area_ref_deg2) / area_ref_deg2
+            tolerance = 0.05
+            if rel_error > tolerance:
+                msg = (
+                    f"The sky area estimated from catalog positions "
+                    f"({area_estimated:.2f} deg²) differs from "
+                    f"area_ref_deg2={area_ref_deg2:.2f} deg² by "
+                    f"{rel_error * 100:.1f} % (> {tolerance * 100:.1f} % tolerance; "
+                    f"HEALPix nside={nside_used}, "
+                    f"pixel area={pixel_area_deg2:.4f} deg²). "
+                )
+                if needs_positions:
+                    warnings.warn(
+                        msg
+                        + "Positions were sampled within the correct patch by construction; "
+                        "the discrepancy is a HEALPix boundary effect (too few objects "
+                        "or too small a footprint for the pixel size).",
+                        UserWarning,
+                        stacklevel=3,
+                    )
+                else:
+                    raise ValueError(
+                        msg
+                        + "Ensure the catalog covers approximately the requested reference area."
+                    )
+
+        # Check that the magnitudes required are in the data
+        true_band1, true_band2 = true_col(bands[0], survey.namespace), true_col(bands[1], survey.namespace)
+        if true_band1 not in cat.columns or true_band2 not in cat.columns:
+            raise ValueError(
+                f"True background catalog must contain true magnitudes for bands {bands} "
+                f"as columns '{true_band1}' and '{true_band2}'. Now columns are: {list(cat.columns)}"
+            )
+
+        return cat
+
+  
+    def _estimate_area_deg2(self, ra, dec, area_ref_deg2):
+        """Estimate the sky area covered by (ra, dec) positions using HEALPix.
+
+        Counts the number of unique HEALPix pixels that contain at least one
+        catalog object and multiplies by the pixel solid angle.  This gives a
+        correct area estimate for any footprint shape (rectangular, circular,
+        irregular), unlike a bounding-box approach which would systematically
+        overestimate a disc by 4/π ≈ 27 %.
+
+        The nside is set so the expected number of objects per pixel
+        (assuming the catalog uniformly fills ``area_ref_deg2``) is ~10.
+        This keeps most pixels occupied (low undercounting) while keeping
+        pixels small enough to bound overestimation from boundary pixels.
+        At least 10 pixels are always targeted.  The result is a tuple
+        ``(area_deg2, pixel_area_deg2, nside)``.
+
+        Parameters
+        ----------
+        ra, dec : array-like
+            Positions in degrees.
+        area_ref_deg2 : float
+            Expected area used to set the HEALPix resolution.
+
+        Returns
+        -------
+        area_estimated : float
+            Area covered by the catalog in deg².
+        pixel_area_deg2 : float
+            Solid angle of one HEALPix pixel at the chosen nside, in deg².
+        nside : int
+            HEALPix nside used for the estimate.
+        """
+        import healpy as hp
+
+        # Choose nside so the footprint contains on average 10 objects per pixel.
+        # This balances coverage (pixels are unlikely to be empty) against
+        # boundary overestimation (fewer, larger pixels → thicker boundary ring).
+        # At least 10 pixels are always targeted so tiny footprints are resolved.
+        # pixel_area_deg2 ≈ 41 253 / (12 × nside²) → solve for nside.
+        n = max(len(ra), 1)
+        pixel_area_target = area_ref_deg2 / max(n / 10.0, 10.0)
+        nside_raw = np.sqrt(41253.0 / (12.0 * max(pixel_area_target, 1e-4)))
+        nside = int(2 ** np.round(np.log2(max(nside_raw, 4))))
+        nside = max(4, min(nside, 4096))
+    
+
+        ra = np.asarray(ra)
+        dec = np.asarray(dec)
+        finite = np.isfinite(ra) & np.isfinite(dec)
+        theta = np.radians(90.0 - dec[finite])
+        phi = np.radians(ra[finite])
+
+        pixels = hp.ang2pix(nside, theta, phi)
+        n_unique = len(np.unique(pixels))
+        pixel_area = hp.nside2pixarea(nside, degrees=True)
+
+        return n_unique * pixel_area, pixel_area, nside
+    
     def _compute_cmd_histogram(
         self,
         observed_df,

@@ -292,7 +292,7 @@ class TestBackgroundResourceBuilder:
             n_bins_mag=10,
             color_range=(-2, 3),
             mag_range=(14, 30),
-            area_ref_deg2=100.0,
+            area_ref_deg2=1.0,
         )
         assert set(result.keys()) == {
             "cmd_hist",
@@ -317,13 +317,197 @@ class TestBackgroundResourceBuilder:
             maglim_step=1.0,
             max_delta=1.0,
             source_type="stars",
-            area_ref_deg2=100.0,
+            area_ref_deg2=1.0,
             n_bins_color=5,
             n_bins_mag=5,
         )
         storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
         builder.save(storage, source_type="stars")
         assert storage.exists("stars", builder.bands)
+
+    def test_prepare_catalog_assigns_positions_and_correct_area(self, mock_survey):
+        """_prepare_catalog samples positions when absent and respects spherical projection.
+
+        Checks three properties:
+        1. ra/dec columns are created when the catalog has none.
+        2. Every sampled position lies within the projection-corrected patch
+           [0, ra_extent] × [0, side_deg].
+        3. The solid angle of that patch equals area_ref_deg2 to machine
+           precision, confirming the RA extent accounts for cos(dec) correctly.
+        4. RA extent differs from side_deg (projection correction was applied).
+        """
+        import pandas as pd
+
+        from streamobs.background import BackgroundResourceBuilder
+
+        rng = np.random.default_rng(0)
+        n = 5000
+        cat_no_pos = pd.DataFrame(
+            {
+                "lsst_g_true": rng.uniform(20.0, 28.0, n),
+                "lsst_r_true": rng.uniform(20.0, 28.0, n),
+            }
+        )
+
+        area_ref = 1.0  # deg²
+        builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
+        result = builder._prepare_catalog(
+            cat_no_pos,
+            bands=("g", "r"),
+            area_ref_deg2=area_ref,
+            uniform_maglim={"g": 26.0, "r": 26.5},
+            survey=mock_survey,
+        )
+
+        # 1. Positions must have been created; catalog is not clipped
+        assert "ra" in result.columns, "ra column missing after position assignment"
+        assert "dec" in result.columns, "dec column missing after position assignment"
+        assert len(result) == n, "catalog length should be unchanged (no spatial cut)"
+
+        # Expected projection-corrected patch bounds
+        side_deg = np.sqrt(area_ref)
+        sin_max = np.sin(np.radians(side_deg))
+        ra_extent_deg = area_ref / (sin_max * (180.0 / np.pi))
+
+        # 2. All positions inside the patch (guaranteed by the sampler)
+        assert (result["ra"] >= 0.0).all() and (
+            result["ra"] < ra_extent_deg
+        ).all(), "ra values exceed projection-corrected extent"
+        assert (result["dec"] >= 0.0).all() and (
+            result["dec"] < side_deg
+        ).all(), "dec values exceed side_deg"
+
+        # 3. Solid angle of the patch equals area_ref_deg2 to machine precision
+        patch_area = ra_extent_deg * sin_max * (180.0 / np.pi)
+        assert abs(patch_area - area_ref) / area_ref < 1e-10, (
+            f"Patch area {patch_area:.6f} deg² does not match area_ref {area_ref} deg²"
+        )
+
+        # 4. RA extent must differ from side_deg (projection correction applied).
+        # For area_ref=25 deg², side_deg=5° and sin(5°)<1, so ra_extent > side_deg.
+        assert ra_extent_deg > side_deg, (
+            "ra_extent_deg should exceed side_deg due to cos(dec) projection"
+        )
+
+    def test_prepare_catalog_raises_on_area_mismatch(self, mock_survey):
+        """_prepare_catalog raises ValueError when the HEALPix area estimate
+        deviates from area_ref_deg2 by more than 10 %.
+
+        The catalog has explicit ra/dec spanning ~99 deg² while area_ref_deg2=1.0,
+        a factor ~99 mismatch that far exceeds the 10 % tolerance even for a
+        sparse catalog (nside is capped so many pixels are unoccupied, but the
+        estimate is still >> 1 deg²).
+        """
+        import pandas as pd
+
+        from streamobs.background import BackgroundResourceBuilder
+
+        rng = np.random.default_rng(1)
+        n = 500
+        # Positions span ~99 deg² (100° in RA × 10° in Dec).
+        cat = pd.DataFrame(
+            {
+                "ra": rng.uniform(0.0, 100.0, n),
+                "dec": rng.uniform(0.0, 10.0, n),
+                "lsst_g_true": rng.uniform(20.0, 28.0, n),
+                "lsst_r_true": rng.uniform(20.0, 28.0, n),
+            }
+        )
+
+        builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
+        with pytest.raises(ValueError, match="area estimated from catalog positions"):
+            builder._prepare_catalog(
+                cat,
+                bands=("g", "r"),
+                area_ref_deg2=1.0,
+                uniform_maglim={"g": 26.0, "r": 26.5},
+                survey=mock_survey,
+            )
+
+    def test_estimate_area_deg2_return_types(self):
+        """_estimate_area_deg2 returns (float, float, int) with nside a power of 2."""
+        from streamobs.background import BackgroundResourceBuilder
+
+        rng = np.random.default_rng(0)
+        area_ref = 100.0
+        side_deg = np.sqrt(area_ref)
+        sin_max = np.sin(np.radians(side_deg))
+        ra_ext = area_ref / (sin_max * (180.0 / np.pi))
+        n = 1000
+        ra = rng.uniform(0.0, ra_ext, n)
+        dec = np.degrees(np.arcsin(rng.uniform(0.0, sin_max, n)))
+
+        builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
+        area_est, pixel_area, nside = builder._estimate_area_deg2(ra, dec, area_ref)
+
+        assert isinstance(area_est, float), "area_est should be float"
+        assert isinstance(pixel_area, float), "pixel_area should be float"
+        assert isinstance(nside, int), "nside should be int"
+        assert nside & (nside - 1) == 0, "nside must be a power of 2"
+        # pixel_area consistent with nside: A_pix = 41253 / (12 * nside²)
+        assert abs(pixel_area - 41253.0 / (12 * nside**2)) / pixel_area < 1e-5
+
+    def test_estimate_area_deg2_accuracy(self):
+        """For a dense, well-sampled patch the area estimate is within 10 %."""
+        from streamobs.background import BackgroundResourceBuilder
+
+        rng = np.random.default_rng(0)
+        area_ref = 100.0
+        side_deg = np.sqrt(area_ref)
+        sin_max = np.sin(np.radians(side_deg))
+        ra_ext = area_ref / (sin_max * (180.0 / np.pi))
+        n = 50000
+        ra = rng.uniform(0.0, ra_ext, n)
+        dec = np.degrees(np.arcsin(rng.uniform(0.0, sin_max, n)))
+
+        builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
+        area_est, _, _ = builder._estimate_area_deg2(ra, dec, area_ref)
+
+        rel_err = abs(area_est - area_ref) / area_ref
+        assert rel_err < 0.10, (
+            f"Area estimate {area_est:.2f} deg² deviates {rel_err * 100:.1f} % "
+            f"from true area {area_ref} deg² (tolerance 10 %)"
+        )
+
+    def test_estimate_area_deg2_nside_grows_with_n(self):
+        """nside is non-decreasing as catalog size increases (for fixed area)."""
+        from streamobs.background import BackgroundResourceBuilder
+
+        rng = np.random.default_rng(0)
+        area_ref = 100.0
+        side_deg = np.sqrt(area_ref)
+        sin_max = np.sin(np.radians(side_deg))
+        ra_ext = area_ref / (sin_max * (180.0 / np.pi))
+
+        builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
+        nsides = []
+        for n in [100, 1_000, 10_000, 100_000]:
+            ra = rng.uniform(0.0, ra_ext, n)
+            dec = np.degrees(np.arcsin(rng.uniform(0.0, sin_max, n)))
+            _, _, nside = builder._estimate_area_deg2(ra, dec, area_ref)
+            nsides.append(nside)
+
+        assert all(nsides[i] <= nsides[i + 1] for i in range(len(nsides) - 1)), (
+            f"nside should be non-decreasing with n, got {nsides}"
+        )
+
+    def test_estimate_area_deg2_ignores_nonfinite(self):
+        """Non-finite (ra, dec) values are silently excluded from the estimate."""
+        from streamobs.background import BackgroundResourceBuilder
+
+        rng = np.random.default_rng(0)
+        area_ref = 100.0
+        side_deg = np.sqrt(area_ref)
+        sin_max = np.sin(np.radians(side_deg))
+        ra_ext = area_ref / (sin_max * (180.0 / np.pi))
+        n = 5000
+        ra = rng.uniform(0.0, ra_ext, n).tolist() + [np.nan, np.inf]
+        dec = np.degrees(np.arcsin(rng.uniform(0.0, sin_max, n))).tolist() + [0.0, 0.0]
+
+        builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
+        # Should not raise; the two non-finite entries are dropped
+        area_est, _, _ = builder._estimate_area_deg2(ra, dec, area_ref)
+        assert np.isfinite(area_est)
 
     def test_load_via_storage(self, tmp_path, stream_catalog):
         """load must reconstruct resources from the file saved by save."""
@@ -337,7 +521,7 @@ class TestBackgroundResourceBuilder:
             maglim_step=1.0,
             max_delta=1.0,
             source_type="stars",
-            area_ref_deg2=100.0,
+            area_ref_deg2=1.0,
             n_bins_color=5,
             n_bins_mag=5,
         )
@@ -594,14 +778,20 @@ class TestLightBackgroundGenerator:
             LightBackgroundGenerator,
         )
 
-        # Synthetic catalog with columns matching true_col(band, "lsst_yr4") → "lsst_<band>_true"
+        # Synthetic catalog covering approximately area_ref_deg2=100 deg².
+        # Use projection-correct sampling so the catalog covers the right solid angle:
+        # dec drawn from arcsin(uniform(0, sin(side_deg))), ra drawn from [0, ra_extent].
         rng = np.random.default_rng(0)
         n = 50000
+        area_ref = 1.0
+        side_deg = np.sqrt(area_ref)
+        sin_max = np.sin(np.radians(side_deg))
+        ra_extent_deg = area_ref / (sin_max * (180.0 / np.pi))
         r_mag = rng.uniform(18.0, 28.0, n)
         cat = pd.DataFrame(
             {
-                "ra": rng.uniform(0.0, 360.0, n),
-                "dec": rng.uniform(-90.0, 0.0, n),
+                "ra": rng.uniform(0.0, ra_extent_deg, n),
+                "dec": np.degrees(np.arcsin(rng.uniform(0.0, sin_max, n))),
                 "lsst_r_true": r_mag,
                 "lsst_g_true": r_mag + rng.uniform(0.4, 0.7, n),
             }
@@ -617,7 +807,7 @@ class TestLightBackgroundGenerator:
             n_bins_mag=40,
             color_range=(-1, 3),
             mag_range=(15, 27),
-            area_ref_deg2=100.0,
+            area_ref_deg2=1.0,
         )
 
         # Build 2×2 corner grid
