@@ -755,7 +755,7 @@ class TestBackground:
 
         with pytest.raises(ValueError, match="method"):
             Background(mock_survey, method="invalid")
-            
+
     def test_light_method_default_storage(self, mock_survey):
         """Background with method='light' and storage=None must fall back to _default_storage."""
         from streamobs.background import Background

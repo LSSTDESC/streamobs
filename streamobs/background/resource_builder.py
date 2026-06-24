@@ -241,7 +241,7 @@ class BackgroundResourceBuilder:
     def _prepare_survey(
         self,
         survey: Survey,
-        no_dust: bool = False,
+        no_dust: bool = True,
         uniform_maglim: dict = None,
         **kwargs,
     ) -> Survey:
@@ -253,7 +253,7 @@ class BackgroundResourceBuilder:
         survey : Survey
             Survey to copy and modify.
         no_dust : bool, optional
-            If True, zero the EBV map.  Default ``False``.
+            If True, zero the EBV map.  Default ``True``.
         uniform_maglim : dict, optional
             ``{band: value}`` mapping to replace per-pixel maglim maps with
             constant arrays.  When provided, ``no_dust`` is implied.
