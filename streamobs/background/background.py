@@ -103,7 +103,9 @@ class Background:
             ``mag_<band>``, ``source_type`` columns, plus a metadata dict.
         """
         if self.method == "injection":
-            return self._generate_injection(phi1_limits, phi2_limits, gc_frame, **kwargs)
+            return self._generate_injection(
+                phi1_limits, phi2_limits, gc_frame, **kwargs
+            )
         return self._generate_light(phi1_limits, phi2_limits, gc_frame, **kwargs)
 
     def _generate_injection(
@@ -123,7 +125,9 @@ class Background:
                     "catalog_stars is required when method='injection' and "
                     f"source_type='{self.source_type}'."
                 )
-            df = inj.inject_stars(self.catalog_stars, bands=list(self.bands), **call_kwargs)
+            df = inj.inject_stars(
+                self.catalog_stars, bands=list(self.bands), **call_kwargs
+            )
             df = df.copy()
             df["source_type"] = "stars"
             parts.append(df)
@@ -133,7 +137,9 @@ class Background:
                     "catalog_galaxies is required when method='injection' and "
                     f"source_type='{self.source_type}'."
                 )
-            df = inj.inject_galaxies(self.catalog_galaxies, bands=list(self.bands), **call_kwargs)
+            df = inj.inject_galaxies(
+                self.catalog_galaxies, bands=list(self.bands), **call_kwargs
+            )
             df = df.copy()
             df["source_type"] = "galaxies"
             parts.append(df)

@@ -325,14 +325,14 @@ class BackgroundResourceBuilder:
                 "mag_edges": mag_edges,
             }
 
-        color = (
-            detected[obs_col(bands[0], namespace)].astype(float)
-            - detected[obs_col(bands[1], namespace)].astype(float)
-        )
+        color = detected[obs_col(bands[0], namespace)].astype(float) - detected[
+            obs_col(bands[1], namespace)
+        ].astype(float)
         mag = detected[obs_col(bands[1], namespace)].astype(float)
 
         H, xe, ye = np.histogram2d(
-            color, mag,
+            color,
+            mag,
             bins=[n_bins_color, n_bins_mag],
             range=[color_range, mag_range],
         )

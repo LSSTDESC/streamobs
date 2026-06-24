@@ -156,7 +156,11 @@ class BackgroundStorage:
         dict
             ``{'cmd_hist', 'color_edges', 'mag_edges', 'n_ref', 'area_ref_deg2'}``.
         """
-        row = self._load_table(source_type, bands, maglim_b2, maglim_b1).to_pandas().iloc[0]
+        row = (
+            self._load_table(source_type, bands, maglim_b2, maglim_b1)
+            .to_pandas()
+            .iloc[0]
+        )
         return self._row_to_dict(row)
 
     def load_all(self, source_type: str, bands: tuple) -> dict:
@@ -220,7 +224,9 @@ class BackgroundStorage:
         """Reconstruct a histogram dict from a single DataFrame row."""
         n_color = int(row["n_color"])
         n_mag = int(row["n_mag"])
-        color_edges = np.linspace(row["color_edge_min"], row["color_edge_max"], n_color + 1)
+        color_edges = np.linspace(
+            row["color_edge_min"], row["color_edge_max"], n_color + 1
+        )
         mag_edges = np.linspace(row["mag_edge_min"], row["mag_edge_max"], n_mag + 1)
         counts = row["counts"]
         if hasattr(counts, "as_py"):

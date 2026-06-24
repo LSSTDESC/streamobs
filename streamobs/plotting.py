@@ -415,7 +415,9 @@ def plot_healpix_counts(
     sp : skyproj projection object
     """
     if hp is None or skyproj is None:
-        raise ImportError("healpy and skyproj must be installed to use plot_healpix_counts")
+        raise ImportError(
+            "healpy and skyproj must be installed to use plot_healpix_counts"
+        )
 
     ra, dec = np.asarray(ra, dtype=float), np.asarray(dec, dtype=float)
 

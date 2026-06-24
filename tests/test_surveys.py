@@ -441,14 +441,14 @@ class TestSurveyProperties:
                 comp_faint < 0.1
             ), f"Completeness should be near 0 for magnitudes well below saturation in band '{completeness_band}'"
 
-
     def test_missclassification_behavior(
         self,
         loaded_survey,
         saturation_magnitudes,
         bright_magnitudes,
         faint_magnitudes,
-        base_maglim,):
+        base_maglim,
+    ):
 
         completeness_band = loaded_survey.completeness_band
         sat = loaded_survey.saturation[completeness_band]
@@ -461,36 +461,47 @@ class TestSurveyProperties:
         # Test that missclassification is loaded
         # Only gal_misclassification_detection is needed, but if it None it can
         # be estimated from gal_misclassification, so we require at least one of them to be present.
-        assert (loaded_survey.gal_misclassification_detection is not None) or (loaded_survey.gal_misclassification is not None), "Missclassification function is None"
-
-
+        assert (loaded_survey.gal_misclassification_detection is not None) or (
+            loaded_survey.gal_misclassification is not None
+        ), "Missclassification function is None"
 
         # Verify completeness behavior in each regime
         if len(sat_mag) > 0:
             comp_sat = loaded_survey.get_efficiency(
-                completeness_band, sat_mag, base_maglim, type = 'detected_missclassified',
+                completeness_band,
+                sat_mag,
+                base_maglim,
+                type="detected_missclassified",
             )
             assert np.all(
                 comp_sat == 0.0
             ), f"Completeness should be 0 for magnitudes below saturation in band '{completeness_band}'"
-  
-        
+
         mag_test = np.linspace(18, 28, 100)
         comp_test = loaded_survey.get_efficiency(
-            completeness_band, mag_test, base_maglim, type = 'detected_missclassified',
+            completeness_band,
+            mag_test,
+            base_maglim,
+            type="detected_missclassified",
         )
         max_val = np.max(comp_test)
-        assert max_val < 1.0, f"Missclassification efficiency should be less than 1 for magnitudes in band '{completeness_band}'"
-        assert max_val > 0.0, f"Missclassification efficiency should be greater than 0 for magnitudes in band '{completeness_band}'"
+        assert (
+            max_val < 1.0
+        ), f"Missclassification efficiency should be less than 1 for magnitudes in band '{completeness_band}'"
+        assert (
+            max_val > 0.0
+        ), f"Missclassification efficiency should be greater than 0 for magnitudes in band '{completeness_band}'"
 
         if len(faint_mag) > 0:
             comp_faint = loaded_survey.get_efficiency(
-                completeness_band, faint_mag, base_maglim, type = 'detected_missclassified',
+                completeness_band,
+                faint_mag,
+                base_maglim,
+                type="detected_missclassified",
             )
             assert np.all(
                 comp_faint < 0.1
             ), f"Completeness should be near 0 for magnitudes well below saturation in band '{completeness_band}'"
-
 
     def test_log_photo_error_behavior(
         self,

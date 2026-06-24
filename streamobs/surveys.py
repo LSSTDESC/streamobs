@@ -631,7 +631,9 @@ class Survey:
         ValueError
             If :attr:`gal_misclassification` has not been loaded.
         """
-        return self.get_efficiency(band, magnitude, maglim, type="missclassified", **kwargs)
+        return self.get_efficiency(
+            band, magnitude, maglim, type="missclassified", **kwargs
+        )
 
     def get_gal_misclassification_detection(
         self, band: str, magnitude: float, maglim: float, **kwargs
@@ -670,6 +672,7 @@ class Survey:
         return self.get_efficiency(
             band, magnitude, maglim, type="detected_missclassified", **kwargs
         )
+
 
 class SurveyFactory:
     """

@@ -57,6 +57,7 @@ def _make_gc_frame():
 # Shared fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture(scope="module")
 def tiny_galaxies_catalog():
     """Galaxy catalog: same sky positions as stream_catalog but with randomised magnitudes."""
@@ -104,6 +105,7 @@ class TestSurveyGalMisclassification:
         """
         ...
 
+
 # ---------------------------------------------------------------------------
 # Part 2 — StreamInjector source_type parameter
 # ---------------------------------------------------------------------------
@@ -114,8 +116,9 @@ class TestInjectSourceType:
 
     def test_inject_accepts_source_type_kwarg(self):
         """inject() must accept source_type without raising TypeError."""
-        from streamobs.observed import StreamInjector
         import inspect
+
+        from streamobs.observed import StreamInjector
 
         sig = inspect.signature(StreamInjector.inject)
         # source_type is passed through **kwargs — verify inject accepts **kwargs
@@ -143,9 +146,7 @@ class TestBackgroundCatalogInjector:
         inj = BackgroundCatalogInjector(mock_survey)
         assert inj._survey is mock_survey
 
-    def test_inject_stars_returns_nonempty_dataframe(
-        self, mock_survey, stream_catalog
-    ):
+    def test_inject_stars_returns_nonempty_dataframe(self, mock_survey, stream_catalog):
         """inject_stars must return a non-empty DataFrame (smoke test only — full coverage in test_observed)."""
         from streamobs.background import BackgroundCatalogInjector
 
@@ -293,14 +294,21 @@ class TestBackgroundResourceBuilder:
             mag_range=(14, 30),
             area_ref_deg2=100.0,
         )
-        assert set(result.keys()) == {"cmd_hist", "color_edges", "mag_edges", "n_ref", "area_ref_deg2"}
+        assert set(result.keys()) == {
+            "cmd_hist",
+            "color_edges",
+            "mag_edges",
+            "n_ref",
+            "area_ref_deg2",
+        }
         assert result["cmd_hist"].shape == (10, 10)
         assert result["cmd_hist"].sum() >= 0
         assert result["n_ref"] == len(stream_catalog)
 
     def test_save_via_storage(self, tmp_path, stream_catalog):
         """save must write a parquet file via BackgroundStorage."""
-        from streamobs.background import BackgroundResourceBuilder, BackgroundStorage
+        from streamobs.background import (BackgroundResourceBuilder,
+                                          BackgroundStorage)
 
         builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
         builder.build(
@@ -320,7 +328,8 @@ class TestBackgroundResourceBuilder:
 
     def test_load_via_storage(self, tmp_path, stream_catalog):
         """load must reconstruct resources from the file saved by save."""
-        from streamobs.background import BackgroundResourceBuilder, BackgroundStorage
+        from streamobs.background import (BackgroundResourceBuilder,
+                                          BackgroundStorage)
 
         builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
         builder.build(
@@ -337,7 +346,9 @@ class TestBackgroundResourceBuilder:
         storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
         builder.save(storage, source_type="stars")
 
-        loaded = BackgroundResourceBuilder.load(storage, source_type="stars", bands=builder.bands)
+        loaded = BackgroundResourceBuilder.load(
+            storage, source_type="stars", bands=builder.bands
+        )
         assert "stars" in loaded.resources
         for key in builder.resources["stars"]:
             assert key in loaded.resources["stars"]
@@ -367,6 +378,7 @@ class TestLightBackgroundGenerator:
     def fast_survey(self):
         """Minimal Survey with tiny in-memory maps — no disk I/O."""
         import healpy as hp
+
         from streamobs.surveys import Survey
 
         nside = 8
@@ -403,7 +415,7 @@ class TestLightBackgroundGenerator:
                     "cmd_hist": cmd,
                     "color_edges": color_edges,
                     "mag_edges": mag_edges,
-                    "n_ref": int(20 * scale),   # small → ~1-3 objects per pixel
+                    "n_ref": int(20 * scale),  # small → ~1-3 objects per pixel
                     "area_ref_deg2": 10.0,
                 }
             storage.save_data(grid, source_type, ("g", "r"))
@@ -412,7 +424,8 @@ class TestLightBackgroundGenerator:
 
     def test_init(self, fast_survey, tmp_path):
         """LightBackgroundGenerator can be instantiated."""
-        from streamobs.background import BackgroundStorage, LightBackgroundGenerator
+        from streamobs.background import (BackgroundStorage,
+                                          LightBackgroundGenerator)
 
         storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
         gen = LightBackgroundGenerator(storage, fast_survey)
@@ -420,19 +433,25 @@ class TestLightBackgroundGenerator:
         assert gen.bands == ("g", "r")
         assert gen._resources == {}
 
-
     def _verify_dataframe_content(self, df, meta, bands, survey):
         """Assert standard columns and meta keys are present and catalog is non-empty."""
         from streamobs.columns import obs_col
 
         namespace = survey.namespace
-        for col in ("ra", "dec", "phi1", "phi2", obs_col(bands[0], namespace), obs_col(bands[1], namespace), "source_type"):
+        for col in (
+            "ra",
+            "dec",
+            "phi1",
+            "phi2",
+            obs_col(bands[0], namespace),
+            obs_col(bands[1], namespace),
+            "source_type",
+        ):
             assert col in df.columns, f"Missing column: {col}"
         assert isinstance(meta, dict)
         for key in ("nside", "color_edges", "mag_edges", "band1", "band2"):
             assert key in meta, f"Missing meta key: {key}"
         assert len(df) > 0, "No objects generated"
-
 
     def test_generate_stars(self, storage_with_data, fast_survey, gc_frame):
         """generate with source_type='stars' returns (df, meta) with correct columns."""
@@ -464,7 +483,6 @@ class TestLightBackgroundGenerator:
         )
         self._verify_dataframe_content(df, meta, ("g", "r"), fast_survey)
 
-        
     def test_generate_both(self, storage_with_data, fast_survey, gc_frame):
         """generate with source_type='both' produces rows for both source types."""
         from streamobs.background import LightBackgroundGenerator
@@ -479,7 +497,7 @@ class TestLightBackgroundGenerator:
             seed=2,
         )
         self._verify_dataframe_content(df, meta, ("g", "r"), fast_survey)
-        
+
         types_present = set(df["source_type"].unique())
         assert "stars" in types_present
         assert "galaxies" in types_present
@@ -500,12 +518,12 @@ class TestLightBackgroundGenerator:
             seed=7,
         )
         if len(df) > 0:
-            assert df["phi1"].between(*phi1_lim).all(), (
-                f"phi1 out of range: [{df['phi1'].min():.3f}, {df['phi1'].max():.3f}]"
-            )
-            assert df["phi2"].between(*phi2_lim).all(), (
-                f"phi2 out of range: [{df['phi2'].min():.3f}, {df['phi2'].max():.3f}]"
-            )
+            assert (
+                df["phi1"].between(*phi1_lim).all()
+            ), f"phi1 out of range: [{df['phi1'].min():.3f}, {df['phi1'].max():.3f}]"
+            assert (
+                df["phi2"].between(*phi2_lim).all()
+            ), f"phi2 out of range: [{df['phi2'].min():.3f}, {df['phi2'].max():.3f}]"
 
     # ------------------------------------------------------------------
     # Fixture shared by the count-comparison tests below
@@ -521,19 +539,19 @@ class TestLightBackgroundGenerator:
 
         n_color, n_mag = 5, 5
         color_edges = np.linspace(-1, 3, n_color + 1)
-        mag_edges   = np.linspace(18, 28, n_mag + 1)
-        flat_cmd    = np.ones((n_color, n_mag))
+        mag_edges = np.linspace(18, 28, n_mag + 1)
+        flat_cmd = np.ones((n_color, n_mag))
 
         grid = {
             (22.0, 22.0): {
-                "cmd_hist": 2*flat_cmd.copy(),
+                "cmd_hist": 2 * flat_cmd.copy(),
                 "color_edges": color_edges,
                 "mag_edges": mag_edges,
                 "n_ref": 5000,
                 "area_ref_deg2": 10.0,
             },
             (26.0, 26.0): {
-                "cmd_hist": 10*flat_cmd.copy(),
+                "cmd_hist": 10 * flat_cmd.copy(),
                 "color_edges": color_edges,
                 "mag_edges": mag_edges,
                 "n_ref": 5000,
@@ -560,10 +578,9 @@ class TestLightBackgroundGenerator:
         expected = np.mean([grid[k]["cmd_hist"] for k in corners], axis=0)
 
         result = gen._interpolate_cmd(24.25, 24.25, "stars")
-        assert np.allclose(result["cmd_hist"], expected, atol=1e-9), (
-            "Interpolated histogram does not match equal-weight mean of 4 corners"
-        )
-
+        assert np.allclose(
+            result["cmd_hist"], expected, atol=1e-9
+        ), "Interpolated histogram does not match equal-weight mean of 4 corners"
 
     def test_interpolation_vs_ground_truth(self, mock_survey, tmp_path):
         """Bilinear interpolation at (26.0, 26.0) must match direct injection within tolerances.
@@ -573,22 +590,23 @@ class TestLightBackgroundGenerator:
         Thresholds: total-count bias < 5 % and per-bin correlation > 0.95.
         """
         import pandas as pd
-        from streamobs.background import (
-            BackgroundResourceBuilder,
-            BackgroundStorage,
-            LightBackgroundGenerator,
-        )
+
+        from streamobs.background import (BackgroundResourceBuilder,
+                                          BackgroundStorage,
+                                          LightBackgroundGenerator)
 
         # Synthetic catalog with columns matching true_col(band, "lsst_yr4") → "lsst_<band>_true"
         rng = np.random.default_rng(0)
         n = 50000
         r_mag = rng.uniform(18.0, 28.0, n)
-        cat = pd.DataFrame({
-            "ra":          rng.uniform(0.0, 360.0, n),
-            "dec":         rng.uniform(-90.0, 0.0, n),
-            "lsst_r_true": r_mag,
-            "lsst_g_true": r_mag + rng.uniform(0.4, 0.7, n),
-        })
+        cat = pd.DataFrame(
+            {
+                "ra": rng.uniform(0.0, 360.0, n),
+                "dec": rng.uniform(-90.0, 0.0, n),
+                "lsst_r_true": r_mag,
+                "lsst_g_true": r_mag + rng.uniform(0.4, 0.7, n),
+            }
+        )
 
         builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
         common_kw = dict(
@@ -606,7 +624,9 @@ class TestLightBackgroundGenerator:
         # Build 2×2 corner grid
         corners = [(25.9, 25.9), (25.9, 26.1), (26.1, 25.9), (26.1, 26.1)]
         grid = {
-            (mb2, mb1): builder._build_one_config(maglim_b2=mb2, maglim_b1=mb1, **common_kw)
+            (mb2, mb1): builder._build_one_config(
+                maglim_b2=mb2, maglim_b1=mb1, **common_kw
+            )
             for mb2, mb1 in corners
         }
         storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
@@ -620,22 +640,23 @@ class TestLightBackgroundGenerator:
         gen._load_resources("stars")
         interp = gen._interpolate_cmd(26.0, 26.0, "stars")
 
-        h_truth  = truth["cmd_hist"]
+        h_truth = truth["cmd_hist"]
         h_interp = interp["cmd_hist"]
 
         # Total-count bias ≤ 5 %
-        n_truth  = h_truth.sum()
-        assert n_truth > 0, "Ground-truth CMD is empty — catalog may not match survey namespace"
-        assert abs(h_interp.sum() - n_truth) / n_truth < 0.02, (
-            f"Total-count bias {abs(h_interp.sum() - n_truth) / n_truth:.1%} exceeds 2 %"
-        )
+        n_truth = h_truth.sum()
+        assert (
+            n_truth > 0
+        ), "Ground-truth CMD is empty — catalog may not match survey namespace"
+        assert (
+            abs(h_interp.sum() - n_truth) / n_truth < 0.02
+        ), f"Total-count bias {abs(h_interp.sum() - n_truth) / n_truth:.1%} exceeds 2 %"
 
         # Per-bin correlation ≥ 0.95 on non-empty bins
         mask = (h_truth > 0) | (h_interp > 0)
         assert mask.sum() > 0, "No non-empty bins found in either histogram"
         corr = np.corrcoef(h_truth[mask], h_interp[mask])[0, 1]
         assert corr > 0.95, f"Per-bin correlation {corr:.4f} below 0.95"
-
 
     # ------------------------------------------------------------------
     # Count monotonicity: maglim depth
@@ -644,6 +665,7 @@ class TestLightBackgroundGenerator:
     def test_fewer_objects_with_shallower_maglim(self, count_storage, gc_frame):
         """A shallower magnitude limit must produce fewer background objects."""
         import healpy as hp
+
         from streamobs.background import LightBackgroundGenerator
         from streamobs.surveys import Survey
 
@@ -652,25 +674,37 @@ class TestLightBackgroundGenerator:
         common = dict(coeff_extinc={"g": 3.303, "r": 2.285}, ebv_map=np.zeros(n_pix))
 
         survey_shallow = Survey(
-            name="test", release="v1",
+            name="test",
+            release="v1",
             maglim_maps={"g": np.full(n_pix, 22.0), "r": np.full(n_pix, 22.0)},
             **common,
         )
         survey_deep = Survey(
-            name="test", release="v1",
+            name="test",
+            release="v1",
             maglim_maps={"g": np.full(n_pix, 26.0), "r": np.full(n_pix, 26.0)},
             **common,
         )
 
-        kwargs = dict(phi1_limits=(-5, 5), phi2_limits=(-1, 1), gc_frame=gc_frame,
-                      nside=nside_survey, source_type="stars", seed=0)
-
-        df_shallow, _ = LightBackgroundGenerator(count_storage, survey_shallow, bands=("g", "r")).generate(**kwargs)
-        df_deep,    _ = LightBackgroundGenerator(count_storage, survey_deep,    bands=("g", "r")).generate(**kwargs)
-
-        assert len(df_deep) > len(df_shallow), (
-            f"Expected deep ({len(df_deep)}) > shallow ({len(df_shallow)})"
+        kwargs = dict(
+            phi1_limits=(-5, 5),
+            phi2_limits=(-1, 1),
+            gc_frame=gc_frame,
+            nside=nside_survey,
+            source_type="stars",
+            seed=0,
         )
+
+        df_shallow, _ = LightBackgroundGenerator(
+            count_storage, survey_shallow, bands=("g", "r")
+        ).generate(**kwargs)
+        df_deep, _ = LightBackgroundGenerator(
+            count_storage, survey_deep, bands=("g", "r")
+        ).generate(**kwargs)
+
+        assert len(df_deep) > len(
+            df_shallow
+        ), f"Expected deep ({len(df_deep)}) > shallow ({len(df_shallow)})"
 
     # ------------------------------------------------------------------
     # Count monotonicity: dust extinction
@@ -679,6 +713,7 @@ class TestLightBackgroundGenerator:
     def test_fewer_objects_with_more_dust(self, count_storage, gc_frame):
         """Higher dust extinction must reduce the effective depth and produce fewer objects."""
         import healpy as hp
+
         from streamobs.background import LightBackgroundGenerator
         from streamobs.surveys import Survey
 
@@ -689,18 +724,32 @@ class TestLightBackgroundGenerator:
             coeff_extinc={"g": 3.303, "r": 2.285},
         )
 
-        survey_nodust  = Survey(name="test", release="v1", ebv_map=np.zeros(n_pix),      **common)
-        survey_highdust = Survey(name="test", release="v1", ebv_map=np.full(n_pix, 1.0), **common)
-
-        kwargs = dict(phi1_limits=(-5, 5), phi2_limits=(-1, 1), gc_frame=gc_frame,
-                      nside=nside_survey, source_type="stars", seed=0)
-
-        df_nodust,   _ = LightBackgroundGenerator(count_storage, survey_nodust,   bands=("g", "r")).generate(**kwargs)
-        df_highdust, _ = LightBackgroundGenerator(count_storage, survey_highdust, bands=("g", "r")).generate(**kwargs)
-
-        assert len(df_nodust) > len(df_highdust), (
-            f"Expected no-dust ({len(df_nodust)}) > high-dust ({len(df_highdust)})"
+        survey_nodust = Survey(
+            name="test", release="v1", ebv_map=np.zeros(n_pix), **common
         )
+        survey_highdust = Survey(
+            name="test", release="v1", ebv_map=np.full(n_pix, 1.0), **common
+        )
+
+        kwargs = dict(
+            phi1_limits=(-5, 5),
+            phi2_limits=(-1, 1),
+            gc_frame=gc_frame,
+            nside=nside_survey,
+            source_type="stars",
+            seed=0,
+        )
+
+        df_nodust, _ = LightBackgroundGenerator(
+            count_storage, survey_nodust, bands=("g", "r")
+        ).generate(**kwargs)
+        df_highdust, _ = LightBackgroundGenerator(
+            count_storage, survey_highdust, bands=("g", "r")
+        ).generate(**kwargs)
+
+        assert len(df_nodust) > len(
+            df_highdust
+        ), f"Expected no-dust ({len(df_nodust)}) > high-dust ({len(df_highdust)})"
 
     # ------------------------------------------------------------------
     # nside capping
@@ -709,7 +758,9 @@ class TestLightBackgroundGenerator:
     def test_nside_capped_with_warning(self, storage_with_data, fast_survey, gc_frame):
         """generate() warns and caps nside when it exceeds the maglim map resolution."""
         import warnings
+
         import healpy as hp
+
         from streamobs.background import LightBackgroundGenerator
 
         maglim_nside = hp.get_nside(fast_survey.maglim_maps["r"])  # 8 for fast_survey
@@ -728,11 +779,14 @@ class TestLightBackgroundGenerator:
             )
 
         user_warnings = [w for w in caught if issubclass(w.category, UserWarning)]
-        assert len(user_warnings) == 1, f"Expected 1 UserWarning, got {len(user_warnings)}"
+        assert (
+            len(user_warnings) == 1
+        ), f"Expected 1 UserWarning, got {len(user_warnings)}"
         assert "nside" in str(user_warnings[0].message).lower()
-        assert meta["nside"] == maglim_nside, (
-            f"meta['nside'] should be capped to {maglim_nside}, got {meta['nside']}"
-        )
+        assert (
+            meta["nside"] == maglim_nside
+        ), f"meta['nside'] should be capped to {maglim_nside}, got {meta['nside']}"
+
 
 # ---------------------------------------------------------------------------
 # Part 7 — Background (top-level wrapper)

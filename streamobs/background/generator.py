@@ -4,11 +4,11 @@ Fast per-pixel background generation from precomputed CMD grids.
 
 import warnings
 
-import numpy as np
-import pandas as pd
-import healpy as hp
 import astropy.coordinates as coord
 import astropy.units as u
+import healpy as hp
+import numpy as np
+import pandas as pd
 
 from ..columns import obs_col
 from ..surveys import Survey
@@ -142,8 +142,12 @@ class LightBackgroundGenerator:
         b1, b2 = self.bands[0], self.bands[1]
         col1, col2 = obs_col(b1, namespace), obs_col(b2, namespace)
 
-        catalog = pd.concat(catalogs, ignore_index=True) if catalogs else pd.DataFrame(
-            columns=["ra", "dec", "phi1", "phi2", col1, col2, "source_type"]
+        catalog = (
+            pd.concat(catalogs, ignore_index=True)
+            if catalogs
+            else pd.DataFrame(
+                columns=["ra", "dec", "phi1", "phi2", col1, col2, "source_type"]
+            )
         )
 
         meta = {
@@ -164,7 +168,9 @@ class LightBackgroundGenerator:
     def _load_resources(self, source_type: str):
         """Load CMD grid for *source_type* from storage and cache it."""
         if source_type not in self._resources:
-            self._resources[source_type] = self.storage.load_all(source_type, self.bands)
+            self._resources[source_type] = self.storage.load_all(
+                source_type, self.bands
+            )
 
     def _generate_one_type(
         self,
@@ -185,7 +191,7 @@ class LightBackgroundGenerator:
 
         pixels = self._get_footprint_pixels(phi1_limits, phi2_limits, gc_frame, nside)
         namespace = self.survey.namespace
-        b1, b2 = self.bands[0], self.bands[1]   # b1 = color band, b2 = reference band
+        b1, b2 = self.bands[0], self.bands[1]  # b1 = color band, b2 = reference band
         col1, col2 = obs_col(b1, namespace), obs_col(b2, namespace)
         empty = pd.DataFrame(
             columns=["ra", "dec", "phi1", "phi2", col1, col2, "source_type"]
@@ -200,10 +206,10 @@ class LightBackgroundGenerator:
         maglim_b1_eff = self._get_effective_maglim(pixels, b1, nside)
 
         # Accumulate samples; defer gala transform to a single batch call
-        all_ra:    list = []
-        all_dec:   list = []
-        all_col2:  list = []   # reference-band magnitudes
-        all_col1:  list = []   # color-band magnitudes
+        all_ra: list = []
+        all_dec: list = []
+        all_col2: list = []  # reference-band magnitudes
+        all_col1: list = []  # color-band magnitudes
 
         for i, pixel in enumerate(pixels):
             if maglim_b2_eff[i] is None or maglim_b1_eff[i] is None:
@@ -255,8 +261,10 @@ class LightBackgroundGenerator:
         phi1_min, phi1_max = phi1_limits
         phi2_min, phi2_max = phi2_limits
         in_box = (
-            (phi1_all >= phi1_min) & (phi1_all <= phi1_max)
-            & (phi2_all >= phi2_min) & (phi2_all <= phi2_max)
+            (phi1_all >= phi1_min)
+            & (phi1_all <= phi1_max)
+            & (phi2_all >= phi2_min)
+            & (phi2_all <= phi2_max)
         )
 
         col2_all = np.concatenate(all_col2)
@@ -291,7 +299,9 @@ class LightBackgroundGenerator:
         # 4 corners of the (phi1, phi2) box, listed counterclockwise
         phi1_corners = np.array([phi1_min, phi1_max, phi1_max, phi1_min]) * u.deg
         phi2_corners = np.array([phi2_min, phi2_min, phi2_max, phi2_max]) * u.deg
-        stream_coords = coord.SkyCoord(phi1=phi1_corners, phi2=phi2_corners, frame=gc_frame)
+        stream_coords = coord.SkyCoord(
+            phi1=phi1_corners, phi2=phi2_corners, frame=gc_frame
+        )
         icrs = stream_coords.icrs
         ra_corners = icrs.ra.deg
         dec_corners = icrs.dec.deg
@@ -372,9 +382,9 @@ class LightBackgroundGenerator:
         # Bilinear weights for 4 corners
         corners = [
             ((1 - wr) * (1 - wg), (r1, g1)),
-            ((1 - wr) * wg,       (r1, g2)),
-            (wr * (1 - wg),       (r2, g1)),
-            (wr * wg,             (r2, g2)),
+            ((1 - wr) * wg, (r1, g2)),
+            (wr * (1 - wg), (r2, g1)),
+            (wr * wg, (r2, g2)),
         ]
 
         H_interp = None
