@@ -3,6 +3,7 @@ Builder for precomputed background color–magnitude diagram (CMD) resources.
 """
 
 import copy
+import gc
 import warnings
 
 import numpy as np
@@ -74,6 +75,7 @@ class BackgroundResourceBuilder:
         mag_range=(16.0, 28.0),
         area_ref_deg2=None,
         source_type="both",
+        verbose=True,
         **kwargs,
     ):
         """
@@ -136,9 +138,18 @@ class BackgroundResourceBuilder:
         active = ["stars", "galaxies"] if source_type == "both" else [source_type]
 
         for st in active:
+            if verbose:
+                print(f"==== Processing {st}... ====")
+
             cat = load_catalog(catalog_stars if st == "stars" else catalog_galaxies)
             self.resources.setdefault(st, {})
             for maglim_b2, maglim_b1 in pairs:
+                if verbose:
+                    print(
+                        f"  Building CMD histogram for {st} with "
+                        f"maglim_b2={maglim_b2:.2f}, maglim_b1={maglim_b1:.2f}..."
+                    )
+
                 mb2_key = round(float(maglim_b2), 4)
                 mb1_key = round(float(maglim_b1), 4)
                 result = self._build_one_config(
@@ -156,6 +167,10 @@ class BackgroundResourceBuilder:
                     **kwargs,
                 )
                 self.resources[st][(mb2_key, mb1_key)] = result
+
+            # Release the large input catalog before loading the next source type.
+            del cat
+            gc.collect()
 
         return self
 
@@ -218,7 +233,14 @@ class BackgroundResourceBuilder:
             uniform_maglim={bands[0]: float(maglim_b1), bands[1]: float(maglim_b2)},
         )
 
-        catalog = self._prepare_catalog(catalog, bands,area_ref_deg2=area_ref_deg2,survey=prepared, uniform_maglim={bands[0]: float(maglim_b1), bands[1]: float(maglim_b2)})
+        catalog = self._prepare_catalog(
+            catalog,
+            bands,
+            area_ref_deg2=area_ref_deg2,
+            survey=prepared,
+            uniform_maglim={bands[0]: float(maglim_b1), bands[1]: float(maglim_b2)},
+        )
+        n_ref = len(catalog)  # capture before deletion
 
         inj = BackgroundCatalogInjector(prepared)
         if source_type == "stars":
@@ -226,7 +248,14 @@ class BackgroundResourceBuilder:
         else:
             observed = inj.inject_galaxies(catalog, bands=list(bands), **kwargs)
 
+        # Free the catalog copy and injector (holds a ref to prepared) as soon as
+        # injection is done — they are not needed for the histogram step.
+        del catalog
+        del inj
+
         namespace = prepared.namespace
+        del prepared  # survey deep-copy no longer needed
+
         hist = self._compute_cmd_histogram(
             observed,
             namespace,
@@ -236,9 +265,11 @@ class BackgroundResourceBuilder:
             color_range=color_range,
             mag_range=mag_range,
         )
+        del observed  # large observed DataFrame freed after histogram is built
+
         return {
             **hist,
-            "n_ref": len(catalog),
+            "n_ref": n_ref,
             "area_ref_deg2": float(area_ref_deg2) if area_ref_deg2 is not None else 1.0,
         }
 
@@ -296,7 +327,15 @@ class BackgroundResourceBuilder:
         approximately the requested reference area.
         Also checks that the required true magnitude columns are present.
         """
-        cat = catalog.copy()
+        # Validate required magnitude columns before any allocation.
+        true_band1 = true_col(bands[0], survey.namespace)
+        true_band2 = true_col(bands[1], survey.namespace)
+        if true_band1 not in catalog.columns or true_band2 not in catalog.columns:
+            raise ValueError(
+                f"True background catalog must contain true magnitudes for bands {bands} "
+                f"as columns '{true_band1}' and '{true_band2}'. "
+                f"Available columns: {list(catalog.columns)}"
+            )
 
         # Precompute patch bounds with spherical projection correction.
         # A naive square [0, side]×[0, side] in (ra, dec) does not have area
@@ -310,9 +349,12 @@ class BackgroundResourceBuilder:
             ra_extent_deg = area_ref_deg2 / (sin_max * (180.0 / np.pi))
 
         # Check if positions are present; if not, assign them.
-        needs_positions = (
-            ("ra" not in cat.columns or "dec" not in cat.columns)
-        )
+        needs_positions = "ra" not in catalog.columns or "dec" not in catalog.columns
+
+        # Only copy the columns the injector needs (true magnitudes + positions).
+        # Discarding unrelated columns here avoids doubling memory for large catalogs.
+        pos_cols = [] if needs_positions else ["ra", "dec"]
+        cat = catalog[[true_band1, true_band2] + pos_cols].copy()
 
         if needs_positions:
             if uniform_maglim is not None:
@@ -360,14 +402,6 @@ class BackgroundResourceBuilder:
                         msg
                         + "Ensure the catalog covers approximately the requested reference area."
                     )
-
-        # Check that the magnitudes required are in the data
-        true_band1, true_band2 = true_col(bands[0], survey.namespace), true_col(bands[1], survey.namespace)
-        if true_band1 not in cat.columns or true_band2 not in cat.columns:
-            raise ValueError(
-                f"True background catalog must contain true magnitudes for bands {bands} "
-                f"as columns '{true_band1}' and '{true_band2}'. Now columns are: {list(cat.columns)}"
-            )
 
         return cat
 
@@ -469,19 +503,21 @@ class BackgroundResourceBuilder:
         mag_edges = np.linspace(mag_range[0], mag_range[1], n_bins_mag + 1)
 
         mask = observed_df[flag_col(namespace)] == 1
-        detected = observed_df[mask]
-
-        if len(detected) == 0:
+        if not mask.any():
             return {
                 "cmd_hist": np.zeros((n_bins_color, n_bins_mag)),
                 "color_edges": color_edges,
                 "mag_edges": mag_edges,
             }
 
-        color = detected[obs_col(bands[0], namespace)].astype(float) - detected[
-            obs_col(bands[1], namespace)
-        ].astype(float)
-        mag = detected[obs_col(bands[1], namespace)].astype(float)
+        # Extract only the two needed columns filtered to detected rows — avoids
+        # materialising a full-width filtered copy of the observed DataFrame.
+        # The mask is applied BEFORE converting to float so that non-numeric
+        # sentinel values in undetected rows ('BAD_MAG') are never encountered.
+        col_b1 = obs_col(bands[0], namespace)
+        col_b2 = obs_col(bands[1], namespace)
+        mag = observed_df.loc[mask, col_b2].to_numpy(dtype=float)
+        color = observed_df.loc[mask, col_b1].to_numpy(dtype=float) - mag
 
         H, xe, ye = np.histogram2d(
             color,
