@@ -126,6 +126,8 @@ class BackgroundStorage:
         if os.path.exists(path):
             os.remove(path)
         df.to_parquet(path, compression=compression, index=False)
+        if kwargs.get("verbose", True):
+            print(f"Saved {len(rows)} rows to {path}")
 
     def load_data(
         self,

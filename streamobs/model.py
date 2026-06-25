@@ -124,7 +124,7 @@ class StreamModel(ConfigurableModel):
         else:
             return None
 
-    def sample(self, size, rng=None):
+    def sample(self, size, rng=None, seed=None):
         """Sample stream stars and derived quantities.
 
         Parameters
@@ -143,7 +143,8 @@ class StreamModel(ConfigurableModel):
             ``rv``, and the isochrone magnitude columns ``<survey>_<band>_true``
             (per survey/band). Some may be None if the sub-model is absent.
         """
-        rng = np.random.default_rng() if rng is None else rng
+        if rng is None:
+            rng = np.random.default_rng(seed)
 
         # Sample phi1 and phi2
         phi1 = self.density.sample(size, rng=rng)

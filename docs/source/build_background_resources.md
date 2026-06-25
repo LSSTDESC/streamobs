@@ -36,13 +36,13 @@ builder.build(
     catalog_galaxies=df_galaxies,
     bands=('g', 'r'),
     maglim_min=23.5,    # lower end of the magnitude limit grid
-    maglim_max=27.0,    # upper end
-    maglim_step=0.1,    # step size between grid points
+    maglim_max=27.5,    # upper end
+    maglim_step=0.2,    # step size between grid points
     max_delta=1.0,      # discard pairs with |maglim_b2 - maglim_b1| >= max_delta
-    n_bins_color=50,
-    n_bins_mag=50,
-    color_range=(-1, 2),
-    mag_range=(15, 30),
+    n_bins_color=125,
+    n_bins_mag=125,
+    color_range=(-0.5, 2.0),
+    mag_range=(16.0, 28.0),
     area_ref_deg2=1.0,   # sky area of the truth catalog in deg²
     source_type='both',
 )
