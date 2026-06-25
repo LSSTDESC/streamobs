@@ -13,7 +13,6 @@ import pytest
 
 from streamobs.match_filter import build_match_filter, is_in_match_filter
 
-
 # ---------------------------------------------------------------------------
 # Smoke tests — return types and shapes
 # ---------------------------------------------------------------------------
@@ -22,14 +21,18 @@ from streamobs.match_filter import build_match_filter, is_in_match_filter
 @pytest.mark.match_filter
 class TestMatchFilterAPI:
     def test_build_match_filter_return_shape(self):
-        polygon = build_match_filter(distance_modulus=16.8, age=12.0, metallicity=0.0006)
+        polygon = build_match_filter(
+            distance_modulus=16.8, age=12.0, metallicity=0.0006
+        )
         assert isinstance(polygon, np.ndarray), "polygon_vertices must be an ndarray"
         assert polygon.ndim == 2 and polygon.shape[1] == 2, "shape must be (N, 2)"
         assert polygon.shape[0] >= 3, "polygon must have at least 3 vertices"
         assert np.all(np.isfinite(polygon)), "polygon vertices must be finite"
 
     def test_is_in_match_filter_return_type(self):
-        polygon = build_match_filter(distance_modulus=16.8, age=12.0, metallicity=0.0006)
+        polygon = build_match_filter(
+            distance_modulus=16.8, age=12.0, metallicity=0.0006
+        )
         mag_g = np.array([20.0, 22.0, 24.0])
         mag_r = np.array([19.5, 21.5, 23.5])
         mask = is_in_match_filter(mag_g, mag_r, polygon_vertices=polygon)
@@ -38,7 +41,9 @@ class TestMatchFilterAPI:
         assert len(mask) == len(mag_g), "output length must match input length"
 
     def test_is_in_match_filter_handles_nan(self):
-        polygon = build_match_filter(distance_modulus=16.8, age=12.0, metallicity=0.0006)
+        polygon = build_match_filter(
+            distance_modulus=16.8, age=12.0, metallicity=0.0006
+        )
         mag_g = np.array([20.0, float("nan"), 24.0])
         mag_r = np.array([19.5, 21.5, float("nan")])
         mask = is_in_match_filter(mag_g, mag_r, polygon_vertices=polygon)

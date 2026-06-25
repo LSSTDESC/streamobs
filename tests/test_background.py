@@ -307,7 +307,8 @@ class TestBackgroundResourceBuilder:
 
     def test_save_via_storage(self, tmp_path, stream_catalog):
         """save must write a parquet file via BackgroundStorage."""
-        from streamobs.background import BackgroundResourceBuilder, BackgroundStorage
+        from streamobs.background import (BackgroundResourceBuilder,
+                                          BackgroundStorage)
 
         builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
         builder.build(
@@ -379,15 +380,15 @@ class TestBackgroundResourceBuilder:
 
         # 3. Solid angle of the patch equals area_ref_deg2 to machine precision
         patch_area = ra_extent_deg * sin_max * (180.0 / np.pi)
-        assert abs(patch_area - area_ref) / area_ref < 1e-10, (
-            f"Patch area {patch_area:.6f} deg² does not match area_ref {area_ref} deg²"
-        )
+        assert (
+            abs(patch_area - area_ref) / area_ref < 1e-10
+        ), f"Patch area {patch_area:.6f} deg² does not match area_ref {area_ref} deg²"
 
         # 4. RA extent must differ from side_deg (projection correction applied).
         # For area_ref=25 deg², side_deg=5° and sin(5°)<1, so ra_extent > side_deg.
-        assert ra_extent_deg > side_deg, (
-            "ra_extent_deg should exceed side_deg due to cos(dec) projection"
-        )
+        assert (
+            ra_extent_deg > side_deg
+        ), "ra_extent_deg should exceed side_deg due to cos(dec) projection"
 
     def test_prepare_catalog_raises_on_area_mismatch(self, mock_survey):
         """_prepare_catalog raises ValueError when the HEALPix area estimate
@@ -487,9 +488,9 @@ class TestBackgroundResourceBuilder:
             _, _, nside = builder._estimate_area_deg2(ra, dec, area_ref)
             nsides.append(nside)
 
-        assert all(nsides[i] <= nsides[i + 1] for i in range(len(nsides) - 1)), (
-            f"nside should be non-decreasing with n, got {nsides}"
-        )
+        assert all(
+            nsides[i] <= nsides[i + 1] for i in range(len(nsides) - 1)
+        ), f"nside should be non-decreasing with n, got {nsides}"
 
     def test_estimate_area_deg2_ignores_nonfinite(self):
         """Non-finite (ra, dec) values are silently excluded from the estimate."""
@@ -511,7 +512,8 @@ class TestBackgroundResourceBuilder:
 
     def test_load_via_storage(self, tmp_path, stream_catalog):
         """load must reconstruct resources from the file saved by save."""
-        from streamobs.background import BackgroundResourceBuilder, BackgroundStorage
+        from streamobs.background import (BackgroundResourceBuilder,
+                                          BackgroundStorage)
 
         builder = BackgroundResourceBuilder(survey_name="lsst", release="yr4")
         builder.build(
@@ -606,7 +608,8 @@ class TestLightBackgroundGenerator:
 
     def test_init(self, fast_survey, tmp_path):
         """LightBackgroundGenerator can be instantiated."""
-        from streamobs.background import BackgroundStorage, LightBackgroundGenerator
+        from streamobs.background import (BackgroundStorage,
+                                          LightBackgroundGenerator)
 
         storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
         gen = LightBackgroundGenerator(storage, fast_survey)
@@ -772,11 +775,9 @@ class TestLightBackgroundGenerator:
         """
         import pandas as pd
 
-        from streamobs.background import (
-            BackgroundResourceBuilder,
-            BackgroundStorage,
-            LightBackgroundGenerator,
-        )
+        from streamobs.background import (BackgroundResourceBuilder,
+                                          BackgroundStorage,
+                                          LightBackgroundGenerator)
 
         # Synthetic catalog covering approximately area_ref_deg2=100 deg².
         # Use projection-correct sampling so the catalog covers the right solid angle:

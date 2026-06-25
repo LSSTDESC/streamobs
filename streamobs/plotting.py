@@ -453,7 +453,7 @@ def plot_healpix_counts(
         draw_kw["norm"] = LogNorm(vmin=vmin, vmax=vmax)
     elif norm == "linear":
         draw_kw["norm"] = None
-        
+
     sp = skyproj.McBrydeSkyproj(ax=ax, ra_0=ra_center)
     sp.draw_hpxmap(sky_map, nest=nest, cmap=cmap, **draw_kw)
     sp.draw_colorbar(label=colorbar_label)

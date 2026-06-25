@@ -312,7 +312,6 @@ class BackgroundResourceBuilder:
                     )
         return s
 
-
     def _prepare_catalog(
         self,
         catalog,
@@ -371,7 +370,9 @@ class BackgroundResourceBuilder:
                 )
                 cat["ra"] = np.random.uniform(0.0, ra_extent_deg, size=len(cat))
             else:
-                raise ValueError("Positions are required when the survey is not uniform.")
+                raise ValueError(
+                    "Positions are required when the survey is not uniform."
+                )
 
         if area_ref_deg2 is not None:
             area_estimated, pixel_area_deg2, nside_used = self._estimate_area_deg2(
@@ -405,7 +406,6 @@ class BackgroundResourceBuilder:
 
         return cat
 
-  
     def _estimate_area_deg2(self, ra, dec, area_ref_deg2):
         """Estimate the sky area covered by (ra, dec) positions using HEALPix.
 
@@ -450,7 +450,6 @@ class BackgroundResourceBuilder:
         nside_raw = np.sqrt(41253.0 / (12.0 * max(pixel_area_target, 1e-4)))
         nside = int(2 ** np.round(np.log2(max(nside_raw, 4))))
         nside = max(4, min(nside, 4096))
-    
 
         ra = np.asarray(ra)
         dec = np.asarray(dec)
@@ -463,7 +462,7 @@ class BackgroundResourceBuilder:
         pixel_area = hp.nside2pixarea(nside, degrees=True)
 
         return n_unique * pixel_area, pixel_area, nside
-    
+
     def _compute_cmd_histogram(
         self,
         observed_df,

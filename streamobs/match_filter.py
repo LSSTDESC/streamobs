@@ -1,8 +1,7 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 from matplotlib.path import Path
 from ugali.analysis.isochrone import factory as isochrone_factory
-
 
 """
 Match filter module for stellar stream analysis.
@@ -40,35 +39,55 @@ This module uses the Dotter2008 isochrone models from the ugali package.
 DEFAULT_AGE_GYR = 13.0  # Stellar population age in Gigayears
 DEFAULT_METALLICITY = 0.0002  # Metallicity (Z), typical for old halo populations
 DEFAULT_DISTANCE_MODULUS_SPREAD = 0.5  # Half-width of distance modulus range [mag]
-DEFAULT_COLOR_SPREAD = [0.05, 0.05]  # Color padding [blue_side, red_side] [mag] # note: smaller than DES2018, symmetric ideal case
+DEFAULT_COLOR_SPREAD = [
+    0.05,
+    0.05,
+]  # Color padding [blue_side, red_side] [mag] # note: smaller than DES2018, symmetric ideal case
 DEFAULT_ERROR_MULTIPLIER = [2.0, 2.0]  # Error scaling [blue_side, red_side]
 
 # Absolute magnitude of Main Sequence Turn-Off for Dotter2008 isochrone
 # WARNING: This value is model-dependent and hardcoded for Dotter2008
-MSTO_ABSOLUTE_MAG = 3.5 # it is the same for Marigo2017
+MSTO_ABSOLUTE_MAG = 3.5  # it is the same for Marigo2017
 DEFAULT_RGB_CLIP_MAG = 0.2  # Clip RGB at (MSTO - 0.2) mag
 
-default_errors_des2018 =  {'baseline_error': 0.001, 'exp_pivot': 27.09, 'exp_scale': 1.09}
-default_errors =  {'baseline_error': 0.004775486092612673, 'exp_pivot': 28.421419633248796, 'exp_scale': 1.0011829218659076} # fitted on DC2 mag err
+default_errors_des2018 = {
+    "baseline_error": 0.001,
+    "exp_pivot": 27.09,
+    "exp_scale": 1.09,
+}
+default_errors = {
+    "baseline_error": 0.004775486092612673,
+    "exp_pivot": 28.421419633248796,
+    "exp_scale": 1.0011829218659076,
+}  # fitted on DC2 mag err
 
-def error_model(magnitude, baseline_error=default_errors['baseline_error'], exp_pivot=default_errors['exp_pivot'], exp_scale=default_errors['exp_scale'], verbose=False):
+
+def error_model(
+    magnitude,
+    baseline_error=default_errors["baseline_error"],
+    exp_pivot=default_errors["exp_pivot"],
+    exp_scale=default_errors["exp_scale"],
+    verbose=False,
+):
     """
     Compute the median photometric error as a function of magnitude.
-    
+
     Uses an exponential error model calibrated for typical survey data.
-    
+
     Parameters
     ----------
     magnitude : float or array-like
         Apparent magnitude(s) for which to compute the error.
-    
+
     Returns
     -------
     error : float or array-like
         Photometric error(s) corresponding to the input magnitude(s).
     """
     if verbose:
-        print("Using following parameters values:",baseline_error, exp_pivot, exp_scale )
+        print(
+            "Using following parameters values:", baseline_error, exp_pivot, exp_scale
+        )
     return baseline_error + np.exp((magnitude - exp_pivot) / exp_scale)
 
 
@@ -82,9 +101,9 @@ def build_match_filter(
     rgb_clip_mag=DEFAULT_RGB_CLIP_MAG,
     color_cut=True,
     verbose=False,
-    error_kwargs = {},
-    survey = "lsst",
-    isochrone_model = 'Marigo2017',
+    error_kwargs={},
+    survey="lsst",
+    isochrone_model="Marigo2017",
 ):
     """
     Build an isochrone matched-filter polygon in color-magnitude space.
@@ -164,7 +183,9 @@ def build_match_filter(
       resulting in a wider polygon at the faint end.
     """
     # --- Generate isochrone model ---
-    isochrone = isochrone_factory(isochrone_model, age=age, z=metallicity, survey = survey)
+    isochrone = isochrone_factory(
+        isochrone_model, age=age, z=metallicity, survey=survey
+    )
     isochrone_color = isochrone.color  # Intrinsic g-r color
     isochrone_absolute_mag = isochrone.mag  # Absolute g-band magnitude
 
@@ -187,7 +208,7 @@ def build_match_filter(
     blue_error_multiplier, red_error_multiplier = error_multiplier
 
     # --- Compute magnitude-dependent photometric errors ---
-    photometric_error_far = error_model(apparent_mag_far,**error_kwargs)
+    photometric_error_far = error_model(apparent_mag_far, **error_kwargs)
     photometric_error_near = error_model(apparent_mag_near, **error_kwargs)
 
     # --- Build polygon edges ---
@@ -204,7 +225,7 @@ def build_match_filter(
         - blue_error_multiplier * photometric_error_near[::-1]
         - blue_color_padding
     )
-    
+
     # --- Apply color cut if requested ---
     if color_cut:
         # Restrict to g - r < 1.25 - error(g) to remove very red stars
@@ -214,41 +235,45 @@ def build_match_filter(
 
     # --- Concatenate edges to form closed polygon ---
     polygon_color = np.concatenate([red_edge_color, blue_edge_color])
-    polygon_apparent_mag = np.concatenate([
-        isochrone_absolute_mag,
-        isochrone_absolute_mag[::-1]
-    ]) + distance_modulus
+    polygon_apparent_mag = (
+        np.concatenate([isochrone_absolute_mag, isochrone_absolute_mag[::-1]])
+        + distance_modulus
+    )
 
     return np.column_stack([polygon_color, polygon_apparent_mag])
 
 
-def is_in_match_filter(mag_g, mag_r, polygon_vertices=None, match_filter_params=None, verbose = False):
+def is_in_match_filter(
+    mag_g, mag_r, polygon_vertices=None, match_filter_params=None, verbose=False
+):
     mag_g = pd.to_numeric(mag_g, errors="coerce")
     mag_r = pd.to_numeric(mag_r, errors="coerce")
-    
+
     # Explicitly exclude NaN values (from 'BAD_MAG' or invalid data)
     valid_mask = ~(np.isnan(mag_g) | np.isnan(mag_r))
-    
-    color_mag_coords = np.column_stack([
-        mag_g - mag_r,
-        mag_g
-    ])
+
+    color_mag_coords = np.column_stack([mag_g - mag_r, mag_g])
 
     if polygon_vertices is None:
         if match_filter_params is None:
-            raise ValueError("Either polygon_vertices or match_filter_params must be provided.")
+            raise ValueError(
+                "Either polygon_vertices or match_filter_params must be provided."
+            )
         polygon_vertices = build_match_filter(**match_filter_params)
-    
+
     polygon_path = Path(polygon_vertices)
     # Only check valid (non-NaN) points
     selection_mask = np.zeros(len(mag_g), dtype=bool)
-    selection_mask[valid_mask] = polygon_path.contains_points(color_mag_coords[valid_mask])
+    selection_mask[valid_mask] = polygon_path.contains_points(
+        color_mag_coords[valid_mask]
+    )
 
     if verbose:
         n_valid = np.sum(valid_mask)
         n_selected = np.sum(selection_mask)
         selection_fraction = n_selected / len(mag_g) * 100 if len(mag_g) > 0 else 0
-        print(f'Match filter selects {selection_fraction:.2f}% of all stars ({n_selected}/{len(mag_g)}, {len(mag_g)-n_valid} stars with NaN)') 
-    
-    return selection_mask
+        print(
+            f"Match filter selects {selection_fraction:.2f}% of all stars ({n_selected}/{len(mag_g)}, {len(mag_g)-n_valid} stars with NaN)"
+        )
 
+    return selection_mask
