@@ -105,7 +105,7 @@ class LightBackgroundGenerator:
             and ``source_type``; plus a metadata dict with keys ``nside``,
             ``color_edges``, ``mag_edges``, ``band1``, ``band2``.
         """
-        rng = kwargs.get("rng")
+        rng = kwargs.get("rng", None)
         if rng is None:
             rng = np.random.default_rng(kwargs.get("seed"))
 
