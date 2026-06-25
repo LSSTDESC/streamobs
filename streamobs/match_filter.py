@@ -40,7 +40,7 @@ This module uses the Dotter2008 isochrone models from the ugali package.
 DEFAULT_AGE_GYR = 13.0  # Stellar population age in Gigayears
 DEFAULT_METALLICITY = 0.0002  # Metallicity (Z), typical for old halo populations
 DEFAULT_DISTANCE_MODULUS_SPREAD = 0.5  # Half-width of distance modulus range [mag]
-DEFAULT_COLOR_SPREAD = [0.05, 0.10]  # Color padding [blue_side, red_side] [mag] # note: smaller than DES2018, symmetric ideal case
+DEFAULT_COLOR_SPREAD = [0.05, 0.05]  # Color padding [blue_side, red_side] [mag] # note: smaller than DES2018, symmetric ideal case
 DEFAULT_ERROR_MULTIPLIER = [2.0, 2.0]  # Error scaling [blue_side, red_side]
 
 # Absolute magnitude of Main Sequence Turn-Off for Dotter2008 isochrone
