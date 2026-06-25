@@ -418,6 +418,7 @@ def plot_healpix_counts(
         raise ImportError(
             "healpy and skyproj must be installed to use plot_healpix_counts"
         )
+    from matplotlib.colors import LogNorm
 
     ra, dec = np.asarray(ra, dtype=float), np.asarray(dec, dtype=float)
 
@@ -439,6 +440,20 @@ def plot_healpix_counts(
 
     draw_kw = {k: kwargs[k] for k in ("vmin", "vmax") if k in kwargs}
 
+    vmin, vmax = kwargs.get("vmin"), kwargs.get("vmax")
+    if vmin is None:
+        vmin = np.nanpercentile(sky_map, 0.1)
+    if vmax is None:
+        vmax = np.nanpercentile(sky_map, 99.9)
+    draw_kw.setdefault("vmin", vmin)
+    draw_kw.setdefault("vmax", vmax)
+
+    norm = kwargs.get("norm", "linear")
+    if norm == "log":
+        draw_kw["norm"] = LogNorm(vmin=vmin, vmax=vmax)
+    elif norm == "linear":
+        draw_kw["norm"] = None
+        
     sp = skyproj.McBrydeSkyproj(ax=ax, ra_0=ra_center)
     sp.draw_hpxmap(sky_map, nest=nest, cmap=cmap, **draw_kw)
     sp.draw_colorbar(label=colorbar_label)
