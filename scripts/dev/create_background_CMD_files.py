@@ -22,9 +22,9 @@ builder.build(
     bands=('g', 'r'),
     maglim_min=23.5,    # lower end of the magnitude limit grid
     maglim_max=27.5,    # upper end
-    #maglim_min=24.5,    # lower end of the magnitude limit grid
-    #maglim_max=24.7,    # upper end
-    maglim_step=0.2,    # step size between grid points
+    #maglim_min=24.,    # lower end of the magnitude limit grid
+    #maglim_max=26.5,    # upper end
+    maglim_step=0.25,    # step size between grid points
     max_delta=1.0,      # discard pairs with |maglim_b2 - maglim_b1| >= max_delta
     n_bins_color=125,
     n_bins_mag=125,
@@ -39,9 +39,9 @@ builder.build(
     bands=('g', 'r'),
     maglim_min=23.5,    # lower end of the magnitude limit grid
     maglim_max=27.5,    # upper end
-    #maglim_min=24.5,    # lower end of the magnitude limit grid
-    #maglim_max=24.7,    # upper end
-    maglim_step=0.2,    # step size between grid points
+    #maglim_min=24.,    # lower end of the magnitude limit grid
+    #maglim_max=26.5,    # upper end
+    maglim_step=0.5,    # step size between grid points
     max_delta=1.0,      # discard pairs with |maglim_b2 - maglim_b1| >= max_delta
     n_bins_color=80,
     n_bins_mag=80,
