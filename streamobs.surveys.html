@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -143,16 +144,23 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -162,6 +170,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">Content</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -334,14 +343,8 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.completeness"><code class="docutils literal notranslate"><span class="pre">Survey.completeness</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.delta_saturation"><code class="docutils literal notranslate"><span class="pre">Survey.delta_saturation</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.completeness_band"><code class="docutils literal notranslate"><span class="pre">Survey.completeness_band</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.log_photo_error"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">Survey.bands</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1"><code class="docutils literal notranslate"><span class="pre">Survey.coeff_extinc</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2"><code class="docutils literal notranslate"><span class="pre">Survey.completeness</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3"><code class="docutils literal notranslate"><span class="pre">Survey.completeness_band</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4"><code class="docutils literal notranslate"><span class="pre">Survey.coverage</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5"><code class="docutils literal notranslate"><span class="pre">Survey.delta_saturation</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6"><code class="docutils literal notranslate"><span class="pre">Survey.ebv_map</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.log_photo_error_catalog"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error_catalog</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.log_photo_error_sample"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error_sample</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.get_classification_efficiency"><code class="docutils literal notranslate"><span class="pre">Survey.get_classification_efficiency()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.get_completeness"><code class="docutils literal notranslate"><span class="pre">Survey.get_completeness()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.get_detection_efficiency"><code class="docutils literal notranslate"><span class="pre">Survey.get_detection_efficiency()</span></code></a></li>
@@ -350,12 +353,8 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.get_maglim"><code class="docutils literal notranslate"><span class="pre">Survey.get_maglim()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.get_photo_error"><code class="docutils literal notranslate"><span class="pre">Survey.get_photo_error()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.load"><code class="docutils literal notranslate"><span class="pre">Survey.load()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8"><code class="docutils literal notranslate"><span class="pre">Survey.maglim_maps</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9"><code class="docutils literal notranslate"><span class="pre">Survey.name</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10"><code class="docutils literal notranslate"><span class="pre">Survey.release</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11"><code class="docutils literal notranslate"><span class="pre">Survey.saturation</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12"><code class="docutils literal notranslate"><span class="pre">Survey.sys_error</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.log_photo_error"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.namespace"><code class="docutils literal notranslate"><span class="pre">Survey.namespace</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.SurveyFactory"><code class="docutils literal notranslate"><span class="pre">SurveyFactory</span></code></a><ul class="nav section-nav flex-column">
@@ -383,7 +382,7 @@
 <span id="streamobs-surveys-module"></span><h1>streamobs.surveys module<a class="headerlink" href="#module-streamobs.surveys" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="streamobs.surveys.Survey">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.surveys.</span></span><span class="sig-name descname"><span class="pre">Survey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">release</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maglim_maps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeff_extinc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saturation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sys_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">completeness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">completeness_band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_saturation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_photo_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ebv_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/surveys.html#Survey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.surveys.Survey" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.surveys.</span></span><span class="sig-name descname"><span class="pre">Survey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">release</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maglim_maps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coeff_extinc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saturation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sys_error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">completeness</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">completeness_band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_saturation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_photo_error_catalog</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_photo_error_sample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ebv_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/surveys.html#Survey"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.surveys.Survey" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Container for survey properties and data.</p>
 <p>This class stores all survey-specific data including HEALPix maps,
@@ -534,10 +533,28 @@ Same function used for all bands, obtained from r band.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="streamobs.surveys.Survey.log_photo_error">
-<span class="sig-name descname"><span class="pre">log_photo_error</span></span><a class="headerlink" href="#streamobs.surveys.Survey.log_photo_error" title="Link to this definition">#</a></dt>
-<dd><p>Photometric error model f(delta_mag) -&gt; log10(mag_error).
-Same function used for all bands, obtained from r band.</p>
+<dt class="sig sig-object py" id="streamobs.surveys.Survey.log_photo_error_catalog">
+<span class="sig-name descname"><span class="pre">log_photo_error_catalog</span></span><a class="headerlink" href="#streamobs.surveys.Survey.log_photo_error_catalog" title="Link to this definition">#</a></dt>
+<dd><p><em>Catalog</em> (reported) photometric error model f(delta_mag) -&gt; log10(mag_error),
+where <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">mag</span> <span class="pre">-</span> <span class="pre">maglim</span></code>. This is the survey’s reported error
+curve (e.g. <code class="docutils literal notranslate"><span class="pre">photoerror_r.csv</span></code>); it is written as <code class="docutils literal notranslate"><span class="pre">magerr</span></code> and drives
+the S/N cut. Loaded from the <code class="docutils literal notranslate"><span class="pre">log_photo_error_catalog</span></code> config key, or the
+legacy <code class="docutils literal notranslate"><span class="pre">log_photo_error</span></code> key. Always present for a configured survey.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>callable, optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="streamobs.surveys.Survey.log_photo_error_sample">
+<span class="sig-name descname"><span class="pre">log_photo_error_sample</span></span><a class="headerlink" href="#streamobs.surveys.Survey.log_photo_error_sample" title="Link to this definition">#</a></dt>
+<dd><p><em>Sample</em> photometric error model f(delta_mag) -&gt; log10(mag_error): the true
+scatter of observed-minus-true magnitudes, used to draw the observed
+magnitudes. Optional second curve (config key <code class="docutils literal notranslate"><span class="pre">log_photo_error_sample</span></code>).
+If not provided, the noise draw falls back to the catalog model, which
+reproduces the previous single-curve behaviour exactly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>callable, optional</p>
@@ -574,89 +591,6 @@ Same function used for all bands, obtained from r band.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">photo_error_r</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes<span class="colon">:</span></dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>bands</strong></dt><dd></dd>
-<dt><strong>coeff_extinc</strong></dt><dd></dd>
-<dt><strong>completeness</strong></dt><dd></dd>
-<dt><strong>completeness_band</strong></dt><dd></dd>
-<dt><strong>coverage</strong></dt><dd></dd>
-<dt><strong>delta_saturation</strong></dt><dd></dd>
-<dt><strong>ebv_map</strong></dt><dd></dd>
-<dt><strong>log_photo_error</strong></dt><dd></dd>
-<dt><strong>maglim_maps</strong></dt><dd></dd>
-<dt><strong>release</strong></dt><dd></dd>
-<dt><strong>saturation</strong></dt><dd></dd>
-<dt><strong>sys_error</strong></dt><dd></dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.surveys.Survey.get_classification_efficiency" title="streamobs.surveys.Survey.get_classification_efficiency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_classification_efficiency</span></code></a>(band, ...)</p></td>
-<td><p>Get classification-only efficiency (star/galaxy separation).</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.surveys.Survey.get_completeness" title="streamobs.surveys.Survey.get_completeness"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_completeness</span></code></a>(band, magnitude, maglim, ...)</p></td>
-<td><p>Get detection completeness (combined detection and classification efficiency).</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.surveys.Survey.get_detection_efficiency" title="streamobs.surveys.Survey.get_detection_efficiency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_detection_efficiency</span></code></a>(band, magnitude, ...)</p></td>
-<td><p>Get detection-only efficiency (ignoring classification).</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.surveys.Survey.get_efficiency" title="streamobs.surveys.Survey.get_efficiency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_efficiency</span></code></a>(band, magnitude, maglim[, type])</p></td>
-<td><p>Get efficiency function values.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.surveys.Survey.get_extinction" title="streamobs.surveys.Survey.get_extinction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_extinction</span></code></a>(band[, pixel])</p></td>
-<td><p>Get extinction (A_band) for a specific band.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.surveys.Survey.get_maglim" title="streamobs.surveys.Survey.get_maglim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_maglim</span></code></a>(band[, pixel])</p></td>
-<td><p>Get magnitude limit for a specific band.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.surveys.Survey.get_photo_error" title="streamobs.surveys.Survey.get_photo_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_photo_error</span></code></a>(band, magnitude, maglim, ...)</p></td>
-<td><p>Get photometric error estimate.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.surveys.Survey.load" title="streamobs.surveys.Survey.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(survey[, release, config_file])</p></td>
-<td><p>Load survey data and return Survey instance.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">bands</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id0" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">coeff_extinc</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id1" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">completeness</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id2" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id3">
-<span class="sig-name descname"><span class="pre">completeness_band</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id3" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id4">
-<span class="sig-name descname"><span class="pre">coverage</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id4" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id5">
-<span class="sig-name descname"><span class="pre">delta_saturation</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id5" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id6">
-<span class="sig-name descname"><span class="pre">ebv_map</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id6" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.surveys.Survey.get_classification_efficiency">
 <span class="sig-name descname"><span class="pre">get_classification_efficiency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maglim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/streamobs/surveys.html#Survey.get_classification_efficiency"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.surveys.Survey.get_classification_efficiency" title="Link to this definition">#</a></dt>
@@ -773,15 +707,13 @@ Same function used for all bands, obtained from r band.</p>
 is used for all bands.</p></li>
 <li><p><strong>magnitude</strong> (<em>float</em><em> or </em><em>np.ndarray</em>) – True apparent magnitude(s).</p></li>
 <li><p><strong>maglim</strong> (<em>float</em><em> or </em><em>np.ndarray</em>) – Magnitude limit(s) at the position(s).</p></li>
-<li><p><strong>**kwargs</strong> – <p>Additional keyword arguments:
-type : str, optional</p>
-<blockquote>
-<div><p>Type of efficiency function to use. Options are “completeness”, “detection_efficiency”, or “classification_efficiency”.
-Default is “completeness”.</p>
-</div></blockquote>
+<li><p><strong>type</strong> (<em>str</em><em>, </em><em>optional</em>) – Type of efficiency function to use. Options are <code class="docutils literal notranslate"><span class="pre">&quot;completeness&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;detection_efficiency&quot;</span></code>, or <code class="docutils literal notranslate"><span class="pre">&quot;classification_efficiency&quot;</span></code>.
+Default is <code class="docutils literal notranslate"><span class="pre">&quot;completeness&quot;</span></code>.</p></li>
+<li><p><strong>**kwargs</strong> – <p>Additional keyword arguments. Currently:</p>
 <dl class="simple">
-<dt>delta_saturation<span class="classifier">float, optional</span></dt><dd><p>Magnitude difference for saturation threshold in the initial completeness function.
-Default is -10.4.</p>
+<dt>delta_saturation<span class="classifier">float, optional</span></dt><dd><p>Magnitude difference for saturation threshold in the initial
+completeness function. Default is -10.4.</p>
 </dd>
 </dl>
 </p></li>
@@ -878,7 +810,7 @@ or if <code class="docutils literal notranslate"><span class="pre">type</span></
 
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.surveys.Survey.get_photo_error">
-<span class="sig-name descname"><span class="pre">get_photo_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maglim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/streamobs/surveys.html#Survey.get_photo_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.surveys.Survey.get_photo_error" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_photo_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnitude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maglim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'catalog'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/streamobs/surveys.html#Survey.get_photo_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.surveys.Survey.get_photo_error" title="Link to this definition">#</a></dt>
 <dd><p>Get photometric error estimate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -886,6 +818,10 @@ or if <code class="docutils literal notranslate"><span class="pre">type</span></
 <li><p><strong>band</strong> (<em>str</em>) – Band identifier (e.g., ‘g’, ‘r’). Used to get band-specific sys_error.</p></li>
 <li><p><strong>magnitude</strong> (<em>float</em><em> or </em><em>np.ndarray</em>) – True apparent magnitude(s).</p></li>
 <li><p><strong>maglim</strong> (<em>float</em><em> or </em><em>np.ndarray</em>) – Magnitude limit(s) at the position(s).</p></li>
+<li><p><strong>kind</strong> (<em>str</em><em>, </em><em>optional</em>) – Which error model to evaluate: <code class="docutils literal notranslate"><span class="pre">&quot;catalog&quot;</span></code> (reported error, written
+as <code class="docutils literal notranslate"><span class="pre">magerr</span></code> and used for S/N cuts) or <code class="docutils literal notranslate"><span class="pre">&quot;sample&quot;</span></code> (true scatter,
+used to draw the observed magnitudes). <code class="docutils literal notranslate"><span class="pre">&quot;sample&quot;</span></code> falls back to the
+catalog model if no sample curve is loaded. Default is <code class="docutils literal notranslate"><span class="pre">&quot;catalog&quot;</span></code>.</p></li>
 <li><p><strong>**kwargs</strong> – <p>Additional keyword arguments:</p>
 <dl class="simple">
 <dt>delta_saturation<span class="classifier">float, optional</span></dt><dd><p>Magnitude difference for saturation threshold in the initial error function.
@@ -902,7 +838,7 @@ Default is -10.4.</p>
 <dd class="field-odd"><p>float or np.ndarray</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If photo error model is not loaded.</p>
+<dd class="field-even"><p><strong>ValueError</strong> – If the requested photo error model is not loaded.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -941,35 +877,21 @@ to override config values (including verbose: bool = True)</p></li>
 </div>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id7">
-<span class="sig-name descname"><span class="pre">log_photo_error</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id7" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="streamobs.surveys.Survey.log_photo_error">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">log_photo_error</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#streamobs.surveys.Survey.log_photo_error" title="Link to this definition">#</a></dt>
+<dd><p>Backward-compatible alias for the <em>catalog</em> (reported) error model.</p>
+</dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id8">
-<span class="sig-name descname"><span class="pre">maglim_maps</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id8" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id9">
-<span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#id9" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id10">
-<span class="sig-name descname"><span class="pre">release</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id10" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id11">
-<span class="sig-name descname"><span class="pre">saturation</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id11" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id12">
-<span class="sig-name descname"><span class="pre">sys_error</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></span><a class="headerlink" href="#id12" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="streamobs.surveys.Survey.namespace">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">namespace</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#streamobs.surveys.Survey.namespace" title="Link to this definition">#</a></dt>
+<dd><p>Column-prefix namespace for this survey.</p>
+<p><code class="docutils literal notranslate"><span class="pre">&quot;{name}_{release}&quot;</span></code> when a release is set (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;lsst_yr5&quot;</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&quot;roman_dc2&quot;</span></code>), otherwise just <code class="docutils literal notranslate"><span class="pre">&quot;{name}&quot;</span></code>. This is the prefix used
+for every injected column (<code class="docutils literal notranslate"><span class="pre">&lt;namespace&gt;_&lt;band&gt;_obs</span></code> etc.), so the same
+survey at two releases produces distinct, non-colliding columns.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -996,30 +918,6 @@ to override config values (including verbose: bool = True)</p></li>
 </dl>
 </dd></dl>
 
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.surveys.SurveyFactory.clear_cache" title="streamobs.surveys.SurveyFactory.clear_cache"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear_cache</span></code></a>([survey, release])</p></td>
-<td><p>Clear cached survey data to free memory or force reload.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.surveys.SurveyFactory.create_survey" title="streamobs.surveys.SurveyFactory.create_survey"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_survey</span></code></a>(survey[, release, config_file])</p></td>
-<td><p>Create or retrieve a cached Survey instance.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.surveys.SurveyFactory.list_cached_surveys" title="streamobs.surveys.SurveyFactory.list_cached_surveys"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_cached_surveys</span></code></a>()</p></td>
-<td><p>Get list of currently cached survey names.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.surveys.SurveyFactory.open_map_sparse" title="streamobs.surveys.SurveyFactory.open_map_sparse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">open_map_sparse</span></code></a>(file_path, **kwargs)</p></td>
-<td><p>Open a sparse HEALPix map and return it as a standard HEALPix map.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.surveys.SurveyFactory.set_completeness" title="streamobs.surveys.SurveyFactory.set_completeness"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_completeness</span></code></a>(filename[, ...])</p></td>
-<td><p>Load and interpolate completeness/efficiency function from file.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.surveys.SurveyFactory.set_photo_error" title="streamobs.surveys.SurveyFactory.set_photo_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_photo_error</span></code></a>(filename[, delta_saturation])</p></td>
-<td><p>Load photometric error model from file.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.surveys.SurveyFactory.clear_cache">
 <span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">clear_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">survey</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">release</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/surveys.html#SurveyFactory.clear_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.surveys.SurveyFactory.clear_cache" title="Link to this definition">#</a></dt>
@@ -1064,7 +962,8 @@ to override config values (including verbose: bool = True)</p></li>
 If None, loads the base survey configuration.</p></li>
 <li><p><strong>config_file</strong> (<em>dict</em><em>, </em><em>optional</em>) – Custom configuration dictionary to use instead of loading from file.
 If provided, bypasses the standard config file loading.</p></li>
-<li><p><strong>**kwargs</strong> – <dl class="simple">
+<li><p><strong>**kwargs</strong> – <p>Additional keyword arguments. Recognized:</p>
+<dl class="simple">
 <dt>uniform_survey<span class="classifier">bool, optional</span></dt><dd><p>If True, also creates and caches a uniform version of the survey
 with constant magnitude limits. The uniform survey can be accessed
 via <code class="docutils literal notranslate"><span class="pre">SurveyFactory._cached_surveys['{survey}_{release}_uniform']</span></code>.
@@ -1073,7 +972,7 @@ Default is False.</p>
 <dt>verbose<span class="classifier">bool, optional</span></dt><dd><p>Whether to print progress messages. Default is True.</p>
 </dd>
 </dl>
-<p>Additional keyword arguments override config values</p>
+<p>Any other keyword arguments override config values.</p>
 </p></li>
 </ul>
 </dd>
@@ -1149,16 +1048,18 @@ uniform variant is also cached for later retrieval.</p></li>
 <li><p><strong>filename</strong> (<em>str</em>) – <p>Path to CSV file with columns:</p>
 <ul>
 <li><p>’delta_mag’ : Magnitude difference from limit (mag - maglim)</p></li>
-<li><p>’eff_star’ : Detection efficiency only</p></li>
-<li><p>’classifiction_eff’ : Classification efficiency only</p></li>
+<li><p>’detection_eff’ : Detection efficiency only</p></li>
+<li><p>’classification_eff’ : Classification efficiency only (the legacy
+misspelled header ‘classifiction_eff’ is also accepted)</p></li>
 <li><p>’classification_detection_eff’ : Combined efficiency</p></li>
 </ul>
 </p></li>
 <li><p><strong>delta_saturation</strong> (<em>float</em><em>, </em><em>optional</em>) – Magnitude difference threshold for saturation. Default is -10.4.</p></li>
 <li><p><strong>selection</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Which efficiency to use:</p>
 <ul>
-<li><p>’detected’ : Detection efficiency only (column ‘eff_star’)</p></li>
-<li><p>’classified’ : Classification efficiency only (column ‘classifiction_eff’)</p></li>
+<li><p>’detected’ : Detection efficiency only (column ‘detection_eff’)</p></li>
+<li><p>’classified’ : Classification efficiency only (column
+‘classification_eff’, or legacy ‘classifiction_eff’)</p></li>
 <li><p>’both’ : Combined detection and classification (column ‘classification_detection_eff’)</p></li>
 </ul>
 <p>Default is ‘both’.</p>
@@ -1281,14 +1182,8 @@ extension point. Default is -10.4.</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.completeness"><code class="docutils literal notranslate"><span class="pre">Survey.completeness</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.delta_saturation"><code class="docutils literal notranslate"><span class="pre">Survey.delta_saturation</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.completeness_band"><code class="docutils literal notranslate"><span class="pre">Survey.completeness_band</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.log_photo_error"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">Survey.bands</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1"><code class="docutils literal notranslate"><span class="pre">Survey.coeff_extinc</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2"><code class="docutils literal notranslate"><span class="pre">Survey.completeness</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3"><code class="docutils literal notranslate"><span class="pre">Survey.completeness_band</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4"><code class="docutils literal notranslate"><span class="pre">Survey.coverage</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5"><code class="docutils literal notranslate"><span class="pre">Survey.delta_saturation</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6"><code class="docutils literal notranslate"><span class="pre">Survey.ebv_map</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.log_photo_error_catalog"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error_catalog</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.log_photo_error_sample"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error_sample</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.get_classification_efficiency"><code class="docutils literal notranslate"><span class="pre">Survey.get_classification_efficiency()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.get_completeness"><code class="docutils literal notranslate"><span class="pre">Survey.get_completeness()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.get_detection_efficiency"><code class="docutils literal notranslate"><span class="pre">Survey.get_detection_efficiency()</span></code></a></li>
@@ -1297,12 +1192,8 @@ extension point. Default is -10.4.</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.get_maglim"><code class="docutils literal notranslate"><span class="pre">Survey.get_maglim()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.get_photo_error"><code class="docutils literal notranslate"><span class="pre">Survey.get_photo_error()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.load"><code class="docutils literal notranslate"><span class="pre">Survey.load()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8"><code class="docutils literal notranslate"><span class="pre">Survey.maglim_maps</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9"><code class="docutils literal notranslate"><span class="pre">Survey.name</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10"><code class="docutils literal notranslate"><span class="pre">Survey.release</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11"><code class="docutils literal notranslate"><span class="pre">Survey.saturation</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12"><code class="docutils literal notranslate"><span class="pre">Survey.sys_error</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.log_photo_error"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.Survey.namespace"><code class="docutils literal notranslate"><span class="pre">Survey.namespace</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.surveys.SurveyFactory"><code class="docutils literal notranslate"><span class="pre">SurveyFactory</span></code></a><ul class="nav section-nav flex-column">

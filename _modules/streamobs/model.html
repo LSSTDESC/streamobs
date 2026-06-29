@@ -31,6 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -142,16 +143,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="../../roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -161,6 +169,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -286,8 +295,29 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.columns</span><span class="w"> </span><span class="kn">import</span> <span class="n">true_col</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.functions</span><span class="w"> </span><span class="kn">import</span> <span class="n">function_factory</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.samplers</span><span class="w"> </span><span class="kn">import</span> <span class="n">sampler_factory</span>
+
+<span class="c1"># Roman ugali isochrones are delivered in Vega magnitudes, but our catalogs are</span>
+<span class="c1"># AB. These are the per-band AB - Vega offsets (AB = Vega + diff) for the Roman</span>
+<span class="c1"># WFI filters — the mode of the by-chip zeropoints from the Roman technical</span>
+<span class="c1"># information (Roman_zeropoints_20240301.ecsv), as used by the</span>
+<span class="c1"># rubin_roman_object_classification prototype. The conversion is applied</span>
+<span class="c1"># unconditionally to any Roman band (a no-op for non-Roman bands).</span>
+<span class="c1">#</span>
+<span class="c1"># TODO: this Vega-&gt;AB conversion really belongs in ugali, so isochrones are</span>
+<span class="c1"># returned natively in AB. Move it upstream and delete this table once that lands.</span>
+<span class="n">ROMAN_VEGA_TO_AB</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;F062&quot;</span><span class="p">:</span> <span class="mf">0.153</span><span class="p">,</span>
+    <span class="s2">&quot;F087&quot;</span><span class="p">:</span> <span class="mf">0.481</span><span class="p">,</span>
+    <span class="s2">&quot;F106&quot;</span><span class="p">:</span> <span class="mf">0.660</span><span class="p">,</span>
+    <span class="s2">&quot;F129&quot;</span><span class="p">:</span> <span class="mf">1.051</span><span class="p">,</span>
+    <span class="s2">&quot;F146&quot;</span><span class="p">:</span> <span class="mf">1.164</span><span class="p">,</span>
+    <span class="s2">&quot;F158&quot;</span><span class="p">:</span> <span class="mf">1.315</span><span class="p">,</span>
+    <span class="s2">&quot;F184&quot;</span><span class="p">:</span> <span class="mf">1.556</span><span class="p">,</span>
+    <span class="s2">&quot;F213&quot;</span><span class="p">:</span> <span class="mf">1.837</span><span class="p">,</span>
+<span class="p">}</span>
 
 
 <div class="viewcode-block" id="ConfigurableModel">
@@ -313,11 +343,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_create_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="ConfigurableModel.sample">
-<a class="viewcode-back" href="../../streamobs.model.html#streamobs.model.ConfigurableModel.sample">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
         <span class="k">pass</span></div>
-</div>
 
 
 
@@ -402,7 +429,8 @@
 <span class="sd">        -------</span>
 <span class="sd">        pandas.DataFrame</span>
 <span class="sd">            Columns include: ``phi1``, ``phi2``, ``dist``, ``mu1``, ``mu2``,</span>
-<span class="sd">            ``rv``, ``mag_g``, ``mag_r`` (some may be None if the sub-model is absent).</span>
+<span class="sd">            ``rv``, and the isochrone magnitude columns ``&lt;survey&gt;_&lt;band&gt;_true``</span>
+<span class="sd">            (per survey/band). Some may be None if the sub-model is absent.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Sample phi1 and phi2</span>
@@ -414,13 +442,6 @@
             <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_modulus</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">phi1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dist</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="c1"># Sample magnitudes from isochrone</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isochrone</span><span class="p">:</span>
-
-            <span class="n">mag_g</span><span class="p">,</span> <span class="n">mag_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isochrone</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">dist</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">mag_g</span><span class="p">,</span> <span class="n">mag_r</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
         <span class="c1"># Sample kinematics</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span><span class="p">:</span>
@@ -437,12 +458,49 @@
                 <span class="s2">&quot;mu1&quot;</span><span class="p">:</span> <span class="n">mu1</span><span class="p">,</span>
                 <span class="s2">&quot;mu2&quot;</span><span class="p">:</span> <span class="n">mu2</span><span class="p">,</span>
                 <span class="s2">&quot;rv&quot;</span><span class="p">:</span> <span class="n">rv</span><span class="p">,</span>
-                <span class="s2">&quot;mag_g&quot;</span><span class="p">:</span> <span class="n">mag_g</span><span class="p">,</span>
-                <span class="s2">&quot;mag_r&quot;</span><span class="p">:</span> <span class="n">mag_r</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span>
+
+        <span class="c1"># Sample magnitudes from isochrone (band-/survey-general columns)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isochrone</span><span class="p">:</span>
+            <span class="n">mag_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_iso_mags</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">dist</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mag_data</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># no isochrone -&gt; no magnitude columns</span>
+        <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">mag_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">vals</span>
+
         <span class="k">return</span> <span class="n">df</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_iso_mag_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Names of the magnitude columns produced by the isochrone model.</span>
+
+<span class="sd">        Always ``[&lt;survey&gt;_&lt;band&gt;_true, ...]`` for every survey/band the</span>
+<span class="sd">        isochrone carries (a single-survey isochrone simply has one survey); no</span>
+<span class="sd">        isochrone ⇒ ``[]``. ``IsochroneModel`` tracks ``surveys`` /</span>
+<span class="sd">        ``survey_bands`` in both configuration forms, so the naming is uniform.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">iso</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isochrone</span>
+        <span class="k">if</span> <span class="n">iso</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">iso</span><span class="o">.</span><span class="n">surveys</span><span class="p">:</span>
+            <span class="n">band_1</span><span class="p">,</span> <span class="n">band_2</span> <span class="o">=</span> <span class="n">iso</span><span class="o">.</span><span class="n">survey_bands</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">cols</span> <span class="o">+=</span> <span class="p">[</span><span class="n">true_col</span><span class="p">(</span><span class="n">band_1</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span> <span class="n">true_col</span><span class="p">(</span><span class="n">band_2</span><span class="p">,</span> <span class="n">name</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">cols</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sample_iso_mags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">masses</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sample isochrone magnitudes as a ``{column: values}`` dict.</span>
+
+<span class="sd">        Returns each survey&#39;s ``&lt;namespace&gt;_&lt;band&gt;_true`` columns plus the shared</span>
+<span class="sd">        ``mass`` column (the initial masses used for every band). When ``masses``</span>
+<span class="sd">        is given it is used directly instead of an IMF draw, so the sampled</span>
+<span class="sd">        magnitudes reproduce those exact stars.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mags</span><span class="p">,</span> <span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isochrone</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">masses</span><span class="o">=</span><span class="n">masses</span><span class="p">)</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">{</span><span class="n">true_col</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span> <span class="n">vals</span> <span class="k">for</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">band</span><span class="p">),</span> <span class="n">vals</span> <span class="ow">in</span> <span class="n">mags</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">cols</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">masses</span>
+        <span class="k">return</span> <span class="n">cols</span>
 
 <div class="viewcode-block" id="StreamModel.complete_catalog">
 <a class="viewcode-back" href="../../streamobs.model.html#streamobs.model.StreamModel.complete_catalog">[docs]</a>
@@ -454,6 +512,7 @@
         <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">dist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Complete only the requested columns in a catalog.</span>
 
@@ -462,6 +521,11 @@
 <span class="sd">        while preserving pre-existing non-null values. Columns are generated</span>
 <span class="sd">        using the configured sub-models (density, track, distance modulus,</span>
 <span class="sd">        isochrone, velocity) and only if those capabilities are available.</span>
+
+<span class="sd">        Pre-existing values are never overwritten: for every column only the</span>
+<span class="sd">        missing (absent or NaN) rows are filled. In particular, supplying some</span>
+<span class="sd">        of an isochrone&#39;s bands and requesting the others fills only the missing</span>
+<span class="sd">        bands and leaves the provided ones untouched.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -472,9 +536,9 @@
 <span class="sd">            that length.</span>
 <span class="sd">        columns_to_add : sequence of str or None, optional</span>
 <span class="sd">            The columns to ensure in the output. Valid entries are</span>
-<span class="sd">            {&#39;phi1&#39;,&#39;phi2&#39;,&#39;dist&#39;,&#39;mag_g&#39;,&#39;mag_r&#39;,&#39;mu1&#39;,&#39;mu2&#39;,&#39;rv&#39;}.</span>
-<span class="sd">            If None, all valid columns supported by the configured model are</span>
-<span class="sd">            considered.</span>
+<span class="sd">            {&#39;phi1&#39;,&#39;phi2&#39;,&#39;dist&#39;,&#39;mu1&#39;,&#39;mu2&#39;,&#39;rv&#39;} plus the isochrone magnitude</span>
+<span class="sd">            columns (``&lt;survey&gt;_&lt;band&gt;_true``). If None, all valid columns</span>
+<span class="sd">            supported by the configured model are considered.</span>
 <span class="sd">        size : int or None, optional</span>
 <span class="sd">            Required when ``catalog`` is None or an empty table; ignored</span>
 <span class="sd">            otherwise.</span>
@@ -485,6 +549,12 @@
 <span class="sd">            If provided, write the completed catalog to this CSV path.</span>
 <span class="sd">        verbose : bool, default True</span>
 <span class="sd">            If True, print progress/status messages.</span>
+<span class="sd">        dist : float or array-like or None, optional</span>
+<span class="sd">            Distance modulus to use directly instead of sampling one from the</span>
+<span class="sd">            ``distance_modulus`` sub-model. A scalar is broadcast to every row</span>
+<span class="sd">            that needs a ``dist`` value; an array must have one entry per row.</span>
+<span class="sd">            When given, ``phi1`` and a ``distance_modulus`` model are **not**</span>
+<span class="sd">            required to fill magnitudes. Only missing ``dist`` rows are set.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -503,16 +573,27 @@
 <span class="sd">        - Dependencies: &#39;phi2&#39; and &#39;dist&#39; require &#39;phi1&#39;. Magnitudes require</span>
 <span class="sd">          &#39;dist&#39; and an isochrone model. Velocities require &#39;phi1&#39; and a</span>
 <span class="sd">          velocity model.</span>
-<span class="sd">        - Existing non-null values are preserved; only missing rows are filled,</span>
-<span class="sd">          except for magnitudes and velocities where the method intentionally</span>
-<span class="sd">          overwrites the whole columns to keep internal consistency (e.g.,</span>
-<span class="sd">          colors and kinematic coherence across rows).</span>
+<span class="sd">        - Existing non-null values are preserved: only the missing rows are</span>
+<span class="sd">          filled for ``phi1``/``phi2``/``dist``, the magnitude columns, and the</span>
+<span class="sd">          shared ``mass`` column (supplying some bands and requesting others</span>
+<span class="sd">          fills only the missing ones, colour-consistently). Velocities are the</span>
+<span class="sd">          exception — ``mu1``/``mu2``/``rv`` are recomputed for the whole columns</span>
+<span class="sd">          to keep kinematic coherence across rows.</span>
 <span class="sd">        - When ``catalog`` is a CSV path and ``inplace`` is True, the original</span>
 <span class="sd">          file is overwritten.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Supported outputs and capability filtering</span>
         <span class="c1"># Columns this method can fill using the configured model</span>
-        <span class="n">all_cols</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;phi1&quot;</span><span class="p">,</span> <span class="s2">&quot;phi2&quot;</span><span class="p">,</span> <span class="s2">&quot;dist&quot;</span><span class="p">,</span> <span class="s2">&quot;mag_g&quot;</span><span class="p">,</span> <span class="s2">&quot;mag_r&quot;</span><span class="p">,</span> <span class="s2">&quot;mu1&quot;</span><span class="p">,</span> <span class="s2">&quot;mu2&quot;</span><span class="p">,</span> <span class="s2">&quot;rv&quot;</span><span class="p">)</span>
+        <span class="c1"># Magnitude columns are survey-namespaced (&lt;survey&gt;_&lt;band&gt;_true).</span>
+        <span class="n">mag_cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iso_mag_columns</span><span class="p">()</span>
+        <span class="c1"># The isochrone also produces the shared initial-mass column.</span>
+        <span class="n">mass_cols</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;mass&quot;</span><span class="p">,)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isochrone</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">()</span>
+        <span class="n">all_cols</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s2">&quot;phi1&quot;</span><span class="p">,</span> <span class="s2">&quot;phi2&quot;</span><span class="p">,</span> <span class="s2">&quot;dist&quot;</span><span class="p">)</span>
+            <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">mag_cols</span><span class="p">)</span>
+            <span class="o">+</span> <span class="n">mass_cols</span>
+            <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;mu1&quot;</span><span class="p">,</span> <span class="s2">&quot;mu2&quot;</span><span class="p">,</span> <span class="s2">&quot;rv&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">target_cols</span> <span class="o">=</span> <span class="p">(</span>
             <span class="nb">list</span><span class="p">(</span><span class="n">all_cols</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">columns_to_add</span> <span class="ow">is</span> <span class="kc">None</span>
@@ -526,17 +607,12 @@
         <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring unknown columns: </span><span class="si">{</span><span class="n">unknown</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isochrone</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">removed</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">target_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mag_g&quot;</span><span class="p">,</span> <span class="s2">&quot;mag_r&quot;</span><span class="p">)]</span>
-            <span class="n">target_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">target_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mag_g&quot;</span><span class="p">,</span> <span class="s2">&quot;mag_r&quot;</span><span class="p">)]</span>
-            <span class="k">if</span> <span class="n">removed</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="s2">&quot;Isochrone model not defined; skipping magnitudes.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">removed</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">target_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mu1&quot;</span><span class="p">,</span> <span class="s2">&quot;mu2&quot;</span><span class="p">,</span> <span class="s2">&quot;rv&quot;</span><span class="p">)]</span>
             <span class="n">target_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">target_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mu1&quot;</span><span class="p">,</span> <span class="s2">&quot;mu2&quot;</span><span class="p">,</span> <span class="s2">&quot;rv&quot;</span><span class="p">)]</span>
             <span class="k">if</span> <span class="n">removed</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="s2">&quot;Velocity model not defined; skipping velocities.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_modulus</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_modulus</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">dist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">removed</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">target_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="s2">&quot;dist&quot;</span><span class="p">]</span>
             <span class="n">target_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">target_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="o">!=</span> <span class="s2">&quot;dist&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">removed</span><span class="p">:</span>
@@ -572,44 +648,82 @@
 
         <span class="c1"># dist (needs phi1)</span>
         <span class="k">if</span> <span class="s2">&quot;dist&quot;</span> <span class="ow">in</span> <span class="n">target_cols</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="nb">any</span><span class="p">(</span><span class="n">c</span> <span class="ow">in</span> <span class="n">target_cols</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mag_g&quot;</span><span class="p">,</span> <span class="s2">&quot;mag_r&quot;</span><span class="p">))</span>
-            <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mag_g&quot;</span><span class="p">,</span> <span class="s2">&quot;mag_r&quot;</span><span class="p">))</span>
+            <span class="nb">any</span><span class="p">(</span><span class="n">c</span> <span class="ow">in</span> <span class="n">target_cols</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">mag_cols</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">mag_cols</span><span class="p">)</span>
         <span class="p">):</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s2">&quot;dist&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s2">&quot;phi1&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;phi1 required to sample dist; include &#39;phi1&#39; in columns_to_add or provide it in catalog&quot;</span>
+                <span class="k">if</span> <span class="n">dist</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Use the distance supplied directly (scalar broadcast or</span>
+                    <span class="c1"># per-row vector); no phi1 / distance_modulus model needed.</span>
+                    <span class="n">dist_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">dist_arr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;dist&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dist_arr</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">dist_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">N</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;dist vector has length </span><span class="si">{</span><span class="n">dist_arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> but &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;the catalog has </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2"> rows.&quot;</span>
+                            <span class="p">)</span>
+                        <span class="n">pos</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_indexer</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+                        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;dist&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dist_arr</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Set </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="si">}</span><span class="s2"> dist values from `dist`.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_modulus</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;No distance_modulus model is configured; pass `dist` &quot;</span>
+                            <span class="s2">&quot;(a float or per-row vector) to set distances.&quot;</span>
+                        <span class="p">)</span>
+                    <span class="k">if</span> <span class="s2">&quot;phi1&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;phi1 required to sample dist; include &#39;phi1&#39; in columns_to_add or provide it in catalog&quot;</span>
+                        <span class="p">)</span>
+
+                    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;dist&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_modulus</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+                        <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;phi1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
                     <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Filled </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="si">}</span><span class="s2"> dist values.&quot;</span><span class="p">)</span>
 
-                <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;dist&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distance_modulus</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
-                    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="s2">&quot;phi1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Filled </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="si">}</span><span class="s2"> dist values.&quot;</span><span class="p">)</span>
-
-        <span class="c1"># magnitudes (need dist and isochrone)</span>
-        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span> <span class="ow">in</span> <span class="n">target_cols</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mag_g&quot;</span><span class="p">,</span> <span class="s2">&quot;mag_r&quot;</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="s2">&quot;mag_g&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s2">&quot;mag_r&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="c1"># magnitudes + shared initial mass (need dist and isochrone)</span>
+        <span class="n">requested_mags</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">mag_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">target_cols</span><span class="p">]</span>
+        <span class="n">want_mass</span> <span class="o">=</span> <span class="s2">&quot;mass&quot;</span> <span class="ow">in</span> <span class="n">target_cols</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">isochrone</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">fill_targets</span> <span class="o">=</span> <span class="n">requested_mags</span> <span class="o">+</span> <span class="p">([</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">want_mass</span> <span class="k">else</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="n">fill_targets</span><span class="p">:</span>
+            <span class="c1"># Only touch rows that are missing a requested column; existing values</span>
+            <span class="c1"># are preserved (never overwritten).</span>
+            <span class="n">missing</span> <span class="o">=</span> <span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_missing_idx</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">fill_targets</span><span class="p">}</span>
+            <span class="n">to_fill</span> <span class="o">=</span> <span class="p">{</span><span class="n">c</span><span class="p">:</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">missing</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">to_fill</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">(</span>
-                    <span class="n">verbose</span><span class="p">,</span> <span class="s2">&quot;&#39;mag_g&#39; and &#39;mag_r&#39; already exist; no sampling performed.&quot;</span>
+                    <span class="n">verbose</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fill_targets</span><span class="si">}</span><span class="s2"> already present; no sampling performed.&quot;</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Verify distance modulus availability</span>
+                <span class="c1"># Verify distance availability</span>
                 <span class="k">if</span> <span class="s2">&quot;dist&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;dist is required to sample apparent magnitudes; include &#39;dist&#39; in `columns_to_add` or provide it in catalog&quot;</span>
+                        <span class="s2">&quot;dist is required to sample apparent magnitudes; include &#39;dist&#39; in `columns_to_add`, provide it in the catalog, or pass `dist=`.&quot;</span>
                     <span class="p">)</span>
                 <span class="n">dist_vals</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;dist&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-                <span class="n">mag_g</span><span class="p">,</span> <span class="n">mag_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isochrone</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dist_vals</span><span class="p">)</span>
-                <span class="c1"># Add both magnitudes to keep colors consistent across rows</span>
-                <span class="k">if</span> <span class="s2">&quot;mag_g&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="s2">&quot;mag_r&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">(</span>
-                        <span class="n">verbose</span><span class="p">,</span>
-                        <span class="s2">&quot;Overwriting existing mag_g and/or mag_r to keep colors consistent.&quot;</span><span class="p">,</span>
-                    <span class="p">)</span>
-                <span class="n">df</span><span class="p">[</span><span class="s2">&quot;mag_g&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mag_g</span>
-                <span class="n">df</span><span class="p">[</span><span class="s2">&quot;mag_r&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mag_r</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Filled magnitudes for </span><span class="si">{</span><span class="n">N</span><span class="si">}</span><span class="s2"> rows.&quot;</span><span class="p">)</span>
+                <span class="c1"># Reuse a fully-present input `mass` column as the initial masses</span>
+                <span class="c1"># so the sampled magnitudes reproduce the user&#39;s simulation stars;</span>
+                <span class="c1"># otherwise draw fresh masses from the IMF.</span>
+                <span class="n">masses_in</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="s2">&quot;mass&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+                    <span class="n">masses_in</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+                <span class="c1"># One shared mass draw -&gt; all bands; the newly filled cells are</span>
+                <span class="c1"># mutually colour-consistent. Assign only the missing rows so any</span>
+                <span class="c1"># bands/values already present are left untouched.</span>
+                <span class="n">mags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_iso_mags</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dist_vals</span><span class="p">,</span> <span class="n">masses</span><span class="o">=</span><span class="n">masses_in</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">col</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">to_fill</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">pos</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">get_indexer</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                        <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mags</span><span class="p">[</span><span class="n">col</span><span class="p">])[</span><span class="n">pos</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_info</span><span class="p">(</span>
+                    <span class="n">verbose</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;Filled </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">to_fill</span><span class="p">)</span><span class="si">}</span><span class="s2"> (missing rows only).&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
 
         <span class="c1"># velocities (need phi1 and velocity model)</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span> <span class="ow">in</span> <span class="n">target_cols</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;mu1&quot;</span><span class="p">,</span> <span class="s2">&quot;mu2&quot;</span><span class="p">,</span> <span class="s2">&quot;rv&quot;</span><span class="p">)):</span>
@@ -743,8 +857,8 @@
         <span class="c1"># Mapping of possible column name variants to standard names</span>
         <span class="n">col_mapping</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;dist&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;dist&quot;</span><span class="p">,</span> <span class="s2">&quot;distance&quot;</span><span class="p">,</span> <span class="s2">&quot;distance_modulus&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;mag_g&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;mag_g&quot;</span><span class="p">,</span> <span class="s2">&quot;g_mag&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;gmag&quot;</span><span class="p">,</span> <span class="s2">&quot;magnitude_g&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;mag_r&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;mag_r&quot;</span><span class="p">,</span> <span class="s2">&quot;r_mag&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;rmag&quot;</span><span class="p">,</span> <span class="s2">&quot;magnitude_r&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;g_true&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;g_true&quot;</span><span class="p">,</span> <span class="s2">&quot;mag_g&quot;</span><span class="p">,</span> <span class="s2">&quot;g_mag&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;gmag&quot;</span><span class="p">,</span> <span class="s2">&quot;magnitude_g&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;r_true&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;r_true&quot;</span><span class="p">,</span> <span class="s2">&quot;mag_r&quot;</span><span class="p">,</span> <span class="s2">&quot;r_mag&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;rmag&quot;</span><span class="p">,</span> <span class="s2">&quot;magnitude_r&quot;</span><span class="p">],</span>
             <span class="s2">&quot;phi1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">,</span> <span class="s2">&quot;phi_1&quot;</span><span class="p">,</span> <span class="s2">&quot;Phi1&quot;</span><span class="p">,</span> <span class="s2">&quot;Phi_1&quot;</span><span class="p">],</span>
             <span class="s2">&quot;phi2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;phi2&quot;</span><span class="p">,</span> <span class="s2">&quot;phi_2&quot;</span><span class="p">,</span> <span class="s2">&quot;Phi2&quot;</span><span class="p">,</span> <span class="s2">&quot;Phi_2&quot;</span><span class="p">],</span>
             <span class="s2">&quot;mu1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;mu1&quot;</span><span class="p">,</span> <span class="s2">&quot;mu_1&quot;</span><span class="p">],</span>
@@ -858,7 +972,37 @@
 <div class="viewcode-block" id="IsochroneModel">
 <a class="viewcode-back" href="../../streamobs.model.html#streamobs.model.IsochroneModel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IsochroneModel</span><span class="p">(</span><span class="n">ConfigurableModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Isochrone wrapper using ``ugali`` for CMD sampling.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Isochrone wrapper using ``ugali`` for CMD sampling.</span>
+
+<span class="sd">    Two configuration forms are supported:</span>
+
+<span class="sd">    - **Single-survey** (legacy): the isochrone section carries the ``ugali``</span>
+<span class="sd">      factory keys directly (``name``, ``survey``, ``age``, ``z``, ``band_1``,</span>
+<span class="sd">      ``band_2``, ...). :meth:`sample` returns ``(mag_band_1, mag_band_2)`` and</span>
+<span class="sd">      reproduces the previous behaviour exactly.</span>
+<span class="sd">    - **Multi-survey**: a ``surveys`` mapping</span>
+<span class="sd">      ``{survey_name: {survey, band_1, band_2}}`` plus shared keys</span>
+<span class="sd">      (``name``, ``age``, ``z``, ...) at the top level. One ``ugali`` isochrone</span>
+<span class="sd">      is built per survey from the *same* stellar population, so a single shared</span>
+<span class="sd">      draw of initial masses (:meth:`sample_masses`) is interpolated into every</span>
+<span class="sd">      survey&#39;s bands — giving the same physical star consistent magnitudes</span>
+<span class="sd">      across surveys. :meth:`sample` returns</span>
+<span class="sd">      ``{(survey, band): apparent_mag}``.</span>
+
+<span class="sd">    Roman bands are always converted from Vega to AB (see</span>
+<span class="sd">    :data:`ROMAN_VEGA_TO_AB`); other bands pass through unchanged.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Defaults for the shared isochrone mass grid (see ugali Isochrone.sample).</span>
+    <span class="c1"># Masses are drawn from this discretized grid, so ``_MASS_STEPS`` bounds the</span>
+    <span class="c1"># number of *distinct* masses a stream can contain. A convergence check</span>
+    <span class="c1"># (g/r magnitude percentiles + distinct-mass count for a 5000-star stream)</span>
+    <span class="c1"># showed 1000 steps yields only ~220 distinct masses (granular CMD) and</span>
+    <span class="c1"># ~0.03 mag median scatter, while 4000 steps roughly triples the distinct</span>
+    <span class="c1"># masses (~600) and tightens convergence to &lt;0.015 mag — for a negligible</span>
+    <span class="c1"># one-time grid-sampling cost. Override per call via ``mass_steps=``.</span>
+    <span class="n">_MASS_MIN</span> <span class="o">=</span> <span class="mf">0.1</span>
+    <span class="n">_MASS_STEPS</span> <span class="o">=</span> <span class="mi">4000</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -866,56 +1010,198 @@
 <div class="viewcode-block" id="IsochroneModel.create_isochrone">
 <a class="viewcode-back" href="../../streamobs.model.html#streamobs.model.IsochroneModel.create_isochrone">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_isochrone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the underlying ``ugali`` isochrone from configuration.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct the underlying ``ugali`` isochrone(s) from configuration.</span>
+
+<span class="sd">        Both configuration forms are normalized to a single ``{namespace:</span>
+<span class="sd">        factory_cfg}`` mapping and built through the same loop — a legacy flat</span>
+<span class="sd">        config simply becomes a one-entry mapping — so there is no separate</span>
+<span class="sd">        single- vs. multi-survey code path.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        config : dict</span>
-<span class="sd">            Isochrone factory configuration.</span>
+<span class="sd">            Isochrone factory configuration. A ``surveys`` key selects the</span>
+<span class="sd">            multi-survey form; otherwise the single-survey (legacy) form is used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">survey_configs</span><span class="p">,</span> <span class="n">shared</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_iso_config</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_isochrones</span><span class="p">(</span><span class="n">survey_configs</span><span class="p">,</span> <span class="n">shared</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_iso_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Coerce either config form into ``({namespace: factory_cfg}, shared)``.</span>
+
+<span class="sd">        Multi-survey: the ``surveys`` mapping is returned verbatim (its keys are</span>
+<span class="sd">        the column namespaces) with the top-level keys as shared stellar params.</span>
+<span class="sd">        Single-survey (legacy flat): a one-entry mapping keyed by</span>
+<span class="sd">        ``{survey}_{release}`` (or just ``{survey}``), matching</span>
+<span class="sd">        :attr:`streamobs.surveys.Survey.namespace`, with no shared params.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;surveys&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">multi_survey</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">shared</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;surveys&quot;</span><span class="p">}</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;surveys&quot;</span><span class="p">]),</span> <span class="n">shared</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">multi_survey</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="s2">&quot;distance_modulus&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s1">&#39;Please use the &quot;distance_modulus&quot; section of the configuration &#39;</span>
+                <span class="s2">&quot;file, instead of the isochrone section, to define a distance modulus.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">survey</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;survey&quot;</span><span class="p">)</span>
+        <span class="n">release</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;release&quot;</span><span class="p">)</span>
+        <span class="n">namespace</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">survey</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">release</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">release</span> <span class="k">else</span> <span class="n">survey</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">namespace</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="p">)},</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_iso</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factory_config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build one ``ugali`` isochrone with its distance modulus reset to 0.</span>
+
+<span class="sd">        ``release`` is a column-namespacing concept (it distinguishes survey</span>
+<span class="sd">        versions in the output column names), not a ``ugali`` factory argument,</span>
+<span class="sd">        so it is stripped before the isochrone is constructed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">ugali.isochrone</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">iso</span> <span class="o">=</span> <span class="n">ugali</span><span class="o">.</span><span class="n">isochrone</span><span class="o">.</span><span class="n">factory</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;distance_modulus&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_bounds</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s2">&quot;distance_modulus&quot;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s1">&#39;Please use the &quot;distance_modulus&quot; section of the configuration file, instead of the isochrone section, to define a distance module.&#39;</span>
-            <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">distance_modulus</span> <span class="o">=</span> <span class="mi">0</span></div>
+        <span class="n">factory_config</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">factory_config</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;release&quot;</span><span class="p">}</span>
+        <span class="n">iso</span> <span class="o">=</span> <span class="n">ugali</span><span class="o">.</span><span class="n">isochrone</span><span class="o">.</span><span class="n">factory</span><span class="p">(</span><span class="o">**</span><span class="n">factory_config</span><span class="p">)</span>
+        <span class="n">iso</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;distance_modulus&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_bounds</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">])</span>
+        <span class="n">iso</span><span class="o">.</span><span class="n">distance_modulus</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">iso</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_isochrones</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">survey_configs</span><span class="p">,</span> <span class="n">shared</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build one isochrone per namespace, sharing the top-level stellar params.</span>
 
-<div class="viewcode-block" id="IsochroneModel.sample">
-<a class="viewcode-back" href="../../streamobs.model.html#streamobs.model.IsochroneModel.sample">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nstars</span><span class="p">,</span> <span class="n">distance_modulus</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Simulate magnitudes in g and r bands.</span>
+<span class="sd">        Drives both configuration forms (a legacy flat config is just a</span>
+<span class="sd">        one-entry ``survey_configs``). The first entry is the primary isochrone</span>
+<span class="sd">        that drives the shared mass draw and the legacy :meth:`sample`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">isos</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">survey_bands</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surveys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">scfg</span> <span class="ow">in</span> <span class="n">survey_configs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">factory_config</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">shared</span><span class="p">,</span> <span class="o">**</span><span class="n">scfg</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">isos</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_iso</span><span class="p">(</span><span class="n">factory_config</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">survey_bands</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">scfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;band_1&quot;</span><span class="p">),</span> <span class="n">scfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;band_2&quot;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">surveys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="c1"># Primary isochrone drives the shared mass draw and the legacy sample().</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">survey_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surveys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iso</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">isos</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">survey_name</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">band_1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">band_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey_bands</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">survey_name</span><span class="p">]</span>
+
+<div class="viewcode-block" id="IsochroneModel.sample_masses">
+<a class="viewcode-back" href="../../streamobs.model.html#streamobs.model.IsochroneModel.sample_masses">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample_masses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nstars</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mass_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mass_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Draw ``nstars`` initial stellar masses from the shared isochrone IMF.</span>
+
+<span class="sd">        The masses are drawn once from the primary isochrone&#39;s mass PDF and are</span>
+<span class="sd">        meant to be interpolated into each survey&#39;s bands, so the same physical</span>
+<span class="sd">        star gets consistent magnitudes across surveys.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        nstars : int</span>
-<span class="sd">            Number of stars to simulate.</span>
-<span class="sd">        distance_modulus : float or array-like</span>
-<span class="sd">            Distance modulus per star (broadcast if scalar).</span>
+<span class="sd">            Number of stars to draw (returns exactly this many).</span>
+<span class="sd">        rng : numpy.random.Generator, optional</span>
+<span class="sd">            Random number generator (a default one is created if omitted).</span>
+<span class="sd">        mass_min, mass_steps : float, int, optional</span>
+<span class="sd">            Passed to the ``ugali`` isochrone sampler.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        tuple of numpy.ndarray</span>
-<span class="sd">            ``(mag_g, mag_r)`` arrays.</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            Initial masses, shape ``(nstars,)``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">stellar_mass</span> <span class="o">=</span> <span class="n">nstars</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">stellar_mass</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">distance_modulus</span><span class="p">):</span>
-            <span class="n">mag_g</span><span class="p">,</span> <span class="n">mag_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
-                <span class="n">stellar_mass</span><span class="p">,</span> <span class="n">distance_modulus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">distance_modulus</span>
-            <span class="p">)</span>
-            <span class="n">mag_g</span><span class="p">,</span> <span class="n">mag_r</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">mag</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">mag</span><span class="p">)</span> <span class="o">*</span> <span class="n">distance_modulus</span> <span class="k">for</span> <span class="n">mag</span> <span class="ow">in</span> <span class="p">(</span><span class="n">mag_g</span><span class="p">,</span> <span class="n">mag_r</span><span class="p">)</span>
-            <span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">mag_g</span><span class="p">,</span> <span class="n">mag_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
-                <span class="n">stellar_mass</span><span class="p">,</span> <span class="n">distance_modulus</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">distance_modulus</span>
-            <span class="p">)</span>
-            <span class="n">mag_g</span><span class="p">,</span> <span class="n">mag_r</span> <span class="o">=</span> <span class="p">[</span><span class="n">mag</span> <span class="o">+</span> <span class="n">distance_modulus</span> <span class="k">for</span> <span class="n">mag</span> <span class="ow">in</span> <span class="p">(</span><span class="n">mag_g</span><span class="p">,</span> <span class="n">mag_r</span><span class="p">)]</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span> <span class="k">if</span> <span class="n">rng</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">rng</span>
+        <span class="n">mass_min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_MASS_MIN</span> <span class="k">if</span> <span class="n">mass_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mass_min</span>
+        <span class="n">mass_steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_MASS_STEPS</span> <span class="k">if</span> <span class="n">mass_steps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mass_steps</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">iso</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">mass_min</span><span class="o">=</span><span class="n">mass_min</span><span class="p">,</span> <span class="n">mass_steps</span><span class="o">=</span><span class="n">mass_steps</span><span class="p">)</span>
+        <span class="n">mass_init</span><span class="p">,</span> <span class="n">mass_pdf</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">pdf</span> <span class="o">=</span> <span class="n">mass_pdf</span> <span class="o">/</span> <span class="n">mass_pdf</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">mass_init</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">nstars</span><span class="p">),</span> <span class="n">p</span><span class="o">=</span><span class="n">pdf</span><span class="p">)</span></div>
 
-        <span class="k">return</span> <span class="n">mag_g</span><span class="p">,</span> <span class="n">mag_r</span></div>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_absolute_mags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iso</span><span class="p">,</span> <span class="n">masses</span><span class="p">,</span> <span class="n">mass_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mass_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Interpolate a survey isochrone&#39;s absolute mags at given init masses.&quot;&quot;&quot;</span>
+        <span class="n">mass_min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_MASS_MIN</span> <span class="k">if</span> <span class="n">mass_min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mass_min</span>
+        <span class="n">mass_steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_MASS_STEPS</span> <span class="k">if</span> <span class="n">mass_steps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mass_steps</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="n">iso</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">mass_min</span><span class="o">=</span><span class="n">mass_min</span><span class="p">,</span> <span class="n">mass_steps</span><span class="o">=</span><span class="n">mass_steps</span><span class="p">)</span>
+        <span class="n">mass_init</span><span class="p">,</span> <span class="n">mag_1</span><span class="p">,</span> <span class="n">mag_2</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">grid</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">grid</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">mass_init</span><span class="p">)</span>
+        <span class="n">mass_init</span> <span class="o">=</span> <span class="n">mass_init</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">mass_init</span><span class="p">,</span> <span class="n">mag_1</span><span class="p">[</span><span class="n">order</span><span class="p">]),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">mass_init</span><span class="p">,</span> <span class="n">mag_2</span><span class="p">[</span><span class="n">order</span><span class="p">]),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_ab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">,</span> <span class="n">mag</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Roman bands from Vega to AB (``AB = Vega + offset``).</span>
+
+<span class="sd">        Applied unconditionally: Roman bands use the offset in</span>
+<span class="sd">        :data:`ROMAN_VEGA_TO_AB`, every other band passes through unchanged.</span>
+<span class="sd">        ``ugali`` delivers Roman isochrones in Vega while our catalogs are AB.</span>
+
+<span class="sd">        TODO: this really belongs in ugali (return AB natively); remove once it</span>
+<span class="sd">        does.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">mag</span> <span class="o">+</span> <span class="n">ROMAN_VEGA_TO_AB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_distance_modulus</span><span class="p">(</span><span class="n">abs_mag</span><span class="p">,</span> <span class="n">distance_modulus</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a scalar or per-star distance modulus to absolute magnitudes.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">distance_modulus</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">abs_mag</span>
+        <span class="k">return</span> <span class="n">abs_mag</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">distance_modulus</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+<div class="viewcode-block" id="IsochroneModel.sample">
+<a class="viewcode-back" href="../../streamobs.model.html#streamobs.model.IsochroneModel.sample">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nstars</span><span class="p">,</span> <span class="n">distance_modulus</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">masses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sample apparent magnitudes for every ``(survey, band)``.</span>
+
+<span class="sd">        A single shared set of initial masses is interpolated into each survey&#39;s</span>
+<span class="sd">        bands, so the same physical star is consistent across surveys. The masses</span>
+<span class="sd">        are drawn from the shared IMF (:meth:`sample_masses`) unless supplied via</span>
+<span class="sd">        ``masses``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nstars : int</span>
+<span class="sd">            Number of stars (and the required length of ``masses`` if given).</span>
+<span class="sd">        distance_modulus : float or array-like</span>
+<span class="sd">            Distance modulus per star (broadcast if scalar).</span>
+<span class="sd">        rng : numpy.random.Generator, optional</span>
+<span class="sd">            Used only when ``masses`` is None.</span>
+<span class="sd">        masses : array-like, optional</span>
+<span class="sd">            Initial stellar masses to use directly — e.g. an external</span>
+<span class="sd">            simulation&#39;s masses — instead of drawing from the IMF. Must have</span>
+<span class="sd">            length ``nstars``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict, numpy.ndarray</span>
+<span class="sd">            ``{(survey_name, band): apparent_magnitude_array}`` and the initial</span>
+<span class="sd">            masses used (shape ``(nstars,)``).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">masses</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">masses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_masses</span><span class="p">(</span>
+                <span class="n">nstars</span><span class="p">,</span>
+                <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span>
+                <span class="n">mass_min</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mass_min&quot;</span><span class="p">),</span>
+                <span class="n">mass_steps</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mass_steps&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">masses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">masses</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">masses</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nstars</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;masses has length </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">masses</span><span class="p">)</span><span class="si">}</span><span class="s2"> but nstars=</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">nstars</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">surveys</span><span class="p">:</span>
+            <span class="n">band_1</span><span class="p">,</span> <span class="n">band_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey_bands</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">abs_1</span><span class="p">,</span> <span class="n">abs_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_absolute_mags</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">isos</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">masses</span><span class="p">)</span>
+            <span class="n">abs_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_ab</span><span class="p">(</span><span class="n">band_1</span><span class="p">,</span> <span class="n">abs_1</span><span class="p">)</span>
+            <span class="n">abs_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_ab</span><span class="p">(</span><span class="n">band_2</span><span class="p">,</span> <span class="n">abs_2</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">[(</span><span class="n">name</span><span class="p">,</span> <span class="n">band_1</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_distance_modulus</span><span class="p">(</span><span class="n">abs_1</span><span class="p">,</span> <span class="n">distance_modulus</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">[(</span><span class="n">name</span><span class="p">,</span> <span class="n">band_2</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_distance_modulus</span><span class="p">(</span><span class="n">abs_2</span><span class="p">,</span> <span class="n">distance_modulus</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span><span class="p">,</span> <span class="n">masses</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_dist_to_modulus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
@@ -994,7 +1280,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiate spline-specific components and common sub-models.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_linear_density</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">track</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_track</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">distance_modulus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_distance</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distance_modulus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_distance_modulus</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isochrone</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_isochrone</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_velocity</span><span class="p">()</span></div>
 

@@ -1,0 +1,1026 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Streamobs: generate stream mocks &#8212; streamobs  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/tutorial_generate_datamocks';</script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Injecting stream mocks into a survey" href="tutorial_inject_stream.html" />
+    <link rel="prev" title="Citation" href="../citation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">streamobs  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation &amp; Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multisurvey.html">Injecting one or many surveys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../surveys/DES.html">DES</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../surveys/Roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../update_data.html">Update StreamObs data base</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../column_convention.html">Output column convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.utils.html">streamobs.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/examples/tutorial_generate_datamocks.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Streamobs: generate stream mocks</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Streamobs: generate stream mocks</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#build-a-stream-configuration">1) Build a stream configuration</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spline-based-configuration">2) Spline-based configuration</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-an-existing-catalog">3) Complete an existing catalog</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fill-every-missing-columns">Fill every missing columns</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fill-only-specific-columns">Fill only specific columns</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tips-and-troubleshooting">Tips and Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="streamobs-generate-stream-mocks">
+<h1>Streamobs: generate stream mocks<a class="headerlink" href="#streamobs-generate-stream-mocks" title="Link to this heading">#</a></h1>
+<p>Generate stellar stream mock catalogs from configuration files and complete existing tables with missing columns.
+<strong>Streamobs</strong> allows sampling of the following quantities:</p>
+<ul class="simple">
+<li><p>(<code class="docutils literal notranslate"><span class="pre">phi1</span></code>, <code class="docutils literal notranslate"><span class="pre">phi2</span></code>): stellar coordinates in the stream frame</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dist</span></code>: distance modulus of stars</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">{survey}_{band}</span></code>: apparent magnitude in a given photometric band of a chosen survey</p></li>
+</ul>
+<p>Future versions may also include sampling of proper motions and velocities.</p>
+<p>Streamobs can further convert these intrinsic quantities into <strong>observed quantities</strong>.
+For more details, see the notebook <em><code class="docutils literal notranslate"><span class="pre">tutorial_inject_stream.ipynb</span></code></em>.</p>
+<p><strong>In this tutorial, you’ll learn to:</strong></p>
+<ul class="simple">
+<li><p>Define model components: density, track, distance modulus, isochrone</p></li>
+<li><p>Build or load a configuration and sample a mock catalog</p></li>
+<li><p>Complete partial catalogs (e.g., by adding magnitudes)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import necessary modules form streamobs</span>
+<span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+<span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamModel</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="build-a-stream-configuration">
+<h1>1) Build a stream configuration<a class="headerlink" href="#build-a-stream-configuration" title="Link to this heading">#</a></h1>
+<p>To set up a stream model, we use a configuration file or dictionary that defines all necessary components. It can include:</p>
+<ul class="simple">
+<li><p><strong>density</strong> – samples <code class="docutils literal notranslate"><span class="pre">phi1</span></code> values along the stream</p></li>
+<li><p><strong>track</strong> – gives <code class="docutils literal notranslate"><span class="pre">phi2</span></code> as a function of <code class="docutils literal notranslate"><span class="pre">phi1</span></code> (center + spread, using a Gaussian or Uniform sampler)</p></li>
+<li><p><strong>distance_modulus</strong> – defines $DM(phi1)$ for computing apparent magnitudes</p></li>
+<li><p><strong>isochrone</strong> – samples the color–magnitude diagram (required to generate magnitudes)</p></li>
+</ul>
+<p>You can choose how each quantity depends on <code class="docutils literal notranslate"><span class="pre">phi1</span></code> (e.g., constant, linear, spline, etc.).</p>
+<p><strong>Notes:</strong></p>
+<ul class="simple">
+<li><p>To generate magnitudes, you need at least both <code class="docutils literal notranslate"><span class="pre">dist</span></code> and <code class="docutils literal notranslate"><span class="pre">isochrone</span></code>.</p></li>
+<li><p>The velocity model is currently a placeholder (returns NaN).</p></li>
+<li><p>Samplers and functions are selected using the <code class="docutils literal notranslate"><span class="pre">type</span></code> keyword (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;Uniform&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;CubicSplineInterpolation&quot;</span></code>).</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build a config dictionary directly</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span> 
+          <span class="c1"># Density model</span>
+          <span class="s1">&#39;density&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Uniform&#39;</span><span class="p">,</span> <span class="s1">&#39;xmin&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9.0</span><span class="p">,</span> <span class="s1">&#39;xmax&#39;</span><span class="p">:</span> <span class="mf">9.0</span><span class="p">},</span> 
+
+          <span class="c1"># Track model</span>
+           <span class="s1">&#39;track&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Constant&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span> <span class="c1"># center line of the stream in degrees</span>
+                     <span class="s1">&#39;spread&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Constant&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="c1"># spread of the stream in degrees</span>
+                     <span class="s1">&#39;sampler&#39;</span><span class="p">:</span> <span class="s1">&#39;Gaussian&#39;</span><span class="p">},</span> <span class="c1"># how to sample across the stream</span>
+
+            <span class="c1"># Isochrone model</span>
+            <span class="s1">&#39;isochrone&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Marigo2017&#39;</span><span class="p">,</span> <span class="c1"># isochrone set name</span>
+                          <span class="s1">&#39;survey&#39;</span><span class="p">:</span> <span class="s1">&#39;lsst&#39;</span><span class="p">,</span> <span class="c1"># survey for filter set</span>
+                          <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mf">12.0</span><span class="p">,</span> <span class="c1"># Age in Gyr of the population</span>
+                          <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">0.0006</span><span class="p">,</span> <span class="c1"># Metallicity of the population</span>
+                          <span class="s1">&#39;band_1&#39;</span><span class="p">:</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="c1"># first band for color-magnitude</span>
+                          <span class="s1">&#39;band_2&#39;</span><span class="p">:</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="c1"># second band for color-magnitude</span>
+                          <span class="s1">&#39;band_1_detection&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> 
+
+            <span class="c1"># Distance modulus model. Here an example of a constant distance modulus</span>
+            <span class="s1">&#39;distance_modulus&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;center&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Constant&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">16.5</span><span class="p">},</span> 
+                                 <span class="s1">&#39;spread&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Constant&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span> 
+                                <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># or load from a config file</span>
+<span class="c1">#config_path = os.path.join(base_dir, &#39;config&#39;, &#39;toy1_config.yaml&#39;)</span>
+<span class="c1">#config = parse_config(config_path)[&#39;stream&#39;]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;density&#39;: {&#39;type&#39;: &#39;Uniform&#39;, &#39;xmin&#39;: -9.0, &#39;xmax&#39;: 9.0}, &#39;track&#39;: {&#39;center&#39;: {&#39;type&#39;: &#39;Constant&#39;, &#39;value&#39;: 0.0}, &#39;spread&#39;: {&#39;type&#39;: &#39;Constant&#39;, &#39;value&#39;: 0.2}, &#39;sampler&#39;: &#39;Gaussian&#39;}, &#39;isochrone&#39;: {&#39;name&#39;: &#39;Marigo2017&#39;, &#39;survey&#39;: &#39;lsst&#39;, &#39;age&#39;: 12.0, &#39;z&#39;: 0.0006, &#39;band_1&#39;: &#39;g&#39;, &#39;band_2&#39;: &#39;r&#39;, &#39;band_1_detection&#39;: True}, &#39;distance_modulus&#39;: {&#39;center&#39;: {&#39;type&#39;: &#39;Constant&#39;, &#39;value&#39;: 16.5}, &#39;spread&#39;: {&#39;type&#39;: &#39;Constant&#39;, &#39;value&#39;: 0.0}}}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create stream model and generate stars</span>
+<span class="n">stream_model</span> <span class="o">=</span> <span class="n">StreamModel</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+<span class="n">stream_df</span> <span class="o">=</span> <span class="n">stream_model</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">4500</span><span class="p">)</span>
+
+<span class="c1"># The dataframe contains: phi1, phi2, distance, magnitudes, etc.</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stream_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> stars&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">First 5 stars:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">stream_df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>✓ Generated 4500 stars
+
+First 5 stars:
+       phi1      phi2  dist   mu1   mu2    rv  lsst_g_true  lsst_r_true  \
+0 -7.002897  0.059450  16.5  None  None  None    27.496973    26.283101   
+1 -4.650306  0.076031  16.5  None  None  None    30.968998    29.341002   
+2  0.584491 -0.236149  16.5  None  None  None    29.161576    27.739697   
+3 -7.613039  0.293508  16.5  None  None  None    22.790578    22.371315   
+4 -2.429573  0.113915  16.5  None  None  None    30.026950    28.501102   
+
+       mass  
+0  0.253647  
+1  0.105539  
+2  0.150859  
+3  0.645271  
+4  0.122032  
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Quick look: sky track, 1D density, CMD</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># Stream on the sky</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">stream_df</span><span class="p">[</span><span class="s1">&#39;phi1&#39;</span><span class="p">],</span> <span class="n">stream_df</span><span class="p">[</span><span class="s1">&#39;phi2&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;phi1 (deg)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;phi2 (deg)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Stream on the sky&#39;</span><span class="p">)</span>
+
+<span class="c1"># 1D density</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">stream_df</span><span class="p">[</span><span class="s1">&#39;phi1&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;phi1 (deg)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Number of stars&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;1D Density along the stream&#39;</span><span class="p">)</span>
+
+<span class="c1"># Color-magnitude diagram</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">stream_df</span><span class="p">[</span><span class="s1">&#39;lsst_g_true&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">stream_df</span><span class="p">[</span><span class="s1">&#39;lsst_r_true&#39;</span><span class="p">],</span> <span class="n">stream_df</span><span class="p">[</span><span class="s1">&#39;lsst_g_true&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;g - r (mag)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;g (mag)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Color-Magnitude Diagram&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Color-Magnitude Diagram&#39;)
+</pre></div>
+</div>
+<img alt="../_images/bc5daaebbaf41e8476769fd8ef1e60f87645108bdf8d9b841cbfe98c0fa2d4be.png" src="../_images/bc5daaebbaf41e8476769fd8ef1e60f87645108bdf8d9b841cbfe98c0fa2d4be.png" />
+</div>
+</div>
+<section id="spline-based-configuration">
+<h2>2) Spline-based configuration<a class="headerlink" href="#spline-based-configuration" title="Link to this heading">#</a></h2>
+<p>You can model a more realistic stream shape using cubic splines, particularly for:</p>
+<ul class="simple">
+<li><p><strong>Linear density:</strong> $\sqrt{2\pi} \times \text{peak intensity} \times \text{spread}$</p></li>
+<li><p><strong>Distance modulus</strong></p></li>
+<li><p><strong>Track and width</strong></p></li>
+</ul>
+<p>In this example, we use data from <code class="docutils literal notranslate"><span class="pre">data/patrick_2022_splines.csv</span></code> and select <code class="docutils literal notranslate"><span class="pre">stream</span> <span class="pre">==</span> <span class="pre">'phoenix'</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes and values for the spline-based stream model (from Patrick et al. 2022, for Phoenix stream)</span>
+<span class="c1"># One may read these from a CSV file instead of hardcoding them, cf to config/atlas_spline_config.yaml</span>
+<span class="n">intensity_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">13.</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.75</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.125</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.1640625</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.25</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.625</span><span class="p">,</span> <span class="mf">1.625</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">,</span> <span class="mf">8.125</span><span class="p">,</span> <span class="mf">13.</span><span class="p">])</span>
+<span class="n">intensity_node_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.35582279e-07</span><span class="p">,</span> <span class="mf">2.65789495e-02</span><span class="p">,</span> <span class="mf">5.94765580e-02</span><span class="p">,</span> <span class="mf">7.20106921e-02</span><span class="p">,</span> <span class="mf">9.96003626e-02</span><span class="p">,</span> <span class="mf">4.68656926e-02</span><span class="p">,</span> <span class="mf">7.42352023e-02</span><span class="p">,</span> <span class="mf">4.75688845e-06</span><span class="p">,</span> <span class="mf">1.73046024e-02</span><span class="p">,</span> <span class="mf">4.08879937e-08</span><span class="p">])</span>
+<span class="n">spread_nodes</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">13.</span> <span class="p">,</span> <span class="mf">13.</span><span class="p">])</span>
+<span class="n">spread_node_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0992389</span><span class="p">,</span>  <span class="mf">0.17083177</span><span class="p">])</span>
+<span class="n">center_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">13.</span><span class="p">,</span> <span class="mf">4.33333333</span><span class="p">,</span> <span class="mf">13.</span><span class="p">])</span>
+<span class="n">center_node_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.19313599</span><span class="p">,</span> <span class="mf">0.07139282</span><span class="p">,</span> <span class="mf">0.60245054</span><span class="p">])</span>
+<span class="n">distance_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">13.</span><span class="p">,</span> <span class="mf">13.</span><span class="p">])</span>
+<span class="n">distance_node_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">16.38285347</span><span class="p">,</span> <span class="mf">16.1136374</span><span class="p">])</span>
+
+
+<span class="n">config_spline</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># Density model using cubic splines from CSV</span>
+    <span class="s1">&#39;density&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;lineardensitycubicsplineinterpolation&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;intensity_nodes&#39;</span><span class="p">:</span> <span class="n">intensity_nodes</span><span class="p">,</span>
+        <span class="s1">&#39;intensity_node_values&#39;</span><span class="p">:</span> <span class="n">intensity_node_values</span><span class="p">,</span>
+        <span class="s1">&#39;spread_nodes&#39;</span><span class="p">:</span> <span class="n">spread_nodes</span><span class="p">,</span>
+        <span class="s1">&#39;spread_node_values&#39;</span><span class="p">:</span> <span class="n">spread_node_values</span><span class="p">,</span>
+    <span class="p">},</span>
+
+    <span class="c1"># Track model: center and spread as cubic splines</span>
+    <span class="s1">&#39;track&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;CubicSplineInterpolation&#39;</span><span class="p">,</span> <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">center_nodes</span><span class="p">,</span> <span class="s1">&#39;node_values&#39;</span><span class="p">:</span> <span class="n">center_node_values</span><span class="p">},</span>
+        <span class="s1">&#39;spread&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;CubicSplineInterpolation&#39;</span><span class="p">,</span> <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">spread_nodes</span><span class="p">,</span> <span class="s1">&#39;node_values&#39;</span><span class="p">:</span> <span class="n">spread_node_values</span><span class="p">},</span>
+    <span class="p">},</span>
+
+    <span class="c1"># Isochrone model</span>
+    <span class="s1">&#39;isochrone&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Marigo2017&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;survey&#39;</span><span class="p">:</span> <span class="s1">&#39;lsst&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mf">13.0</span><span class="p">,</span>
+        <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">0.0004</span><span class="p">,</span>
+        <span class="s1">&#39;band_1&#39;</span><span class="p">:</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;band_2&#39;</span><span class="p">:</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;band_1_detection&#39;</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="p">},</span>
+
+    <span class="c1"># Distance modulus model as a cubic spline (flat default)</span>
+    <span class="s1">&#39;distance_modulus&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;CubicSplineInterpolation&#39;</span><span class="p">,</span> <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">distance_nodes</span><span class="p">,</span> <span class="s1">&#39;node_values&#39;</span><span class="p">:</span> <span class="n">distance_node_values</span><span class="p">},</span>
+        <span class="s1">&#39;spread&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Constant&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Optional: sample using the spline-based config</span>
+<span class="n">stream_model_spline</span> <span class="o">=</span> <span class="n">StreamModel</span><span class="p">(</span><span class="n">config_spline</span><span class="p">)</span>
+<span class="n">stream_df_spline</span> <span class="o">=</span> <span class="n">stream_model_spline</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">4000</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stream_df_spline</span><span class="p">)</span><span class="si">}</span><span class="s2"> stars with spline density&quot;</span><span class="p">)</span>
+<span class="n">stream_df_spline</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>✓ Generated 4000 stars with spline density
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>phi1</th>
+      <th>phi2</th>
+      <th>dist</th>
+      <th>mu1</th>
+      <th>mu2</th>
+      <th>rv</th>
+      <th>lsst_g_true</th>
+      <th>lsst_r_true</th>
+      <th>mass</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10.397634</td>
+      <td>0.310376</td>
+      <td>16.140584</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>26.403952</td>
+      <td>25.349445</td>
+      <td>0.302596</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-8.270033</td>
+      <td>0.112434</td>
+      <td>16.333877</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>27.693353</td>
+      <td>26.489565</td>
+      <td>0.205496</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>12.074131</td>
+      <td>0.742666</td>
+      <td>16.123224</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>28.314820</td>
+      <td>26.981231</td>
+      <td>0.160797</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-10.734857</td>
+      <td>0.279835</td>
+      <td>16.359399</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>28.972575</td>
+      <td>27.591541</td>
+      <td>0.142679</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>8.248972</td>
+      <td>0.372761</td>
+      <td>16.162832</td>
+      <td>None</td>
+      <td>None</td>
+      <td>None</td>
+      <td>26.958202</td>
+      <td>25.839279</td>
+      <td>0.247097</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># plotting the stream on the sky </span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;phi1&#39;</span><span class="p">],</span> <span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;phi2&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Generated stars&quot;</span><span class="p">)</span>
+<span class="n">x_val</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;phi1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">spline_val</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">CubicSpline</span><span class="p">(</span><span class="n">center_nodes</span><span class="p">,</span> <span class="n">center_node_values</span><span class="p">)(</span><span class="n">x_val</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span> <span class="n">spline_val</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Spline track model&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;phi1 (deg)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;phi2 (deg)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Stream on the sky&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1"># Plotting the 1D density along the stream</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;phi1&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;phi1 (deg)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Number of stars&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;1D Density along the stream&#39;</span><span class="p">)</span>
+
+<span class="c1"># plotting  Color magnitude diagram</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;lsst_g_true&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;lsst_r_true&#39;</span><span class="p">],</span> <span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;lsst_g_true&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;g - r (mag)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;g (mag)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Color-Magnitude Diagram&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Color-Magnitude Diagram&#39;)
+</pre></div>
+</div>
+<img alt="../_images/0deb32010a4cfb22708ca03bd12707eb199d943a7e2473bbebb274579951cc13.png" src="../_images/0deb32010a4cfb22708ca03bd12707eb199d943a7e2473bbebb274579951cc13.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="complete-an-existing-catalog">
+<h1>3) Complete an existing catalog<a class="headerlink" href="#complete-an-existing-catalog" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">StreamModel.complete_catalog</span></code> fills only the requested columns while preserving existing values (except for magnitudes and velocities, which are regenerated together for consistency).</p>
+<ul class="simple">
+<li><p><strong>Dependencies:</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">phi2</span></code> and <code class="docutils literal notranslate"><span class="pre">dist</span></code> require <code class="docutils literal notranslate"><span class="pre">phi1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mags</span></code> require both <code class="docutils literal notranslate"><span class="pre">dist</span></code> and <code class="docutils literal notranslate"><span class="pre">isochrone</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Input formats:</strong> can be a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>, <code class="docutils literal notranslate"><span class="pre">dict</span></code>, path to a CSV file, or <code class="docutils literal notranslate"><span class="pre">None</span></code> (with a specified <code class="docutils literal notranslate"><span class="pre">size</span></code> to generate the full catalog)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let&#39;s build a catalog with missing columns to complete</span>
+<span class="c1"># Here for example we keep only &#39;phi1&#39; and &#39;phi2&#39;, and drop others</span>
+<span class="n">stream_df_sub</span> <span class="o">=</span> <span class="n">stream_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;lsst_r_true&#39;</span><span class="p">,</span> <span class="s1">&#39;dist&#39;</span><span class="p">,</span> <span class="s1">&#39;lsst_g_true&#39;</span><span class="p">,</span> <span class="s1">&#39;mu1&#39;</span><span class="p">,</span> <span class="s1">&#39;mu2&#39;</span><span class="p">,</span> <span class="s1">&#39;rv&#39;</span> <span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Catalog with missing columns:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">stream_df_sub</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Catalog with missing columns:
+       phi1      phi2      mass
+0 -7.002897  0.059450  0.253647
+1 -4.650306  0.076031  0.105539
+2  0.584491 -0.236149  0.150859
+3 -7.613039  0.293508  0.645271
+4 -2.429573  0.113915  0.122032
+</pre></div>
+</div>
+</div>
+</div>
+<section id="fill-every-missing-columns">
+<h2>Fill every missing columns<a class="headerlink" href="#fill-every-missing-columns" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Now we can use `complete_catalog` to fill in the missing columns amoung [&#39;phi1&#39;, &#39;phi2&#39;, &#39;dist&#39;, &#39;mag_g&#39;, &#39;mag_r&#39;, &#39;mu1&#39;, &#39;mu2&#39;, &#39;rv&#39;]</span>
+<span class="n">completed_catalog</span> <span class="o">=</span> <span class="n">stream_model</span><span class="o">.</span><span class="n">complete_catalog</span><span class="p">(</span>
+    <span class="n">catalog</span><span class="o">=</span><span class="n">stream_df_sub</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">completed_catalog</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Velocity model not defined; skipping velocities.
+Filled 4500 dist values.
+Filled [&#39;lsst_g_true&#39;, &#39;lsst_r_true&#39;] (missing rows only).
+       phi1      phi2      mass  dist  lsst_g_true  lsst_r_true
+0 -7.002897  0.059450  0.253647  16.5    27.496973    26.283101
+1 -4.650306  0.076031  0.105539  16.5    30.968998    29.341002
+2  0.584491 -0.236149  0.150859  16.5    29.161576    27.739697
+3 -7.613039  0.293508  0.645271  16.5    22.790578    22.371315
+4 -2.429573  0.113915  0.122032  16.5    30.026950    28.501102
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="fill-only-specific-columns">
+<h2>Fill only specific columns<a class="headerlink" href="#fill-only-specific-columns" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: fill only magnitudes</span>
+<span class="n">subset</span> <span class="o">=</span> <span class="n">stream_df_sub</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">completed_mags</span> <span class="o">=</span> <span class="n">stream_model</span><span class="o">.</span><span class="n">complete_catalog</span><span class="p">(</span>
+    <span class="n">catalog</span><span class="o">=</span><span class="n">subset</span><span class="p">,</span>
+    <span class="n">columns_to_add</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;lsst_g_true&quot;</span><span class="p">,</span> <span class="s2">&quot;lsst_r_true&quot;</span><span class="p">],</span>
+    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">completed_mags</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Filled 4500 dist values.
+Filled [&#39;lsst_g_true&#39;, &#39;lsst_r_true&#39;] (missing rows only).
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>phi1</th>
+      <th>phi2</th>
+      <th>mass</th>
+      <th>dist</th>
+      <th>lsst_g_true</th>
+      <th>lsst_r_true</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>-7.002897</td>
+      <td>0.059450</td>
+      <td>0.253647</td>
+      <td>16.5</td>
+      <td>27.496973</td>
+      <td>26.283101</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-4.650306</td>
+      <td>0.076031</td>
+      <td>0.105539</td>
+      <td>16.5</td>
+      <td>30.968998</td>
+      <td>29.341002</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.584491</td>
+      <td>-0.236149</td>
+      <td>0.150859</td>
+      <td>16.5</td>
+      <td>29.161576</td>
+      <td>27.739697</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-7.613039</td>
+      <td>0.293508</td>
+      <td>0.645271</td>
+      <td>16.5</td>
+      <td>22.790578</td>
+      <td>22.371315</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-2.429573</td>
+      <td>0.113915</td>
+      <td>0.122032</td>
+      <td>16.5</td>
+      <td>30.026950</td>
+      <td>28.501102</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p><em>Note: the distance modulus is also added, since it is needed to convert absolute magnitude sampled from the isochrone, to apparent magnitudes (<code class="docutils literal notranslate"><span class="pre">mag_g</span></code>and <code class="docutils literal notranslate"><span class="pre">mag_r</span></code> here).</em></p>
+</section>
+<section id="tips-and-troubleshooting">
+<h2>Tips and Troubleshooting<a class="headerlink" href="#tips-and-troubleshooting" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>If magnitudes are missing or NaN, make sure your config includes both <code class="docutils literal notranslate"><span class="pre">distance_modulus</span></code> and <code class="docutils literal notranslate"><span class="pre">isochrone</span></code> sections.</p></li>
+<li><p>To keep colors consistent, <code class="docutils literal notranslate"><span class="pre">complete_catalog</span></code> regenerates both <code class="docutils literal notranslate"><span class="pre">mag_g</span></code> and <code class="docutils literal notranslate"><span class="pre">mag_r</span></code> whenever one needs to be computed.</p></li>
+<li><p>Column names are automatically standardized (e.g., <code class="docutils literal notranslate"><span class="pre">'g_mag'</span></code> → <code class="docutils literal notranslate"><span class="pre">'mag_g'</span></code>); see <code class="docutils literal notranslate"><span class="pre">_standardize_columns_name</span></code>.</p></li>
+<li><p>The velocity model is currently a placeholder and returns NaN values.</p></li>
+</ul>
+</section>
+</section>
+<section id="conclusion">
+<h1>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h1>
+<p>Streamobs provides a flexible framework to build and complete stellar stream mock catalogs, from simple analytic models to spline-based configurations.
+Future updates will include proper motions, velocities, and improved documentation for easier user adoption.</p>
+<p>You can find more informations in the <a class="reference external" href="https://lsstdesc.github.io/streamobs/">full documentation</a>.</p>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../citation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Citation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="tutorial_inject_stream.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Injecting stream mocks into a survey</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Streamobs: generate stream mocks</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#build-a-stream-configuration">1) Build a stream configuration</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#spline-based-configuration">2) Spline-based configuration</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-an-existing-catalog">3) Complete an existing catalog</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fill-every-missing-columns">Fill every missing columns</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fill-only-specific-columns">Fill only specific columns</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tips-and-troubleshooting">Tips and Troubleshooting</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By DESC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, DESC.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

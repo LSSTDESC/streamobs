@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -47,7 +48,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Citation" href="citation.html" />
+    <link rel="next" title="Injecting one or many surveys" href="multisurvey.html" />
     <link rel="prev" title="Installation &amp; Dependencies" href="installation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -143,16 +144,23 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -162,6 +170,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -388,7 +397,9 @@
 <span class="n">stream</span> <span class="o">=</span> <span class="n">StreamModel</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;stream&#39;</span><span class="p">])</span>
 <span class="n">stream_df</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;stream&#39;</span><span class="p">][</span><span class="s1">&#39;nstars&#39;</span><span class="p">])</span>
 
-<span class="c1"># The dataframe contains: phi1, phi2, distance, magnitudes, etc.</span>
+<span class="c1"># The dataframe contains: phi1, phi2, dist, and the isochrone magnitude</span>
+<span class="c1"># columns, which are survey-namespaced as &lt;survey&gt;_&lt;band&gt;_true</span>
+<span class="c1"># (e.g. lsst_g_true, lsst_r_true).</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">stream_df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 </div>
@@ -409,28 +420,32 @@
 <span class="c1"># Create the stream injector</span>
 <span class="n">injector</span> <span class="o">=</span> <span class="n">observed</span><span class="o">.</span><span class="n">StreamInjector</span><span class="p">(</span><span class="n">lsst_survey</span><span class="p">)</span>
 
-<span class="c1"># Create or load your mock stream data</span>
-<span class="c1"># Here we create a simple test dataset</span>
-<span class="c1"># This could contain (ra, dec) coordinates if you want to skip coordinate transformation</span>
+<span class="c1"># Create or load your mock stream data.</span>
+<span class="c1"># Here we create a simple test dataset. Could instead contain (ra, dec) to skip</span>
+<span class="c1"># the coordinate transformation. True (noiseless) magnitudes are passed in as</span>
+<span class="c1"># survey-namespaced &lt;namespace&gt;_&lt;band&gt;_true columns, where the namespace is</span>
+<span class="c1"># &quot;{name}_{release}&quot; — here the survey is lsst/yr1, so &quot;lsst_yr1&quot;.</span>
+<span class="c1"># Alternatively, omit the magnitudes and pass a `stream_config=` so the injector</span>
+<span class="c1"># samples them from an isochrone.</span>
 <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 <span class="n">mock_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s1">&#39;phi1&#39;</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>      <span class="c1"># Stream longitude</span>
-    <span class="s1">&#39;phi2&#39;</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>      <span class="c1"># Stream latitude</span>
-    <span class="s1">&#39;mag_g&#39;</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>    <span class="c1"># g-band magnitude</span>
-    <span class="s1">&#39;mag_r&#39;</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>    <span class="c1"># r-band magnitude</span>
+    <span class="s1">&#39;phi1&#39;</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>              <span class="c1"># Stream longitude</span>
+    <span class="s1">&#39;phi2&#39;</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>              <span class="c1"># Stream latitude</span>
+    <span class="s1">&#39;lsst_yr1_g_true&#39;</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>  <span class="c1"># true g-band apparent magnitude</span>
+    <span class="s1">&#39;lsst_yr1_r_true&#39;</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>  <span class="c1"># true r-band apparent magnitude</span>
 <span class="p">})</span>
 
 <span class="c1"># Apply survey effects: footprint, extinction, photometric errors</span>
 <span class="n">observed_data</span> <span class="o">=</span> <span class="n">injector</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span>
-    <span class="n">mock_data</span><span class="p">,</span> 
+    <span class="n">mock_data</span><span class="p">,</span>
+    <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">],</span>                 <span class="c1"># bands to inject (single-survey shorthand)</span>
     <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
-    <span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">]</span> <span class="c1"># Choose the bands to use</span>
-    <span class="n">mask_type</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;footprint&#39;</span><span class="p">,</span> <span class="s1">&#39;ebv&#39;</span><span class="p">],</span>  <span class="c1"># Restrict injection to a mask created from the footprind and low dust area</span>
-    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">mask_type</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;footprint&#39;</span><span class="p">,</span> <span class="s1">&#39;ebv&#39;</span><span class="p">],</span>   <span class="c1"># place the stream within the footprint + low-dust area</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input stars: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mock_data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected stars: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">observed_data</span><span class="p">[</span><span class="n">observed_data</span><span class="p">[</span><span class="s1">&#39;flag_observed&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected stars: </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">observed_data</span><span class="p">[</span><span class="s1">&#39;lsst_yr1_flag_observed&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -443,12 +458,15 @@
 <li><p><strong>Photometric errors</strong>: Adds realistic magnitude uncertainties</p></li>
 <li><p><strong>Detection completeness</strong>: Applies magnitude-dependent detection probability</p></li>
 </ol>
-<p>The output dataframe includes:</p>
+<p>The output dataframe includes (all magnitude/flag columns are <strong>survey-namespaced</strong>
+as <code class="docutils literal notranslate"><span class="pre">&lt;namespace&gt;_...</span></code>, where the namespace is <code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code>; for the LSST/yr1
+survey loaded above it is <code class="docutils literal notranslate"><span class="pre">lsst_yr1</span></code>):</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">ra</span></code>, <code class="docutils literal notranslate"><span class="pre">dec</span></code>: Sky coordinates</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mag_g_obs</span></code>, <code class="docutils literal notranslate"><span class="pre">mag_r_obs</span></code>: Observed magnitudes with errors</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">magerr_g</span></code>, <code class="docutils literal notranslate"><span class="pre">magerr_r</span></code>: Photometric uncertainties</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">flag_observed</span></code>: Detection and clasification flag (1=detected &amp; classified as a star, 0=not detected of not classified as a star)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lsst_yr1_g_true</span></code>, <code class="docutils literal notranslate"><span class="pre">lsst_yr1_r_true</span></code>: True (noiseless) apparent magnitudes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lsst_yr1_g_obs</span></code>, <code class="docutils literal notranslate"><span class="pre">lsst_yr1_r_obs</span></code>: Observed (noisy) magnitudes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lsst_yr1_g_err</span></code>, <code class="docutils literal notranslate"><span class="pre">lsst_yr1_r_err</span></code>: Reported photometric uncertainties</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lsst_yr1_flag_observed</span></code>: Detection and classification flag (<code class="docutils literal notranslate"><span class="pre">True</span></code>=detected &amp; classified as a star, <code class="docutils literal notranslate"><span class="pre">False</span></code>=not detected or not classified as a star)</p></li>
 </ul>
 </section>
 </section>
@@ -503,11 +521,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="citation.html"
+       href="multisurvey.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Citation</p>
+        <p class="prev-next-title">Injecting one or many surveys</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

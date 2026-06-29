@@ -31,6 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -142,16 +143,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="../../roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -161,6 +169,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -363,44 +372,26 @@
 <span class="c1">############################################################</span>
 
 
-<div class="viewcode-block" id="Sampler">
-<a class="viewcode-back" href="../../streamobs.samplers.html#streamobs.samplers.Sampler">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Sampler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">pass</span>
 
-<div class="viewcode-block" id="Sampler.pdf">
-<a class="viewcode-back" href="../../streamobs.samplers.html#streamobs.samplers.Sampler.pdf">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdf</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdf</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="Sampler.sample">
-<a class="viewcode-back" href="../../streamobs.samplers.html#streamobs.samplers.Sampler.sample">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
-        <span class="k">pass</span></div>
-</div>
+        <span class="k">pass</span>
 
 
-
-<div class="viewcode-block" id="ScipySampler">
-<a class="viewcode-back" href="../../streamobs.samplers.html#streamobs.samplers.ScipySampler">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ScipySampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rv</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rv</span> <span class="o">=</span> <span class="n">rv</span>
 
-<div class="viewcode-block" id="ScipySampler.pdf">
-<a class="viewcode-back" href="../../streamobs.samplers.html#streamobs.samplers.ScipySampler.pdf">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">pdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rv</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rv</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="ScipySampler.sample">
-<a class="viewcode-back" href="../../streamobs.samplers.html#streamobs.samplers.ScipySampler.sample">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rv</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">),</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span></div>
-</div>
-
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rv</span><span class="o">.</span><span class="n">rvs</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">size</span><span class="p">),</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="UniformSampler">
@@ -467,13 +458,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">interp</span> <span class="o">=</span> <span class="n">Interpolation</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="InterpolationSampler.sample">
-<a class="viewcode-back" href="../../streamobs.samplers.html#streamobs.samplers.InterpolationSampler.sample">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">nsteps</span><span class="o">=</span><span class="mf">1e5</span><span class="p">):</span>
         <span class="n">xvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interp</span><span class="o">.</span><span class="n">xmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">interp</span><span class="o">.</span><span class="n">xmax</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">nsteps</span><span class="p">))</span>
         <span class="n">pdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">inverse_transform_sample</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">pdf</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span></div>
-</div>
 
 
 

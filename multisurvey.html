@@ -1,0 +1,695 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Injecting one or many surveys &#8212; streamobs  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'multisurvey';</script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Citation" href="citation.html" />
+    <link rel="prev" title="Quickstart Guide" href="quickstart.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">streamobs  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Injecting one or many surveys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.utils.html">streamobs.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/multisurvey.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Injecting one or many surveys</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constructing-an-injector">Constructing an injector</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#injecting">Injecting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-same-physical-star-across-surveys">The same physical star across surveys</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#completing-a-catalog">Completing a catalog</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#supplying-a-distance-directly">Supplying a distance directly</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#existing-values-are-never-overwritten">Existing values are never overwritten</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stellar-masses-the-mass-column">Stellar masses (the <code class="docutils literal notranslate"><span class="pre">mass</span></code> column)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#s-n-cut-ownership">S/N cut ownership</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See also</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="injecting-one-or-many-surveys">
+<h1>Injecting one or many surveys<a class="headerlink" href="#injecting-one-or-many-surveys" title="Link to this heading">#</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">streamobs.observed.StreamInjector</span></code> injects observational effects (photometric
+errors, observed magnitudes, detection flags) into a stream catalog. <strong>The same
+class handles a single survey or several at once</strong> — there is no separate
+multi-survey class. When several surveys are injected together, every survey
+describes the <em>same physical stars</em>, so you can build catalogs that carry both
+Rubin/LSST and Roman photometry for one stream.</p>
+<section id="constructing-an-injector">
+<h2>Constructing an injector<a class="headerlink" href="#constructing-an-injector" title="Link to this heading">#</a></h2>
+<p>Pass one survey, or several:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.observed</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamInjector</span>
+
+<span class="c1"># One survey (loaded by name; `release` etc. forwarded to Survey.load).</span>
+<span class="c1"># Its namespace is &quot;{name}_{release}&quot;, here &quot;lsst_dc2&quot;.</span>
+<span class="n">inj</span> <span class="o">=</span> <span class="n">StreamInjector</span><span class="p">(</span><span class="s2">&quot;lsst&quot;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s2">&quot;dc2&quot;</span><span class="p">)</span>
+
+<span class="c1"># Several surveys as a list of specs — each spec is a survey name, a Survey, or a</span>
+<span class="c1"># {&quot;survey&quot;: ..., &quot;release&quot;: ...} dict. The namespace is derived from each loaded</span>
+<span class="c1"># Survey (&quot;lsst_dc2&quot;, &quot;roman_dc2&quot;), NOT from any key you supply.</span>
+<span class="n">inj</span> <span class="o">=</span> <span class="n">StreamInjector</span><span class="p">([</span>
+    <span class="p">{</span><span class="s2">&quot;survey&quot;</span><span class="p">:</span> <span class="s2">&quot;lsst&quot;</span><span class="p">,</span> <span class="s2">&quot;release&quot;</span><span class="p">:</span> <span class="s2">&quot;dc2&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;survey&quot;</span><span class="p">:</span> <span class="s2">&quot;roman&quot;</span><span class="p">,</span> <span class="s2">&quot;release&quot;</span><span class="p">:</span> <span class="s2">&quot;dc2&quot;</span><span class="p">},</span>
+<span class="p">])</span>
+
+<span class="c1"># A list of plain names loads each release-less, so the namespace is the bare</span>
+<span class="c1"># name (&quot;lsst&quot;, &quot;roman&quot;).</span>
+<span class="n">inj</span> <span class="o">=</span> <span class="n">StreamInjector</span><span class="p">([</span><span class="s2">&quot;lsst&quot;</span><span class="p">,</span> <span class="s2">&quot;roman&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The namespace (the column prefix) is always the survey’s own
+<code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code> (<a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.namespace" title="streamobs.surveys.Survey.namespace"><code class="xref py py-attr docutils literal notranslate"><span class="pre">streamobs.surveys.Survey.namespace</span></code></a>). A <code class="docutils literal notranslate"><span class="pre">{key:</span> <span class="pre">spec}</span></code>
+dict is also accepted, but the keys are containers only — the namespace is
+re-derived from each <code class="docutils literal notranslate"><span class="pre">Survey</span></code>, not taken from the key.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">primary</span></code> selects the survey whose footprint drives the shared sky placement
+(defaults to the first survey).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inj.surveys</span></code> is the <code class="docutils literal notranslate"><span class="pre">{namespace:</span> <span class="pre">Survey}</span></code> mapping; <code class="docutils literal notranslate"><span class="pre">inj.primary</span></code> (alias
+<code class="docutils literal notranslate"><span class="pre">inj.survey</span></code>) is the primary <code class="docutils literal notranslate"><span class="pre">Survey</span></code>, and <code class="docutils literal notranslate"><span class="pre">inj.primary_namespace</span></code> its namespace
+string.</p></li>
+</ul>
+</section>
+<section id="injecting">
+<h2>Injecting<a class="headerlink" href="#injecting" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Single survey: `bands` is the shorthand (defaults to [&#39;r&#39;, &#39;g&#39;]).</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">inj</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">],</span> <span class="n">stream_config</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># Several surveys: give the bands per survey as a {namespace: [bands]} dict,</span>
+<span class="c1"># keyed by each survey&#39;s namespace ({name}_{release}).</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">inj</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span>
+    <span class="n">bands</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;lsst_dc2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">],</span> <span class="s2">&quot;roman_dc2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;F106&quot;</span><span class="p">,</span> <span class="s2">&quot;F158&quot;</span><span class="p">]},</span>
+    <span class="n">stream_config</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>A plain list is rejected for a multi-survey injector (it is ambiguous), and a
+<code class="docutils literal notranslate"><span class="pre">bands</span></code> dict referencing an unknown namespace raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">df</span></code> may already contain <code class="docutils literal notranslate"><span class="pre">ra</span></code>/<code class="docutils literal notranslate"><span class="pre">dec</span></code> or <code class="docutils literal notranslate"><span class="pre">phi1</span></code>/<code class="docutils literal notranslate"><span class="pre">phi2</span></code>, may be a fully empty frame
+of length <em>N</em>, or any subset — anything missing is sampled from <code class="docutils literal notranslate"><span class="pre">stream_config</span></code>
+(see <em>Completing a catalog</em> below). The output carries shared
+<code class="docutils literal notranslate"><span class="pre">ra</span></code>/<code class="docutils literal notranslate"><span class="pre">dec</span></code> plus, <strong>per survey</strong>, the namespaced columns described in
+<a class="reference internal" href="column_convention.html"><span class="std std-doc">Output column convention</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span>
+<span class="n">lsst_dc2_r_true</span><span class="p">,</span>  <span class="n">lsst_dc2_r_obs</span><span class="p">,</span>  <span class="n">lsst_dc2_r_err</span><span class="p">,</span>  <span class="n">lsst_dc2_g_true</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">lsst_dc2_flag_observed</span><span class="p">,</span>
+<span class="n">roman_dc2_F106_true</span><span class="p">,</span> <span class="n">roman_dc2_F106_obs</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">roman_dc2_flag_observed</span>
+</pre></div>
+</div>
+<p>Useful <code class="docutils literal notranslate"><span class="pre">inject</span></code> keyword arguments:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>kwarg</p></th>
+<th class="head"><p>meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">seed</span></code></p></td>
+<td><p>reproducibility (per-survey RNGs are spawned from it, so results are independent of survey order)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dist</span></code></p></td>
+<td><p>distance modulus used directly (scalar or per-row vector) instead of sampling one — see below</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">detection_mag_cut</span></code></p></td>
+<td><p>non-reference bands to apply the explicit SNR ≥ 5 cut to (see <em>S/N cut ownership</em> below)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">perfect_galstarsep</span></code></p></td>
+<td><p>also emit a <code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_flag_perfect_galstarsep</span></code> flag (detection only, no classification losses)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dust_correction</span></code></p></td>
+<td><p>apply extinction correction to observed magnitudes (default <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mask_type</span></code>, <code class="docutils literal notranslate"><span class="pre">gc_frame</span></code></p></td>
+<td><p>forwarded to the <code class="docutils literal notranslate"><span class="pre">phi1</span></code>/<code class="docutils literal notranslate"><span class="pre">phi2</span></code> → <code class="docutils literal notranslate"><span class="pre">ra</span></code>/<code class="docutils literal notranslate"><span class="pre">dec</span></code> placement</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="the-same-physical-star-across-surveys">
+<h2>The same physical star across surveys<a class="headerlink" href="#the-same-physical-star-across-surveys" title="Link to this heading">#</a></h2>
+<p>For a multi-survey injection the isochrone draws <strong>one set of initial masses</strong>
+(exactly <code class="docutils literal notranslate"><span class="pre">nstars</span></code>) and interpolates <em>those same masses</em> into every survey’s
+bands. So a star’s LSST and Roman magnitudes describe the same object — the
+true magnitudes are physically consistent and tightly correlated across surveys
+rather than drawn independently.</p>
+<p>This requires a <strong>multi-survey isochrone</strong> in the stream config: a top-level
+<code class="docutils literal notranslate"><span class="pre">surveys:</span></code> mapping sharing one stellar population, e.g.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">stream</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ... density / track / distance_modulus ...</span>
+<span class="w">  </span><span class="nt">isochrone</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Marigo2017</span><span class="w">      </span><span class="c1"># shared population</span>
+<span class="w">    </span><span class="nt">age</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12.0</span>
+<span class="w">    </span><span class="nt">z</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0006</span>
+<span class="w">    </span><span class="nt">surveys</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">lsst_dc2</span><span class="p">:</span><span class="w">  </span><span class="p p-Indicator">{</span><span class="nt">survey</span><span class="p">:</span><span class="w"> </span><span class="nv">lsst</span><span class="p p-Indicator">,</span><span class="nt">  band_1</span><span class="p">:</span><span class="w"> </span><span class="nv">g</span><span class="p p-Indicator">,</span><span class="nt">    band_2</span><span class="p">:</span><span class="w"> </span><span class="nv">r</span><span class="p p-Indicator">}</span>
+<span class="w">      </span><span class="nt">roman_dc2</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">survey</span><span class="p">:</span><span class="w"> </span><span class="nv">roman</span><span class="p p-Indicator">,</span><span class="nt"> band_1</span><span class="p">:</span><span class="w"> </span><span class="nv">F106</span><span class="p p-Indicator">,</span><span class="nt"> band_2</span><span class="p">:</span><span class="w"> </span><span class="nv">F158</span><span class="p p-Indicator">}</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Each <code class="docutils literal notranslate"><span class="pre">surveys:</span></code> <strong>key is the column namespace</strong> the isochrone produces
+(<code class="docutils literal notranslate"><span class="pre">&lt;key&gt;_&lt;band&gt;_true</span></code>), and it must match the injecting survey’s namespace
+<code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code> — otherwise the true-magnitude columns the model emits won’t
+line up with the columns the injector looks for. Here the inner <code class="docutils literal notranslate"><span class="pre">survey:</span></code> is the
+<em>ugali</em> filter set (no release), while the key carries the release. (In the
+single-survey flat form the namespace is derived as <code class="docutils literal notranslate"><span class="pre">{survey}_{release}</span></code> for you;
+in the multi-survey form you spell it out as the key.)</p>
+</div>
+<p>A single-survey isochrone (the flat <code class="docutils literal notranslate"><span class="pre">survey</span></code>/<code class="docutils literal notranslate"><span class="pre">band_1</span></code>/<code class="docutils literal notranslate"><span class="pre">band_2</span></code> form, optionally
+with <code class="docutils literal notranslate"><span class="pre">release:</span></code>) is just the one-survey case of the same machinery and produces
+<code class="docutils literal notranslate"><span class="pre">&lt;namespace&gt;_&lt;band&gt;_true</span></code> identically.</p>
+<p>A complete, runnable example — the surveys, per-survey bands, the multi-survey
+isochrone, and the shared stream geometry — is provided as a <em>scene</em> config in
+<a class="reference external" href="https://github.com/LSSTDESC/streamobs/blob/main/config/scenes/roman_rubin_demo.yaml"><code class="docutils literal notranslate"><span class="pre">config/scenes/roman_rubin_demo.yaml</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.observed</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamInjector</span>
+
+<span class="n">scene</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;config/scenes/roman_rubin_demo.yaml&quot;</span><span class="p">))</span>
+<span class="n">inj</span> <span class="o">=</span> <span class="n">StreamInjector</span><span class="p">(</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;surveys&quot;</span><span class="p">])</span>              <span class="c1"># {&quot;lsst&quot;: &quot;lsst&quot;, &quot;roman&quot;: &quot;roman&quot;}</span>
+<span class="n">cat</span> <span class="o">=</span> <span class="n">inj</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;survey_bands&quot;</span><span class="p">],</span>                <span class="c1"># {&quot;lsst&quot;: [...], &quot;roman&quot;: [...]}</span>
+    <span class="n">stream_config</span><span class="o">=</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;stream&quot;</span><span class="p">],</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Roman bands are converted Vega→AB automatically.</strong> <code class="docutils literal notranslate"><span class="pre">ugali</span></code> returns Roman
+isochrone magnitudes in Vega while the catalogs are AB, so <code class="docutils literal notranslate"><span class="pre">IsochroneModel</span></code>
+applies a fixed per-band offset (<code class="docutils literal notranslate"><span class="pre">streamobs.model.ROMAN_VEGA_TO_AB</span></code>) to every
+Roman band unconditionally. Non-Roman bands pass through unchanged; there is no
+config flag.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">nstars</span></code> means exactly N stars.</strong> <code class="docutils literal notranslate"><span class="pre">StreamModel.sample(size)</span></code> / the isochrone
+draw return <em>exactly</em> that many stars (a fixed mass set), not a random-length IMF
+realization. This is required so the same masses can be shared across surveys.</p>
+</div>
+</section>
+<section id="completing-a-catalog">
+<h2>Completing a catalog<a class="headerlink" href="#completing-a-catalog" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">StreamInjector.complete_data(...)</span></code> is the public “fill in the rest from the
+config” helper — the same completion <code class="docutils literal notranslate"><span class="pre">inject</span></code> runs internally, exposed so you can
+build or inspect a completed catalog <strong>without</strong> injecting noise. It fills
+<code class="docutils literal notranslate"><span class="pre">ra</span></code>/<code class="docutils literal notranslate"><span class="pre">dec</span></code> (converting from <code class="docutils literal notranslate"><span class="pre">phi1</span></code>/<code class="docutils literal notranslate"><span class="pre">phi2</span></code> if needed) and the per-survey
+<code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_true</span></code> columns, <strong>preserving anything already present</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Partial input -&gt; filled from the config; existing columns are kept.</span>
+<span class="n">full</span> <span class="o">=</span> <span class="n">inj</span><span class="o">.</span><span class="n">complete_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">],</span> <span class="n">stream_config</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="supplying-a-distance-directly">
+<h3>Supplying a distance directly<a class="headerlink" href="#supplying-a-distance-directly" title="Link to this heading">#</a></h3>
+<p>Apparent magnitudes need a distance modulus. Normally it comes from the config’s
+<code class="docutils literal notranslate"><span class="pre">distance_modulus</span></code> model (which needs <code class="docutils literal notranslate"><span class="pre">phi1</span></code>), but you can pass <code class="docutils literal notranslate"><span class="pre">dist</span></code> directly —
+a scalar (broadcast to all rows) or a per-row vector — to fill magnitudes without
+a distance model or <code class="docutils literal notranslate"><span class="pre">phi1</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="n">inj</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">],</span> <span class="n">stream_config</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="mf">16.8</span><span class="p">)</span>     <span class="c1"># scalar</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">inj</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">],</span> <span class="n">stream_config</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="n">dist_arr</span><span class="p">)</span>  <span class="c1"># per-row</span>
+</pre></div>
+</div>
+<p>When given, <code class="docutils literal notranslate"><span class="pre">dist</span></code> overrides the configured distance model. Only rows that are
+missing a <code class="docutils literal notranslate"><span class="pre">dist</span></code> value are set.</p>
+</section>
+<section id="existing-values-are-never-overwritten">
+<h3>Existing values are never overwritten<a class="headerlink" href="#existing-values-are-never-overwritten" title="Link to this heading">#</a></h3>
+<p>Completion fills only the <strong>missing</strong> rows of each column. If you supply one band
+and request another, the supplied band is left untouched and only the missing one
+is filled (newly-filled cells still come from one shared mass draw, so they are
+mutually colour-consistent).</p>
+</section>
+<section id="stellar-masses-the-mass-column">
+<h3>Stellar masses (the <code class="docutils literal notranslate"><span class="pre">mass</span></code> column)<a class="headerlink" href="#stellar-masses-the-mass-column" title="Link to this heading">#</a></h3>
+<p>When an isochrone is configured, the shared <strong>initial masses</strong> drawn for the stars
+are surfaced as a single un-namespaced <code class="docutils literal notranslate"><span class="pre">mass</span></code> column (one mass per star, shared by
+all surveys — the same physical star). You can also go the other way and supply
+your own masses: pass a fully-populated <code class="docutils literal notranslate"><span class="pre">mass</span></code> column in the input catalog and the
+isochrone uses <em>those</em> masses instead of drawing fresh ones, so the sampled
+magnitudes reproduce your simulation’s exact stars. At the model level
+<a class="reference internal" href="streamobs.model.html#streamobs.model.IsochroneModel.sample" title="streamobs.model.IsochroneModel.sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">streamobs.model.IsochroneModel.sample()</span></code></a> accepts a <code class="docutils literal notranslate"><span class="pre">masses=</span></code>
+array and returns the masses it used. The mass grid resolution is controlled by
+<code class="docutils literal notranslate"><span class="pre">IsochroneModel._MASS_STEPS</span></code> (default 4000) and a per-call <code class="docutils literal notranslate"><span class="pre">mass_steps=</span></code> override.</p>
+</section>
+</section>
+<section id="s-n-cut-ownership">
+<h2>S/N cut ownership<a class="headerlink" href="#s-n-cut-ownership" title="Link to this heading">#</a></h2>
+<p>The reference band (<code class="docutils literal notranslate"><span class="pre">survey.completeness_band</span></code>, e.g. LSST <code class="docutils literal notranslate"><span class="pre">r</span></code>) is special: the
+survey’s <strong>selection-function curves are estimated on true stars detected at
+SNR ≥ 5</strong> in that band, so the cut is already baked into both the completeness
+and detection-efficiency curves. The injector therefore does <strong>not</strong> re-apply a
+SNR cut to the reference band (doing so would double-count it); the explicit
+<code class="docutils literal notranslate"><span class="pre">detection_mag_cut</span></code> loop applies SNR ≥ 5 only to the <em>other</em> injected bands (its
+default is all injected bands except the reference band). Net effect: a star must
+have SNR ≥ 5 in every injected band to be flagged observed, with the reference
+band’s cut owned entirely by the selection-function curves.</p>
+</section>
+<section id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="column_convention.html"><span class="std std-doc">Output column convention</span></a> — the <code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_…</span></code>
+scheme and the sample-vs-catalog error split.</p></li>
+<li><p><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector" title="streamobs.observed.StreamInjector"><code class="xref py py-class docutils literal notranslate"><span class="pre">streamobs.observed.StreamInjector</span></code></a> — full API.</p></li>
+<li><p><a class="reference internal" href="streamobs.model.html#streamobs.model.StreamModel" title="streamobs.model.StreamModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">streamobs.model.StreamModel</span></code></a> — the stream/isochrone config.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="quickstart.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Quickstart Guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="citation.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Citation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constructing-an-injector">Constructing an injector</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#injecting">Injecting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-same-physical-star-across-surveys">The same physical star across surveys</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#completing-a-catalog">Completing a catalog</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#supplying-a-distance-directly">Supplying a distance directly</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#existing-values-are-never-overwritten">Existing values are never overwritten</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stellar-masses-the-mass-column">Stellar masses (the <code class="docutils literal notranslate"><span class="pre">mass</span></code> column)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#s-n-cut-ownership">S/N cut ownership</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See also</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By DESC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, DESC.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

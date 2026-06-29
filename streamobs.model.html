@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -143,16 +144,23 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -162,6 +170,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">Content</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -322,10 +331,7 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.BackgroundModel"><code class="docutils literal notranslate"><span class="pre">BackgroundModel</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.ConfigurableModel"><code class="docutils literal notranslate"><span class="pre">ConfigurableModel</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.ConfigurableModel.sample"><code class="docutils literal notranslate"><span class="pre">ConfigurableModel.sample()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.ConfigurableModel"><code class="docutils literal notranslate"><span class="pre">ConfigurableModel</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.DensityModel"><code class="docutils literal notranslate"><span class="pre">DensityModel</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.DensityModel.sample"><code class="docutils literal notranslate"><span class="pre">DensityModel.sample()</span></code></a></li>
 </ul>
@@ -334,6 +340,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.IsochroneModel"><code class="docutils literal notranslate"><span class="pre">IsochroneModel</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.IsochroneModel.create_isochrone"><code class="docutils literal notranslate"><span class="pre">IsochroneModel.create_isochrone()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.IsochroneModel.sample"><code class="docutils literal notranslate"><span class="pre">IsochroneModel.sample()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.IsochroneModel.sample_masses"><code class="docutils literal notranslate"><span class="pre">IsochroneModel.sample_masses()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.SplineStreamModel"><code class="docutils literal notranslate"><span class="pre">SplineStreamModel</span></code></a></li>
@@ -369,18 +376,6 @@
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.model.</span></span><span class="sig-name descname"><span class="pre">BackgroundModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#BackgroundModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.BackgroundModel" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.model.StreamModel" title="streamobs.model.StreamModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">StreamModel</span></code></a></p>
 <p>Background model.</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">complete_catalog</span></code>(catalog[, columns_to_add, ...])</p></td>
-<td><p>Complete only the requested columns in a catalog.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code>(size)</p></td>
-<td><p>Sample stream stars and derived quantities.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </dd></dl>
 
 <dl class="py class">
@@ -388,20 +383,6 @@
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.model.</span></span><span class="sig-name descname"><span class="pre">ConfigurableModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#ConfigurableModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.ConfigurableModel" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Baseclass for models built from configs.</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="streamobs.model.ConfigurableModel.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#ConfigurableModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.ConfigurableModel.sample" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -409,15 +390,6 @@
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.model.</span></span><span class="sig-name descname"><span class="pre">DensityModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#DensityModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.DensityModel" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.model.ConfigurableModel" title="streamobs.model.ConfigurableModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurableModel</span></code></a></p>
 <p>Density along the stream; samples <code class="docutils literal notranslate"><span class="pre">phi1</span></code> positions.</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.model.DensityModel.sample" title="streamobs.model.DensityModel.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(size)</p></td>
-<td><p>Draw <code class="docutils literal notranslate"><span class="pre">phi1</span></code> samples.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.model.DensityModel.sample">
 <span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#DensityModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.DensityModel.sample" title="Link to this definition">#</a></dt>
@@ -441,15 +413,6 @@
 <dt class="sig sig-object py" id="streamobs.model.DistanceModel">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.model.</span></span><span class="sig-name descname"><span class="pre">DistanceModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#DistanceModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.DistanceModel" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.model.ConfigurableModel" title="streamobs.model.ConfigurableModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurableModel</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
 </dd></dl>
 
 <dl class="py class">
@@ -457,45 +420,89 @@
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.model.</span></span><span class="sig-name descname"><span class="pre">IsochroneModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#IsochroneModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.IsochroneModel" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.model.ConfigurableModel" title="streamobs.model.ConfigurableModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurableModel</span></code></a></p>
 <p>Isochrone wrapper using <code class="docutils literal notranslate"><span class="pre">ugali</span></code> for CMD sampling.</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.model.IsochroneModel.create_isochrone" title="streamobs.model.IsochroneModel.create_isochrone"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_isochrone</span></code></a>(config)</p></td>
-<td><p>Construct the underlying <code class="docutils literal notranslate"><span class="pre">ugali</span></code> isochrone from configuration.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.model.IsochroneModel.sample" title="streamobs.model.IsochroneModel.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(nstars, distance_modulus, **kwargs)</p></td>
-<td><p>Simulate magnitudes in g and r bands.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+<p>Two configuration forms are supported:</p>
+<ul class="simple">
+<li><p><strong>Single-survey</strong> (legacy): the isochrone section carries the <code class="docutils literal notranslate"><span class="pre">ugali</span></code>
+factory keys directly (<code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">survey</span></code>, <code class="docutils literal notranslate"><span class="pre">age</span></code>, <code class="docutils literal notranslate"><span class="pre">z</span></code>, <code class="docutils literal notranslate"><span class="pre">band_1</span></code>,
+<code class="docutils literal notranslate"><span class="pre">band_2</span></code>, …). <a class="reference internal" href="#streamobs.model.IsochroneModel.sample" title="streamobs.model.IsochroneModel.sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sample()</span></code></a> returns <code class="docutils literal notranslate"><span class="pre">(mag_band_1,</span> <span class="pre">mag_band_2)</span></code> and
+reproduces the previous behaviour exactly.</p></li>
+<li><p><strong>Multi-survey</strong>: a <code class="docutils literal notranslate"><span class="pre">surveys</span></code> mapping
+<code class="docutils literal notranslate"><span class="pre">{survey_name:</span> <span class="pre">{survey,</span> <span class="pre">band_1,</span> <span class="pre">band_2}}</span></code> plus shared keys
+(<code class="docutils literal notranslate"><span class="pre">name</span></code>, <code class="docutils literal notranslate"><span class="pre">age</span></code>, <code class="docutils literal notranslate"><span class="pre">z</span></code>, …) at the top level. One <code class="docutils literal notranslate"><span class="pre">ugali</span></code> isochrone
+is built per survey from the <em>same</em> stellar population, so a single shared
+draw of initial masses (<a class="reference internal" href="#streamobs.model.IsochroneModel.sample_masses" title="streamobs.model.IsochroneModel.sample_masses"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sample_masses()</span></code></a>) is interpolated into every
+survey’s bands — giving the same physical star consistent magnitudes
+across surveys. <a class="reference internal" href="#streamobs.model.IsochroneModel.sample" title="streamobs.model.IsochroneModel.sample"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sample()</span></code></a> returns
+<code class="docutils literal notranslate"><span class="pre">{(survey,</span> <span class="pre">band):</span> <span class="pre">apparent_mag}</span></code>.</p></li>
+</ul>
+<p>Roman bands are always converted from Vega to AB (see
+<code class="xref py py-data docutils literal notranslate"><span class="pre">ROMAN_VEGA_TO_AB</span></code>); other bands pass through unchanged.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.model.IsochroneModel.create_isochrone">
 <span class="sig-name descname"><span class="pre">create_isochrone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#IsochroneModel.create_isochrone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.IsochroneModel.create_isochrone" title="Link to this definition">#</a></dt>
-<dd><p>Construct the underlying <code class="docutils literal notranslate"><span class="pre">ugali</span></code> isochrone from configuration.</p>
+<dd><p>Construct the underlying <code class="docutils literal notranslate"><span class="pre">ugali</span></code> isochrone(s) from configuration.</p>
+<p>Both configuration forms are normalized to a single <code class="docutils literal notranslate"><span class="pre">{namespace:</span>
+<span class="pre">factory_cfg}</span></code> mapping and built through the same loop — a legacy flat
+config simply becomes a one-entry mapping — so there is no separate
+single- vs. multi-survey code path.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>config</strong> (<em>dict</em>) – Isochrone factory configuration.</p>
+<dd class="field-odd"><p><strong>config</strong> (<em>dict</em>) – Isochrone factory configuration. A <code class="docutils literal notranslate"><span class="pre">surveys</span></code> key selects the
+multi-survey form; otherwise the single-survey (legacy) form is used.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.model.IsochroneModel.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nstars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_modulus</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#IsochroneModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.IsochroneModel.sample" title="Link to this definition">#</a></dt>
-<dd><p>Simulate magnitudes in g and r bands.</p>
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nstars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_modulus</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">masses</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#IsochroneModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.IsochroneModel.sample" title="Link to this definition">#</a></dt>
+<dd><p>Sample apparent magnitudes for every <code class="docutils literal notranslate"><span class="pre">(survey,</span> <span class="pre">band)</span></code>.</p>
+<p>A single shared set of initial masses is interpolated into each survey’s
+bands, so the same physical star is consistent across surveys. The masses
+are drawn from the shared IMF (<a class="reference internal" href="#streamobs.model.IsochroneModel.sample_masses" title="streamobs.model.IsochroneModel.sample_masses"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sample_masses()</span></code></a>) unless supplied via
+<code class="docutils literal notranslate"><span class="pre">masses</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>nstars</strong> (<em>int</em>) – Number of stars to simulate.</p></li>
+<li><p><strong>nstars</strong> (<em>int</em>) – Number of stars (and the required length of <code class="docutils literal notranslate"><span class="pre">masses</span></code> if given).</p></li>
 <li><p><strong>distance_modulus</strong> (<em>float</em><em> or </em><em>array-like</em>) – Distance modulus per star (broadcast if scalar).</p></li>
+<li><p><strong>rng</strong> (<em>numpy.random.Generator</em><em>, </em><em>optional</em>) – Used only when <code class="docutils literal notranslate"><span class="pre">masses</span></code> is None.</p></li>
+<li><p><strong>masses</strong> (<em>array-like</em><em>, </em><em>optional</em>) – Initial stellar masses to use directly — e.g. an external
+simulation’s masses — instead of drawing from the IMF. Must have
+length <code class="docutils literal notranslate"><span class="pre">nstars</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">(mag_g,</span> <span class="pre">mag_r)</span></code> arrays.</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">{(survey_name,</span> <span class="pre">band):</span> <span class="pre">apparent_magnitude_array}</span></code> and the initial
+masses used (shape <code class="docutils literal notranslate"><span class="pre">(nstars,)</span></code>).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>tuple of numpy.ndarray</p>
+<dd class="field-odd"><p>dict, numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="streamobs.model.IsochroneModel.sample_masses">
+<span class="sig-name descname"><span class="pre">sample_masses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nstars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass_steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#IsochroneModel.sample_masses"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.IsochroneModel.sample_masses" title="Link to this definition">#</a></dt>
+<dd><p>Draw <code class="docutils literal notranslate"><span class="pre">nstars</span></code> initial stellar masses from the shared isochrone IMF.</p>
+<p>The masses are drawn once from the primary isochrone’s mass PDF and are
+meant to be interpolated into each survey’s bands, so the same physical
+star gets consistent magnitudes across surveys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nstars</strong> (<em>int</em>) – Number of stars to draw (returns exactly this many).</p></li>
+<li><p><strong>rng</strong> (<em>numpy.random.Generator</em><em>, </em><em>optional</em>) – Random number generator (a default one is created if omitted).</p></li>
+<li><p><strong>mass_min</strong> (<em>float</em><em>, </em><em>int</em><em>, </em><em>optional</em>) – Passed to the <code class="docutils literal notranslate"><span class="pre">ugali</span></code> isochrone sampler.</p></li>
+<li><p><strong>mass_steps</strong> (<em>float</em><em>, </em><em>int</em><em>, </em><em>optional</em>) – Passed to the <code class="docutils literal notranslate"><span class="pre">ugali</span></code> isochrone sampler.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Initial masses, shape <code class="docutils literal notranslate"><span class="pre">(nstars,)</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -507,18 +514,6 @@
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.model.</span></span><span class="sig-name descname"><span class="pre">SplineStreamModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#SplineStreamModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.SplineStreamModel" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.model.StreamModel" title="streamobs.model.StreamModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">StreamModel</span></code></a></p>
 <p>Spline-based stream model with linear-density component.</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">complete_catalog</span></code>(catalog[, columns_to_add, ...])</p></td>
-<td><p>Complete only the requested columns in a catalog.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code>(size)</p></td>
-<td><p>Sample stream stars and derived quantities.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </dd></dl>
 
 <dl class="py class">
@@ -526,27 +521,19 @@
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.model.</span></span><span class="sig-name descname"><span class="pre">StreamModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#StreamModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.StreamModel" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.model.ConfigurableModel" title="streamobs.model.ConfigurableModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurableModel</span></code></a></p>
 <p>High-level object for the various components of the stream model.</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.model.StreamModel.complete_catalog" title="streamobs.model.StreamModel.complete_catalog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">complete_catalog</span></code></a>(catalog[, columns_to_add, ...])</p></td>
-<td><p>Complete only the requested columns in a catalog.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.model.StreamModel.sample" title="streamobs.model.StreamModel.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(size)</p></td>
-<td><p>Sample stream stars and derived quantities.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.model.StreamModel.complete_catalog">
-<span class="sig-name descname"><span class="pre">complete_catalog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#StreamModel.complete_catalog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.StreamModel.complete_catalog" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">complete_catalog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">catalog</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns_to_add</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#StreamModel.complete_catalog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.StreamModel.complete_catalog" title="Link to this definition">#</a></dt>
 <dd><p>Complete only the requested columns in a catalog.</p>
 <p>This method takes an input catalog (or a desired size when no catalog
 is provided) and fills in only the requested stream-model columns
 while preserving pre-existing non-null values. Columns are generated
 using the configured sub-models (density, track, distance modulus,
 isochrone, velocity) and only if those capabilities are available.</p>
+<p>Pre-existing values are never overwritten: for every column only the
+missing (absent or NaN) rows are filled. In particular, supplying some
+of an isochrone’s bands and requesting the others fills only the missing
+bands and leaves the provided ones untouched.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -555,15 +542,20 @@ to read. If a dict, it will be converted to a DataFrame.
 If None, <code class="docutils literal notranslate"><span class="pre">size</span></code> must be provided to create an empty frame of
 that length.</p></li>
 <li><p><strong>columns_to_add</strong> (<em>sequence</em><em> of </em><em>str</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – The columns to ensure in the output. Valid entries are
-{‘phi1’,’phi2’,’dist’,’mag_g’,’mag_r’,’mu1’,’mu2’,’rv’}.
-If None, all valid columns supported by the configured model are
-considered.</p></li>
+{‘phi1’,’phi2’,’dist’,’mu1’,’mu2’,’rv’} plus the isochrone magnitude
+columns (<code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_true</span></code>). If None, all valid columns
+supported by the configured model are considered.</p></li>
 <li><p><strong>size</strong> (<em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Required when <code class="docutils literal notranslate"><span class="pre">catalog</span></code> is None or an empty table; ignored
 otherwise.</p></li>
 <li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>default False</em>) – If True and a DataFrame or CSV path is provided, modify that
 object in place (for CSV, overwrite the input file).</p></li>
 <li><p><strong>save_path</strong> (<em>str</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – If provided, write the completed catalog to this CSV path.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>default True</em>) – If True, print progress/status messages.</p></li>
+<li><p><strong>dist</strong> (<em>float</em><em> or </em><em>array-like</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Distance modulus to use directly instead of sampling one from the
+<code class="docutils literal notranslate"><span class="pre">distance_modulus</span></code> sub-model. A scalar is broadcast to every row
+that needs a <code class="docutils literal notranslate"><span class="pre">dist</span></code> value; an array must have one entry per row.
+When given, <code class="docutils literal notranslate"><span class="pre">phi1</span></code> and a <code class="docutils literal notranslate"><span class="pre">distance_modulus</span></code> model are <strong>not</strong>
+required to fill magnitudes. Only missing <code class="docutils literal notranslate"><span class="pre">dist</span></code> rows are set.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -583,10 +575,12 @@ missing (e.g., requesting ‘phi2’ without available ‘phi1’).</p>
 <li><p>Dependencies: ‘phi2’ and ‘dist’ require ‘phi1’. Magnitudes require
 ‘dist’ and an isochrone model. Velocities require ‘phi1’ and a
 velocity model.</p></li>
-<li><p>Existing non-null values are preserved; only missing rows are filled,
-except for magnitudes and velocities where the method intentionally
-overwrites the whole columns to keep internal consistency (e.g.,
-colors and kinematic coherence across rows).</p></li>
+<li><p>Existing non-null values are preserved: only the missing rows are
+filled for <code class="docutils literal notranslate"><span class="pre">phi1</span></code>/<code class="docutils literal notranslate"><span class="pre">phi2</span></code>/<code class="docutils literal notranslate"><span class="pre">dist</span></code>, the magnitude columns, and the
+shared <code class="docutils literal notranslate"><span class="pre">mass</span></code> column (supplying some bands and requesting others
+fills only the missing ones, colour-consistently). Velocities are the
+exception — <code class="docutils literal notranslate"><span class="pre">mu1</span></code>/<code class="docutils literal notranslate"><span class="pre">mu2</span></code>/<code class="docutils literal notranslate"><span class="pre">rv</span></code> are recomputed for the whole columns
+to keep kinematic coherence across rows.</p></li>
 <li><p>When <code class="docutils literal notranslate"><span class="pre">catalog</span></code> is a CSV path and <code class="docutils literal notranslate"><span class="pre">inplace</span></code> is True, the original
 file is overwritten.</p></li>
 </ul>
@@ -602,7 +596,8 @@ file is overwritten.</p></li>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Columns include: <code class="docutils literal notranslate"><span class="pre">phi1</span></code>, <code class="docutils literal notranslate"><span class="pre">phi2</span></code>, <code class="docutils literal notranslate"><span class="pre">dist</span></code>, <code class="docutils literal notranslate"><span class="pre">mu1</span></code>, <code class="docutils literal notranslate"><span class="pre">mu2</span></code>,
-<code class="docutils literal notranslate"><span class="pre">rv</span></code>, <code class="docutils literal notranslate"><span class="pre">mag_g</span></code>, <code class="docutils literal notranslate"><span class="pre">mag_r</span></code> (some may be None if the sub-model is absent).</p>
+<code class="docutils literal notranslate"><span class="pre">rv</span></code>, and the isochrone magnitude columns <code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_true</span></code>
+(per survey/band). Some may be None if the sub-model is absent.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
@@ -617,15 +612,6 @@ file is overwritten.</p></li>
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.model.</span></span><span class="sig-name descname"><span class="pre">TrackModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#TrackModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.TrackModel" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.model.ConfigurableModel" title="streamobs.model.ConfigurableModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurableModel</span></code></a></p>
 <p>Transverse track model; samples <code class="docutils literal notranslate"><span class="pre">phi2</span></code> given <code class="docutils literal notranslate"><span class="pre">phi1</span></code>.</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.model.TrackModel.sample" title="streamobs.model.TrackModel.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(x)</p></td>
-<td><p>Sample <code class="docutils literal notranslate"><span class="pre">phi2</span></code> at given <code class="docutils literal notranslate"><span class="pre">phi1</span></code> positions <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.model.TrackModel.sample">
 <span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#TrackModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.TrackModel.sample" title="Link to this definition">#</a></dt>
@@ -650,15 +636,6 @@ file is overwritten.</p></li>
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.model.</span></span><span class="sig-name descname"><span class="pre">VelocityModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#VelocityModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.VelocityModel" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.model.ConfigurableModel" title="streamobs.model.ConfigurableModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigurableModel</span></code></a></p>
 <p>Placeholder for velocity model.</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.model.VelocityModel.sample" title="streamobs.model.VelocityModel.sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample</span></code></a>(phi1)</p></td>
-<td><p>Placeholder</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.model.VelocityModel.sample">
 <span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phi1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/model.html#VelocityModel.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.model.VelocityModel.sample" title="Link to this definition">#</a></dt>
@@ -717,10 +694,7 @@ file is overwritten.</p></li>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.BackgroundModel"><code class="docutils literal notranslate"><span class="pre">BackgroundModel</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.ConfigurableModel"><code class="docutils literal notranslate"><span class="pre">ConfigurableModel</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.ConfigurableModel.sample"><code class="docutils literal notranslate"><span class="pre">ConfigurableModel.sample()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.ConfigurableModel"><code class="docutils literal notranslate"><span class="pre">ConfigurableModel</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.DensityModel"><code class="docutils literal notranslate"><span class="pre">DensityModel</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.DensityModel.sample"><code class="docutils literal notranslate"><span class="pre">DensityModel.sample()</span></code></a></li>
 </ul>
@@ -729,6 +703,7 @@ file is overwritten.</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.IsochroneModel"><code class="docutils literal notranslate"><span class="pre">IsochroneModel</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.IsochroneModel.create_isochrone"><code class="docutils literal notranslate"><span class="pre">IsochroneModel.create_isochrone()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.IsochroneModel.sample"><code class="docutils literal notranslate"><span class="pre">IsochroneModel.sample()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.IsochroneModel.sample_masses"><code class="docutils literal notranslate"><span class="pre">IsochroneModel.sample_masses()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.model.SplineStreamModel"><code class="docutils literal notranslate"><span class="pre">SplineStreamModel</span></code></a></li>

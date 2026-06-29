@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>DES &#8212; streamobs  documentation</title>
+    <title>Output column convention &#8212; streamobs  documentation</title>
   
   
   
@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -43,12 +44,12 @@
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'DES';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'column_convention';</script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="LSST" href="LSST.html" />
-    <link rel="prev" title="Citation" href="citation.html" />
+    <link rel="next" title="StreamObs Data Files" href="data.html" />
+    <link rel="prev" title="Update StreamObs data base" href="update_data.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -143,16 +144,23 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">DES</a></li>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -161,7 +169,8 @@
 <li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -235,7 +244,7 @@
       
       
       
-      <li><a href="_sources/DES.md" target="_blank"
+      <li><a href="_sources/column_convention.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -311,7 +320,7 @@
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>DES</h1>
+    <h1>Output column convention</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -321,13 +330,10 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">DES</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#available-releases">Available releases</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#des-y6-gold">DES Y6 Gold</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-scheme">The scheme</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-error-curves-catalog-vs-sample">Two error curves: catalog vs. sample</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See also</a></li>
 </ul>
-</li>
-</ul>
-
             </nav>
         </div>
     </div>
@@ -338,21 +344,97 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="des">
-<h1>DES<a class="headerlink" href="#des" title="Link to this heading">#</a></h1>
-<p><strong>DES</strong> is supported by <strong>StreamObs</strong>.</p>
-</section>
-<section id="available-releases">
-<h1>Available releases<a class="headerlink" href="#available-releases" title="Link to this heading">#</a></h1>
-<section id="des-y6-gold">
-<h2>DES Y6 Gold<a class="headerlink" href="#des-y6-gold" title="Link to this heading">#</a></h2>
-<p>We have added the DES Y6 Gold as a supported survey to use with streamobs.
-The survey dataset is described in <a class="reference external" href="https://arxiv.org/abs/2501.05739">Bechtol et al. 2025</a>, and the catalogs can are documented/publically available from <a class="reference external" href="https://des.ncsa.illinois.edu/releases">DESDM</a>.
-The maglim, completeness, and photoerror files should be downloaded and placed in the <code class="docutils literal notranslate"><span class="pre">data/surveys/des_y6/</span></code> folder and loaded in the following manner:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">des_y6</span><span class="o">=</span> <span class="n">surveys</span><span class="o">.</span><span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">survey</span> <span class="o">=</span> <span class="s1">&#39;des&#39;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s1">&#39;y6&#39;</span><span class="p">)</span>
-</pre></div>
+  <section id="output-column-convention">
+<h1>Output column convention<a class="headerlink" href="#output-column-convention" title="Link to this heading">#</a></h1>
+<p>Injected catalogs use a single, uniform naming scheme for every column the
+injector produces, and it is <strong>always survey-namespaced</strong> — even for a single
+survey.</p>
+<section id="the-scheme">
+<h2>The scheme<a class="headerlink" href="#the-scheme" title="Link to this heading">#</a></h2>
+<p>Every column is prefixed with the survey’s <strong>namespace</strong>, which is
+<code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">lsst_yr5</span></code>, <code class="docutils literal notranslate"><span class="pre">roman_dc2</span></code>), or just <code class="docutils literal notranslate"><span class="pre">{name}</span></code> when the
+survey was loaded without a release. The namespace is always derived from the
+<code class="docutils literal notranslate"><span class="pre">Survey</span></code> itself (<a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.namespace" title="streamobs.surveys.Survey.namespace"><code class="xref py py-attr docutils literal notranslate"><span class="pre">streamobs.surveys.Survey.namespace</span></code></a>). <strong>Observed</strong>,
+<strong>error</strong>, and <strong>flag</strong> columns carry the full namespace (release included), so
+the same survey at two releases produces distinct, non-colliding observations.
+<strong>True-magnitude columns are the exception</strong>: because a star’s intrinsic
+(noiseless) magnitude does not depend on which survey/release observed it, they
+are keyed on the survey <strong>name only</strong> — the release is dropped (e.g.
+<code class="docutils literal notranslate"><span class="pre">roman_F158_true</span></code>, shared across <code class="docutils literal notranslate"><span class="pre">roman_dc2</span></code> and <code class="docutils literal notranslate"><span class="pre">roman_hlwas_*</span></code>). When you
+construct a multi-survey injector from
+a <code class="docutils literal notranslate"><span class="pre">{key:</span> <span class="pre">spec}</span></code> dict the keys are containers only — they do <strong>not</strong> become the
+namespace (it is re-derived from each loaded <code class="docutils literal notranslate"><span class="pre">Survey</span></code>).</p>
+<p>For a survey with namespace <code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;</span></code> (= <code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code>), survey name
+<code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code>, and a photometric band <code class="docutils literal notranslate"><span class="pre">&lt;band&gt;</span></code>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;name&gt;_&lt;band&gt;_true</span></code></p></td>
+<td><p>True (noiseless) apparent magnitude — keyed on the survey <strong>name only</strong> (release-independent)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_obs</span></code></p></td>
+<td><p>Observed (noisy) magnitude; <code class="docutils literal notranslate"><span class="pre">&quot;BAD_MAG&quot;</span></code> where the noisy flux went negative</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_err</span></code></p></td>
+<td><p>Reported photometric error (the <em>catalog</em> error; see below)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_flag_observed</span></code></p></td>
+<td><p>Detection flag — <code class="docutils literal notranslate"><span class="pre">True</span></code> if detected <strong>and</strong> classified as a star</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_flag_perfect_galstarsep</span></code></p></td>
+<td><p>Optional flag assuming perfect star/galaxy separation (detection only); emitted only when <code class="docutils literal notranslate"><span class="pre">perfect_galstarsep=True</span></code></p></td>
+</tr>
+</tbody>
+</table>
 </div>
-<p>Any questions about the creation of these survey specific files can be addressed to Peter Ferguson.</p>
+<p>Plus the shared, un-namespaced sky coordinates <code class="docutils literal notranslate"><span class="pre">ra</span></code>, <code class="docutils literal notranslate"><span class="pre">dec</span></code>.</p>
+<p>Examples (LSST loaded with <code class="docutils literal notranslate"><span class="pre">release=&quot;yr5&quot;</span></code>, Roman with <code class="docutils literal notranslate"><span class="pre">release=&quot;dc2&quot;</span></code>):
+<code class="docutils literal notranslate"><span class="pre">lsst_yr5_r_obs</span></code>, <code class="docutils literal notranslate"><span class="pre">lsst_yr5_g_err</span></code>, <code class="docutils literal notranslate"><span class="pre">roman_F158_true</span></code> (true mag — name only), <code class="docutils literal notranslate"><span class="pre">lsst_yr5_flag_observed</span></code>.</p>
+<p>These names are produced by the helpers in <code class="docutils literal notranslate"><span class="pre">streamobs.columns</span></code>
+(<code class="docutils literal notranslate"><span class="pre">true_col</span></code>, <code class="docutils literal notranslate"><span class="pre">obs_col</span></code>, <code class="docutils literal notranslate"><span class="pre">err_col</span></code>, <code class="docutils literal notranslate"><span class="pre">flag_col</span></code>, <code class="docutils literal notranslate"><span class="pre">perfect_flag_col</span></code>), which take a
+<code class="docutils literal notranslate"><span class="pre">band</span></code> and a <code class="docutils literal notranslate"><span class="pre">survey</span></code> namespace.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>This convention intentionally <strong>drops</strong> the historical <code class="docutils literal notranslate"><span class="pre">mag_&lt;band&gt;</span></code> /
+<code class="docutils literal notranslate"><span class="pre">mag_&lt;band&gt;_obs</span></code> / <code class="docutils literal notranslate"><span class="pre">magerr_&lt;band&gt;</span></code> names and the un-namespaced single-survey form
+(<code class="docutils literal notranslate"><span class="pre">r_obs</span></code>, <code class="docutils literal notranslate"><span class="pre">flag_observed</span></code>, …). It is <strong>not backward compatible</strong> with catalogs or
+downstream readers expecting those columns — everything is now namespaced by
+survey, even when only one survey is injected.</p>
+</div>
+</section>
+<section id="two-error-curves-catalog-vs-sample">
+<h2>Two error curves: catalog vs. sample<a class="headerlink" href="#two-error-curves-catalog-vs-sample" title="Link to this heading">#</a></h2>
+<p>Each survey carries <strong>two</strong> photometric-error curves, both functions of
+<code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">mag</span> <span class="pre">−</span> <span class="pre">maglim</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Catalog error</strong> — the survey’s <em>reported</em> error (e.g. SExtractor <code class="docutils literal notranslate"><span class="pre">magerr</span></code>).
+This is what is written to <code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_err</span></code>, and it drives the S/N
+detection cut.</p></li>
+<li><p><strong>Sample error</strong> — an optional curve giving the <em>true scatter</em> of
+observed − true magnitudes. This is what is used to <strong>draw</strong> the observed
+magnitude (<code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_obs</span></code>).</p></li>
+</ul>
+<p>The split exists because, for the Roman DC2 catalogs, the true photometric
+scatter is ≈ 2× the reported error — so the noise you draw and the error you
+report are genuinely different. When a survey has no sample curve loaded, the
+sample draw transparently falls back to the catalog curve, so the two are
+identical and outputs match the single-curve behaviour.</p>
+<p>Select between them via
+<a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.get_photo_error" title="streamobs.surveys.Survey.get_photo_error"><code class="xref py py-meth docutils literal notranslate"><span class="pre">streamobs.surveys.Survey.get_photo_error()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">kind=&quot;catalog&quot;</span></code> (default,
+reproduces the reported error) or <code class="docutils literal notranslate"><span class="pre">kind=&quot;sample&quot;</span></code> (true scatter).</p>
+</section>
+<section id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="multisurvey.html"><span class="std std-doc">Injecting one or many surveys</span></a> — how these columns are
+produced and the multi-survey “same physical star” guarantee.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">streamobs.columns</span></code> — the column-name helper functions.</p></li>
+<li><p><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.get_photo_error" title="streamobs.surveys.Survey.get_photo_error"><code class="xref py py-meth docutils literal notranslate"><span class="pre">streamobs.surveys.Survey.get_photo_error()</span></code></a> — the two error curves.</p></li>
+</ul>
 </section>
 </section>
 
@@ -368,20 +450,20 @@ The maglim, completeness, and photoerror files should be downloaded and placed i
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="citation.html"
+       href="update_data.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Citation</p>
+        <p class="prev-next-title">Update StreamObs data base</p>
       </div>
     </a>
     <a class="right-next"
-       href="LSST.html"
+       href="data.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">LSST</p>
+        <p class="prev-next-title">StreamObs Data Files</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -403,13 +485,10 @@ The maglim, completeness, and photoerror files should be downloaded and placed i
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">DES</a></li>
-<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#available-releases">Available releases</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#des-y6-gold">DES Y6 Gold</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-scheme">The scheme</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-error-curves-catalog-vs-sample">Two error curves: catalog vs. sample</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See also</a></li>
 </ul>
-</li>
-</ul>
-
   </nav></div>
 
 </div></div>

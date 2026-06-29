@@ -31,6 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -142,16 +143,23 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -161,6 +169,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -317,9 +326,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="streamobs.surveys.html#id0">bands (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.bands">[1]</a>
-</li>
-      <li><a href="streamobs.functions.html#streamobs.functions.BoundedFunction">BoundedFunction (class in streamobs.functions)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.bands">bands (streamobs.surveys.Survey attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -331,29 +338,25 @@
 </li>
       <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.clear_mask_cache">clear_mask_cache() (streamobs.observed.StreamInjector class method)</a>
 </li>
-      <li><a href="streamobs.surveys.html#id1">coeff_extinc (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.coeff_extinc">[1]</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.coeff_extinc">coeff_extinc (streamobs.surveys.Survey attribute)</a>
 </li>
       <li><a href="streamobs.model.html#streamobs.model.StreamModel.complete_catalog">complete_catalog() (streamobs.model.StreamModel method)</a>
 </li>
       <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.complete_data">complete_data() (streamobs.observed.StreamInjector method)</a>
 </li>
-      <li><a href="streamobs.surveys.html#id2">completeness (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.completeness">[1]</a>
-</li>
-      <li><a href="streamobs.surveys.html#id3">completeness_band (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.completeness_band">[1]</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.completeness">completeness (streamobs.surveys.Survey attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.completeness_band">completeness_band (streamobs.surveys.Survey attribute)</a>
+</li>
       <li><a href="streamobs.model.html#streamobs.model.ConfigurableModel">ConfigurableModel (class in streamobs.model)</a>
 </li>
-      <li><a href="streamobs.functions.html#streamobs.functions.Constant">Constant (class in streamobs.functions)</a>
-</li>
-      <li><a href="streamobs.surveys.html#id4">coverage (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.coverage">[1]</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.coverage">coverage (streamobs.surveys.Survey attribute)</a>
 </li>
       <li><a href="streamobs.model.html#streamobs.model.IsochroneModel.create_isochrone">create_isochrone() (streamobs.model.IsochroneModel method)</a>
 </li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.create_survey">create_survey() (streamobs.surveys.SurveyFactory class method)</a>
-</li>
-      <li><a href="streamobs.functions.html#streamobs.functions.CubicSplineInterpolation">CubicSplineInterpolation (class in streamobs.functions)</a>
 </li>
       <li><a href="streamobs.samplers.html#streamobs.samplers.CubicSplineInterpolationSampler">CubicSplineInterpolationSampler (class in streamobs.samplers)</a>
 </li>
@@ -363,7 +366,7 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="streamobs.surveys.html#id5">delta_saturation (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.delta_saturation">[1]</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.delta_saturation">delta_saturation (streamobs.surveys.Survey attribute)</a>
 </li>
       <li><a href="streamobs.model.html#streamobs.model.DensityModel">DensityModel (class in streamobs.model)</a>
 </li>
@@ -381,7 +384,7 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="streamobs.surveys.html#id6">ebv_map (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.ebv_map">[1]</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.ebv_map">ebv_map (streamobs.surveys.Survey attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -389,18 +392,12 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="streamobs.functions.html#streamobs.functions.FileCubicSplineInterpolation">FileCubicSplineInterpolation (class in streamobs.functions)</a>
-</li>
       <li><a href="streamobs.samplers.html#streamobs.samplers.FileCubicSplineInterpolationSampler">FileCubicSplineInterpolationSampler (class in streamobs.samplers)</a>
-</li>
-      <li><a href="streamobs.functions.html#streamobs.functions.FileInterpolation">FileInterpolation (class in streamobs.functions)</a>
 </li>
       <li><a href="streamobs.samplers.html#streamobs.samplers.FileInterpolationSampler">FileInterpolationSampler (class in streamobs.samplers)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="streamobs.functions.html#streamobs.functions.FileLinearDensityCubicSplineInterpolation">FileLinearDensityCubicSplineInterpolation (class in streamobs.functions)</a>
-</li>
       <li><a href="streamobs.samplers.html#streamobs.samplers.FileLinearDensityCubicSplineInterpolationSampler">FileLinearDensityCubicSplineInterpolationSampler (class in streamobs.samplers)</a>
 </li>
       <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.fluxToMag">fluxToMag() (streamobs.observed.StreamInjector static method)</a>
@@ -441,12 +438,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.inject">inject() (streamobs.observed.StreamInjector method)</a>
 </li>
-      <li><a href="streamobs.functions.html#streamobs.functions.Interpolation">Interpolation (class in streamobs.functions)</a>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.InterpolationSampler">InterpolationSampler (class in streamobs.samplers)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="streamobs.samplers.html#streamobs.samplers.InterpolationSampler">InterpolationSampler (class in streamobs.samplers)</a>
-</li>
       <li><a href="streamobs.samplers.html#streamobs.samplers.inverse_transform_sample">inverse_transform_sample() (in module streamobs.samplers)</a>
 </li>
       <li><a href="streamobs.model.html#streamobs.model.IsochroneModel">IsochroneModel (class in streamobs.model)</a>
@@ -459,19 +454,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.functions.html#streamobs.functions.Line">Line (class in streamobs.functions)</a>
 </li>
-      <li><a href="streamobs.functions.html#streamobs.functions.LinearDensityCubicSplineInterpolation">LinearDensityCubicSplineInterpolation (class in streamobs.functions)</a>
-</li>
       <li><a href="streamobs.samplers.html#streamobs.samplers.LinearDensityCubicSplineInterpolationSampler">LinearDensityCubicSplineInterpolationSampler (class in streamobs.samplers)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.list_cached_masks">list_cached_masks() (streamobs.observed.StreamInjector class method)</a>
 </li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.list_cached_surveys">list_cached_surveys() (streamobs.surveys.SurveyFactory class method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.load">load() (streamobs.surveys.Survey class method)</a>
 </li>
-      <li><a href="streamobs.surveys.html#id7">log_photo_error (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.log_photo_error">[1]</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.log_photo_error">log_photo_error (streamobs.surveys.Survey property)</a>
+</li>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.log_photo_error_catalog">log_photo_error_catalog (streamobs.surveys.Survey attribute)</a>
+</li>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.log_photo_error_sample">log_photo_error_sample (streamobs.surveys.Survey attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -479,11 +476,11 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="streamobs.surveys.html#id8">maglim_maps (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.maglim_maps">[1]</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.maglim_maps">maglim_maps (streamobs.surveys.Survey attribute)</a>
 </li>
       <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.magToFlux">magToFlux() (streamobs.observed.StreamInjector static method)</a>
 </li>
-      <li><a href="streamobs.observed.html#id0">mask_cache (streamobs.observed.StreamInjector attribute)</a>, <a href="streamobs.observed.html#streamobs.observed.StreamInjector.mask_cache">[1]</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.mask_cache">mask_cache (streamobs.observed.StreamInjector attribute)</a>
 </li>
       <li>
     module
@@ -512,7 +509,11 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="streamobs.surveys.html#id9">name (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.name">[1]</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.name">name (streamobs.surveys.Survey attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.namespace">namespace (streamobs.surveys.Survey property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -530,37 +531,35 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.utils.html#streamobs.utils.parse_config">parse_config() (in module streamobs.utils)</a>
 </li>
-      <li><a href="streamobs.samplers.html#streamobs.samplers.Sampler.pdf">pdf() (streamobs.samplers.Sampler method)</a>
-
-      <ul>
-        <li><a href="streamobs.samplers.html#streamobs.samplers.ScipySampler.pdf">(streamobs.samplers.ScipySampler method)</a>
-</li>
-      </ul></li>
       <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.phi_to_radec">phi_to_radec() (streamobs.observed.StreamInjector method)</a>
 </li>
-      <li><a href="streamobs.plotting.html#streamobs.plotting.plot_healsparse_map">plot_healsparse_map() (in module streamobs.plotting)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.plotting.html#streamobs.plotting.plot_inject">plot_inject() (in module streamobs.plotting)</a>
-</li>
-      <li><a href="streamobs.plotting.html#streamobs.plotting.plot_maglim">plot_maglim() (in module streamobs.plotting)</a>
 </li>
       <li><a href="streamobs.plotting.html#streamobs.plotting.plot_stream">plot_stream() (in module streamobs.plotting)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.plotting.html#streamobs.plotting.plot_stream_in_mask">plot_stream_in_mask() (in module streamobs.plotting)</a>
 
       <ul>
         <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.plot_stream_in_mask">(streamobs.observed.StreamInjector method)</a>
 </li>
       </ul></li>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.primary">primary (streamobs.observed.StreamInjector attribute)</a>
+
+      <ul>
+        <li><a href="streamobs.observed.html#id0">(streamobs.observed.StreamInjector property)</a>
+</li>
+      </ul></li>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.primary_namespace">primary_namespace (streamobs.observed.StreamInjector property)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="streamobs.surveys.html#id10">release (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.release">[1]</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.release">release (streamobs.surveys.Survey attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -568,11 +567,9 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="streamobs.model.html#streamobs.model.ConfigurableModel.sample">sample() (streamobs.model.ConfigurableModel method)</a>
+      <li><a href="streamobs.model.html#streamobs.model.DensityModel.sample">sample() (streamobs.model.DensityModel method)</a>
 
       <ul>
-        <li><a href="streamobs.model.html#streamobs.model.DensityModel.sample">(streamobs.model.DensityModel method)</a>
-</li>
         <li><a href="streamobs.model.html#streamobs.model.IsochroneModel.sample">(streamobs.model.IsochroneModel method)</a>
 </li>
         <li><a href="streamobs.model.html#streamobs.model.StreamModel.sample">(streamobs.model.StreamModel method)</a>
@@ -581,22 +578,14 @@
 </li>
         <li><a href="streamobs.model.html#streamobs.model.VelocityModel.sample">(streamobs.model.VelocityModel method)</a>
 </li>
-        <li><a href="streamobs.samplers.html#streamobs.samplers.InterpolationSampler.sample">(streamobs.samplers.InterpolationSampler method)</a>
-</li>
-        <li><a href="streamobs.samplers.html#streamobs.samplers.Sampler.sample">(streamobs.samplers.Sampler method)</a>
-</li>
-        <li><a href="streamobs.samplers.html#streamobs.samplers.ScipySampler.sample">(streamobs.samplers.ScipySampler method)</a>
-</li>
       </ul></li>
-      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.sample_measured_magnitudes">sample_measured_magnitudes() (streamobs.observed.StreamInjector method)</a>
+      <li><a href="streamobs.model.html#streamobs.model.IsochroneModel.sample_masses">sample_masses() (streamobs.model.IsochroneModel method)</a>
 </li>
-      <li><a href="streamobs.samplers.html#streamobs.samplers.Sampler">Sampler (class in streamobs.samplers)</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.sample_measured_magnitudes">sample_measured_magnitudes() (streamobs.observed.StreamInjector method)</a>
 </li>
       <li><a href="streamobs.samplers.html#streamobs.samplers.sampler_factory">sampler_factory() (in module streamobs.samplers)</a>
 </li>
-      <li><a href="streamobs.surveys.html#id11">saturation (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.saturation">[1]</a>
-</li>
-      <li><a href="streamobs.samplers.html#streamobs.samplers.ScipySampler">ScipySampler (class in streamobs.samplers)</a>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.saturation">saturation (streamobs.surveys.Survey attribute)</a>
 </li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.set_completeness">set_completeness() (streamobs.surveys.SurveyFactory static method)</a>
 </li>
@@ -610,8 +599,6 @@
 </li>
       <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector">StreamInjector (class in streamobs.observed)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.model.html#streamobs.model.StreamModel">StreamModel (class in streamobs.model)</a>
 </li>
       <li>
@@ -621,6 +608,8 @@
         <li><a href="streamobs.html#module-streamobs">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     streamobs.functions
 
@@ -672,11 +661,13 @@
       </ul></li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.Survey">Survey (class in streamobs.surveys)</a>
 </li>
-      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.survey">survey (streamobs.observed.StreamInjector attribute)</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.survey">survey (streamobs.observed.StreamInjector property)</a>
 </li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory">SurveyFactory (class in streamobs.surveys)</a>
 </li>
-      <li><a href="streamobs.surveys.html#id12">sys_error (streamobs.surveys.Survey attribute)</a>, <a href="streamobs.surveys.html#streamobs.surveys.Survey.sys_error">[1]</a>
+      <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.surveys">surveys (streamobs.observed.StreamInjector attribute)</a>
+</li>
+      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.sys_error">sys_error (streamobs.surveys.Survey attribute)</a>
 </li>
   </ul></td>
 </tr></table>

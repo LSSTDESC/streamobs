@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -143,16 +144,23 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -162,6 +170,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">Content</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -322,7 +331,8 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector"><code class="docutils literal notranslate"><span class="pre">StreamInjector</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.survey"><code class="docutils literal notranslate"><span class="pre">StreamInjector.survey</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.surveys"><code class="docutils literal notranslate"><span class="pre">StreamInjector.surveys</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.primary"><code class="docutils literal notranslate"><span class="pre">StreamInjector.primary</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.mask_cache"><code class="docutils literal notranslate"><span class="pre">StreamInjector.mask_cache</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector._last_gc_frame"><code class="docutils literal notranslate"><span class="pre">StreamInjector._last_gc_frame</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.clear_mask_cache"><code class="docutils literal notranslate"><span class="pre">StreamInjector.clear_mask_cache()</span></code></a></li>
@@ -333,10 +343,12 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.inject"><code class="docutils literal notranslate"><span class="pre">StreamInjector.inject()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.list_cached_masks"><code class="docutils literal notranslate"><span class="pre">StreamInjector.list_cached_masks()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.magToFlux"><code class="docutils literal notranslate"><span class="pre">StreamInjector.magToFlux()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">StreamInjector.mask_cache</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.phi_to_radec"><code class="docutils literal notranslate"><span class="pre">StreamInjector.phi_to_radec()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.plot_stream_in_mask"><code class="docutils literal notranslate"><span class="pre">StreamInjector.plot_stream_in_mask()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">StreamInjector.primary</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.primary_namespace"><code class="docutils literal notranslate"><span class="pre">StreamInjector.primary_namespace</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.sample_measured_magnitudes"><code class="docutils literal notranslate"><span class="pre">StreamInjector.sample_measured_magnitudes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.survey"><code class="docutils literal notranslate"><span class="pre">StreamInjector.survey</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -354,15 +366,39 @@
 <span id="streamobs-observed-module"></span><h1>streamobs.observed module<a class="headerlink" href="#module-streamobs.observed" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="streamobs.observed.StreamInjector">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.observed.</span></span><span class="sig-name descname"><span class="pre">StreamInjector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">survey</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/observed.html#StreamInjector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.observed.StreamInjector" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.observed.</span></span><span class="sig-name descname"><span class="pre">StreamInjector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">survey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/observed.html#StreamInjector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.observed.StreamInjector" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Inject observational effects into stream data for a given survey.</p>
-<p>This class handles the core injection logic while keeping survey data separate.
-All survey data is loaded once and cached, making multiple injections efficient.</p>
+<p>Inject observational effects into stream data for one or more surveys.</p>
+<p>A single injector handles both the single- and multi-survey cases: pass one
+survey or several. The same shared sky placement and a single shared draw of
+true magnitudes (masses sampled once via the isochrone and interpolated into
+every survey’s bands) guarantee the <strong>same physical star</strong> gets consistent
+magnitudes across surveys. Each survey contributes its own
+<code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_obs</span></code> / <code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_err</span></code> / <code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_flag_observed</span></code>
+columns, computed with that survey’s own maglim maps and completeness
+functions. Output columns are <strong>always</strong> survey-namespaced, even for a single
+survey.</p>
+<p>All survey data is loaded once and cached, making multiple injections
+efficient.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="streamobs.observed.StreamInjector.survey">
-<span class="sig-name descname"><span class="pre">survey</span></span><a class="headerlink" href="#streamobs.observed.StreamInjector.survey" title="Link to this definition">#</a></dt>
-<dd><p>Survey instance containing all survey-specific data and functions.</p>
+<dt class="sig sig-object py" id="streamobs.observed.StreamInjector.surveys">
+<span class="sig-name descname"><span class="pre">surveys</span></span><a class="headerlink" href="#streamobs.observed.StreamInjector.surveys" title="Link to this definition">#</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">{namespace:</span> <span class="pre">Survey}</span></code> for every survey this injector serves. The
+namespace is the survey’s <code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code> and is the column prefix
+(<code class="docutils literal notranslate"><span class="pre">lsst_yr5_r_obs</span></code>, <code class="docutils literal notranslate"><span class="pre">roman_dc2_F158_obs</span></code>, …).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="streamobs.observed.StreamInjector.primary">
+<span class="sig-name descname"><span class="pre">primary</span></span><a class="headerlink" href="#streamobs.observed.StreamInjector.primary" title="Link to this definition">#</a></dt>
+<dd><p>The survey whose footprint drives the shared sky placement and whose
+<code class="docutils literal notranslate"><span class="pre">_save_injected_data</span></code> is used (also available as <code class="docutils literal notranslate"><span class="pre">survey</span></code>). Its
+namespace string is <a class="reference internal" href="#streamobs.observed.StreamInjector.primary_namespace" title="streamobs.observed.StreamInjector.primary_namespace"><code class="xref py py-attr docutils literal notranslate"><span class="pre">primary_namespace</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey" title="streamobs.surveys.Survey">Survey</a></p>
@@ -394,53 +430,23 @@ sky location across multiple inject() calls when gc_frame=’last’.</p>
 </dd></dl>
 
 <p class="rubric">Examples</p>
-<p>Initialize with a survey:</p>
+<p>Single survey (columns namespaced <code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code>):</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">injector</span> <span class="o">=</span> <span class="n">StreamInjector</span><span class="p">(</span><span class="s1">&#39;lsst&#39;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s1">&#39;dc2&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">injector</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">])</span>  <span class="c1"># -&gt; lsst_dc2_r_obs, ...</span>
 </pre></div>
 </div>
-<p>Or with a pre-loaded Survey object:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">survey</span> <span class="o">=</span> <span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;lsst&#39;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s1">&#39;dc2&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">injector</span> <span class="o">=</span> <span class="n">StreamInjector</span><span class="p">(</span><span class="n">survey</span><span class="p">)</span>
+<p>Several surveys at once — each spec carries its release; the namespace is
+derived from it, so bands are keyed by <code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code>:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">injector</span> <span class="o">=</span> <span class="n">StreamInjector</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;survey&#39;</span><span class="p">:</span> <span class="s1">&#39;lsst&#39;</span><span class="p">,</span> <span class="s1">&#39;release&#39;</span><span class="p">:</span> <span class="s1">&#39;dc2&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;survey&#39;</span><span class="p">:</span> <span class="s1">&#39;roman&#39;</span><span class="p">,</span> <span class="s1">&#39;release&#39;</span><span class="p">:</span> <span class="s1">&#39;dc2&#39;</span><span class="p">},</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">injector</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">df</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">bands</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;lsst_dc2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">],</span> <span class="s1">&#39;roman_dc2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;F106&#39;</span><span class="p">,</span> <span class="s1">&#39;F158&#39;</span><span class="p">]},</span>
+<span class="gp">... </span>    <span class="n">stream_config</span><span class="o">=</span><span class="n">scene</span><span class="p">[</span><span class="s1">&#39;stream&#39;</span><span class="p">],</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
 </pre></div>
-</div>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.observed.StreamInjector.clear_mask_cache" title="streamobs.observed.StreamInjector.clear_mask_cache"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear_mask_cache</span></code></a>()</p></td>
-<td><p>Clear the mask cache.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.observed.StreamInjector.complete_data" title="streamobs.observed.StreamInjector.complete_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">complete_data</span></code></a>(data[, bands])</p></td>
-<td><p>Validate and complete the columns needed for injection.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.observed.StreamInjector.detect_flag" title="streamobs.observed.StreamInjector.detect_flag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detect_flag</span></code></a>(pix[, mag, band])</p></td>
-<td><p>Apply the survey selection to determine detection flags for stars.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.observed.StreamInjector.fluxToMag" title="streamobs.observed.StreamInjector.fluxToMag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fluxToMag</span></code></a>(flux)</p></td>
-<td><p>Convert from flux to AB magnitude.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.observed.StreamInjector.getFluxError" title="streamobs.observed.StreamInjector.getFluxError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">getFluxError</span></code></a>(mag, mag_error)</p></td>
-<td><p>Convert magnitude error to flux error.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.observed.StreamInjector.inject" title="streamobs.observed.StreamInjector.inject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inject</span></code></a>(data[, bands])</p></td>
-<td><p>Add observed quantities from the survey to the given data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.observed.StreamInjector.list_cached_masks" title="streamobs.observed.StreamInjector.list_cached_masks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_cached_masks</span></code></a>()</p></td>
-<td><p>List all cached masks.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.observed.StreamInjector.magToFlux" title="streamobs.observed.StreamInjector.magToFlux"><code class="xref py py-obj docutils literal notranslate"><span class="pre">magToFlux</span></code></a>(mag)</p></td>
-<td><p>Convert from AB magnitude to flux.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.observed.StreamInjector.phi_to_radec" title="streamobs.observed.StreamInjector.phi_to_radec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phi_to_radec</span></code></a>(phi1, phi2[, gc_frame, seed, ...])</p></td>
-<td><p>Transform stream coordinates (phi1, phi2) to sky coordinates (RA, Dec).</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#streamobs.observed.StreamInjector.plot_stream_in_mask" title="streamobs.observed.StreamInjector.plot_stream_in_mask"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_stream_in_mask</span></code></a>(data, mask_type[, ...])</p></td>
-<td><p>Plot the stream over the footprint mask.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#streamobs.observed.StreamInjector.sample_measured_magnitudes" title="streamobs.observed.StreamInjector.sample_measured_magnitudes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample_measured_magnitudes</span></code></a>(mag_true, ...)</p></td>
-<td><p>Sample measured magnitudes from true apparent magnitudes and errors.</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.observed.StreamInjector.clear_mask_cache">
@@ -455,101 +461,65 @@ sky location across multiple inject() calls when gc_frame=’last’.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.observed.StreamInjector.complete_data">
-<span class="sig-name descname"><span class="pre">complete_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['r',</span> <span class="pre">'g']</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/observed.html#StreamInjector.complete_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.observed.StreamInjector.complete_data" title="Link to this definition">#</a></dt>
-<dd><p>Validate and complete the columns needed for injection.</p>
-<p>This function ensures sky coordinates are present and, if requested,
-fills missing photometric magnitude columns using a stream model.
-Specifically:</p>
-<ul class="simple">
-<li><p>If (ra, dec) are missing but (phi1, phi2) exist, it converts to
-sky coordinates via <code class="docutils literal notranslate"><span class="pre">phi_to_radec</span></code>.</p></li>
-<li><p>It checks for <code class="docutils literal notranslate"><span class="pre">mag_&lt;band&gt;</span></code> for each requested band; any missing
-bands are generated via <code class="docutils literal notranslate"><span class="pre">StreamModel.complete_catalog</span></code> when a
-<code class="docutils literal notranslate"><span class="pre">stream_config</span></code> is provided.</p></li>
-<li><p>Existing columns are preserved and are not overwritten.</p></li>
-</ul>
+<span class="sig-name descname"><span class="pre">complete_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/observed.html#StreamInjector.complete_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.observed.StreamInjector.complete_data" title="Link to this definition">#</a></dt>
+<dd><p>Complete the columns the injector needs, filling the rest from the config.</p>
+<p>Public helper: give it a (possibly partial) catalog and it returns one
+with everything the injector requires present — sky coordinates
+(<code class="docutils literal notranslate"><span class="pre">ra</span></code>/<code class="docutils literal notranslate"><span class="pre">dec</span></code>, converting from <code class="docutils literal notranslate"><span class="pre">phi1</span></code>/<code class="docutils literal notranslate"><span class="pre">phi2</span></code> if needed) and the
+per-survey true-magnitude columns <code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_true</span></code>. Anything
+already present is preserved; only missing columns are sampled, using
+<code class="docutils literal notranslate"><span class="pre">stream_config</span></code> (a <a class="reference internal" href="streamobs.model.html#streamobs.model.StreamModel" title="streamobs.model.StreamModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">StreamModel</span></code></a> config). The
+stellar masses are drawn <strong>once</strong> and interpolated into every survey’s
+bands, so the same physical star is consistent across surveys.</p>
+<p>This is the same completion <a class="reference internal" href="#streamobs.observed.StreamInjector.inject" title="streamobs.observed.StreamInjector.inject"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inject()</span></code></a> runs internally, exposed so
+you can build/inspect a completed catalog without injecting noise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame</em>) – Input catalog. Must contain either (ra, dec) or (phi1, phi2).
-The DataFrame is copied; the input object is not modified in place.</p></li>
-<li><p><strong>bands</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Photometric bands to ensure (as <code class="docutils literal notranslate"><span class="pre">mag_&lt;band&gt;</span></code>). Default is
-<code class="docutils literal notranslate"><span class="pre">['r',</span> <span class="pre">'g']</span></code>.</p></li>
-<li><p><strong>**kwargs</strong> – <p>Additional options:</p>
-<dl class="simple">
-<dt>rng<span class="classifier">numpy.random.Generator, optional</span></dt><dd><p>Random number generator instance.</p>
-</dd>
-<dt>seed<span class="classifier">int, optional</span></dt><dd><p>Random seed used to initialize an RNG if <code class="docutils literal notranslate"><span class="pre">rng</span></code> is not given.</p>
-</dd>
-<dt>gc_frame<span class="classifier">gala.coordinates.GreatCircleICRSFrame or ‘last’, optional</span></dt><dd><p>Great circle frame to use. If ‘last’, uses the frame from the
-previous call. If None, generates a new random frame.</p>
-</dd>
-<dt>stream_config<span class="classifier">dict, optional</span></dt><dd><p>Configuration passed to <code class="docutils literal notranslate"><span class="pre">StreamModel</span></code>. Required only when at
-least one requested magnitude band is missing. See
-<code class="docutils literal notranslate"><span class="pre">StreamModel</span></code> for the expected schema (e.g., track, distance
-modulus, isochrone).</p>
-</dd>
-</dl>
-<p>Keyword arguments forwarded to <code class="docutils literal notranslate"><span class="pre">phi_to_radec</span></code> (only used when
-converting from (phi1, phi2)):</p>
-<dl class="simple">
-<dt>mask_type<span class="classifier">list[str] or str, optional</span></dt><dd><p>Mask(s) used when searching a frame (e.g., ‘footprint’,
-‘maglim_r’, ‘ebv’).</p>
-</dd>
-<dt>percentile_threshold<span class="classifier">float, optional</span></dt><dd><p>Fraction of points that must lie inside the mask when selecting
-a frame. Default defined in <code class="docutils literal notranslate"><span class="pre">phi_to_radec</span></code>.</p>
-</dd>
-<dt>max_iter<span class="classifier">int, optional</span></dt><dd><p>Maximum trials when searching a frame. Default defined in
-<code class="docutils literal notranslate"><span class="pre">phi_to_radec</span></code>.</p>
-</dd>
-</dl>
-</p></li>
+<li><p><strong>data</strong> (<em>str</em><em> or </em><em>pandas.DataFrame</em>) – Input catalog (or path). May contain only stream coordinates
+(<code class="docutils literal notranslate"><span class="pre">phi1</span></code>/<code class="docutils literal notranslate"><span class="pre">phi2</span></code> or <code class="docutils literal notranslate"><span class="pre">ra</span></code>/<code class="docutils literal notranslate"><span class="pre">dec</span></code>), an all-empty frame of length
+<code class="docutils literal notranslate"><span class="pre">N</span></code>, or any subset of the target columns.</p></li>
+<li><p><strong>bands</strong> (<em>list</em><em> of </em><em>str</em><em> or </em><em>dict</em><em>, </em><em>optional</em>) – Bands whose true-magnitude columns to ensure. A
+<code class="docutils literal notranslate"><span class="pre">{survey_name:</span> <span class="pre">[bands]}</span></code> dict selects bands per survey (multi-survey
+form); a plain list/tuple is the single-survey shorthand. If omitted
+and there is exactly one survey, defaults to <code class="docutils literal notranslate"><span class="pre">['r',</span> <span class="pre">'g']</span></code>.</p></li>
+<li><p><strong>stream_config</strong> (<em>dict</em><em>, </em><em>optional</em>) – <a class="reference internal" href="streamobs.model.html#streamobs.model.StreamModel" title="streamobs.model.StreamModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">StreamModel</span></code></a> config used to sample any
+missing geometry / true magnitudes. Required only when something is
+missing.</p></li>
+<li><p><strong>dist</strong> (<em>float</em><em> or </em><em>array-like</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Distance modulus to use directly (scalar broadcast or per-row
+vector) instead of sampling from the config’s <code class="docutils literal notranslate"><span class="pre">distance_modulus</span></code>
+model. Lets magnitudes be filled without <code class="docutils literal notranslate"><span class="pre">phi1</span></code> / a distance model.</p></li>
+<li><p><strong>**kwargs</strong> – <code class="docutils literal notranslate"><span class="pre">rng</span></code> / <code class="docutils literal notranslate"><span class="pre">seed</span></code> for reproducibility, plus <code class="docutils literal notranslate"><span class="pre">gc_frame</span></code>,
+<code class="docutils literal notranslate"><span class="pre">mask_type</span></code>, <code class="docutils literal notranslate"><span class="pre">percentile_threshold</span></code>, <code class="docutils literal notranslate"><span class="pre">max_iter</span></code> forwarded to
+<a class="reference internal" href="#streamobs.observed.StreamInjector.phi_to_radec" title="streamobs.observed.StreamInjector.phi_to_radec"><code class="xref py py-meth docutils literal notranslate"><span class="pre">phi_to_radec()</span></code></a> when converting <code class="docutils literal notranslate"><span class="pre">phi1</span></code>/<code class="docutils literal notranslate"><span class="pre">phi2</span></code> → <code class="docutils literal notranslate"><span class="pre">ra</span></code>/<code class="docutils literal notranslate"><span class="pre">dec</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A copy of the input with the required columns present:
-<code class="docutils literal notranslate"><span class="pre">ra</span></code>, <code class="docutils literal notranslate"><span class="pre">dec</span></code>, and one <code class="docutils literal notranslate"><span class="pre">mag_&lt;band&gt;</span></code> column per requested band.</p>
+<dd class="field-even"><p>A copy of the input with <code class="docutils literal notranslate"><span class="pre">ra</span></code>/<code class="docutils literal notranslate"><span class="pre">dec</span></code> and the requested
+<code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_true</span></code> columns present.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If neither (ra, dec) nor (phi1, phi2) are present; or if one or
-more magnitude bands are missing and <code class="docutils literal notranslate"><span class="pre">stream_config</span></code> is not
-provided; or if after completion a required column is still absent.</p>
+<dd class="field-even"><p><strong>ValueError</strong> – If neither (ra, dec) nor (phi1, phi2) are present, or if columns are
+missing and <code class="docutils literal notranslate"><span class="pre">stream_config</span></code> is not provided.</p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>Only missing magnitude columns are synthesized; existing values are
-left untouched.</p></li>
-<li><p>Magnitudes are produced by <code class="docutils literal notranslate"><span class="pre">StreamModel.complete_catalog</span></code> and rely
-on the model’s configuration (e.g., isochrone and distance modulus).</p></li>
-<li><p>When a new gc_frame is created or used, it is stored in <code class="docutils literal notranslate"><span class="pre">self._last_gc_frame</span></code>
-for potential reuse via <code class="docutils literal notranslate"><span class="pre">gc_frame='last'</span></code>.</p></li>
-</ul>
 <p class="rubric">Examples</p>
-<p>Convert from (phi1, phi2) and generate both bands:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;phi1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s1">&#39;phi2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">cfg</span> <span class="o">=</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>  <span class="c1"># stream model config</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">injector</span><span class="o">.</span><span class="n">complete_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">],</span> <span class="n">stream_config</span><span class="o">=</span><span class="n">cfg</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Use already existing ra/dec and fill a missing ‘g’ band from a model:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;phi1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="s1">&#39;phi2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;ra&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">10.1</span><span class="p">,</span> <span class="mf">12.5</span><span class="p">,</span> <span class="mf">24.7</span><span class="p">],</span> <span class="s1">&#39;dec&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">5.2</span><span class="p">,</span> <span class="mf">6.2</span><span class="p">,</span> <span class="mf">7.2</span><span class="p">],})</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">injector</span><span class="o">.</span><span class="n">complete_data</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">],</span> <span class="n">stream_config</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Reuse the same gc_frame for multiple streams:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data1</span> <span class="o">=</span> <span class="n">injector</span><span class="o">.</span><span class="n">complete_data</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>  <span class="c1"># Creates new frame</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data2</span> <span class="o">=</span> <span class="n">injector</span><span class="o">.</span><span class="n">complete_data</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">gc_frame</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">)</span>  <span class="c1"># Reuses frame from data1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">injector</span><span class="o">.</span><span class="n">complete_data</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">df</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;lsst&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">],</span> <span class="s1">&#39;roman&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;F106&#39;</span><span class="p">,</span> <span class="s1">&#39;F158&#39;</span><span class="p">]},</span>
+<span class="gp">... </span>    <span class="n">stream_config</span><span class="o">=</span><span class="n">cfg</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.observed.StreamInjector.detect_flag">
-<span class="sig-name descname"><span class="pre">detect_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/observed.html#StreamInjector.detect_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.observed.StreamInjector.detect_flag" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">detect_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">survey</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/observed.html#StreamInjector.detect_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.observed.StreamInjector.detect_flag" title="Link to this definition">#</a></dt>
 <dd><p>Apply the survey selection to determine detection flags for stars.</p>
 <p>This method uses the survey completeness function and random sampling
 to determine which stars would be detected by the survey.</p>
@@ -559,6 +529,8 @@ to determine which stars would be detected by the survey.</p>
 <li><p><strong>pix</strong> (<em>int</em><em> or </em><em>np.ndarray</em>) – HEALPix pixel index/indices.</p></li>
 <li><p><strong>mag</strong> (<em>float</em><em> or </em><em>np.ndarray</em><em>, </em><em>optional</em>) – Magnitude(s). Default is None.</p></li>
 <li><p><strong>band</strong> (<em>str</em><em>, </em><em>optional</em>) – Band to consider for detection. Default is ‘r’.</p></li>
+<li><p><strong>survey</strong> (<a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey" title="streamobs.surveys.Survey"><em>Survey</em></a>) – Survey whose completeness/detection-efficiency curves to use
+(required).</p></li>
 <li><p><strong>**kwargs</strong> – <p>Additional keyword arguments:</p>
 <dl class="simple">
 <dt>rng<span class="classifier">numpy.random.Generator, optional</span></dt><dd><p>Random number generator instance.</p>
@@ -622,24 +594,47 @@ to determine which stars would be detected by the survey.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.observed.StreamInjector.inject">
-<span class="sig-name descname"><span class="pre">inject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['r',</span> <span class="pre">'g']</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/observed.html#StreamInjector.inject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.observed.StreamInjector.inject" title="Link to this definition">#</a></dt>
-<dd><p>Add observed quantities from the survey to the given data.</p>
-<p>This method applies observational effects including photometric errors,
-magnitude measurements, and detection flags based on survey properties.</p>
+<span class="sig-name descname"><span class="pre">inject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/observed.html#StreamInjector.inject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.observed.StreamInjector.inject" title="Link to this definition">#</a></dt>
+<dd><p>Add observed quantities from every survey into a single catalog.</p>
+<p>Applies observational effects (photometric errors, measured magnitudes,
+detection flags) for each survey this injector serves. A single shared
+sky placement and a single shared true-magnitude fill (masses sampled
+once and interpolated into every survey’s bands) ensure the same physical
+star is consistent across surveys. Output columns are always
+survey-namespaced (<code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_obs</span></code> etc.).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>str</em><em> or </em><em>pd.DataFrame</em>) – Input data as DataFrame or path to the file (CSV or Excel).
-Must contain either (ra, dec) or (phi1, phi2) coordinates, and
-magnitude columns for the specified bands.</p></li>
-<li><p><strong>bands</strong> (<em>list</em><em> of </em><em>str</em><em>, </em><em>optional</em>) – List of photometric bands to process. Default is [‘r’, ‘g’].</p></li>
+<li><p><strong>data</strong> (<em>str</em><em> or </em><em>pd.DataFrame</em>) – Input data as DataFrame or path to the file (CSV or Excel). May
+contain only stream coordinates (<code class="docutils literal notranslate"><span class="pre">phi1</span></code>/<code class="docutils literal notranslate"><span class="pre">phi2</span></code> or <code class="docutils literal notranslate"><span class="pre">ra</span></code>/<code class="docutils literal notranslate"><span class="pre">dec</span></code>);
+anything missing is sampled from <code class="docutils literal notranslate"><span class="pre">stream_config</span></code>. An all-empty frame
+of length <code class="docutils literal notranslate"><span class="pre">N</span></code> is accepted (geometry and magnitudes are then sampled
+for <code class="docutils literal notranslate"><span class="pre">N</span></code> rows).</p></li>
+<li><p><strong>bands</strong> (<em>list</em><em> of </em><em>str</em><em> or </em><em>dict</em><em>, </em><em>optional</em>) – Bands to inject. A <code class="docutils literal notranslate"><span class="pre">{survey_name:</span> <span class="pre">[bands]}</span></code> dict selects bands per
+survey (the multi-survey form; keys must match the surveys this
+injector was built with). A plain list/tuple is the single-survey
+shorthand, applied to the only survey. If omitted and there is
+exactly one survey, defaults to <code class="docutils literal notranslate"><span class="pre">['r',</span> <span class="pre">'g']</span></code>.</p></li>
+<li><p><strong>stream_config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The <code class="docutils literal notranslate"><span class="pre">stream</span></code> section consumed by
+<a class="reference internal" href="streamobs.model.html#streamobs.model.StreamModel" title="streamobs.model.StreamModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">StreamModel</span></code></a>. Required when any coordinate
+or true-magnitude column is missing. Its isochrone produces the
+shared <code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_true</span></code> columns.</p></li>
 <li><p><strong>**kwargs</strong> – <p>Additional keyword arguments:</p>
 <dl class="simple">
 <dt>seed<span class="classifier">int, optional</span></dt><dd><p>Random seed for reproducibility.</p>
 </dd>
+<dt>dist<span class="classifier">float or array-like, optional</span></dt><dd><p>Distance modulus used directly (scalar broadcast or per-row
+vector) instead of sampling from the config’s <code class="docutils literal notranslate"><span class="pre">distance_modulus</span></code>
+model — lets magnitudes be filled without <code class="docutils literal notranslate"><span class="pre">phi1</span></code>.</p>
+</dd>
 <dt>nside<span class="classifier">int, optional</span></dt><dd><p>HEALPix nside parameter. Default is 4096.</p>
 </dd>
-<dt>detection_mag_cut<span class="classifier">list of str, optional</span></dt><dd><p>Bands to apply SNR detection cut. Default is [‘g’].</p>
+<dt>detection_mag_cut<span class="classifier">list of str, optional</span></dt><dd><p>Non-reference bands to apply the explicit SNR&gt;=5 cut to. The
+reference band (<code class="docutils literal notranslate"><span class="pre">survey.completeness_band</span></code>) is never cut here —
+its SNR cut is already baked into the survey’s selection
+functions — so the default is every injected band <em>except</em> the
+reference band. Net effect: every injected band must have
+SNR &gt;= 5, with the reference band’s cut owned by the curves.</p>
 </dd>
 <dt>save<span class="classifier">bool, optional</span></dt><dd><p>Whether to save the output data. Default is False.</p>
 </dd>
@@ -657,13 +652,15 @@ magnitude columns for the specified bands.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><p>DataFrame with the following added columns:</p>
+<dd class="field-even"><p><p>DataFrame with shared <code class="docutils literal notranslate"><span class="pre">ra</span></code>/<code class="docutils literal notranslate"><span class="pre">dec</span></code> and, per survey:</p>
 <ul class="simple">
-<li><p>mag_&lt;band&gt;_obs : Observed magnitudes for each band</p></li>
-<li><p>magerr_&lt;band&gt; : Photometric errors for each band</p></li>
-<li><p>flag_observed : Boolean flag (True=detected, False=not detected). Includes both detection and classification efficiencies.</p></li>
-<li><p>flag_perfect_galstarsep : Boolean flag assuming perfect star/galaxy separation (detection efficiency only, no classification losses; only if requested with perfect_galstarsep=True)</p></li>
-<li><p>ra, dec : Sky coordinates (if not already present)</p></li>
+<li><p>&lt;survey&gt;_&lt;band&gt;_true : True (noiseless) apparent magnitudes</p></li>
+<li><p>&lt;survey&gt;_&lt;band&gt;_obs : Observed (noisy) magnitudes</p></li>
+<li><p>&lt;survey&gt;_&lt;band&gt;_err : Reported photometric errors</p></li>
+<li><p>&lt;survey&gt;_flag_observed : Boolean detection flag (detection and
+classification efficiencies)</p></li>
+<li><p>&lt;survey&gt;_flag_perfect_galstarsep : Boolean flag assuming perfect
+star/galaxy separation (only if perfect_galstarsep=True)</p></li>
 </ul>
 </p>
 </dd>
@@ -671,7 +668,9 @@ magnitude columns for the specified bands.</p></li>
 <dd class="field-odd"><p>pd.DataFrame</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If required columns are missing or bands are not supported.</p>
+<dd class="field-even"><p><strong>ValueError</strong> – If required columns are missing, if <code class="docutils literal notranslate"><span class="pre">bands</span></code> (as a dict) references
+an unknown survey, or if a list <code class="docutils literal notranslate"><span class="pre">bands</span></code> is given for a multi-survey
+injector.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -712,11 +711,6 @@ magnitude columns for the specified bands.</p></li>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">mask_cache</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></span><a class="headerlink" href="#id0" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.observed.StreamInjector.phi_to_radec">
@@ -820,6 +814,20 @@ survey footprint or other masks.</p>
 </div>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="id0">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">primary</span></span><a class="headerlink" href="#id0" title="Link to this definition">#</a></dt>
+<dd><p>The primary <a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey" title="streamobs.surveys.Survey"><code class="xref py py-class docutils literal notranslate"><span class="pre">Survey</span></code></a>.</p>
+<p>Drives the shared sky placement; mask, coordinate and footprint helpers
+operate on it. Its column namespace is <a class="reference internal" href="#streamobs.observed.StreamInjector.primary_namespace" title="streamobs.observed.StreamInjector.primary_namespace"><code class="xref py py-attr docutils literal notranslate"><span class="pre">primary_namespace</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="streamobs.observed.StreamInjector.primary_namespace">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">primary_namespace</span></span><a class="headerlink" href="#streamobs.observed.StreamInjector.primary_namespace" title="Link to this definition">#</a></dt>
+<dd><p>Column namespace (<code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code>) of the primary survey.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="streamobs.observed.StreamInjector.sample_measured_magnitudes">
 <span class="sig-name descname"><span class="pre">sample_measured_magnitudes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mag_true</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag_err</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/observed.html#StreamInjector.sample_measured_magnitudes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.observed.StreamInjector.sample_measured_magnitudes" title="Link to this definition">#</a></dt>
@@ -848,6 +856,12 @@ from a Gaussian distribution in flux space.</p>
 <dd class="field-odd"><p>np.ndarray or str</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="streamobs.observed.StreamInjector.survey">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">survey</span></span><a class="headerlink" href="#streamobs.observed.StreamInjector.survey" title="Link to this definition">#</a></dt>
+<dd><p>Alias for <a class="reference internal" href="#id0" title="streamobs.observed.StreamInjector.primary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">primary</span></code></a> — the primary <a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey" title="streamobs.surveys.Survey"><code class="xref py py-class docutils literal notranslate"><span class="pre">Survey</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
@@ -902,7 +916,8 @@ from a Gaussian distribution in flux space.</p>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector"><code class="docutils literal notranslate"><span class="pre">StreamInjector</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.survey"><code class="docutils literal notranslate"><span class="pre">StreamInjector.survey</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.surveys"><code class="docutils literal notranslate"><span class="pre">StreamInjector.surveys</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.primary"><code class="docutils literal notranslate"><span class="pre">StreamInjector.primary</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.mask_cache"><code class="docutils literal notranslate"><span class="pre">StreamInjector.mask_cache</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector._last_gc_frame"><code class="docutils literal notranslate"><span class="pre">StreamInjector._last_gc_frame</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.clear_mask_cache"><code class="docutils literal notranslate"><span class="pre">StreamInjector.clear_mask_cache()</span></code></a></li>
@@ -913,10 +928,12 @@ from a Gaussian distribution in flux space.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.inject"><code class="docutils literal notranslate"><span class="pre">StreamInjector.inject()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.list_cached_masks"><code class="docutils literal notranslate"><span class="pre">StreamInjector.list_cached_masks()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.magToFlux"><code class="docutils literal notranslate"><span class="pre">StreamInjector.magToFlux()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">StreamInjector.mask_cache</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.phi_to_radec"><code class="docutils literal notranslate"><span class="pre">StreamInjector.phi_to_radec()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.plot_stream_in_mask"><code class="docutils literal notranslate"><span class="pre">StreamInjector.plot_stream_in_mask()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id0"><code class="docutils literal notranslate"><span class="pre">StreamInjector.primary</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.primary_namespace"><code class="docutils literal notranslate"><span class="pre">StreamInjector.primary_namespace</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.sample_measured_magnitudes"><code class="docutils literal notranslate"><span class="pre">StreamInjector.sample_measured_magnitudes()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.observed.StreamInjector.survey"><code class="docutils literal notranslate"><span class="pre">StreamInjector.survey</span></code></a></li>
 </ul>
 </li>
 </ul>

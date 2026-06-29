@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -143,16 +144,23 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -162,6 +170,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">Content</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">streamobs package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -341,25 +350,14 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.functions.html#streamobs.functions.BoundedFunction"><code class="docutils literal notranslate"><span class="pre">BoundedFunction</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.functions.html#streamobs.functions.Constant"><code class="docutils literal notranslate"><span class="pre">Constant</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.functions.html#streamobs.functions.CubicSplineInterpolation"><code class="docutils literal notranslate"><span class="pre">CubicSplineInterpolation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.functions.html#streamobs.functions.FileCubicSplineInterpolation"><code class="docutils literal notranslate"><span class="pre">FileCubicSplineInterpolation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.functions.html#streamobs.functions.FileInterpolation"><code class="docutils literal notranslate"><span class="pre">FileInterpolation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.functions.html#streamobs.functions.FileLinearDensityCubicSplineInterpolation"><code class="docutils literal notranslate"><span class="pre">FileLinearDensityCubicSplineInterpolation</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.functions.html#streamobs.functions.Interpolation"><code class="docutils literal notranslate"><span class="pre">Interpolation</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.functions.html#streamobs.functions.Line"><code class="docutils literal notranslate"><span class="pre">Line</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.functions.html#streamobs.functions.LinearDensityCubicSplineInterpolation"><code class="docutils literal notranslate"><span class="pre">LinearDensityCubicSplineInterpolation</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.functions.html#streamobs.functions.Sinusoid"><code class="docutils literal notranslate"><span class="pre">Sinusoid</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.functions.html#streamobs.functions.function_factory"><code class="docutils literal notranslate"><span class="pre">function_factory()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="streamobs.model.html">streamobs.model module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.model.html#streamobs.model.BackgroundModel"><code class="docutils literal notranslate"><span class="pre">BackgroundModel</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.model.html#streamobs.model.ConfigurableModel"><code class="docutils literal notranslate"><span class="pre">ConfigurableModel</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.model.html#streamobs.model.ConfigurableModel.sample"><code class="docutils literal notranslate"><span class="pre">ConfigurableModel.sample()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="streamobs.model.html#streamobs.model.ConfigurableModel"><code class="docutils literal notranslate"><span class="pre">ConfigurableModel</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.model.html#streamobs.model.DensityModel"><code class="docutils literal notranslate"><span class="pre">DensityModel</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.model.html#streamobs.model.DensityModel.sample"><code class="docutils literal notranslate"><span class="pre">DensityModel.sample()</span></code></a></li>
 </ul>
@@ -368,6 +366,7 @@
 <li class="toctree-l2"><a class="reference internal" href="streamobs.model.html#streamobs.model.IsochroneModel"><code class="docutils literal notranslate"><span class="pre">IsochroneModel</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.model.html#streamobs.model.IsochroneModel.create_isochrone"><code class="docutils literal notranslate"><span class="pre">IsochroneModel.create_isochrone()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.model.html#streamobs.model.IsochroneModel.sample"><code class="docutils literal notranslate"><span class="pre">IsochroneModel.sample()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.model.html#streamobs.model.IsochroneModel.sample_masses"><code class="docutils literal notranslate"><span class="pre">IsochroneModel.sample_masses()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.model.html#streamobs.model.SplineStreamModel"><code class="docutils literal notranslate"><span class="pre">SplineStreamModel</span></code></a></li>
@@ -388,7 +387,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="streamobs.observed.html">streamobs.observed module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector"><code class="docutils literal notranslate"><span class="pre">StreamInjector</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.survey"><code class="docutils literal notranslate"><span class="pre">StreamInjector.survey</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.surveys"><code class="docutils literal notranslate"><span class="pre">StreamInjector.surveys</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.primary"><code class="docutils literal notranslate"><span class="pre">StreamInjector.primary</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.mask_cache"><code class="docutils literal notranslate"><span class="pre">StreamInjector.mask_cache</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector._last_gc_frame"><code class="docutils literal notranslate"><span class="pre">StreamInjector._last_gc_frame</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.clear_mask_cache"><code class="docutils literal notranslate"><span class="pre">StreamInjector.clear_mask_cache()</span></code></a></li>
@@ -399,19 +399,19 @@
 <li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.inject"><code class="docutils literal notranslate"><span class="pre">StreamInjector.inject()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.list_cached_masks"><code class="docutils literal notranslate"><span class="pre">StreamInjector.list_cached_masks()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.magToFlux"><code class="docutils literal notranslate"><span class="pre">StreamInjector.magToFlux()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#id0"><code class="docutils literal notranslate"><span class="pre">StreamInjector.mask_cache</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.phi_to_radec"><code class="docutils literal notranslate"><span class="pre">StreamInjector.phi_to_radec()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.plot_stream_in_mask"><code class="docutils literal notranslate"><span class="pre">StreamInjector.plot_stream_in_mask()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#id0"><code class="docutils literal notranslate"><span class="pre">StreamInjector.primary</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.primary_namespace"><code class="docutils literal notranslate"><span class="pre">StreamInjector.primary_namespace</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.sample_measured_magnitudes"><code class="docutils literal notranslate"><span class="pre">StreamInjector.sample_measured_magnitudes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html#streamobs.observed.StreamInjector.survey"><code class="docutils literal notranslate"><span class="pre">StreamInjector.survey</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="streamobs.plotting.html">streamobs.plotting module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.plotting.html#streamobs.plotting.draw_stream"><code class="docutils literal notranslate"><span class="pre">draw_stream()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.plotting.html#streamobs.plotting.plot_healsparse_map"><code class="docutils literal notranslate"><span class="pre">plot_healsparse_map()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.plotting.html#streamobs.plotting.plot_inject"><code class="docutils literal notranslate"><span class="pre">plot_inject()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.plotting.html#streamobs.plotting.plot_maglim"><code class="docutils literal notranslate"><span class="pre">plot_maglim()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.plotting.html#streamobs.plotting.plot_stream"><code class="docutils literal notranslate"><span class="pre">plot_stream()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.plotting.html#streamobs.plotting.plot_stream_in_mask"><code class="docutils literal notranslate"><span class="pre">plot_stream_in_mask()</span></code></a></li>
 </ul>
@@ -422,21 +422,8 @@
 <li class="toctree-l2"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.FileInterpolationSampler"><code class="docutils literal notranslate"><span class="pre">FileInterpolationSampler</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.FileLinearDensityCubicSplineInterpolationSampler"><code class="docutils literal notranslate"><span class="pre">FileLinearDensityCubicSplineInterpolationSampler</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.GaussianSampler"><code class="docutils literal notranslate"><span class="pre">GaussianSampler</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.InterpolationSampler"><code class="docutils literal notranslate"><span class="pre">InterpolationSampler</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.InterpolationSampler.sample"><code class="docutils literal notranslate"><span class="pre">InterpolationSampler.sample()</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.InterpolationSampler"><code class="docutils literal notranslate"><span class="pre">InterpolationSampler</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.LinearDensityCubicSplineInterpolationSampler"><code class="docutils literal notranslate"><span class="pre">LinearDensityCubicSplineInterpolationSampler</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.Sampler"><code class="docutils literal notranslate"><span class="pre">Sampler</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.Sampler.pdf"><code class="docutils literal notranslate"><span class="pre">Sampler.pdf()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.Sampler.sample"><code class="docutils literal notranslate"><span class="pre">Sampler.sample()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.ScipySampler"><code class="docutils literal notranslate"><span class="pre">ScipySampler</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.ScipySampler.pdf"><code class="docutils literal notranslate"><span class="pre">ScipySampler.pdf()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.ScipySampler.sample"><code class="docutils literal notranslate"><span class="pre">ScipySampler.sample()</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.SinusoidSampler"><code class="docutils literal notranslate"><span class="pre">SinusoidSampler</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.UniformSampler"><code class="docutils literal notranslate"><span class="pre">UniformSampler</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.samplers.html#streamobs.samplers.inverse_transform_sample"><code class="docutils literal notranslate"><span class="pre">inverse_transform_sample()</span></code></a></li>
@@ -457,14 +444,8 @@
 <li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.completeness"><code class="docutils literal notranslate"><span class="pre">Survey.completeness</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.delta_saturation"><code class="docutils literal notranslate"><span class="pre">Survey.delta_saturation</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.completeness_band"><code class="docutils literal notranslate"><span class="pre">Survey.completeness_band</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.log_photo_error"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id0"><code class="docutils literal notranslate"><span class="pre">Survey.bands</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id1"><code class="docutils literal notranslate"><span class="pre">Survey.coeff_extinc</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id2"><code class="docutils literal notranslate"><span class="pre">Survey.completeness</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id3"><code class="docutils literal notranslate"><span class="pre">Survey.completeness_band</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id4"><code class="docutils literal notranslate"><span class="pre">Survey.coverage</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id5"><code class="docutils literal notranslate"><span class="pre">Survey.delta_saturation</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id6"><code class="docutils literal notranslate"><span class="pre">Survey.ebv_map</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.log_photo_error_catalog"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error_catalog</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.log_photo_error_sample"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error_sample</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.get_classification_efficiency"><code class="docutils literal notranslate"><span class="pre">Survey.get_classification_efficiency()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.get_completeness"><code class="docutils literal notranslate"><span class="pre">Survey.get_completeness()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.get_detection_efficiency"><code class="docutils literal notranslate"><span class="pre">Survey.get_detection_efficiency()</span></code></a></li>
@@ -473,12 +454,8 @@
 <li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.get_maglim"><code class="docutils literal notranslate"><span class="pre">Survey.get_maglim()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.get_photo_error"><code class="docutils literal notranslate"><span class="pre">Survey.get_photo_error()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.load"><code class="docutils literal notranslate"><span class="pre">Survey.load()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id7"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id8"><code class="docutils literal notranslate"><span class="pre">Survey.maglim_maps</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id9"><code class="docutils literal notranslate"><span class="pre">Survey.name</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id10"><code class="docutils literal notranslate"><span class="pre">Survey.release</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id11"><code class="docutils literal notranslate"><span class="pre">Survey.saturation</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#id12"><code class="docutils literal notranslate"><span class="pre">Survey.sys_error</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.log_photo_error"><code class="docutils literal notranslate"><span class="pre">Survey.log_photo_error</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.namespace"><code class="docutils literal notranslate"><span class="pre">Survey.namespace</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.SurveyFactory"><code class="docutils literal notranslate"><span class="pre">SurveyFactory</span></code></a><ul>

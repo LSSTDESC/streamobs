@@ -31,6 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -142,16 +143,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="../../roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -161,6 +169,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -324,8 +333,6 @@
 
 
 
-<div class="viewcode-block" id="BoundedFunction">
-<a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.BoundedFunction">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BoundedFunction</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Function with bounds explicitly defined.</span>
@@ -358,12 +365,9 @@
             <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xvals</span><span class="p">):</span>
-        <span class="k">pass</span></div>
+        <span class="k">pass</span>
 
 
-
-<div class="viewcode-block" id="Constant">
-<a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.Constant">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Constant</span><span class="p">(</span><span class="n">BoundedFunction</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -384,8 +388,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xvals</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the method&quot;&quot;&quot;</span>
         <span class="n">yvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xvals</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">yvals</span></div>
-
+        <span class="k">return</span> <span class="n">yvals</span>
 
 
 <div class="viewcode-block" id="Line">
@@ -464,8 +467,6 @@
 
 
 
-<div class="viewcode-block" id="Interpolation">
-<a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.Interpolation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Interpolation</span><span class="p">(</span><span class="n">BoundedFunction</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -493,12 +494,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">xvals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">yvals</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">interp</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">interp</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="FileInterpolation">
-<a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.FileInterpolation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FileInterpolation</span><span class="p">(</span><span class="n">Interpolation</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Interpolation function from file.</span>
@@ -524,12 +522,9 @@
         <span class="n">xvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">xname</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">yvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">yname</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">yvals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="CubicSplineInterpolation">
-<a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.CubicSplineInterpolation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CubicSplineInterpolation</span><span class="p">(</span><span class="n">BoundedFunction</span><span class="p">):</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nodes</span><span class="p">,</span> <span class="n">node_values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -573,12 +568,9 @@
         <span class="n">interp</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">CubicSpline</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_values</span><span class="p">,</span> <span class="n">bc_type</span><span class="o">=</span><span class="s2">&quot;natural&quot;</span><span class="p">,</span> <span class="n">extrapolate</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">interp</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">interp</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="FileCubicSplineInterpolation">
-<a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.FileCubicSplineInterpolation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FileCubicSplineInterpolation</span><span class="p">(</span><span class="n">CubicSplineInterpolation</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -623,12 +615,9 @@
         <span class="n">nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">nodes_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">node_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">node_vals_name</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">node_values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">node_values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="LinearDensityCubicSplineInterpolation">
-<a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.LinearDensityCubicSplineInterpolation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LinearDensityCubicSplineInterpolation</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -677,12 +666,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xvals</span><span class="p">):</span>
         <span class="n">peak_intensity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_peak_intensity</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span>
         <span class="n">spread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spread</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">peak_intensity</span> <span class="o">*</span> <span class="n">spread</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">peak_intensity</span> <span class="o">*</span> <span class="n">spread</span>
 
 
-
-<div class="viewcode-block" id="FileLinearDensityCubicSplineInterpolation">
-<a class="viewcode-back" href="../../streamobs.functions.html#streamobs.functions.FileLinearDensityCubicSplineInterpolation">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">FileLinearDensityCubicSplineInterpolation</span><span class="p">(</span><span class="n">LinearDensityCubicSplineInterpolation</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">stream_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -721,8 +707,7 @@
             <span class="n">spread_nodes</span><span class="o">=</span><span class="n">spread_nodes</span><span class="p">,</span>
             <span class="n">spread_node_values</span><span class="o">=</span><span class="n">spread_node_values</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-        <span class="p">)</span></div>
-
+        <span class="p">)</span>
 </pre></div>
 
                 </article>

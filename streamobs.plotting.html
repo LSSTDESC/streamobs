@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -143,16 +144,23 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -162,6 +170,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">Content</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -322,9 +331,7 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.plotting.draw_stream"><code class="docutils literal notranslate"><span class="pre">draw_stream()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.plotting.plot_healsparse_map"><code class="docutils literal notranslate"><span class="pre">plot_healsparse_map()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.plotting.plot_inject"><code class="docutils literal notranslate"><span class="pre">plot_inject()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.plotting.plot_maglim"><code class="docutils literal notranslate"><span class="pre">plot_maglim()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.plotting.plot_stream"><code class="docutils literal notranslate"><span class="pre">plot_stream()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.plotting.plot_stream_in_mask"><code class="docutils literal notranslate"><span class="pre">plot_stream_in_mask()</span></code></a></li>
 </ul>
@@ -350,21 +357,16 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>phi1</strong> (<em>coordinates</em><em> of </em><em>stars</em><em> (</em><em>deg</em><em>)</em>)</p></li>
 <li><p><strong>phi2</strong> (<em>coordinates</em><em> of </em><em>stars</em><em> (</em><em>deg</em><em>)</em>)</p></li>
-<li><p><strong>Returns</strong></p></li>
-<li><p><strong>--------</strong></p></li>
-<li><p><strong>num</strong> (<em>output</em><em> of </em><em>imshow</em>)</p></li>
-<li><p><strong>xedges</strong> (<em>output</em><em> of </em><em>imshow</em>)</p></li>
-<li><p><strong>yedges</strong> (<em>output</em><em> of </em><em>imshow</em>)</p></li>
-<li><p><strong>im</strong> (<em>output</em><em> of </em><em>imshow</em>)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>num, xedges, yedges, im</strong></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>output of imshow</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="streamobs.plotting.plot_healsparse_map">
-<span class="sig-prename descclassname"><span class="pre">streamobs.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_healsparse_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/plotting.html#plot_healsparse_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.plotting.plot_healsparse_map" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="streamobs.plotting.plot_inject">
@@ -377,12 +379,13 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>dict-like</em>) – Data containing the injected stream. Must have columns:
+<li><p><strong>data</strong> (<em>pandas.DataFrame</em><em> or </em><em>dict-like</em>) – Data containing the injected stream, with columns namespaced by the
+survey’s <code class="docutils literal notranslate"><span class="pre">namespace</span></code> (<code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">lsst_yr5</span></code>). Must have:
 - ‘ra’, ‘dec’: Sky coordinates in degrees
-- ‘flag_observed’: Boolean flag for detected stars
-- ‘mag_&lt;band&gt;’: True magnitudes for each band
-- ‘mag_&lt;band&gt;_obs’: Observed magnitudes for each band</p></li>
-<li><p><strong>survey</strong> (<a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey" title="streamobs.surveys.Survey"><em>Survey</em></a>) – Survey object containing magnitude limit maps and other properties.</p></li>
+- ‘&lt;namespace&gt;_flag_observed’: Boolean flag for detected stars
+- ‘&lt;namespace&gt;_&lt;band&gt;_true’: True magnitudes for each band
+- ‘&lt;namespace&gt;_&lt;band&gt;_obs’: Observed magnitudes for each band</p></li>
+<li><p><strong>survey</strong> (<a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey" title="streamobs.surveys.Survey"><em>Survey</em></a>) – Survey object; supplies the column namespace and the magnitude-limit maps.</p></li>
 <li><p><strong>bands</strong> (<em>list</em><em> of </em><em>str</em><em>, </em><em>optional</em>) – Bands to use for HR diagram. Default is [‘g’, ‘r’].
 Will use first two bands if more are provided.</p></li>
 <li><p><strong>**kwargs</strong> (<em>dict</em>) – Additional keyword arguments:
@@ -403,11 +406,6 @@ Will use first two bands if more are provided.</p></li>
 </pre></div>
 </div>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="streamobs.plotting.plot_maglim">
-<span class="sig-prename descclassname"><span class="pre">streamobs.plotting.</span></span><span class="sig-name descname"><span class="pre">plot_maglim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">maglim_map</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/plotting.html#plot_maglim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.plotting.plot_maglim" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="streamobs.plotting.plot_stream">
@@ -500,9 +498,7 @@ Will use first two bands if more are provided.</p></li>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.plotting.draw_stream"><code class="docutils literal notranslate"><span class="pre">draw_stream()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.plotting.plot_healsparse_map"><code class="docutils literal notranslate"><span class="pre">plot_healsparse_map()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.plotting.plot_inject"><code class="docutils literal notranslate"><span class="pre">plot_inject()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.plotting.plot_maglim"><code class="docutils literal notranslate"><span class="pre">plot_maglim()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.plotting.plot_stream"><code class="docutils literal notranslate"><span class="pre">plot_stream()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.plotting.plot_stream_in_mask"><code class="docutils literal notranslate"><span class="pre">plot_stream_in_mask()</span></code></a></li>
 </ul>

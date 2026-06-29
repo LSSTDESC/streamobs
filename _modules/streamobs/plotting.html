@@ -31,6 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -142,16 +143,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="../../roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -161,6 +169,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -286,6 +295,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pylab</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.columns</span><span class="w"> </span><span class="kn">import</span> <span class="n">flag_col</span><span class="p">,</span> <span class="n">obs_col</span><span class="p">,</span> <span class="n">true_col</span>
+
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">healpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hp</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">skyproj</span>
@@ -303,8 +314,8 @@
 <span class="sd">    ----------</span>
 <span class="sd">    phi1, phi2 : coordinates of stars (deg)</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
 <span class="sd">    num, xedges, yedges, im : output of imshow</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -319,8 +330,8 @@
 
     <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Mock Stream&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$\phi_1$ [deg]&quot;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$\phi_2$ [deg]&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\phi_1$ [deg]&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\phi_2$ [deg]&quot;</span><span class="p">)</span>
 
     <span class="n">image</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
         <span class="n">hist</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
@@ -377,13 +388,14 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    data : pandas.DataFrame or dict-like</span>
-<span class="sd">        Data containing the injected stream. Must have columns:</span>
+<span class="sd">        Data containing the injected stream, with columns namespaced by the</span>
+<span class="sd">        survey&#39;s ``namespace`` (``{name}_{release}``, e.g. ``lsst_yr5``). Must have:</span>
 <span class="sd">        - &#39;ra&#39;, &#39;dec&#39;: Sky coordinates in degrees</span>
-<span class="sd">        - &#39;flag_observed&#39;: Boolean flag for detected stars</span>
-<span class="sd">        - &#39;mag_&lt;band&gt;&#39;: True magnitudes for each band</span>
-<span class="sd">        - &#39;mag_&lt;band&gt;_obs&#39;: Observed magnitudes for each band</span>
+<span class="sd">        - &#39;&lt;namespace&gt;_flag_observed&#39;: Boolean flag for detected stars</span>
+<span class="sd">        - &#39;&lt;namespace&gt;_&lt;band&gt;_true&#39;: True magnitudes for each band</span>
+<span class="sd">        - &#39;&lt;namespace&gt;_&lt;band&gt;_obs&#39;: Observed magnitudes for each band</span>
 <span class="sd">    survey : Survey</span>
-<span class="sd">        Survey object containing magnitude limit maps and other properties.</span>
+<span class="sd">        Survey object; supplies the column namespace and the magnitude-limit maps.</span>
 <span class="sd">    bands : list of str, optional</span>
 <span class="sd">        Bands to use for HR diagram. Default is [&#39;g&#39;, &#39;r&#39;].</span>
 <span class="sd">        Will use first two bands if more are provided.</span>
@@ -415,22 +427,25 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need at least 2 bands for HR diagram&quot;</span><span class="p">)</span>
     <span class="n">band1</span><span class="p">,</span> <span class="n">band2</span> <span class="o">=</span> <span class="n">bands</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
+    <span class="c1"># Injected columns are namespaced by the survey ({name}_{release}).</span>
+    <span class="n">ns</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">namespace</span>
+
     <span class="c1"># Check required columns</span>
     <span class="n">required_cols</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s2">&quot;ra&quot;</span><span class="p">,</span>
         <span class="s2">&quot;dec&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;flag_observed&quot;</span><span class="p">,</span>
-        <span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band1</span><span class="si">}</span><span class="s2">_obs&quot;</span><span class="p">,</span>
-        <span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band2</span><span class="si">}</span><span class="s2">_obs&quot;</span><span class="p">,</span>
+        <span class="n">flag_col</span><span class="p">(</span><span class="n">ns</span><span class="p">),</span>
+        <span class="n">true_col</span><span class="p">(</span><span class="n">band1</span><span class="p">,</span> <span class="n">ns</span><span class="p">),</span>
+        <span class="n">true_col</span><span class="p">(</span><span class="n">band2</span><span class="p">,</span> <span class="n">ns</span><span class="p">),</span>
+        <span class="n">obs_col</span><span class="p">(</span><span class="n">band1</span><span class="p">,</span> <span class="n">ns</span><span class="p">),</span>
+        <span class="n">obs_col</span><span class="p">(</span><span class="n">band2</span><span class="p">,</span> <span class="n">ns</span><span class="p">),</span>
     <span class="p">]</span>
     <span class="n">missing_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">required_cols</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">missing_cols</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing required columns: </span><span class="si">{</span><span class="n">missing_cols</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Get detection flags</span>
-    <span class="n">sel</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;flag_observed&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">sel</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">flag_col</span><span class="p">(</span><span class="n">ns</span><span class="p">)]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
 
     <span class="c1"># Create figure</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
@@ -490,8 +505,8 @@
     <span class="c1"># --- Panel 2: HR diagram with true magnitudes ---</span>
     <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;HR diagram using True magnitudes&quot;</span><span class="p">)</span>
 
-    <span class="n">color_true</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
-    <span class="n">mag_true</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
+    <span class="n">color_true</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">true_col</span><span class="p">(</span><span class="n">band1</span><span class="p">,</span> <span class="n">ns</span><span class="p">)]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="n">true_col</span><span class="p">(</span><span class="n">band2</span><span class="p">,</span> <span class="n">ns</span><span class="p">)]</span>
+    <span class="n">mag_true</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">true_col</span><span class="p">(</span><span class="n">band1</span><span class="p">,</span> <span class="n">ns</span><span class="p">)]</span>
 
     <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
         <span class="n">color_true</span><span class="p">,</span>
@@ -519,8 +534,8 @@
     <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;HR diagram using sampled observed magnitudes&quot;</span><span class="p">)</span>
 
     <span class="c1"># Convert measured magnitudes to numeric, handling &quot;BAD_MAG&quot; strings</span>
-    <span class="n">mag1_obs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band1</span><span class="si">}</span><span class="s2">_obs&quot;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
-    <span class="n">mag2_obs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band2</span><span class="si">}</span><span class="s2">_obs&quot;</span><span class="p">],</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
+    <span class="n">mag1_obs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">obs_col</span><span class="p">(</span><span class="n">band1</span><span class="p">,</span> <span class="n">ns</span><span class="p">)],</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
+    <span class="n">mag2_obs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">obs_col</span><span class="p">(</span><span class="n">band2</span><span class="p">,</span> <span class="n">ns</span><span class="p">)],</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
 
     <span class="c1"># Mask out bad measurements</span>
     <span class="n">mask_good</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">mag1_obs</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span> <span class="o">&amp;</span> <span class="p">(</span><span class="o">~</span><span class="n">mag2_obs</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span>
@@ -622,8 +637,6 @@
 
 
 
-<div class="viewcode-block" id="plot_healsparse_map">
-<a class="viewcode-back" href="../../streamobs.plotting.html#streamobs.plotting.plot_healsparse_map">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_healsparse_map</span><span class="p">(</span><span class="nb">map</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">map</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>  <span class="c1"># healpix map</span>
         <span class="n">healpix_map</span> <span class="o">=</span> <span class="nb">map</span>
@@ -650,16 +663,12 @@
     <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
     <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
+    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span>
 
 
-
-<div class="viewcode-block" id="plot_maglim">
-<a class="viewcode-back" href="../../streamobs.plotting.html#streamobs.plotting.plot_maglim">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_maglim</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">):</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_healsparse_map</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
-
+    <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span>
 </pre></div>
 
                 </article>

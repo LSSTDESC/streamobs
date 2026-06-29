@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -143,16 +144,23 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -162,6 +170,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">Content</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -326,21 +335,8 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.FileInterpolationSampler"><code class="docutils literal notranslate"><span class="pre">FileInterpolationSampler</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.FileLinearDensityCubicSplineInterpolationSampler"><code class="docutils literal notranslate"><span class="pre">FileLinearDensityCubicSplineInterpolationSampler</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.GaussianSampler"><code class="docutils literal notranslate"><span class="pre">GaussianSampler</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.InterpolationSampler"><code class="docutils literal notranslate"><span class="pre">InterpolationSampler</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.InterpolationSampler.sample"><code class="docutils literal notranslate"><span class="pre">InterpolationSampler.sample()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.InterpolationSampler"><code class="docutils literal notranslate"><span class="pre">InterpolationSampler</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.LinearDensityCubicSplineInterpolationSampler"><code class="docutils literal notranslate"><span class="pre">LinearDensityCubicSplineInterpolationSampler</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.Sampler"><code class="docutils literal notranslate"><span class="pre">Sampler</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.Sampler.pdf"><code class="docutils literal notranslate"><span class="pre">Sampler.pdf()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.Sampler.sample"><code class="docutils literal notranslate"><span class="pre">Sampler.sample()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.ScipySampler"><code class="docutils literal notranslate"><span class="pre">ScipySampler</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.ScipySampler.pdf"><code class="docutils literal notranslate"><span class="pre">ScipySampler.pdf()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.ScipySampler.sample"><code class="docutils literal notranslate"><span class="pre">ScipySampler.sample()</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.SinusoidSampler"><code class="docutils literal notranslate"><span class="pre">SinusoidSampler</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.UniformSampler"><code class="docutils literal notranslate"><span class="pre">UniformSampler</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.inverse_transform_sample"><code class="docutils literal notranslate"><span class="pre">inverse_transform_sample()</span></code></a></li>
@@ -363,226 +359,57 @@
 <dt class="sig sig-object py" id="streamobs.samplers.CubicSplineInterpolationSampler">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.samplers.</span></span><span class="sig-name descname"><span class="pre">CubicSplineInterpolationSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#CubicSplineInterpolationSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.CubicSplineInterpolationSampler" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.samplers.InterpolationSampler" title="streamobs.samplers.InterpolationSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterpolationSampler</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>pdf</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="streamobs.samplers.FileCubicSplineInterpolationSampler">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.samplers.</span></span><span class="sig-name descname"><span class="pre">FileCubicSplineInterpolationSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spline_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#FileCubicSplineInterpolationSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.FileCubicSplineInterpolationSampler" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.samplers.InterpolationSampler" title="streamobs.samplers.InterpolationSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterpolationSampler</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>pdf</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="streamobs.samplers.FileInterpolationSampler">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.samplers.</span></span><span class="sig-name descname"><span class="pre">FileInterpolationSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#FileInterpolationSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.FileInterpolationSampler" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.samplers.InterpolationSampler" title="streamobs.samplers.InterpolationSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterpolationSampler</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>pdf</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="streamobs.samplers.FileLinearDensityCubicSplineInterpolationSampler">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.samplers.</span></span><span class="sig-name descname"><span class="pre">FileLinearDensityCubicSplineInterpolationSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#FileLinearDensityCubicSplineInterpolationSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.FileLinearDensityCubicSplineInterpolationSampler" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.samplers.InterpolationSampler" title="streamobs.samplers.InterpolationSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterpolationSampler</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>pdf</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="streamobs.samplers.GaussianSampler">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.samplers.</span></span><span class="sig-name descname"><span class="pre">GaussianSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#GaussianSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.GaussianSampler" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#streamobs.samplers.ScipySampler" title="streamobs.samplers.ScipySampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScipySampler</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ScipySampler</span></code></p>
 <p>Sample from Gaussian.</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>pdf</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="streamobs.samplers.InterpolationSampler">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.samplers.</span></span><span class="sig-name descname"><span class="pre">InterpolationSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yvals</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#InterpolationSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.InterpolationSampler" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#streamobs.samplers.Sampler" title="streamobs.samplers.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></p>
 <p>Sample from interpolated function.</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>pdf</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="streamobs.samplers.InterpolationSampler.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100000.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#InterpolationSampler.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.InterpolationSampler.sample" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="streamobs.samplers.LinearDensityCubicSplineInterpolationSampler">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.samplers.</span></span><span class="sig-name descname"><span class="pre">LinearDensityCubicSplineInterpolationSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intensity_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity_node_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread_node_values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#LinearDensityCubicSplineInterpolationSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.LinearDensityCubicSplineInterpolationSampler" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.samplers.InterpolationSampler" title="streamobs.samplers.InterpolationSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterpolationSampler</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>pdf</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="streamobs.samplers.Sampler">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.samplers.</span></span><span class="sig-name descname"><span class="pre">Sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#Sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.Sampler" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>pdf</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="streamobs.samplers.Sampler.pdf">
-<span class="sig-name descname"><span class="pre">pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#Sampler.pdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.Sampler.pdf" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="streamobs.samplers.Sampler.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#Sampler.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.Sampler.sample" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="streamobs.samplers.ScipySampler">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.samplers.</span></span><span class="sig-name descname"><span class="pre">ScipySampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rv</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#ScipySampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.ScipySampler" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#streamobs.samplers.Sampler" title="streamobs.samplers.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>pdf</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="streamobs.samplers.ScipySampler.pdf">
-<span class="sig-name descname"><span class="pre">pdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#ScipySampler.pdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.ScipySampler.pdf" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="streamobs.samplers.ScipySampler.sample">
-<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#ScipySampler.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.ScipySampler.sample" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="streamobs.samplers.SinusoidSampler">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.samplers.</span></span><span class="sig-name descname"><span class="pre">SinusoidSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#SinusoidSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.SinusoidSampler" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#streamobs.samplers.InterpolationSampler" title="streamobs.samplers.InterpolationSampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterpolationSampler</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>pdf</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="streamobs.samplers.UniformSampler">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.samplers.</span></span><span class="sig-name descname"><span class="pre">UniformSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/samplers.html#UniformSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.samplers.UniformSampler" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#streamobs.samplers.ScipySampler" title="streamobs.samplers.ScipySampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ScipySampler</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ScipySampler</span></code></p>
 <p>Sample from uniform distribution.</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><td><p><strong>pdf</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>sample</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -677,21 +504,8 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.FileInterpolationSampler"><code class="docutils literal notranslate"><span class="pre">FileInterpolationSampler</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.FileLinearDensityCubicSplineInterpolationSampler"><code class="docutils literal notranslate"><span class="pre">FileLinearDensityCubicSplineInterpolationSampler</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.GaussianSampler"><code class="docutils literal notranslate"><span class="pre">GaussianSampler</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.InterpolationSampler"><code class="docutils literal notranslate"><span class="pre">InterpolationSampler</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.InterpolationSampler.sample"><code class="docutils literal notranslate"><span class="pre">InterpolationSampler.sample()</span></code></a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.InterpolationSampler"><code class="docutils literal notranslate"><span class="pre">InterpolationSampler</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.LinearDensityCubicSplineInterpolationSampler"><code class="docutils literal notranslate"><span class="pre">LinearDensityCubicSplineInterpolationSampler</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.Sampler"><code class="docutils literal notranslate"><span class="pre">Sampler</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.Sampler.pdf"><code class="docutils literal notranslate"><span class="pre">Sampler.pdf()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.Sampler.sample"><code class="docutils literal notranslate"><span class="pre">Sampler.sample()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.ScipySampler"><code class="docutils literal notranslate"><span class="pre">ScipySampler</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.ScipySampler.pdf"><code class="docutils literal notranslate"><span class="pre">ScipySampler.pdf()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.ScipySampler.sample"><code class="docutils literal notranslate"><span class="pre">ScipySampler.sample()</span></code></a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.SinusoidSampler"><code class="docutils literal notranslate"><span class="pre">SinusoidSampler</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.UniformSampler"><code class="docutils literal notranslate"><span class="pre">UniformSampler</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.samplers.inverse_transform_sample"><code class="docutils literal notranslate"><span class="pre">inverse_transform_sample()</span></code></a></li>

@@ -31,6 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -142,16 +143,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="../../roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -161,6 +169,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -287,6 +296,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.columns</span><span class="w"> </span><span class="kn">import</span> <span class="n">err_col</span><span class="p">,</span> <span class="n">flag_col</span><span class="p">,</span> <span class="n">obs_col</span><span class="p">,</span> <span class="n">perfect_flag_col</span><span class="p">,</span> <span class="n">true_col</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamModel</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_stream_in_mask</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.surveys</span><span class="w"> </span><span class="kn">import</span> <span class="n">Survey</span>
@@ -296,15 +306,31 @@
 <a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StreamInjector</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Inject observational effects into stream data for a given survey.</span>
+<span class="sd">    Inject observational effects into stream data for one or more surveys.</span>
 
-<span class="sd">    This class handles the core injection logic while keeping survey data separate.</span>
-<span class="sd">    All survey data is loaded once and cached, making multiple injections efficient.</span>
+<span class="sd">    A single injector handles both the single- and multi-survey cases: pass one</span>
+<span class="sd">    survey or several. The same shared sky placement and a single shared draw of</span>
+<span class="sd">    true magnitudes (masses sampled once via the isochrone and interpolated into</span>
+<span class="sd">    every survey&#39;s bands) guarantee the **same physical star** gets consistent</span>
+<span class="sd">    magnitudes across surveys. Each survey contributes its own</span>
+<span class="sd">    ``&lt;survey&gt;_&lt;band&gt;_obs`` / ``&lt;survey&gt;_&lt;band&gt;_err`` / ``&lt;survey&gt;_flag_observed``</span>
+<span class="sd">    columns, computed with that survey&#39;s own maglim maps and completeness</span>
+<span class="sd">    functions. Output columns are **always** survey-namespaced, even for a single</span>
+<span class="sd">    survey.</span>
+
+<span class="sd">    All survey data is loaded once and cached, making multiple injections</span>
+<span class="sd">    efficient.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    survey : Survey</span>
-<span class="sd">        Survey instance containing all survey-specific data and functions.</span>
+<span class="sd">    surveys : dict</span>
+<span class="sd">        ``{namespace: Survey}`` for every survey this injector serves. The</span>
+<span class="sd">        namespace is the survey&#39;s ``{name}_{release}`` and is the column prefix</span>
+<span class="sd">        (``lsst_yr5_r_obs``, ``roman_dc2_F158_obs``, ...).</span>
+<span class="sd">    primary : Survey</span>
+<span class="sd">        The survey whose footprint drives the shared sky placement and whose</span>
+<span class="sd">        ``_save_injected_data`` is used (also available as ``survey``). Its</span>
+<span class="sd">        namespace string is :attr:`primary_namespace`.</span>
 <span class="sd">    mask_cache : dict (class attribute)</span>
 <span class="sd">        Cache of previously created HEALPix masks to avoid recomputation.</span>
 <span class="sd">    _last_gc_frame : GreatCircleICRSFrame or None</span>
@@ -313,75 +339,192 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    Initialize with a survey:</span>
+<span class="sd">    Single survey (columns namespaced ``{name}_{release}``):</span>
 
 <span class="sd">    &gt;&gt;&gt; injector = StreamInjector(&#39;lsst&#39;, release=&#39;dc2&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; out = injector.inject(df, bands=[&#39;r&#39;, &#39;g&#39;])  # -&gt; lsst_dc2_r_obs, ...</span>
 
-<span class="sd">    Or with a pre-loaded Survey object:</span>
+<span class="sd">    Several surveys at once — each spec carries its release; the namespace is</span>
+<span class="sd">    derived from it, so bands are keyed by ``{name}_{release}``:</span>
 
-<span class="sd">    &gt;&gt;&gt; survey = Survey.load(&#39;lsst&#39;, release=&#39;dc2&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; injector = StreamInjector(survey)</span>
+<span class="sd">    &gt;&gt;&gt; injector = StreamInjector([</span>
+<span class="sd">    ...     {&#39;survey&#39;: &#39;lsst&#39;, &#39;release&#39;: &#39;dc2&#39;},</span>
+<span class="sd">    ...     {&#39;survey&#39;: &#39;roman&#39;, &#39;release&#39;: &#39;dc2&#39;},</span>
+<span class="sd">    ... ])</span>
+<span class="sd">    &gt;&gt;&gt; out = injector.inject(</span>
+<span class="sd">    ...     df,</span>
+<span class="sd">    ...     bands={&#39;lsst_dc2&#39;: [&#39;r&#39;, &#39;g&#39;], &#39;roman_dc2&#39;: [&#39;F106&#39;, &#39;F158&#39;]},</span>
+<span class="sd">    ...     stream_config=scene[&#39;stream&#39;], seed=42,</span>
+<span class="sd">    ... )</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">mask_cache</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">survey</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">survey</span><span class="p">,</span> <span class="n">primary</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Initialize with survey configuration.</span>
+<span class="sd">        Initialize with one or more survey configurations.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        survey : str or Survey</span>
-<span class="sd">            Either a survey name string (e.g., &#39;lsst&#39;) or a pre-loaded Survey instance.</span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Additional keyword arguments passed to Survey.load() if survey is a string.</span>
-<span class="sd">            Common options include:</span>
+<span class="sd">        survey : str, Survey, dict, or list</span>
+<span class="sd">            One survey or several. Every survey is namespaced by its own</span>
+<span class="sd">            :attr:`~streamobs.surveys.Survey.namespace` (``{name}_{release}``,</span>
+<span class="sd">            or just ``{name}`` with no release). Accepted forms:</span>
 
-<span class="sd">            release : str, optional</span>
-<span class="sd">                Survey release version (e.g., &#39;dc2&#39;, &#39;yr1&#39;, &#39;yr10&#39;).</span>
+<span class="sd">            - a survey-name string (e.g. ``&#39;lsst&#39;``), a</span>
+<span class="sd">              ``{&quot;survey&quot;: ..., &quot;release&quot;: ...}`` spec dict, or a pre-loaded</span>
+<span class="sd">              :class:`~streamobs.surveys.Survey` — a single survey;</span>
+<span class="sd">            - a list/tuple of such specs;</span>
+<span class="sd">            - a ``{key: spec}`` dict — the keys are containers only and are</span>
+<span class="sd">              **ignored**; the namespace is re-derived from each loaded survey.</span>
+<span class="sd">        primary : str, optional</span>
+<span class="sd">            Namespace (``{name}_{release}``) of the survey that drives the shared</span>
+<span class="sd">            sky placement. Defaults to the first survey.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Forwarded to :meth:`Survey.load` for any ``spec`` given as a name</span>
+<span class="sd">            string (e.g. ``release``).</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If survey is neither a string nor a Survey instance.</span>
+<span class="sd">            If ``surveys`` is empty or of an unsupported type, or if ``primary``</span>
+<span class="sd">            is not one of the provided surveys.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">survey</span> <span class="o">=</span> <span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">survey</span><span class="o">=</span><span class="n">survey</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="n">Survey</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">survey</span> <span class="o">=</span> <span class="n">survey</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;survey must be a string or Survey instance.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surveys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalize_surveys</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">survey_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surveys</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey_names</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one survey is required.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_primary</span> <span class="o">=</span> <span class="n">primary</span> <span class="k">if</span> <span class="n">primary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_primary</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">surveys</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;primary=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_primary</span><span class="si">}</span><span class="s2">&#39; is not one of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey_names</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
 
         <span class="c1"># Instance attribute to store the last used gc_frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_gc_frame</span> <span class="o">=</span> <span class="kc">None</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">primary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The primary :class:`~streamobs.surveys.Survey`.</span>
+
+<span class="sd">        Drives the shared sky placement; mask, coordinate and footprint helpers</span>
+<span class="sd">        operate on it. Its column namespace is :attr:`primary_namespace`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">surveys</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_primary</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">primary_namespace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Column namespace (``{name}_{release}``) of the primary survey.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_primary</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">survey</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :attr:`primary` — the primary :class:`~streamobs.surveys.Survey`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">surveys</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_primary</span><span class="p">]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_surveys</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">surveys</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Coerce the ``surveys`` argument into a ``{namespace: Survey}`` dict.</span>
+
+<span class="sd">        The namespace key is always the survey&#39;s own</span>
+<span class="sd">        :attr:`~streamobs.surveys.Survey.namespace` (``{name}_{release}``), so</span>
+<span class="sd">        the same survey at two releases yields two distinct entries. Accepted</span>
+<span class="sd">        forms: a single spec (name string, ``Survey``, or</span>
+<span class="sd">        ``{&quot;survey&quot;: ..., &quot;release&quot;: ...}`` dict), a list of specs, or a</span>
+<span class="sd">        ``{key: spec}`` mapping (the keys are only containers — the canonical</span>
+<span class="sd">        namespace is re-derived from each loaded survey).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">surveys</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Survey</span><span class="p">)):</span>
+            <span class="n">specs</span> <span class="o">=</span> <span class="p">[</span><span class="n">surveys</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">surveys</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;survey&quot;</span> <span class="ow">in</span> <span class="n">surveys</span><span class="p">:</span>
+            <span class="c1"># A single spec dict, e.g. {&quot;survey&quot;: &quot;lsst&quot;, &quot;release&quot;: &quot;yr5&quot;}.</span>
+            <span class="n">specs</span> <span class="o">=</span> <span class="p">[</span><span class="n">surveys</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">surveys</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="c1"># A {key: spec} mapping; namespace is re-derived per loaded survey.</span>
+            <span class="n">specs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">surveys</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">surveys</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">specs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">surveys</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;surveys must be a survey name, a Survey, a spec dict, a list &quot;</span>
+                <span class="s2">&quot;of specs, or a {key: spec} dict.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">specs</span><span class="p">:</span>
+            <span class="n">survey</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_load_survey</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">survey</span><span class="o">.</span><span class="n">namespace</span><span class="p">]</span> <span class="o">=</span> <span class="n">survey</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_survey</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve a single survey spec to a Survey.</span>
+
+<span class="sd">        Accepts a :class:`~streamobs.surveys.Survey`, a survey-name string</span>
+<span class="sd">        (loaded with the shared ``**kwargs``, e.g. ``release=``), or a spec</span>
+<span class="sd">        ``dict`` such as ``{&quot;survey&quot;: &quot;lsst&quot;, &quot;release&quot;: &quot;yr5&quot;}`` (forwarded to</span>
+<span class="sd">        :meth:`Survey.load`, taking precedence over the shared ``**kwargs``).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Survey</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">spec</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">survey</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">**</span><span class="n">spec</span><span class="p">})</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Each survey spec must be a Survey, a name string, or a &quot;</span>
+            <span class="s1">&#39;{&quot;survey&quot;: ..., &quot;release&quot;: ...} dict.&#39;</span>
+        <span class="p">)</span>
+
 <div class="viewcode-block" id="StreamInjector.inject">
 <a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.inject">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">inject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stream_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add observed quantities from the survey to the given data.</span>
+<span class="sd">        Add observed quantities from every survey into a single catalog.</span>
 
-<span class="sd">        This method applies observational effects including photometric errors,</span>
-<span class="sd">        magnitude measurements, and detection flags based on survey properties.</span>
+<span class="sd">        Applies observational effects (photometric errors, measured magnitudes,</span>
+<span class="sd">        detection flags) for each survey this injector serves. A single shared</span>
+<span class="sd">        sky placement and a single shared true-magnitude fill (masses sampled</span>
+<span class="sd">        once and interpolated into every survey&#39;s bands) ensure the same physical</span>
+<span class="sd">        star is consistent across surveys. Output columns are always</span>
+<span class="sd">        survey-namespaced (``&lt;survey&gt;_&lt;band&gt;_obs`` etc.).</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        data : str or pd.DataFrame</span>
-<span class="sd">            Input data as DataFrame or path to the file (CSV or Excel).</span>
-<span class="sd">            Must contain either (ra, dec) or (phi1, phi2) coordinates, and</span>
-<span class="sd">            magnitude columns for the specified bands.</span>
-<span class="sd">        bands : list of str, optional</span>
-<span class="sd">            List of photometric bands to process. Default is [&#39;r&#39;, &#39;g&#39;].</span>
+<span class="sd">            Input data as DataFrame or path to the file (CSV or Excel). May</span>
+<span class="sd">            contain only stream coordinates (``phi1``/``phi2`` or ``ra``/``dec``);</span>
+<span class="sd">            anything missing is sampled from ``stream_config``. An all-empty frame</span>
+<span class="sd">            of length ``N`` is accepted (geometry and magnitudes are then sampled</span>
+<span class="sd">            for ``N`` rows).</span>
+<span class="sd">        bands : list of str or dict, optional</span>
+<span class="sd">            Bands to inject. A ``{survey_name: [bands]}`` dict selects bands per</span>
+<span class="sd">            survey (the multi-survey form; keys must match the surveys this</span>
+<span class="sd">            injector was built with). A plain list/tuple is the single-survey</span>
+<span class="sd">            shorthand, applied to the only survey. If omitted and there is</span>
+<span class="sd">            exactly one survey, defaults to ``[&#39;r&#39;, &#39;g&#39;]``.</span>
+<span class="sd">        stream_config : dict, optional</span>
+<span class="sd">            The ``stream`` section consumed by</span>
+<span class="sd">            :class:`~streamobs.model.StreamModel`. Required when any coordinate</span>
+<span class="sd">            or true-magnitude column is missing. Its isochrone produces the</span>
+<span class="sd">            shared ``&lt;survey&gt;_&lt;band&gt;_true`` columns.</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Additional keyword arguments:</span>
 
 <span class="sd">            seed : int, optional</span>
 <span class="sd">                Random seed for reproducibility.</span>
+<span class="sd">            dist : float or array-like, optional</span>
+<span class="sd">                Distance modulus used directly (scalar broadcast or per-row</span>
+<span class="sd">                vector) instead of sampling from the config&#39;s ``distance_modulus``</span>
+<span class="sd">                model — lets magnitudes be filled without ``phi1``.</span>
 <span class="sd">            nside : int, optional</span>
 <span class="sd">                HEALPix nside parameter. Default is 4096.</span>
 <span class="sd">            detection_mag_cut : list of str, optional</span>
-<span class="sd">                Bands to apply SNR detection cut. Default is [&#39;g&#39;].</span>
+<span class="sd">                Non-reference bands to apply the explicit SNR&gt;=5 cut to. The</span>
+<span class="sd">                reference band (``survey.completeness_band``) is never cut here —</span>
+<span class="sd">                its SNR cut is already baked into the survey&#39;s selection</span>
+<span class="sd">                functions — so the default is every injected band *except* the</span>
+<span class="sd">                reference band. Net effect: every injected band must have</span>
+<span class="sd">                SNR &gt;= 5, with the reference band&#39;s cut owned by the curves.</span>
 <span class="sd">            save : bool, optional</span>
 <span class="sd">                Whether to save the output data. Default is False.</span>
 <span class="sd">            folder : str or Path, optional</span>
@@ -397,31 +540,132 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        pd.DataFrame</span>
-<span class="sd">            DataFrame with the following added columns:</span>
+<span class="sd">            DataFrame with shared ``ra``/``dec`` and, per survey:</span>
 
-<span class="sd">            - mag_&lt;band&gt;_obs : Observed magnitudes for each band</span>
-<span class="sd">            - magerr_&lt;band&gt; : Photometric errors for each band</span>
-<span class="sd">            - flag_observed : Boolean flag (True=detected, False=not detected). Includes both detection and classification efficiencies.</span>
-<span class="sd">            - flag_perfect_galstarsep : Boolean flag assuming perfect star/galaxy separation (detection efficiency only, no classification losses; only if requested with perfect_galstarsep=True)</span>
-<span class="sd">            - ra, dec : Sky coordinates (if not already present)</span>
+<span class="sd">            - &lt;survey&gt;_&lt;band&gt;_true : True (noiseless) apparent magnitudes</span>
+<span class="sd">            - &lt;survey&gt;_&lt;band&gt;_obs : Observed (noisy) magnitudes</span>
+<span class="sd">            - &lt;survey&gt;_&lt;band&gt;_err : Reported photometric errors</span>
+<span class="sd">            - &lt;survey&gt;_flag_observed : Boolean detection flag (detection and</span>
+<span class="sd">              classification efficiencies)</span>
+<span class="sd">            - &lt;survey&gt;_flag_perfect_galstarsep : Boolean flag assuming perfect</span>
+<span class="sd">              star/galaxy separation (only if perfect_galstarsep=True)</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If required columns are missing or bands are not supported.</span>
+<span class="sd">            If required columns are missing, if ``bands`` (as a dict) references</span>
+<span class="sd">            an unknown survey, or if a list ``bands`` is given for a multi-survey</span>
+<span class="sd">            injector.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">perfect_galstarsep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;perfect_galstarsep&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-
-        <span class="c1"># Load data</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">survey_bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_survey_bands</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
 
         <span class="c1"># Set the seed for reproducibility</span>
         <span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
-        <span class="c1"># Complete missing columns (ra/dec, magnitudes)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">complete_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">bands</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># Shared sky placement + shared true-magnitude fill (masses sampled once</span>
+        <span class="c1"># across all surveys). This is the same completion exposed publicly as</span>
+        <span class="c1"># complete_data(); pass the already-resolved {survey: bands} dict through.</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">complete_data</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span>
+            <span class="n">bands</span><span class="o">=</span><span class="n">survey_bands</span><span class="p">,</span>
+            <span class="n">stream_config</span><span class="o">=</span><span class="n">stream_config</span><span class="p">,</span>
+            <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Per-survey observational injection. Independent child RNGs make the</span>
+        <span class="c1"># result independent of survey ordering and reproducible from `seed`.</span>
+        <span class="n">children</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">survey_names</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">child_rng</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">children</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey_names</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">survey_bands</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inject_one_survey</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">,</span>
+                <span class="nb">list</span><span class="p">(</span><span class="n">survey_bands</span><span class="p">[</span><span class="n">name</span><span class="p">]),</span>
+                <span class="n">survey</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">surveys</span><span class="p">[</span><span class="n">name</span><span class="p">],</span>
+                <span class="n">rng</span><span class="o">=</span><span class="n">child_rng</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Save if requested</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_save_injected_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;folder&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+        <span class="c1"># Return data (do NOT store as instance attribute to avoid conflicts between runs)</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_survey_bands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bands</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize the ``bands`` argument to a ``{survey_name: [bands]}`` dict.</span>
+
+<span class="sd">        ``bands`` may be:</span>
+
+<span class="sd">        - a ``{survey_name: [bands]}`` dict (validated against the known</span>
+<span class="sd">          surveys) — the multi-survey form;</span>
+<span class="sd">        - a list/tuple of band names — allowed only when the injector serves a</span>
+<span class="sd">          single survey, applied to that survey;</span>
+<span class="sd">        - ``None`` — defaults to ``[&#39;r&#39;, &#39;g&#39;]`` for the single-survey case.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bands</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">unknown</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surveys</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;bands references unknown surveys </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">unknown</span><span class="p">)</span><span class="si">}</span><span class="s2">; &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;available: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey_names</span><span class="si">}</span><span class="s2">.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bands</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">survey_names</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Pass bands={survey_name: [bands]} when the injector serves &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;multiple surveys (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey_names</span><span class="si">}</span><span class="s2">).&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bands</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_primary</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">bands</span><span class="p">)}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_inject_one_survey</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bands</span><span class="p">,</span> <span class="n">survey</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add one survey&#39;s observed magnitudes, errors and detection flags.</span>
+
+<span class="sd">        This holds the per-band observational logic. It assumes ``data`` already</span>
+<span class="sd">        carries ``ra``/``dec`` and the true-magnitude columns</span>
+<span class="sd">        (``true_col(band, survey.namespace)``) for the requested bands; it does</span>
+<span class="sd">        **not** sample positions or true magnitudes. The column namespace is</span>
+<span class="sd">        taken directly from ``survey.namespace`` (``{name}_{release}``).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : pandas.DataFrame</span>
+<span class="sd">            Catalog with ``ra``/``dec`` and ``true_col(band, survey.namespace)``</span>
+<span class="sd">            for every requested band.</span>
+<span class="sd">        bands : list of str</span>
+<span class="sd">            Bands to process for this survey.</span>
+<span class="sd">        survey : Survey</span>
+<span class="sd">            The survey supplying maglim maps, completeness and error curves; its</span>
+<span class="sd">            ``namespace`` is the column prefix ⇒ ``&lt;namespace&gt;_&lt;band&gt;_obs`` /</span>
+<span class="sd">            ``&lt;namespace&gt;_&lt;band&gt;_err`` / ``&lt;namespace&gt;_flag_observed``.</span>
+<span class="sd">        rng : numpy.random.Generator, optional</span>
+<span class="sd">            Random generator for the noise draw and detection sampling.</span>
+<span class="sd">        seed : int, optional</span>
+<span class="sd">            Seed used to build an RNG when ``rng`` is None.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            ``nside``, ``detection_mag_cut``, ``dust_correction``,</span>
+<span class="sd">            ``perfect_galstarsep``, ``verbose`` (see :meth:`inject`).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            ``data`` with this survey&#39;s observed columns and detection flag(s).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">rng</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+        <span class="c1"># Column namespace for this survey (``{name}_{release}``).</span>
+        <span class="n">survey_namespace</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">namespace</span>
+
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">perfect_galstarsep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;perfect_galstarsep&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
         <span class="c1"># Get HEALPix pixel indices</span>
         <span class="n">nside</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;nside&quot;</span><span class="p">,</span> <span class="mi">4096</span><span class="p">)</span>
@@ -433,22 +677,19 @@
 
         <span class="c1"># Process each band</span>
         <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">band</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Currently only &#39;r&#39; and &#39;g&#39; bands are supported.&quot;</span><span class="p">)</span>
-
             <span class="c1"># Get extinction for this band</span>
-            <span class="n">nside_ebv</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span><span class="p">)</span>
+            <span class="n">nside_ebv</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">nside_ebv</span> <span class="o">!=</span> <span class="n">nside</span><span class="p">:</span>
                 <span class="n">pix_ebv</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ang2pix</span><span class="p">(</span><span class="n">nside_ebv</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">],</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">pix_ebv</span> <span class="o">=</span> <span class="n">pix</span>
-            <span class="n">extinction_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">get_extinction</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">pixel</span><span class="o">=</span><span class="n">pix_ebv</span><span class="p">)</span>
+            <span class="n">extinction_band</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_extinction</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">pixel</span><span class="o">=</span><span class="n">pix_ebv</span><span class="p">)</span>
 
             <span class="c1"># Calculate true apparent magnitudes (including extinction)</span>
-            <span class="n">apparent_mag_true</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;mag_&quot;</span> <span class="o">+</span> <span class="n">band</span><span class="p">]</span> <span class="o">+</span> <span class="n">extinction_band</span>
+            <span class="n">apparent_mag_true</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">true_col</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">survey_namespace</span><span class="p">)]</span> <span class="o">+</span> <span class="n">extinction_band</span>
 
             <span class="c1"># Get magnitude limits</span>
-            <span class="n">nside_maglim</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">])</span>
+            <span class="n">nside_maglim</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">nside_maglim</span> <span class="o">!=</span> <span class="n">nside</span><span class="p">:</span>
                 <span class="n">pix_maglim</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ang2pix</span><span class="p">(</span>
                     <span class="n">nside_maglim</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">],</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span>
@@ -456,17 +697,23 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">pix_maglim</span> <span class="o">=</span> <span class="n">pix</span>
 
-            <span class="c1"># Calculate photometric errors</span>
-            <span class="n">mag_err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">get_photo_error</span><span class="p">(</span>
-                <span class="n">band</span><span class="p">,</span>
-                <span class="n">apparent_mag_true</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">get_maglim</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">pixel</span><span class="o">=</span><span class="n">pix_maglim</span><span class="p">),</span>
+            <span class="c1"># Calculate photometric errors. The *sample* error (true scatter)</span>
+            <span class="c1"># drives the noise draw; the *catalog* error (reported) is written</span>
+            <span class="c1"># as magerr and used for the S/N cut. When no sample curve is loaded,</span>
+            <span class="c1"># the sample error falls back to the catalog error, so the two are</span>
+            <span class="c1"># identical (outputs unchanged from the single-curve behaviour).</span>
+            <span class="n">maglim_vals</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_maglim</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">pixel</span><span class="o">=</span><span class="n">pix_maglim</span><span class="p">)</span>
+            <span class="n">mag_err_sample</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_photo_error</span><span class="p">(</span>
+                <span class="n">band</span><span class="p">,</span> <span class="n">apparent_mag_true</span><span class="p">,</span> <span class="n">maglim_vals</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;sample&quot;</span>
+            <span class="p">)</span>
+            <span class="n">mag_err</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_photo_error</span><span class="p">(</span>
+                <span class="n">band</span><span class="p">,</span> <span class="n">apparent_mag_true</span><span class="p">,</span> <span class="n">maglim_vals</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;catalog&quot;</span>
             <span class="p">)</span>
 
-            <span class="c1"># Sample measured magnitudes</span>
+            <span class="c1"># Sample measured magnitudes using the sample (true-scatter) error</span>
             <span class="n">mag_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_measured_magnitudes</span><span class="p">(</span>
                 <span class="n">apparent_mag_true</span><span class="p">,</span>
-                <span class="n">mag_err</span><span class="p">,</span>
+                <span class="n">mag_err_sample</span><span class="p">,</span>
                 <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span>
                 <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -491,8 +738,8 @@
             <span class="c1"># Add new columns</span>
             <span class="n">new_columns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;mag_&quot;</span> <span class="o">+</span> <span class="n">band</span> <span class="o">+</span> <span class="s2">&quot;_obs&quot;</span><span class="p">:</span> <span class="n">mag_obs</span><span class="p">,</span>
-                    <span class="s2">&quot;magerr_&quot;</span> <span class="o">+</span> <span class="n">band</span><span class="p">:</span> <span class="n">mag_err</span><span class="p">,</span>
+                    <span class="n">obs_col</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">survey_namespace</span><span class="p">):</span> <span class="n">mag_obs</span><span class="p">,</span>
+                    <span class="n">err_col</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">survey_namespace</span><span class="p">):</span> <span class="n">mag_err</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">)</span>
 
@@ -502,9 +749,10 @@
             <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">data</span><span class="p">,</span> <span class="n">new_columns</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
             <span class="c1"># Compute detection flag for completeness-band (reference band)</span>
-            <span class="k">if</span> <span class="n">band</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">band</span> <span class="o">==</span> <span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="p">:</span>
                 <span class="n">flag_completeness_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_flag</span><span class="p">(</span>
                     <span class="n">pix_maglim</span><span class="p">,</span>
+                    <span class="n">survey</span><span class="o">=</span><span class="n">survey</span><span class="p">,</span>
                     <span class="n">mag</span><span class="o">=</span><span class="n">apparent_mag_true</span><span class="p">,</span>
                     <span class="n">band</span><span class="o">=</span><span class="n">band</span><span class="p">,</span>
                     <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span>
@@ -515,6 +763,7 @@
                 <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
                     <span class="n">flag_detection_only_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_flag</span><span class="p">(</span>
                         <span class="n">pix_maglim</span><span class="p">,</span>
+                        <span class="n">survey</span><span class="o">=</span><span class="n">survey</span><span class="p">,</span>
                         <span class="n">mag</span><span class="o">=</span><span class="n">apparent_mag_true</span><span class="p">,</span>
                         <span class="n">band</span><span class="o">=</span><span class="n">band</span><span class="p">,</span>
                         <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span>
@@ -525,20 +774,23 @@
 
         <span class="c1"># Apply detection threshold</span>
         <span class="k">if</span> <span class="n">flag_completeness_band</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;flag_completeness_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2"> must be computed for detection in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2"> band.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;flag_completeness_</span><span class="si">{</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2"> must be computed for detection in </span><span class="si">{</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2"> band.&quot;</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Detection flag requires &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2">&#39; band to be in bands.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Detection flag requires &#39;</span><span class="si">{</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2">&#39; band to be in bands.&quot;</span>
                 <span class="p">)</span>
 
         <span class="c1"># Build combined detection flags</span>
-        <span class="c1"># Start with flux validity check (not BAD_MAG)</span>
-        <span class="n">flag_valid_flux</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;mag_r_obs&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;BAD_MAG&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;g&quot;</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">:</span>
-            <span class="n">flag_valid_flux</span> <span class="o">&amp;=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;mag_g_obs&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;BAD_MAG&quot;</span>
+        <span class="c1"># Start with flux validity check (not BAD_MAG) across all injected bands</span>
+        <span class="n">flag_valid_flux</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">:</span>
+            <span class="n">band_valid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">obs_col</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">survey_namespace</span><span class="p">)]</span> <span class="o">!=</span> <span class="s2">&quot;BAD_MAG&quot;</span>
+            <span class="n">flag_valid_flux</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">band_valid</span> <span class="k">if</span> <span class="n">flag_valid_flux</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">flag_valid_flux</span> <span class="o">&amp;</span> <span class="n">band_valid</span>
+            <span class="p">)</span>
 
         <span class="c1"># Combine with completeness</span>
         <span class="n">flag_observed</span> <span class="o">=</span> <span class="p">(</span>
@@ -553,11 +805,27 @@
                 <span class="k">else</span> <span class="n">flag_valid_flux</span>
             <span class="p">)</span>
 
-        <span class="c1"># Apply SNR cuts</span>
-        <span class="n">detection_mag_cut</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;detection_mag_cut&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;g&quot;</span><span class="p">])</span>
+        <span class="c1"># Apply SNR cuts.</span>
+        <span class="c1">#</span>
+        <span class="c1"># The reference band (``survey.completeness_band``) is NOT cut here: the</span>
+        <span class="c1"># survey&#39;s selection functions are defined on true stars detected at</span>
+        <span class="c1"># S/N &gt;= SNR_min, so that cut is already baked into BOTH curves —</span>
+        <span class="c1"># ``get_completeness`` (detection x classification) and</span>
+        <span class="c1"># ``get_detection_efficiency`` (detection only). Re-applying it to the</span>
+        <span class="c1"># reference band would double-count it, so we only cut the *other*</span>
+        <span class="c1"># injected bands explicitly below.</span>
         <span class="n">SNR_min</span> <span class="o">=</span> <span class="mf">5.0</span>
+        <span class="n">ref_band</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span>
 
+        <span class="c1"># Non-reference bands. Default: every injected band except the reference</span>
+        <span class="c1"># band (whose cut is owned by the selection functions).</span>
+        <span class="n">detection_mag_cut</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;detection_mag_cut&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">b</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bands</span> <span class="k">if</span> <span class="n">b</span> <span class="o">!=</span> <span class="n">ref_band</span><span class="p">]</span>
+        <span class="p">)</span>
         <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">detection_mag_cut</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">band</span> <span class="o">==</span> <span class="n">ref_band</span><span class="p">:</span>
+                <span class="c1"># The reference band&#39;s SNR cut is owned by the selection functions.</span>
+                <span class="k">continue</span>
             <span class="k">if</span> <span class="n">band</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span>
@@ -566,28 +834,17 @@
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Applying detection cut on </span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">-band with SNR &gt;= </span><span class="si">{</span><span class="n">SNR_min</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">SNR</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;magerr_&quot;</span> <span class="o">+</span> <span class="n">band</span><span class="p">]</span>
+            <span class="n">SNR</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">data</span><span class="p">[</span><span class="n">err_col</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">survey_namespace</span><span class="p">)]</span>
             <span class="n">flag_observed</span> <span class="o">&amp;=</span> <span class="n">SNR</span> <span class="o">&gt;=</span> <span class="n">SNR_min</span>
             <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
                 <span class="n">flag_perfect</span> <span class="o">&amp;=</span> <span class="n">SNR</span> <span class="o">&gt;=</span> <span class="n">SNR_min</span>
 
-        <span class="c1"># Force SNR cut on r-band for perfect gal/star separation (because it&#39;s not included in the detection efficiency functions, while it is for the completeness functions)</span>
-        <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
-            <span class="n">SNR_r</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;magerr_r&quot;</span><span class="p">]</span>
-            <span class="n">flag_perfect</span> <span class="o">&amp;=</span> <span class="n">SNR_r</span> <span class="o">&gt;=</span> <span class="n">SNR_min</span>
-
         <span class="c1"># Store flags in DataFrame</span>
-        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;flag_observed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_observed</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">flag_col</span><span class="p">(</span><span class="n">survey_namespace</span><span class="p">)]</span> <span class="o">=</span> <span class="n">flag_observed</span>
         <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
-            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;flag_perfect_galstarsep&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">flag_perfect</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">perfect_flag_col</span><span class="p">(</span><span class="n">survey_namespace</span><span class="p">)]</span> <span class="o">=</span> <span class="n">flag_perfect</span>
 
-        <span class="c1"># Save if requested</span>
-        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save&quot;</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_save_injected_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;folder&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-
-        <span class="c1"># Return data (do NOT store as instance attribute to avoid conflicts between runs)</span>
-        <span class="k">return</span> <span class="n">data</span></div>
-
+        <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -623,152 +880,152 @@
 
 <div class="viewcode-block" id="StreamInjector.complete_data">
 <a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.complete_data">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">complete_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Validate and complete the columns needed for injection.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">complete_data</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">,</span>
+        <span class="n">bands</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">stream_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">dist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Complete the columns the injector needs, filling the rest from the config.</span>
 
-<span class="sd">        This function ensures sky coordinates are present and, if requested,</span>
-<span class="sd">        fills missing photometric magnitude columns using a stream model.</span>
-<span class="sd">        Specifically:</span>
+<span class="sd">        Public helper: give it a (possibly partial) catalog and it returns one</span>
+<span class="sd">        with everything the injector requires present — sky coordinates</span>
+<span class="sd">        (``ra``/``dec``, converting from ``phi1``/``phi2`` if needed) and the</span>
+<span class="sd">        per-survey true-magnitude columns ``&lt;survey&gt;_&lt;band&gt;_true``. Anything</span>
+<span class="sd">        already present is preserved; only missing columns are sampled, using</span>
+<span class="sd">        ``stream_config`` (a :class:`~streamobs.model.StreamModel` config). The</span>
+<span class="sd">        stellar masses are drawn **once** and interpolated into every survey&#39;s</span>
+<span class="sd">        bands, so the same physical star is consistent across surveys.</span>
 
-<span class="sd">        - If (ra, dec) are missing but (phi1, phi2) exist, it converts to</span>
-<span class="sd">          sky coordinates via ``phi_to_radec``.</span>
-<span class="sd">        - It checks for ``mag_&lt;band&gt;`` for each requested band; any missing</span>
-<span class="sd">          bands are generated via ``StreamModel.complete_catalog`` when a</span>
-<span class="sd">          ``stream_config`` is provided.</span>
-<span class="sd">        - Existing columns are preserved and are not overwritten.</span>
+<span class="sd">        This is the same completion :meth:`inject` runs internally, exposed so</span>
+<span class="sd">        you can build/inspect a completed catalog without injecting noise.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        data : pandas.DataFrame</span>
-<span class="sd">            Input catalog. Must contain either (ra, dec) or (phi1, phi2).</span>
-<span class="sd">            The DataFrame is copied; the input object is not modified in place.</span>
-<span class="sd">        bands : list[str], optional</span>
-<span class="sd">            Photometric bands to ensure (as ``mag_&lt;band&gt;``). Default is</span>
-<span class="sd">            ``[&#39;r&#39;, &#39;g&#39;]``.</span>
+<span class="sd">        data : str or pandas.DataFrame</span>
+<span class="sd">            Input catalog (or path). May contain only stream coordinates</span>
+<span class="sd">            (``phi1``/``phi2`` or ``ra``/``dec``), an all-empty frame of length</span>
+<span class="sd">            ``N``, or any subset of the target columns.</span>
+<span class="sd">        bands : list of str or dict, optional</span>
+<span class="sd">            Bands whose true-magnitude columns to ensure. A</span>
+<span class="sd">            ``{survey_name: [bands]}`` dict selects bands per survey (multi-survey</span>
+<span class="sd">            form); a plain list/tuple is the single-survey shorthand. If omitted</span>
+<span class="sd">            and there is exactly one survey, defaults to ``[&#39;r&#39;, &#39;g&#39;]``.</span>
+<span class="sd">        stream_config : dict, optional</span>
+<span class="sd">            :class:`~streamobs.model.StreamModel` config used to sample any</span>
+<span class="sd">            missing geometry / true magnitudes. Required only when something is</span>
+<span class="sd">            missing.</span>
+<span class="sd">        dist : float or array-like or None, optional</span>
+<span class="sd">            Distance modulus to use directly (scalar broadcast or per-row</span>
+<span class="sd">            vector) instead of sampling from the config&#39;s ``distance_modulus``</span>
+<span class="sd">            model. Lets magnitudes be filled without ``phi1`` / a distance model.</span>
 <span class="sd">        **kwargs</span>
-<span class="sd">            Additional options:</span>
-
-<span class="sd">            rng : numpy.random.Generator, optional</span>
-<span class="sd">                Random number generator instance.</span>
-<span class="sd">            seed : int, optional</span>
-<span class="sd">                Random seed used to initialize an RNG if ``rng`` is not given.</span>
-<span class="sd">            gc_frame : gala.coordinates.GreatCircleICRSFrame or &#39;last&#39;, optional</span>
-<span class="sd">                Great circle frame to use. If &#39;last&#39;, uses the frame from the</span>
-<span class="sd">                previous call. If None, generates a new random frame.</span>
-<span class="sd">            stream_config : dict, optional</span>
-<span class="sd">                Configuration passed to ``StreamModel``. Required only when at</span>
-<span class="sd">                least one requested magnitude band is missing. See</span>
-<span class="sd">                ``StreamModel`` for the expected schema (e.g., track, distance</span>
-<span class="sd">                modulus, isochrone).</span>
-
-<span class="sd">            Keyword arguments forwarded to ``phi_to_radec`` (only used when</span>
-<span class="sd">            converting from (phi1, phi2)):</span>
-
-<span class="sd">            mask_type : list[str] or str, optional</span>
-<span class="sd">                Mask(s) used when searching a frame (e.g., &#39;footprint&#39;,</span>
-<span class="sd">                &#39;maglim_r&#39;, &#39;ebv&#39;).</span>
-<span class="sd">            percentile_threshold : float, optional</span>
-<span class="sd">                Fraction of points that must lie inside the mask when selecting</span>
-<span class="sd">                a frame. Default defined in ``phi_to_radec``.</span>
-<span class="sd">            max_iter : int, optional</span>
-<span class="sd">                Maximum trials when searching a frame. Default defined in</span>
-<span class="sd">                ``phi_to_radec``.</span>
+<span class="sd">            ``rng`` / ``seed`` for reproducibility, plus ``gc_frame``,</span>
+<span class="sd">            ``mask_type``, ``percentile_threshold``, ``max_iter`` forwarded to</span>
+<span class="sd">            :meth:`phi_to_radec` when converting ``phi1``/``phi2`` → ``ra``/``dec``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        pandas.DataFrame</span>
-<span class="sd">            A copy of the input with the required columns present:</span>
-<span class="sd">            ``ra``, ``dec``, and one ``mag_&lt;band&gt;`` column per requested band.</span>
+<span class="sd">            A copy of the input with ``ra``/``dec`` and the requested</span>
+<span class="sd">            ``&lt;survey&gt;_&lt;band&gt;_true`` columns present.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If neither (ra, dec) nor (phi1, phi2) are present; or if one or</span>
-<span class="sd">            more magnitude bands are missing and ``stream_config`` is not</span>
-<span class="sd">            provided; or if after completion a required column is still absent.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        - Only missing magnitude columns are synthesized; existing values are</span>
-<span class="sd">          left untouched.</span>
-<span class="sd">        - Magnitudes are produced by ``StreamModel.complete_catalog`` and rely</span>
-<span class="sd">          on the model&#39;s configuration (e.g., isochrone and distance modulus).</span>
-<span class="sd">        - When a new gc_frame is created or used, it is stored in ``self._last_gc_frame``</span>
-<span class="sd">          for potential reuse via ``gc_frame=&#39;last&#39;``.</span>
+<span class="sd">            If neither (ra, dec) nor (phi1, phi2) are present, or if columns are</span>
+<span class="sd">            missing and ``stream_config`` is not provided.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        Convert from (phi1, phi2) and generate both bands:</span>
-
 <span class="sd">        &gt;&gt;&gt; df = pd.DataFrame({&#39;phi1&#39;: [-5, 0, 5], &#39;phi2&#39;: [0, 0, 0]})</span>
-<span class="sd">        &gt;&gt;&gt; cfg = {...}  # stream model config</span>
 <span class="sd">        &gt;&gt;&gt; out = injector.complete_data(df, bands=[&#39;r&#39;, &#39;g&#39;], stream_config=cfg)</span>
-
-<span class="sd">        Use already existing ra/dec and fill a missing &#39;g&#39; band from a model:</span>
-
-<span class="sd">        &gt;&gt;&gt; df = pd.DataFrame({&#39;phi1&#39;: [-5, 0, 5], &#39;phi2&#39;: [0, 0, 0], &#39;ra&#39;: [10.1, 12.5, 24.7], &#39;dec&#39;: [5.2, 6.2, 7.2],})</span>
-<span class="sd">        &gt;&gt;&gt; out = injector.complete_data(df, bands=[&#39;r&#39;, &#39;g&#39;], stream_config=cfg, seed=42)</span>
-
-<span class="sd">        Reuse the same gc_frame for multiple streams:</span>
-
-<span class="sd">        &gt;&gt;&gt; data1 = injector.complete_data(df1, seed=42)  # Creates new frame</span>
-<span class="sd">        &gt;&gt;&gt; data2 = injector.complete_data(df2, gc_frame=&#39;last&#39;)  # Reuses frame from data1</span>
+<span class="sd">        &gt;&gt;&gt; out = injector.complete_data(</span>
+<span class="sd">        ...     df, bands={&#39;lsst&#39;: [&#39;r&#39;, &#39;g&#39;], &#39;roman&#39;: [&#39;F106&#39;, &#39;F158&#39;]},</span>
+<span class="sd">        ...     stream_config=cfg, seed=42,</span>
+<span class="sd">        ... )</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">required_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">,</span> <span class="s2">&quot;dec&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">bands</span><span class="p">]</span>
+        <span class="n">survey_bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_survey_bands</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="n">rng</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;rng&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rng</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
-        <span class="c1"># Make explicit copy to avoid SettingWithCopyWarning</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;verbose&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s2">&quot;ra&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s2">&quot;dec&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
-            <span class="k">if</span> <span class="s2">&quot;phi1&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="s2">&quot;phi2&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Input data must contain either (ra, dec) or (phi1, phi2) columns.&quot;</span>
-                <span class="p">)</span>
+        <span class="c1"># Positions and masses are drawn *once* so all surveys describe the same</span>
+        <span class="c1"># physical stars (the isochrone produces every survey&#39;s</span>
+        <span class="c1"># ``&lt;survey&gt;_&lt;band&gt;_true`` column from one shared mass draw). Existing</span>
+        <span class="c1"># columns are preserved (only missing values are filled). ``ra``/``dec``</span>
+        <span class="c1"># are placed using the primary survey&#39;s footprint. ``dist`` (a float or</span>
+        <span class="c1"># per-row vector) overrides the model&#39;s distance sampling when given.</span>
+        <span class="n">true_cols</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">name_bands</span> <span class="ow">in</span> <span class="n">survey_bands</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">true_cols</span> <span class="o">+=</span> <span class="p">[</span><span class="n">true_col</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">name_bands</span><span class="p">]</span>
 
-            <span class="c1"># Handle &#39;last&#39; keyword for gc_frame</span>
-            <span class="n">gc_frame_param</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gc_frame&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">gc_frame_param</span> <span class="o">==</span> <span class="s2">&quot;last&quot;</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;gc_frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_gc_frame</span>
+        <span class="n">have_radec</span> <span class="o">=</span> <span class="s2">&quot;ra&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s2">&quot;dec&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+        <span class="n">have_phi</span> <span class="o">=</span> <span class="s2">&quot;phi1&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s2">&quot;phi2&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+        <span class="n">missing_true</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">true_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
 
-            <span class="c1"># Convert coordinates (Phi1, Phi2) into (ra,dec)</span>
-            <span class="n">stream_coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi_to_radec</span><span class="p">(</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">],</span>
-                <span class="n">data</span><span class="p">[</span><span class="s2">&quot;phi2&quot;</span><span class="p">],</span>
-                <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
-                <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span>
-                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;ra&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stream_coord</span><span class="o">.</span><span class="n">icrs</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">deg</span>
-            <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;dec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stream_coord</span><span class="o">.</span><span class="n">icrs</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">deg</span>
-
-        <span class="c1"># Sample missing magnitudes if needed</span>
-        <span class="n">mag_bands_missing</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">bands</span> <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;mag_</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span>
-        <span class="p">]</span>
-        <span class="k">if</span> <span class="n">mag_bands_missing</span><span class="p">:</span>
-            <span class="n">stream_config</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream_config&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># Sample stream geometry and/or the shared true magnitudes from the model.</span>
+        <span class="n">need_phi</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">have_radec</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">have_phi</span>
+        <span class="k">if</span> <span class="n">need_phi</span> <span class="ow">or</span> <span class="n">missing_true</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">stream_config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;`stream_config` must be provided to sample missing magnitudes.&quot;</span>
+                    <span class="s2">&quot;stream_config is required to sample stream geometry/magnitudes.&quot;</span>
                 <span class="p">)</span>
             <span class="n">stream_model</span> <span class="o">=</span> <span class="n">StreamModel</span><span class="p">(</span><span class="n">stream_config</span><span class="p">)</span>
+            <span class="n">cols_to_add</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">need_phi</span><span class="p">:</span>
+                <span class="n">cols_to_add</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">,</span> <span class="s2">&quot;phi2&quot;</span><span class="p">]</span>
+            <span class="c1"># `dist` is needed before magnitudes; the model fills it (from the</span>
+            <span class="c1"># distance_modulus model or the supplied `dist`) if absent.</span>
+            <span class="n">cols_to_add</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;dist&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">missing_true</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">stream_model</span><span class="o">.</span><span class="n">complete_catalog</span><span class="p">(</span>
                 <span class="n">data</span><span class="p">,</span>
+                <span class="n">columns_to_add</span><span class="o">=</span><span class="n">cols_to_add</span><span class="p">,</span>
                 <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">columns_to_add</span><span class="o">=</span><span class="n">mag_bands_missing</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                <span class="n">dist</span><span class="o">=</span><span class="n">dist</span><span class="p">,</span>
             <span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">required_columns</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input data must contain &#39;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&#39; column.&quot;</span><span class="p">)</span>
+        <span class="c1"># Convert (phi1, phi2) -&gt; (ra, dec) using the primary survey footprint.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">have_radec</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_radec</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">data</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_radec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure ``ra``/``dec`` are present, converting from (phi1, phi2) if needed.</span>
+
+<span class="sd">        Existing ``ra``/``dec`` are left untouched. When converting, the great</span>
+<span class="sd">        circle frame is found (or reused via ``gc_frame=&#39;last&#39;``) through</span>
+<span class="sd">        :meth:`phi_to_radec`, using the primary survey&#39;s footprint.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;ra&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">and</span> <span class="s2">&quot;dec&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span>
+
+        <span class="k">if</span> <span class="s2">&quot;phi1&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="s2">&quot;phi2&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Input data must contain either (ra, dec) or (phi1, phi2) columns.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Handle &#39;last&#39; keyword for gc_frame</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gc_frame&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;last&quot;</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;gc_frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_gc_frame</span>
+
+        <span class="c1"># Convert coordinates (phi1, phi2) into (ra, dec)</span>
+        <span class="n">stream_coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi_to_radec</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;phi2&quot;</span><span class="p">],</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;ra&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stream_coord</span><span class="o">.</span><span class="n">icrs</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">deg</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="s2">&quot;dec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stream_coord</span><span class="o">.</span><span class="n">icrs</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">deg</span>
+        <span class="k">return</span> <span class="n">data</span>
 
 <div class="viewcode-block" id="StreamInjector.phi_to_radec">
 <a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.phi_to_radec">[docs]</a>
@@ -1206,7 +1463,7 @@
 
 <div class="viewcode-block" id="StreamInjector.detect_flag">
 <a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.detect_flag">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">detect_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pix</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">detect_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pix</span><span class="p">,</span> <span class="n">survey</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply the survey selection to determine detection flags for stars.</span>
 
@@ -1221,6 +1478,9 @@
 <span class="sd">            Magnitude(s). Default is None.</span>
 <span class="sd">        band : str, optional</span>
 <span class="sd">            Band to consider for detection. Default is &#39;r&#39;.</span>
+<span class="sd">        survey : Survey</span>
+<span class="sd">            Survey whose completeness/detection-efficiency curves to use</span>
+<span class="sd">            (required).</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Additional keyword arguments:</span>
 
@@ -1248,13 +1508,13 @@
             <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
         <span class="c1"># Select the appropriate magnitude and map depending on the band</span>
-        <span class="n">maglim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">get_maglim</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">pixel</span><span class="o">=</span><span class="n">pix</span><span class="p">)</span>
+        <span class="n">maglim</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_maglim</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">pixel</span><span class="o">=</span><span class="n">pix</span><span class="p">)</span>
 
         <span class="n">perfect_galstarsep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;perfect_galstarsep&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
-            <span class="n">compl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">get_detection_efficiency</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">maglim</span><span class="p">)</span>
+            <span class="n">compl</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_detection_efficiency</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">maglim</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">compl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">survey</span><span class="o">.</span><span class="n">get_completeness</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">maglim</span><span class="p">)</span>
+            <span class="n">compl</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_completeness</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">maglim</span><span class="p">)</span>
 
         <span class="c1"># Set the threshold using completeness</span>
         <span class="n">threshold</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">mag</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">compl</span>

@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -143,16 +144,23 @@
 <li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -162,6 +170,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">Content</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
@@ -321,15 +330,7 @@
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.BoundedFunction"><code class="docutils literal notranslate"><span class="pre">BoundedFunction</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.Constant"><code class="docutils literal notranslate"><span class="pre">Constant</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.CubicSplineInterpolation"><code class="docutils literal notranslate"><span class="pre">CubicSplineInterpolation</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.FileCubicSplineInterpolation"><code class="docutils literal notranslate"><span class="pre">FileCubicSplineInterpolation</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.FileInterpolation"><code class="docutils literal notranslate"><span class="pre">FileInterpolation</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.FileLinearDensityCubicSplineInterpolation"><code class="docutils literal notranslate"><span class="pre">FileLinearDensityCubicSplineInterpolation</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.Interpolation"><code class="docutils literal notranslate"><span class="pre">Interpolation</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.Line"><code class="docutils literal notranslate"><span class="pre">Line</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.LinearDensityCubicSplineInterpolation"><code class="docutils literal notranslate"><span class="pre">LinearDensityCubicSplineInterpolation</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.Sinusoid"><code class="docutils literal notranslate"><span class="pre">Sinusoid</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.function_factory"><code class="docutils literal notranslate"><span class="pre">function_factory()</span></code></a></li>
 </ul>
@@ -347,157 +348,19 @@
 <span id="streamobs-functions-module"></span><h1>streamobs.functions module<a class="headerlink" href="#module-streamobs.functions" title="Link to this heading">#</a></h1>
 <p>Function definitions.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="streamobs.functions.BoundedFunction">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.functions.</span></span><span class="sig-name descname"><span class="pre">BoundedFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/functions.html#BoundedFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.functions.BoundedFunction" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(x, **kwargs)</p></td>
-<td><p>Call self as a function.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="streamobs.functions.Constant">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.functions.</span></span><span class="sig-name descname"><span class="pre">Constant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/functions.html#Constant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.functions.Constant" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#streamobs.functions.BoundedFunction" title="streamobs.functions.BoundedFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundedFunction</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(x, **kwargs)</p></td>
-<td><p>Call self as a function.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="streamobs.functions.CubicSplineInterpolation">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.functions.</span></span><span class="sig-name descname"><span class="pre">CubicSplineInterpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/functions.html#CubicSplineInterpolation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.functions.CubicSplineInterpolation" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#streamobs.functions.BoundedFunction" title="streamobs.functions.BoundedFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundedFunction</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(x, **kwargs)</p></td>
-<td><p>Call self as a function.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="streamobs.functions.FileCubicSplineInterpolation">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.functions.</span></span><span class="sig-name descname"><span class="pre">FileCubicSplineInterpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spline_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'phi1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_vals_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mean'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/functions.html#FileCubicSplineInterpolation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.functions.FileCubicSplineInterpolation" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#streamobs.functions.CubicSplineInterpolation" title="streamobs.functions.CubicSplineInterpolation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CubicSplineInterpolation</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(x, **kwargs)</p></td>
-<td><p>Call self as a function.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="streamobs.functions.FileInterpolation">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.functions.</span></span><span class="sig-name descname"><span class="pre">FileInterpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/functions.html#FileInterpolation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.functions.FileInterpolation" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#streamobs.functions.Interpolation" title="streamobs.functions.Interpolation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interpolation</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(x, **kwargs)</p></td>
-<td><p>Call self as a function.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="streamobs.functions.FileLinearDensityCubicSplineInterpolation">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.functions.</span></span><span class="sig-name descname"><span class="pre">FileLinearDensityCubicSplineInterpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/functions.html#FileLinearDensityCubicSplineInterpolation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.functions.FileLinearDensityCubicSplineInterpolation" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#streamobs.functions.LinearDensityCubicSplineInterpolation" title="streamobs.functions.LinearDensityCubicSplineInterpolation"><code class="xref py py-class docutils literal notranslate"><span class="pre">LinearDensityCubicSplineInterpolation</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(x, **kwargs)</p></td>
-<td><p>Call self as a function.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="streamobs.functions.Interpolation">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.functions.</span></span><span class="sig-name descname"><span class="pre">Interpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xvals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yvals</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/functions.html#Interpolation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.functions.Interpolation" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#streamobs.functions.BoundedFunction" title="streamobs.functions.BoundedFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundedFunction</span></code></a></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(x, **kwargs)</p></td>
-<td><p>Call self as a function.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="streamobs.functions.Line">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.functions.</span></span><span class="sig-name descname"><span class="pre">Line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intercept</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/functions.html#Line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.functions.Line" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#streamobs.functions.BoundedFunction" title="streamobs.functions.BoundedFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundedFunction</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BoundedFunction</span></code></p>
 <p>Line function. Evaluated as:</p>
 <p>y(x) = slope*x + intercept</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(x, **kwargs)</p></td>
-<td><p>Call self as a function.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="streamobs.functions.LinearDensityCubicSplineInterpolation">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.functions.</span></span><span class="sig-name descname"><span class="pre">LinearDensityCubicSplineInterpolation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intensity_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intensity_node_values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spread_node_values</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/functions.html#LinearDensityCubicSplineInterpolation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.functions.LinearDensityCubicSplineInterpolation" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(x, **kwargs)</p></td>
-<td><p>Call self as a function.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="streamobs.functions.Sinusoid">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">streamobs.functions.</span></span><span class="sig-name descname"><span class="pre">Sinusoid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amplitude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">period</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/functions.html#Sinusoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.functions.Sinusoid" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#streamobs.functions.BoundedFunction" title="streamobs.functions.BoundedFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">BoundedFunction</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BoundedFunction</span></code></p>
 <p>Sinusoid function. Evaluated as:</p>
 <p>y(x) = amplitude/2 * cos( 2pi*(x - phase)/period ) + amplitude/2+offset</p>
-<p class="rubric">Methods</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__call__</span></code>(x, **kwargs)</p></td>
-<td><p>Call self as a function.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -566,15 +429,7 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.BoundedFunction"><code class="docutils literal notranslate"><span class="pre">BoundedFunction</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.Constant"><code class="docutils literal notranslate"><span class="pre">Constant</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.CubicSplineInterpolation"><code class="docutils literal notranslate"><span class="pre">CubicSplineInterpolation</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.FileCubicSplineInterpolation"><code class="docutils literal notranslate"><span class="pre">FileCubicSplineInterpolation</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.FileInterpolation"><code class="docutils literal notranslate"><span class="pre">FileInterpolation</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.FileLinearDensityCubicSplineInterpolation"><code class="docutils literal notranslate"><span class="pre">FileLinearDensityCubicSplineInterpolation</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.Interpolation"><code class="docutils literal notranslate"><span class="pre">Interpolation</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.Line"><code class="docutils literal notranslate"><span class="pre">Line</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.LinearDensityCubicSplineInterpolation"><code class="docutils literal notranslate"><span class="pre">LinearDensityCubicSplineInterpolation</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.Sinusoid"><code class="docutils literal notranslate"><span class="pre">Sinusoid</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.functions.function_factory"><code class="docutils literal notranslate"><span class="pre">function_factory()</span></code></a></li>
 </ul>

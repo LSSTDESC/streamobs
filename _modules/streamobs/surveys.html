@@ -31,6 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
   <!-- So that users can add custom icons -->
   <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -142,16 +143,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../../about.html">About StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation &amp; Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multisurvey.html">Injecting one or many surveys</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/DES.html">DES</a></li>
 
-<li class="toctree-l1"><a class="reference internal" href="../../LSST.html">LSST</a></li>
-
-
-<li class="toctree-l1"><a class="reference internal" href="../../roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/Roman.html">Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
@@ -161,6 +169,7 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
@@ -336,9 +345,18 @@
 <span class="sd">        Magnitude difference for saturation threshold in the initial functions.</span>
 <span class="sd">    completeness_band : str, optional</span>
 <span class="sd">        Band used to derive completeness function (e.g., &#39;r&#39;).</span>
-<span class="sd">    log_photo_error : callable, optional</span>
-<span class="sd">        Photometric error model f(delta_mag) -&gt; log10(mag_error).</span>
-<span class="sd">        Same function used for all bands, obtained from r band.</span>
+<span class="sd">    log_photo_error_catalog : callable, optional</span>
+<span class="sd">        *Catalog* (reported) photometric error model f(delta_mag) -&gt; log10(mag_error),</span>
+<span class="sd">        where ``delta_mag = mag - maglim``. This is the survey&#39;s reported error</span>
+<span class="sd">        curve (e.g. ``photoerror_r.csv``); it is written as ``magerr`` and drives</span>
+<span class="sd">        the S/N cut. Loaded from the ``log_photo_error_catalog`` config key, or the</span>
+<span class="sd">        legacy ``log_photo_error`` key. Always present for a configured survey.</span>
+<span class="sd">    log_photo_error_sample : callable, optional</span>
+<span class="sd">        *Sample* photometric error model f(delta_mag) -&gt; log10(mag_error): the true</span>
+<span class="sd">        scatter of observed-minus-true magnitudes, used to draw the observed</span>
+<span class="sd">        magnitudes. Optional second curve (config key ``log_photo_error_sample``).</span>
+<span class="sd">        If not provided, the noise draw falls back to the catalog model, which</span>
+<span class="sd">        reproduces the previous single-curve behaviour exactly.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -388,7 +406,8 @@
     <span class="n">completeness</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">completeness_band</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">delta_saturation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">log_photo_error</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">log_photo_error_catalog</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">log_photo_error_sample</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Band-independent maps</span>
     <span class="n">ebv_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -406,6 +425,52 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sys_error</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sys_error</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">namespace</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Column-prefix namespace for this survey.</span>
+
+<span class="sd">        ``&quot;{name}_{release}&quot;`` when a release is set (e.g. ``&quot;lsst_yr5&quot;``,</span>
+<span class="sd">        ``&quot;roman_dc2&quot;``), otherwise just ``&quot;{name}&quot;``. This is the prefix used</span>
+<span class="sd">        for every injected column (``&lt;namespace&gt;_&lt;band&gt;_obs`` etc.), so the same</span>
+<span class="sd">        survey at two releases produces distinct, non-colliding columns.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">release</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">release</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_photo_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Backward-compatible alias for the *catalog* (reported) error model.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_catalog</span>
+
+    <span class="nd">@log_photo_error</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_photo_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_catalog</span> <span class="o">=</span> <span class="n">func</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_log_photo_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;catalog&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Select the log photometric-error interpolator.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        kind : str</span>
+<span class="sd">            ``&quot;catalog&quot;`` returns the catalog model: the reported error curve,</span>
+<span class="sd">            written as ``magerr`` and used for the S/N cut. ``&quot;sample&quot;`` returns</span>
+<span class="sd">            the sample model: the true scatter (observed-minus-true) that drives</span>
+<span class="sd">            the noise draw, falling back to the catalog model when no sample curve</span>
+<span class="sd">            is loaded (which reproduces the previous single-curve behaviour).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        callable or None</span>
+<span class="sd">            The selected ``f(delta_mag) -&gt; log10(mag_error)`` interpolator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;catalog&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_catalog</span>
+        <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;sample&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_sample</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_catalog</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;kind must be &#39;sample&#39; or &#39;catalog&#39;, got &#39;</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Survey.load">
 <a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.load">[docs]</a>
@@ -522,7 +587,12 @@
 <div class="viewcode-block" id="Survey.get_photo_error">
 <a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.get_photo_error">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_photo_error</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">maglim</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">maglim</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;catalog&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get photometric error estimate.</span>
@@ -535,6 +605,11 @@
 <span class="sd">            True apparent magnitude(s).</span>
 <span class="sd">        maglim : float or np.ndarray</span>
 <span class="sd">            Magnitude limit(s) at the position(s).</span>
+<span class="sd">        kind : str, optional</span>
+<span class="sd">            Which error model to evaluate: ``&quot;catalog&quot;`` (reported error, written</span>
+<span class="sd">            as ``magerr`` and used for S/N cuts) or ``&quot;sample&quot;`` (true scatter,</span>
+<span class="sd">            used to draw the observed magnitudes). ``&quot;sample&quot;`` falls back to the</span>
+<span class="sd">            catalog model if no sample curve is loaded. Default is ``&quot;catalog&quot;``.</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Additional keyword arguments:</span>
 
@@ -550,10 +625,11 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If photo error model is not loaded.</span>
+<span class="sd">            If the requested photo error model is not loaded.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Photo error model not loaded&quot;</span><span class="p">)</span>
+        <span class="n">log_photo_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_log_photo_error</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">log_photo_error</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Photo error model (&#39;</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2">&#39;) not loaded&quot;</span><span class="p">)</span>
 
         <span class="n">delta_saturation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delta_saturation&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">)</span>
 
@@ -565,13 +641,13 @@
             <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                 <span class="p">((</span><span class="n">delta_mag</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">delta_saturation</span><span class="p">)</span>
                 <span class="o">&amp;</span> <span class="p">(</span><span class="n">magnitude</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">]),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error</span><span class="p">(</span><span class="n">delta_saturation</span><span class="p">),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error</span><span class="p">(</span><span class="n">delta_mag</span><span class="p">),</span>
+                <span class="n">log_photo_error</span><span class="p">(</span><span class="n">delta_saturation</span><span class="p">),</span>
+                <span class="n">log_photo_error</span><span class="p">(</span><span class="n">delta_mag</span><span class="p">),</span>
             <span class="p">)</span>
         <span class="p">)</span>
         <span class="n">mag_err_stat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
             <span class="n">magnitude</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">],</span>
-            <span class="mi">10</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error</span><span class="p">(</span><span class="n">delta_saturation</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="mi">10</span> <span class="o">**</span> <span class="n">log_photo_error</span><span class="p">(</span><span class="n">delta_saturation</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
             <span class="n">mag_err_stat</span><span class="p">,</span>
         <span class="p">)</span>  <span class="c1"># saturation at the bright end</span>
 
@@ -713,15 +789,16 @@
 <span class="sd">            True apparent magnitude(s).</span>
 <span class="sd">        maglim : float or np.ndarray</span>
 <span class="sd">            Magnitude limit(s) at the position(s).</span>
-
+<span class="sd">        type : str, optional</span>
+<span class="sd">            Type of efficiency function to use. Options are ``&quot;completeness&quot;``,</span>
+<span class="sd">            ``&quot;detection_efficiency&quot;``, or ``&quot;classification_efficiency&quot;``.</span>
+<span class="sd">            Default is ``&quot;completeness&quot;``.</span>
 <span class="sd">        **kwargs</span>
-<span class="sd">            Additional keyword arguments:</span>
-<span class="sd">            type : str, optional</span>
-<span class="sd">                Type of efficiency function to use. Options are &quot;completeness&quot;, &quot;detection_efficiency&quot;, or &quot;classification_efficiency&quot;.</span>
-<span class="sd">                Default is &quot;completeness&quot;.</span>
+<span class="sd">            Additional keyword arguments. Currently:</span>
+
 <span class="sd">            delta_saturation : float, optional</span>
-<span class="sd">                Magnitude difference for saturation threshold in the initial completeness function.</span>
-<span class="sd">                Default is -10.4.</span>
+<span class="sd">                Magnitude difference for saturation threshold in the initial</span>
+<span class="sd">                completeness function. Default is -10.4.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -842,6 +919,8 @@
 <span class="sd">            Custom configuration dictionary to use instead of loading from file.</span>
 <span class="sd">            If provided, bypasses the standard config file loading.</span>
 <span class="sd">        **kwargs</span>
+<span class="sd">            Additional keyword arguments. Recognized:</span>
+
 <span class="sd">            uniform_survey : bool, optional</span>
 <span class="sd">                If True, also creates and caches a uniform version of the survey</span>
 <span class="sd">                with constant magnitude limits. The uniform survey can be accessed</span>
@@ -849,7 +928,8 @@
 <span class="sd">                Default is False.</span>
 <span class="sd">            verbose : bool, optional</span>
 <span class="sd">                Whether to print progress messages. Default is True.</span>
-<span class="sd">            Additional keyword arguments override config values</span>
+
+<span class="sd">            Any other keyword arguments override config values.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1409,16 +1489,46 @@
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No classification efficiency file found, skipping.&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Load photometric error model (same for all bands)</span>
+        <span class="c1"># Load photometric error model(s), same for all bands. Two curves:</span>
+        <span class="c1">#   - catalog : reported error vs delta_mag (the survey&#39;s photoerror file).</span>
+        <span class="c1">#               Written as magerr and used for the S/N cut. Always loaded.</span>
+        <span class="c1">#   - sample  : optional second curve giving the true scatter of</span>
+        <span class="c1">#               observed-minus-true magnitudes; drives the noise draw.</span>
+        <span class="c1"># Backward compatible: with no sample curve, the noise draw falls back to</span>
+        <span class="c1"># the catalog curve, reproducing the previous single-curve behaviour.</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Loading photometric error model...&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="s2">&quot;log_photo_error&quot;</span> <span class="ow">in</span> <span class="n">survey_config</span><span class="p">:</span>
-            <span class="c1"># Use default saturation if not band-specific</span>
+
+        <span class="c1"># Catalog (reported) error model: prefer explicit &#39;log_photo_error_catalog&#39;,</span>
+        <span class="c1"># else the legacy &#39;log_photo_error&#39; key.</span>
+        <span class="n">catalog_key</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;log_photo_error_catalog&quot;</span>
+            <span class="k">if</span> <span class="s2">&quot;log_photo_error_catalog&quot;</span> <span class="ow">in</span> <span class="n">survey_config</span>
+            <span class="k">else</span> <span class="s2">&quot;log_photo_error&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">catalog_key</span> <span class="ow">in</span> <span class="n">survey_config</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span>
                 <span class="n">survey</span><span class="p">,</span>
                 <span class="n">survey_config</span><span class="p">,</span>
-                <span class="s2">&quot;log_photo_error&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Photometric error model&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;log_photo_error_catalog&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Photometric error model (catalog / reported)&quot;</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_photo_error</span><span class="p">(</span>
+                    <span class="n">f</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span>
+                <span class="p">),</span>
+                <span class="n">data_path_survey</span><span class="p">,</span>
+                <span class="n">data_path_others</span><span class="p">,</span>
+                <span class="n">filename</span><span class="o">=</span><span class="n">survey_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">catalog_key</span><span class="p">),</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Optional sample (true-scatter) error model. If absent, the noise draw</span>
+        <span class="c1"># falls back to the catalog model (get_photo_error(kind=&quot;sample&quot;)).</span>
+        <span class="k">if</span> <span class="s2">&quot;log_photo_error_sample&quot;</span> <span class="ow">in</span> <span class="n">survey_config</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span>
+                <span class="n">survey</span><span class="p">,</span>
+                <span class="n">survey_config</span><span class="p">,</span>
+                <span class="s2">&quot;log_photo_error_sample&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Photometric error model (sample / true scatter)&quot;</span><span class="p">,</span>
                 <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_photo_error</span><span class="p">(</span>
                     <span class="n">f</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span>
                 <span class="p">),</span>
@@ -1616,8 +1726,9 @@
 <span class="sd">            Path to CSV file with columns:</span>
 
 <span class="sd">            - &#39;delta_mag&#39; : Magnitude difference from limit (mag - maglim)</span>
-<span class="sd">            - &#39;eff_star&#39; : Detection efficiency only</span>
-<span class="sd">            - &#39;classifiction_eff&#39; : Classification efficiency only</span>
+<span class="sd">            - &#39;detection_eff&#39; : Detection efficiency only</span>
+<span class="sd">            - &#39;classification_eff&#39; : Classification efficiency only (the legacy</span>
+<span class="sd">              misspelled header &#39;classifiction_eff&#39; is also accepted)</span>
 <span class="sd">            - &#39;classification_detection_eff&#39; : Combined efficiency</span>
 
 <span class="sd">        delta_saturation : float, optional</span>
@@ -1625,8 +1736,9 @@
 <span class="sd">        selection : str, optional</span>
 <span class="sd">            Which efficiency to use:</span>
 
-<span class="sd">            - &#39;detected&#39; : Detection efficiency only (column &#39;eff_star&#39;)</span>
-<span class="sd">            - &#39;classified&#39; : Classification efficiency only (column &#39;classifiction_eff&#39;)</span>
+<span class="sd">            - &#39;detected&#39; : Detection efficiency only (column &#39;detection_eff&#39;)</span>
+<span class="sd">            - &#39;classified&#39; : Classification efficiency only (column</span>
+<span class="sd">              &#39;classification_eff&#39;, or legacy &#39;classifiction_eff&#39;)</span>
 <span class="sd">            - &#39;both&#39; : Combined detection and classification (column &#39;classification_detection_eff&#39;)</span>
 
 <span class="sd">            Default is &#39;both&#39;.</span>
@@ -1655,7 +1767,12 @@
         <span class="k">if</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;detected&quot;</span><span class="p">:</span>
             <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;detection_eff&quot;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;classified&quot;</span><span class="p">:</span>
-            <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;classifiction_eff&quot;</span><span class="p">]</span>
+            <span class="c1"># Prefer the correct spelling; fall back to the legacy misspelled</span>
+            <span class="c1"># header (&quot;classifiction_eff&quot;) in older/Zenodo data packages.</span>
+            <span class="k">if</span> <span class="s2">&quot;classification_eff&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+                <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;classification_eff&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;classifiction_eff&quot;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span><span class="p">:</span>
             <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;classification_detection_eff&quot;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
