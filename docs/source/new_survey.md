@@ -20,7 +20,7 @@ Add magnitude limit maps for each band:
 * Example:
 
   ```
-  des_y6_g_band_nside_128.hsp
+  des_yr6_g_band_nside_128.hsp
   ```
 * Optional: survey-specific completeness and photometric error files. If not provided, the default files in `data/others/` will be used.
 

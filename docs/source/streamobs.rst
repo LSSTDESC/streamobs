@@ -4,7 +4,6 @@ streamobs package
 .. automodule:: streamobs
    :members:
    :show-inheritance:
-   :undoc-members:
 
 Submodules
 ----------

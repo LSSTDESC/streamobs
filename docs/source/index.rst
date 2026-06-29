@@ -83,15 +83,24 @@ Documentation Contents
    about
    installation
    quickstart
+   multisurvey
    citation
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Examples
+
+   examples/tutorial_generate_datamocks
+   examples/tutorial_inject_stream
 
 .. toctree::
    :maxdepth: 2
    :caption: Surveys supported
    
-   DES
-   LSST
-   roman
+   surveys/DES
+   surveys/LSST
+   surveys/Roman
+
 
 .. toctree::
    :maxdepth: 2
@@ -105,6 +114,7 @@ Documentation Contents
    :maxdepth: 2
    :caption: Reference
 
+   column_convention
    data
    modules
 

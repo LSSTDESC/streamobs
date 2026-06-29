@@ -9,6 +9,8 @@ import numpy as np
 import pandas as pd
 import pylab as plt
 
+from .columns import flag_col, obs_col, true_col
+
 try:
     import healpy as hp
     import skyproj
@@ -24,8 +26,8 @@ def draw_stream(phi1, phi2):
     ----------
     phi1, phi2 : coordinates of stars (deg)
 
-    Returns:
-    --------
+    Returns
+    -------
     num, xedges, yedges, im : output of imshow
     """
 
@@ -40,8 +42,8 @@ def draw_stream(phi1, phi2):
 
     ax = plt.gca()
     ax.set_title("Mock Stream")
-    ax.set_xlabel("$\phi_1$ [deg]")
-    ax.set_ylabel("$\phi_2$ [deg]")
+    ax.set_xlabel(r"$\phi_1$ [deg]")
+    ax.set_ylabel(r"$\phi_2$ [deg]")
 
     image = ax.imshow(
         hist.T,
@@ -92,13 +94,14 @@ def plot_inject(data, survey, bands=None, range=None, **kwargs):
     Parameters
     ----------
     data : pandas.DataFrame or dict-like
-        Data containing the injected stream. Must have columns:
+        Data containing the injected stream, with columns namespaced by the
+        survey's ``namespace`` (``{name}_{release}``, e.g. ``lsst_yr5``). Must have:
         - 'ra', 'dec': Sky coordinates in degrees
-        - 'flag_observed': Boolean flag for detected stars
-        - 'mag_<band>': True magnitudes for each band
-        - 'mag_<band>_obs': Observed magnitudes for each band
+        - '<namespace>_flag_observed': Boolean flag for detected stars
+        - '<namespace>_<band>_true': True magnitudes for each band
+        - '<namespace>_<band>_obs': Observed magnitudes for each band
     survey : Survey
-        Survey object containing magnitude limit maps and other properties.
+        Survey object; supplies the column namespace and the magnitude-limit maps.
     bands : list of str, optional
         Bands to use for HR diagram. Default is ['g', 'r'].
         Will use first two bands if more are provided.
@@ -130,22 +133,25 @@ def plot_inject(data, survey, bands=None, range=None, **kwargs):
         raise ValueError("Need at least 2 bands for HR diagram")
     band1, band2 = bands[0], bands[1]
 
+    # Injected columns are namespaced by the survey ({name}_{release}).
+    ns = survey.namespace
+
     # Check required columns
     required_cols = [
         "ra",
         "dec",
-        "flag_observed",
-        f"mag_{band1}",
-        f"mag_{band2}",
-        f"mag_{band1}_obs",
-        f"mag_{band2}_obs",
+        flag_col(ns),
+        true_col(band1, ns),
+        true_col(band2, ns),
+        obs_col(band1, ns),
+        obs_col(band2, ns),
     ]
     missing_cols = [col for col in required_cols if col not in data.columns]
     if missing_cols:
         raise ValueError(f"Missing required columns: {missing_cols}")
 
     # Get detection flags
-    sel = data["flag_observed"].astype(bool)
+    sel = data[flag_col(ns)].astype(bool)
 
     # Create figure
     fig, ax = plt.subplots(1, 3, figsize=(14, 6))
@@ -205,8 +211,8 @@ def plot_inject(data, survey, bands=None, range=None, **kwargs):
     # --- Panel 2: HR diagram with true magnitudes ---
     ax[1].set_title("HR diagram using True magnitudes")
 
-    color_true = data[f"mag_{band1}"] - data[f"mag_{band2}"]
-    mag_true = data[f"mag_{band1}"]
+    color_true = data[true_col(band1, ns)] - data[true_col(band2, ns)]
+    mag_true = data[true_col(band1, ns)]
 
     ax[1].scatter(
         color_true,
@@ -234,8 +240,8 @@ def plot_inject(data, survey, bands=None, range=None, **kwargs):
     ax[2].set_title("HR diagram using sampled observed magnitudes")
 
     # Convert measured magnitudes to numeric, handling "BAD_MAG" strings
-    mag1_obs = pd.to_numeric(data[f"mag_{band1}_obs"], errors="coerce")
-    mag2_obs = pd.to_numeric(data[f"mag_{band2}_obs"], errors="coerce")
+    mag1_obs = pd.to_numeric(data[obs_col(band1, ns)], errors="coerce")
+    mag2_obs = pd.to_numeric(data[obs_col(band2, ns)], errors="coerce")
 
     # Mask out bad measurements
     mask_good = (~mag1_obs.isna()) & (~mag2_obs.isna())

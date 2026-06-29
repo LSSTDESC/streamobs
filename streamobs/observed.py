@@ -10,6 +10,7 @@ import healpy as hp
 import numpy as np
 import pandas as pd
 
+from .columns import err_col, flag_col, obs_col, perfect_flag_col, true_col
 from .model import StreamModel
 from .plotting import plot_stream_in_mask
 from .surveys import Survey
@@ -17,15 +18,31 @@ from .surveys import Survey
 
 class StreamInjector:
     """
-    Inject observational effects into stream data for a given survey.
+    Inject observational effects into stream data for one or more surveys.
 
-    This class handles the core injection logic while keeping survey data separate.
-    All survey data is loaded once and cached, making multiple injections efficient.
+    A single injector handles both the single- and multi-survey cases: pass one
+    survey or several. The same shared sky placement and a single shared draw of
+    true magnitudes (masses sampled once via the isochrone and interpolated into
+    every survey's bands) guarantee the **same physical star** gets consistent
+    magnitudes across surveys. Each survey contributes its own
+    ``<survey>_<band>_obs`` / ``<survey>_<band>_err`` / ``<survey>_flag_observed``
+    columns, computed with that survey's own maglim maps and completeness
+    functions. Output columns are **always** survey-namespaced, even for a single
+    survey.
+
+    All survey data is loaded once and cached, making multiple injections
+    efficient.
 
     Attributes
     ----------
-    survey : Survey
-        Survey instance containing all survey-specific data and functions.
+    surveys : dict
+        ``{namespace: Survey}`` for every survey this injector serves. The
+        namespace is the survey's ``{name}_{release}`` and is the column prefix
+        (``lsst_yr5_r_obs``, ``roman_dc2_F158_obs``, ...).
+    primary : Survey
+        The survey whose footprint drives the shared sky placement and whose
+        ``_save_injected_data`` is used (also available as ``survey``). Its
+        namespace string is :attr:`primary_namespace`.
     mask_cache : dict (class attribute)
         Cache of previously created HEALPix masks to avoid recomputation.
     _last_gc_frame : GreatCircleICRSFrame or None
@@ -34,73 +51,190 @@ class StreamInjector:
 
     Examples
     --------
-    Initialize with a survey:
+    Single survey (columns namespaced ``{name}_{release}``):
 
     >>> injector = StreamInjector('lsst', release='dc2')
+    >>> out = injector.inject(df, bands=['r', 'g'])  # -> lsst_dc2_r_obs, ...
 
-    Or with a pre-loaded Survey object:
+    Several surveys at once — each spec carries its release; the namespace is
+    derived from it, so bands are keyed by ``{name}_{release}``:
 
-    >>> survey = Survey.load('lsst', release='dc2')
-    >>> injector = StreamInjector(survey)
+    >>> injector = StreamInjector([
+    ...     {'survey': 'lsst', 'release': 'dc2'},
+    ...     {'survey': 'roman', 'release': 'dc2'},
+    ... ])
+    >>> out = injector.inject(
+    ...     df,
+    ...     bands={'lsst_dc2': ['r', 'g'], 'roman_dc2': ['F106', 'F158']},
+    ...     stream_config=scene['stream'], seed=42,
+    ... )
     """
 
     mask_cache = {}
 
-    def __init__(self, survey, **kwargs):
+    def __init__(self, survey, primary=None, **kwargs):
         """
-        Initialize with survey configuration.
+        Initialize with one or more survey configurations.
 
         Parameters
         ----------
-        survey : str or Survey
-            Either a survey name string (e.g., 'lsst') or a pre-loaded Survey instance.
-        **kwargs
-            Additional keyword arguments passed to Survey.load() if survey is a string.
-            Common options include:
+        survey : str, Survey, dict, or list
+            One survey or several. Every survey is namespaced by its own
+            :attr:`~streamobs.surveys.Survey.namespace` (``{name}_{release}``,
+            or just ``{name}`` with no release). Accepted forms:
 
-            release : str, optional
-                Survey release version (e.g., 'dc2', 'yr1', 'yr10').
+            - a survey-name string (e.g. ``'lsst'``), a
+              ``{"survey": ..., "release": ...}`` spec dict, or a pre-loaded
+              :class:`~streamobs.surveys.Survey` — a single survey;
+            - a list/tuple of such specs;
+            - a ``{key: spec}`` dict — the keys are containers only and are
+              **ignored**; the namespace is re-derived from each loaded survey.
+        primary : str, optional
+            Namespace (``{name}_{release}``) of the survey that drives the shared
+            sky placement. Defaults to the first survey.
+        **kwargs
+            Forwarded to :meth:`Survey.load` for any ``spec`` given as a name
+            string (e.g. ``release``).
 
         Raises
         ------
         ValueError
-            If survey is neither a string nor a Survey instance.
+            If ``surveys`` is empty or of an unsupported type, or if ``primary``
+            is not one of the provided surveys.
         """
-
-        if isinstance(survey, str):
-            self.survey = Survey.load(survey=survey, **kwargs)
-        elif isinstance(survey, Survey):
-            self.survey = survey
-        else:
-            raise ValueError("survey must be a string or Survey instance.")
+        self.surveys = self._normalize_surveys(survey, **kwargs)
+        self.survey_names = list(self.surveys)
+        if not self.survey_names:
+            raise ValueError("At least one survey is required.")
+        self._primary = primary if primary is not None else self.survey_names[0]
+        if self._primary not in self.surveys:
+            raise ValueError(
+                f"primary='{self._primary}' is not one of {self.survey_names}."
+            )
 
         # Instance attribute to store the last used gc_frame
         self._last_gc_frame = None
 
-    def inject(self, data, bands=["r", "g"], **kwargs):
-        """
-        Add observed quantities from the survey to the given data.
+    @property
+    def primary(self):
+        """The primary :class:`~streamobs.surveys.Survey`.
 
-        This method applies observational effects including photometric errors,
-        magnitude measurements, and detection flags based on survey properties.
+        Drives the shared sky placement; mask, coordinate and footprint helpers
+        operate on it. Its column namespace is :attr:`primary_namespace`.
+        """
+        return self.surveys[self._primary]
+
+    @property
+    def primary_namespace(self):
+        """Column namespace (``{name}_{release}``) of the primary survey."""
+        return self._primary
+
+    @property
+    def survey(self):
+        """Alias for :attr:`primary` — the primary :class:`~streamobs.surveys.Survey`."""
+        return self.surveys[self._primary]
+
+    @classmethod
+    def _normalize_surveys(cls, surveys, **kwargs):
+        """Coerce the ``surveys`` argument into a ``{namespace: Survey}`` dict.
+
+        The namespace key is always the survey's own
+        :attr:`~streamobs.surveys.Survey.namespace` (``{name}_{release}``), so
+        the same survey at two releases yields two distinct entries. Accepted
+        forms: a single spec (name string, ``Survey``, or
+        ``{"survey": ..., "release": ...}`` dict), a list of specs, or a
+        ``{key: spec}`` mapping (the keys are only containers — the canonical
+        namespace is re-derived from each loaded survey).
+        """
+        if isinstance(surveys, (str, Survey)):
+            specs = [surveys]
+        elif isinstance(surveys, dict) and "survey" in surveys:
+            # A single spec dict, e.g. {"survey": "lsst", "release": "yr5"}.
+            specs = [surveys]
+        elif isinstance(surveys, dict):
+            # A {key: spec} mapping; namespace is re-derived per loaded survey.
+            specs = list(surveys.values())
+        elif isinstance(surveys, (list, tuple)):
+            specs = list(surveys)
+        else:
+            raise ValueError(
+                "surveys must be a survey name, a Survey, a spec dict, a list "
+                "of specs, or a {key: spec} dict."
+            )
+        out = {}
+        for spec in specs:
+            survey = cls._load_survey(spec, **kwargs)
+            out[survey.namespace] = survey
+        return out
+
+    @staticmethod
+    def _load_survey(spec, **kwargs):
+        """Resolve a single survey spec to a Survey.
+
+        Accepts a :class:`~streamobs.surveys.Survey`, a survey-name string
+        (loaded with the shared ``**kwargs``, e.g. ``release=``), or a spec
+        ``dict`` such as ``{"survey": "lsst", "release": "yr5"}`` (forwarded to
+        :meth:`Survey.load`, taking precedence over the shared ``**kwargs``).
+        """
+        if isinstance(spec, Survey):
+            return spec
+        if isinstance(spec, str):
+            return Survey.load(survey=spec, **kwargs)
+        if isinstance(spec, dict):
+            return Survey.load(**{**kwargs, **spec})
+        raise ValueError(
+            "Each survey spec must be a Survey, a name string, or a "
+            '{"survey": ..., "release": ...} dict.'
+        )
+
+    def inject(self, data, bands=None, stream_config=None, **kwargs):
+        """
+        Add observed quantities from every survey into a single catalog.
+
+        Applies observational effects (photometric errors, measured magnitudes,
+        detection flags) for each survey this injector serves. A single shared
+        sky placement and a single shared true-magnitude fill (masses sampled
+        once and interpolated into every survey's bands) ensure the same physical
+        star is consistent across surveys. Output columns are always
+        survey-namespaced (``<survey>_<band>_obs`` etc.).
 
         Parameters
         ----------
         data : str or pd.DataFrame
-            Input data as DataFrame or path to the file (CSV or Excel).
-            Must contain either (ra, dec) or (phi1, phi2) coordinates, and
-            magnitude columns for the specified bands.
-        bands : list of str, optional
-            List of photometric bands to process. Default is ['r', 'g'].
+            Input data as DataFrame or path to the file (CSV or Excel). May
+            contain only stream coordinates (``phi1``/``phi2`` or ``ra``/``dec``);
+            anything missing is sampled from ``stream_config``. An all-empty frame
+            of length ``N`` is accepted (geometry and magnitudes are then sampled
+            for ``N`` rows).
+        bands : list of str or dict, optional
+            Bands to inject. A ``{survey_name: [bands]}`` dict selects bands per
+            survey (the multi-survey form; keys must match the surveys this
+            injector was built with). A plain list/tuple is the single-survey
+            shorthand, applied to the only survey. If omitted and there is
+            exactly one survey, defaults to ``['r', 'g']``.
+        stream_config : dict, optional
+            The ``stream`` section consumed by
+            :class:`~streamobs.model.StreamModel`. Required when any coordinate
+            or true-magnitude column is missing. Its isochrone produces the
+            shared ``<survey>_<band>_true`` columns.
         **kwargs
             Additional keyword arguments:
 
             seed : int, optional
                 Random seed for reproducibility.
+            dist : float or array-like, optional
+                Distance modulus used directly (scalar broadcast or per-row
+                vector) instead of sampling from the config's ``distance_modulus``
+                model — lets magnitudes be filled without ``phi1``.
             nside : int, optional
                 HEALPix nside parameter. Default is 4096.
             detection_mag_cut : list of str, optional
-                Bands to apply SNR detection cut. Default is ['g'].
+                Non-reference bands to apply the explicit SNR>=5 cut to. The
+                reference band (``survey.completeness_band``) is never cut here —
+                its SNR cut is already baked into the survey's selection
+                functions — so the default is every injected band *except* the
+                reference band. Net effect: every injected band must have
+                SNR >= 5, with the reference band's cut owned by the curves.
             save : bool, optional
                 Whether to save the output data. Default is False.
             folder : str or Path, optional
@@ -116,31 +250,131 @@ class StreamInjector:
         Returns
         -------
         pd.DataFrame
-            DataFrame with the following added columns:
+            DataFrame with shared ``ra``/``dec`` and, per survey:
 
-            - mag_<band>_obs : Observed magnitudes for each band
-            - magerr_<band> : Photometric errors for each band
-            - flag_observed : Boolean flag (True=detected, False=not detected). Includes both detection and classification efficiencies.
-            - flag_perfect_galstarsep : Boolean flag assuming perfect star/galaxy separation (detection efficiency only, no classification losses; only if requested with perfect_galstarsep=True)
-            - ra, dec : Sky coordinates (if not already present)
+            - <survey>_<band>_true : True (noiseless) apparent magnitudes
+            - <survey>_<band>_obs : Observed (noisy) magnitudes
+            - <survey>_<band>_err : Reported photometric errors
+            - <survey>_flag_observed : Boolean detection flag (detection and
+              classification efficiencies)
+            - <survey>_flag_perfect_galstarsep : Boolean flag assuming perfect
+              star/galaxy separation (only if perfect_galstarsep=True)
 
         Raises
         ------
         ValueError
-            If required columns are missing or bands are not supported.
+            If required columns are missing, if ``bands`` (as a dict) references
+            an unknown survey, or if a list ``bands`` is given for a multi-survey
+            injector.
         """
-        verbose = kwargs.get("verbose", True)
-        perfect_galstarsep = kwargs.pop("perfect_galstarsep", False)
-
-        # Load data
-        data = self._load_data(data)
+        survey_bands = self._resolve_survey_bands(bands)
 
         # Set the seed for reproducibility
         seed = kwargs.pop("seed", None)
         rng = np.random.default_rng(seed)
 
-        # Complete missing columns (ra/dec, magnitudes)
-        data = self.complete_data(data, rng=rng, seed=seed, bands=bands, **kwargs)
+        # Shared sky placement + shared true-magnitude fill (masses sampled once
+        # across all surveys). This is the same completion exposed publicly as
+        # complete_data(); pass the already-resolved {survey: bands} dict through.
+        data = self.complete_data(
+            data,
+            bands=survey_bands,
+            stream_config=stream_config,
+            rng=rng,
+            **kwargs,
+        )
+
+        # Per-survey observational injection. Independent child RNGs make the
+        # result independent of survey ordering and reproducible from `seed`.
+        children = rng.spawn(len(self.survey_names))
+        for child_rng, name in zip(children, self.survey_names):
+            if name not in survey_bands:
+                continue
+            data = self._inject_one_survey(
+                data,
+                list(survey_bands[name]),
+                survey=self.surveys[name],
+                rng=child_rng,
+                **kwargs,
+            )
+
+        # Save if requested
+        if kwargs.get("save"):
+            self._save_injected_data(data, kwargs.get("folder", None))
+
+        # Return data (do NOT store as instance attribute to avoid conflicts between runs)
+        return data
+
+    def _resolve_survey_bands(self, bands):
+        """Normalize the ``bands`` argument to a ``{survey_name: [bands]}`` dict.
+
+        ``bands`` may be:
+
+        - a ``{survey_name: [bands]}`` dict (validated against the known
+          surveys) — the multi-survey form;
+        - a list/tuple of band names — allowed only when the injector serves a
+          single survey, applied to that survey;
+        - ``None`` — defaults to ``['r', 'g']`` for the single-survey case.
+        """
+        if isinstance(bands, dict):
+            unknown = set(bands) - set(self.surveys)
+            if unknown:
+                raise ValueError(
+                    f"bands references unknown surveys {sorted(unknown)}; "
+                    f"available: {self.survey_names}."
+                )
+            return {name: list(b) for name, b in bands.items()}
+
+        if len(self.survey_names) != 1:
+            raise ValueError(
+                "Pass bands={survey_name: [bands]} when the injector serves "
+                f"multiple surveys ({self.survey_names})."
+            )
+        if bands is None:
+            bands = ["r", "g"]
+        return {self._primary: list(bands)}
+
+    def _inject_one_survey(self, data, bands, survey, rng=None, seed=None, **kwargs):
+        """Add one survey's observed magnitudes, errors and detection flags.
+
+        This holds the per-band observational logic. It assumes ``data`` already
+        carries ``ra``/``dec`` and the true-magnitude columns
+        (``true_col(band, survey.namespace)``) for the requested bands; it does
+        **not** sample positions or true magnitudes. The column namespace is
+        taken directly from ``survey.namespace`` (``{name}_{release}``).
+
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            Catalog with ``ra``/``dec`` and ``true_col(band, survey.namespace)``
+            for every requested band.
+        bands : list of str
+            Bands to process for this survey.
+        survey : Survey
+            The survey supplying maglim maps, completeness and error curves; its
+            ``namespace`` is the column prefix ⇒ ``<namespace>_<band>_obs`` /
+            ``<namespace>_<band>_err`` / ``<namespace>_flag_observed``.
+        rng : numpy.random.Generator, optional
+            Random generator for the noise draw and detection sampling.
+        seed : int, optional
+            Seed used to build an RNG when ``rng`` is None.
+        **kwargs
+            ``nside``, ``detection_mag_cut``, ``dust_correction``,
+            ``perfect_galstarsep``, ``verbose`` (see :meth:`inject`).
+
+        Returns
+        -------
+        pandas.DataFrame
+            ``data`` with this survey's observed columns and detection flag(s).
+        """
+        if rng is None:
+            rng = np.random.default_rng(seed)
+
+        # Column namespace for this survey (``{name}_{release}``).
+        survey_namespace = survey.namespace
+
+        verbose = kwargs.get("verbose", True)
+        perfect_galstarsep = kwargs.pop("perfect_galstarsep", False)
 
         # Get HEALPix pixel indices
         nside = kwargs.pop("nside", 4096)
@@ -152,22 +386,19 @@ class StreamInjector:
 
         # Process each band
         for band in bands:
-            if band not in ["r", "g"]:
-                raise ValueError("Currently only 'r' and 'g' bands are supported.")
-
             # Get extinction for this band
-            nside_ebv = hp.get_nside(self.survey.ebv_map)
+            nside_ebv = hp.get_nside(survey.ebv_map)
             if nside_ebv != nside:
                 pix_ebv = hp.ang2pix(nside_ebv, data["ra"], data["dec"], lonlat=True)
             else:
                 pix_ebv = pix
-            extinction_band = self.survey.get_extinction(band, pixel=pix_ebv)
+            extinction_band = survey.get_extinction(band, pixel=pix_ebv)
 
             # Calculate true apparent magnitudes (including extinction)
-            apparent_mag_true = data["mag_" + band] + extinction_band
+            apparent_mag_true = data[true_col(band, survey_namespace)] + extinction_band
 
             # Get magnitude limits
-            nside_maglim = hp.get_nside(self.survey.maglim_maps[band])
+            nside_maglim = hp.get_nside(survey.maglim_maps[band])
             if nside_maglim != nside:
                 pix_maglim = hp.ang2pix(
                     nside_maglim, data["ra"], data["dec"], lonlat=True
@@ -175,17 +406,23 @@ class StreamInjector:
             else:
                 pix_maglim = pix
 
-            # Calculate photometric errors
-            mag_err = self.survey.get_photo_error(
-                band,
-                apparent_mag_true,
-                self.survey.get_maglim(band, pixel=pix_maglim),
+            # Calculate photometric errors. The *sample* error (true scatter)
+            # drives the noise draw; the *catalog* error (reported) is written
+            # as magerr and used for the S/N cut. When no sample curve is loaded,
+            # the sample error falls back to the catalog error, so the two are
+            # identical (outputs unchanged from the single-curve behaviour).
+            maglim_vals = survey.get_maglim(band, pixel=pix_maglim)
+            mag_err_sample = survey.get_photo_error(
+                band, apparent_mag_true, maglim_vals, kind="sample"
+            )
+            mag_err = survey.get_photo_error(
+                band, apparent_mag_true, maglim_vals, kind="catalog"
             )
 
-            # Sample measured magnitudes
+            # Sample measured magnitudes using the sample (true-scatter) error
             mag_obs = self.sample_measured_magnitudes(
                 apparent_mag_true,
-                mag_err,
+                mag_err_sample,
                 rng=rng,
                 seed=seed,
                 **kwargs,
@@ -210,8 +447,8 @@ class StreamInjector:
             # Add new columns
             new_columns = pd.DataFrame(
                 {
-                    "mag_" + band + "_obs": mag_obs,
-                    "magerr_" + band: mag_err,
+                    obs_col(band, survey_namespace): mag_obs,
+                    err_col(band, survey_namespace): mag_err,
                 }
             )
 
@@ -221,9 +458,10 @@ class StreamInjector:
             data = pd.concat([data, new_columns], axis=1)
 
             # Compute detection flag for completeness-band (reference band)
-            if band == self.survey.completeness_band:
+            if band == survey.completeness_band:
                 flag_completeness_band = self.detect_flag(
                     pix_maglim,
+                    survey=survey,
                     mag=apparent_mag_true,
                     band=band,
                     rng=rng,
@@ -234,6 +472,7 @@ class StreamInjector:
                 if perfect_galstarsep:
                     flag_detection_only_band = self.detect_flag(
                         pix_maglim,
+                        survey=survey,
                         mag=apparent_mag_true,
                         band=band,
                         rng=rng,
@@ -244,20 +483,23 @@ class StreamInjector:
 
         # Apply detection threshold
         if flag_completeness_band is None:
-            if self.survey.completeness_band in bands:
+            if survey.completeness_band in bands:
                 raise ValueError(
-                    f"flag_completeness_{self.survey.completeness_band} must be computed for detection in {self.survey.completeness_band} band."
+                    f"flag_completeness_{survey.completeness_band} must be computed for detection in {survey.completeness_band} band."
                 )
             else:
                 raise ValueError(
-                    f"Detection flag requires '{self.survey.completeness_band}' band to be in bands."
+                    f"Detection flag requires '{survey.completeness_band}' band to be in bands."
                 )
 
         # Build combined detection flags
-        # Start with flux validity check (not BAD_MAG)
-        flag_valid_flux = data["mag_r_obs"] != "BAD_MAG"
-        if "g" in bands:
-            flag_valid_flux &= data["mag_g_obs"] != "BAD_MAG"
+        # Start with flux validity check (not BAD_MAG) across all injected bands
+        flag_valid_flux = None
+        for band in bands:
+            band_valid = data[obs_col(band, survey_namespace)] != "BAD_MAG"
+            flag_valid_flux = (
+                band_valid if flag_valid_flux is None else flag_valid_flux & band_valid
+            )
 
         # Combine with completeness
         flag_observed = (
@@ -272,11 +514,27 @@ class StreamInjector:
                 else flag_valid_flux
             )
 
-        # Apply SNR cuts
-        detection_mag_cut = kwargs.get("detection_mag_cut", ["g"])
+        # Apply SNR cuts.
+        #
+        # The reference band (``survey.completeness_band``) is NOT cut here: the
+        # survey's selection functions are defined on true stars detected at
+        # S/N >= SNR_min, so that cut is already baked into BOTH curves —
+        # ``get_completeness`` (detection x classification) and
+        # ``get_detection_efficiency`` (detection only). Re-applying it to the
+        # reference band would double-count it, so we only cut the *other*
+        # injected bands explicitly below.
         SNR_min = 5.0
+        ref_band = survey.completeness_band
 
+        # Non-reference bands. Default: every injected band except the reference
+        # band (whose cut is owned by the selection functions).
+        detection_mag_cut = kwargs.get(
+            "detection_mag_cut", [b for b in bands if b != ref_band]
+        )
         for band in detection_mag_cut:
+            if band == ref_band:
+                # The reference band's SNR cut is owned by the selection functions.
+                continue
             if band not in bands:
                 if verbose:
                     print(
@@ -285,26 +543,16 @@ class StreamInjector:
                 continue
             if verbose:
                 print(f"Applying detection cut on {band}-band with SNR >= {SNR_min}")
-            SNR = 1.0 / data["magerr_" + band]
+            SNR = 1.0 / data[err_col(band, survey_namespace)]
             flag_observed &= SNR >= SNR_min
             if perfect_galstarsep:
                 flag_perfect &= SNR >= SNR_min
 
-        # Force SNR cut on r-band for perfect gal/star separation (because it's not included in the detection efficiency functions, while it is for the completeness functions)
-        if perfect_galstarsep:
-            SNR_r = 1.0 / data["magerr_r"]
-            flag_perfect &= SNR_r >= SNR_min
-
         # Store flags in DataFrame
-        data["flag_observed"] = flag_observed
+        data[flag_col(survey_namespace)] = flag_observed
         if perfect_galstarsep:
-            data["flag_perfect_galstarsep"] = flag_perfect
+            data[perfect_flag_col(survey_namespace)] = flag_perfect
 
-        # Save if requested
-        if kwargs.get("save"):
-            self._save_injected_data(data, kwargs.get("folder", None))
-
-        # Return data (do NOT store as instance attribute to avoid conflicts between runs)
         return data
 
     def _load_data(self, data):
@@ -339,150 +587,150 @@ class StreamInjector:
         else:
             raise ValueError(f"Unsupported file format")
 
-    def complete_data(self, data, bands=["r", "g"], **kwargs):
-        """
-        Validate and complete the columns needed for injection.
+    def complete_data(
+        self,
+        data,
+        bands=None,
+        stream_config=None,
+        dist=None,
+        **kwargs,
+    ):
+        """Complete the columns the injector needs, filling the rest from the config.
 
-        This function ensures sky coordinates are present and, if requested,
-        fills missing photometric magnitude columns using a stream model.
-        Specifically:
+        Public helper: give it a (possibly partial) catalog and it returns one
+        with everything the injector requires present — sky coordinates
+        (``ra``/``dec``, converting from ``phi1``/``phi2`` if needed) and the
+        per-survey true-magnitude columns ``<survey>_<band>_true``. Anything
+        already present is preserved; only missing columns are sampled, using
+        ``stream_config`` (a :class:`~streamobs.model.StreamModel` config). The
+        stellar masses are drawn **once** and interpolated into every survey's
+        bands, so the same physical star is consistent across surveys.
 
-        - If (ra, dec) are missing but (phi1, phi2) exist, it converts to
-          sky coordinates via ``phi_to_radec``.
-        - It checks for ``mag_<band>`` for each requested band; any missing
-          bands are generated via ``StreamModel.complete_catalog`` when a
-          ``stream_config`` is provided.
-        - Existing columns are preserved and are not overwritten.
+        This is the same completion :meth:`inject` runs internally, exposed so
+        you can build/inspect a completed catalog without injecting noise.
 
         Parameters
         ----------
-        data : pandas.DataFrame
-            Input catalog. Must contain either (ra, dec) or (phi1, phi2).
-            The DataFrame is copied; the input object is not modified in place.
-        bands : list[str], optional
-            Photometric bands to ensure (as ``mag_<band>``). Default is
-            ``['r', 'g']``.
+        data : str or pandas.DataFrame
+            Input catalog (or path). May contain only stream coordinates
+            (``phi1``/``phi2`` or ``ra``/``dec``), an all-empty frame of length
+            ``N``, or any subset of the target columns.
+        bands : list of str or dict, optional
+            Bands whose true-magnitude columns to ensure. A
+            ``{survey_name: [bands]}`` dict selects bands per survey (multi-survey
+            form); a plain list/tuple is the single-survey shorthand. If omitted
+            and there is exactly one survey, defaults to ``['r', 'g']``.
+        stream_config : dict, optional
+            :class:`~streamobs.model.StreamModel` config used to sample any
+            missing geometry / true magnitudes. Required only when something is
+            missing.
+        dist : float or array-like or None, optional
+            Distance modulus to use directly (scalar broadcast or per-row
+            vector) instead of sampling from the config's ``distance_modulus``
+            model. Lets magnitudes be filled without ``phi1`` / a distance model.
         **kwargs
-            Additional options:
-
-            rng : numpy.random.Generator, optional
-                Random number generator instance.
-            seed : int, optional
-                Random seed used to initialize an RNG if ``rng`` is not given.
-            gc_frame : gala.coordinates.GreatCircleICRSFrame or 'last', optional
-                Great circle frame to use. If 'last', uses the frame from the
-                previous call. If None, generates a new random frame.
-            stream_config : dict, optional
-                Configuration passed to ``StreamModel``. Required only when at
-                least one requested magnitude band is missing. See
-                ``StreamModel`` for the expected schema (e.g., track, distance
-                modulus, isochrone).
-
-            Keyword arguments forwarded to ``phi_to_radec`` (only used when
-            converting from (phi1, phi2)):
-
-            mask_type : list[str] or str, optional
-                Mask(s) used when searching a frame (e.g., 'footprint',
-                'maglim_r', 'ebv').
-            percentile_threshold : float, optional
-                Fraction of points that must lie inside the mask when selecting
-                a frame. Default defined in ``phi_to_radec``.
-            max_iter : int, optional
-                Maximum trials when searching a frame. Default defined in
-                ``phi_to_radec``.
+            ``rng`` / ``seed`` for reproducibility, plus ``gc_frame``,
+            ``mask_type``, ``percentile_threshold``, ``max_iter`` forwarded to
+            :meth:`phi_to_radec` when converting ``phi1``/``phi2`` → ``ra``/``dec``.
 
         Returns
         -------
         pandas.DataFrame
-            A copy of the input with the required columns present:
-            ``ra``, ``dec``, and one ``mag_<band>`` column per requested band.
+            A copy of the input with ``ra``/``dec`` and the requested
+            ``<survey>_<band>_true`` columns present.
 
         Raises
         ------
         ValueError
-            If neither (ra, dec) nor (phi1, phi2) are present; or if one or
-            more magnitude bands are missing and ``stream_config`` is not
-            provided; or if after completion a required column is still absent.
-
-        Notes
-        -----
-        - Only missing magnitude columns are synthesized; existing values are
-          left untouched.
-        - Magnitudes are produced by ``StreamModel.complete_catalog`` and rely
-          on the model's configuration (e.g., isochrone and distance modulus).
-        - When a new gc_frame is created or used, it is stored in ``self._last_gc_frame``
-          for potential reuse via ``gc_frame='last'``.
+            If neither (ra, dec) nor (phi1, phi2) are present, or if columns are
+            missing and ``stream_config`` is not provided.
 
         Examples
         --------
-        Convert from (phi1, phi2) and generate both bands:
-
         >>> df = pd.DataFrame({'phi1': [-5, 0, 5], 'phi2': [0, 0, 0]})
-        >>> cfg = {...}  # stream model config
         >>> out = injector.complete_data(df, bands=['r', 'g'], stream_config=cfg)
-
-        Use already existing ra/dec and fill a missing 'g' band from a model:
-
-        >>> df = pd.DataFrame({'phi1': [-5, 0, 5], 'phi2': [0, 0, 0], 'ra': [10.1, 12.5, 24.7], 'dec': [5.2, 6.2, 7.2],})
-        >>> out = injector.complete_data(df, bands=['r', 'g'], stream_config=cfg, seed=42)
-
-        Reuse the same gc_frame for multiple streams:
-
-        >>> data1 = injector.complete_data(df1, seed=42)  # Creates new frame
-        >>> data2 = injector.complete_data(df2, gc_frame='last')  # Reuses frame from data1
+        >>> out = injector.complete_data(
+        ...     df, bands={'lsst': ['r', 'g'], 'roman': ['F106', 'F158']},
+        ...     stream_config=cfg, seed=42,
+        ... )
         """
-
-        required_columns = ["ra", "dec"] + [f"mag_{band}" for band in bands]
+        survey_bands = self._resolve_survey_bands(bands)
+        data = self._load_data(data).copy()
 
         rng = kwargs.pop("rng", None)
         seed = kwargs.pop("seed", None)
+        if rng is None:
+            rng = np.random.default_rng(seed)
 
-        # Make explicit copy to avoid SettingWithCopyWarning
-        data = data.copy()
+        verbose = kwargs.get("verbose", True)
 
-        if not ("ra" in data.columns and "dec" in data.columns):
-            if "phi1" not in data.columns or "phi2" not in data.columns:
-                raise ValueError(
-                    "Input data must contain either (ra, dec) or (phi1, phi2) columns."
-                )
+        # Positions and masses are drawn *once* so all surveys describe the same
+        # physical stars (the isochrone produces every survey's
+        # ``<survey>_<band>_true`` column from one shared mass draw). Existing
+        # columns are preserved (only missing values are filled). ``ra``/``dec``
+        # are placed using the primary survey's footprint. ``dist`` (a float or
+        # per-row vector) overrides the model's distance sampling when given.
+        true_cols = []
+        for name, name_bands in survey_bands.items():
+            true_cols += [true_col(b, name) for b in name_bands]
 
-            # Handle 'last' keyword for gc_frame
-            gc_frame_param = kwargs.get("gc_frame", None)
-            if gc_frame_param == "last":
-                kwargs["gc_frame"] = self._last_gc_frame
+        have_radec = "ra" in data.columns and "dec" in data.columns
+        have_phi = "phi1" in data.columns and "phi2" in data.columns
+        missing_true = [c for c in true_cols if c not in data.columns]
 
-            # Convert coordinates (Phi1, Phi2) into (ra,dec)
-            stream_coord = self.phi_to_radec(
-                data["phi1"],
-                data["phi2"],
-                seed=seed,
-                rng=rng,
-                **kwargs,
-            )
-            data.loc[:, "ra"] = stream_coord.icrs.ra.deg
-            data.loc[:, "dec"] = stream_coord.icrs.dec.deg
-
-        # Sample missing magnitudes if needed
-        mag_bands_missing = [
-            f"mag_{band}" for band in bands if f"mag_{band}" not in data.columns
-        ]
-        if mag_bands_missing:
-            stream_config = kwargs.get("stream_config", None)
+        # Sample stream geometry and/or the shared true magnitudes from the model.
+        need_phi = not have_radec and not have_phi
+        if need_phi or missing_true:
             if stream_config is None:
                 raise ValueError(
-                    "`stream_config` must be provided to sample missing magnitudes."
+                    "stream_config is required to sample stream geometry/magnitudes."
                 )
             stream_model = StreamModel(stream_config)
+            cols_to_add = []
+            if need_phi:
+                cols_to_add += ["phi1", "phi2"]
+            # `dist` is needed before magnitudes; the model fills it (from the
+            # distance_modulus model or the supplied `dist`) if absent.
+            cols_to_add += ["dist"] + missing_true
             data = stream_model.complete_catalog(
                 data,
+                columns_to_add=cols_to_add,
                 inplace=True,
-                columns_to_add=mag_bands_missing,
+                verbose=verbose,
+                dist=dist,
             )
 
-        for col in required_columns:
-            if col not in data.columns:
-                raise ValueError(f"Input data must contain '{col}' column.")
+        # Convert (phi1, phi2) -> (ra, dec) using the primary survey footprint.
+        if not have_radec:
+            data = self._ensure_radec(data, rng=rng, seed=seed, **kwargs)
 
+        return data
+
+    def _ensure_radec(self, data, rng=None, seed=None, **kwargs):
+        """Ensure ``ra``/``dec`` are present, converting from (phi1, phi2) if needed.
+
+        Existing ``ra``/``dec`` are left untouched. When converting, the great
+        circle frame is found (or reused via ``gc_frame='last'``) through
+        :meth:`phi_to_radec`, using the primary survey's footprint.
+        """
+        if "ra" in data.columns and "dec" in data.columns:
+            return data
+
+        if "phi1" not in data.columns or "phi2" not in data.columns:
+            raise ValueError(
+                "Input data must contain either (ra, dec) or (phi1, phi2) columns."
+            )
+
+        # Handle 'last' keyword for gc_frame
+        if kwargs.get("gc_frame", None) == "last":
+            kwargs["gc_frame"] = self._last_gc_frame
+
+        # Convert coordinates (phi1, phi2) into (ra, dec)
+        stream_coord = self.phi_to_radec(
+            data["phi1"], data["phi2"], seed=seed, rng=rng, **kwargs
+        )
+        data.loc[:, "ra"] = stream_coord.icrs.ra.deg
+        data.loc[:, "dec"] = stream_coord.icrs.dec.deg
         return data
 
     def phi_to_radec(
@@ -913,7 +1161,7 @@ class StreamInjector:
 
         return mag_obs
 
-    def detect_flag(self, pix, mag=None, band="r", **kwargs):
+    def detect_flag(self, pix, survey, mag=None, band="r", **kwargs):
         """
         Apply the survey selection to determine detection flags for stars.
 
@@ -928,6 +1176,9 @@ class StreamInjector:
             Magnitude(s). Default is None.
         band : str, optional
             Band to consider for detection. Default is 'r'.
+        survey : Survey
+            Survey whose completeness/detection-efficiency curves to use
+            (required).
         **kwargs
             Additional keyword arguments:
 
@@ -955,13 +1206,13 @@ class StreamInjector:
             rng = np.random.default_rng(seed)
 
         # Select the appropriate magnitude and map depending on the band
-        maglim = self.survey.get_maglim(band, pixel=pix)
+        maglim = survey.get_maglim(band, pixel=pix)
 
         perfect_galstarsep = kwargs.get("perfect_galstarsep", False)
         if perfect_galstarsep:
-            compl = self.survey.get_detection_efficiency(band, mag, maglim)
+            compl = survey.get_detection_efficiency(band, mag, maglim)
         else:
-            compl = self.survey.get_completeness(band, mag, maglim)
+            compl = survey.get_completeness(band, mag, maglim)
 
         # Set the threshold using completeness
         threshold = rng.uniform(size=len(mag)) <= compl

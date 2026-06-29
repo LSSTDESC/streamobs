@@ -47,7 +47,9 @@ config = parse_config('config/toy1_config.yaml')
 stream = StreamModel(config['stream'])
 stream_df = stream.sample(config['stream']['nstars'])
 
-# The dataframe contains: phi1, phi2, distance, magnitudes, etc.
+# The dataframe contains: phi1, phi2, dist, and the isochrone magnitude
+# columns, which are survey-namespaced as <survey>_<band>_true
+# (e.g. lsst_g_true, lsst_r_true).
 print(stream_df.head())
 ```
 
@@ -68,28 +70,32 @@ lsst_survey = surveys.Survey.load(survey='lsst', release='yr1')
 # Create the stream injector
 injector = observed.StreamInjector(lsst_survey)
 
-# Create or load your mock stream data
-# Here we create a simple test dataset
-# This could contain (ra, dec) coordinates if you want to skip coordinate transformation
+# Create or load your mock stream data.
+# Here we create a simple test dataset. Could instead contain (ra, dec) to skip
+# the coordinate transformation. True (noiseless) magnitudes are passed in as
+# survey-namespaced <namespace>_<band>_true columns, where the namespace is
+# "{name}_{release}" — here the survey is lsst/yr1, so "lsst_yr1".
+# Alternatively, omit the magnitudes and pass a `stream_config=` so the injector
+# samples them from an isochrone.
 rng = np.random.default_rng(42)
 mock_data = pd.DataFrame({
-    'phi1': rng.uniform(-5, 5, 1000),      # Stream longitude
-    'phi2': rng.uniform(-1, 1, 1000),      # Stream latitude
-    'mag_g': rng.uniform(18, 28, 1000),    # g-band magnitude
-    'mag_r': rng.uniform(18, 28, 1000),    # r-band magnitude
+    'phi1': rng.uniform(-5, 5, 1000),              # Stream longitude
+    'phi2': rng.uniform(-1, 1, 1000),              # Stream latitude
+    'lsst_yr1_g_true': rng.uniform(18, 28, 1000),  # true g-band apparent magnitude
+    'lsst_yr1_r_true': rng.uniform(18, 28, 1000),  # true r-band apparent magnitude
 })
 
 # Apply survey effects: footprint, extinction, photometric errors
 observed_data = injector.inject(
-    mock_data, 
+    mock_data,
+    bands=['r', 'g'],                 # bands to inject (single-survey shorthand)
     seed=42,
-    bands = ['r', 'g'] # Choose the bands to use
-    mask_type=['footprint', 'ebv'],  # Restrict injection to a mask created from the footprind and low dust area
-    verbose=True
+    mask_type=['footprint', 'ebv'],   # place the stream within the footprint + low-dust area
+    verbose=True,
 )
 
 print(f"Input stars: {len(mock_data)}")
-print(f"Detected stars: {len(observed_data[observed_data['flag_observed']==1])}")
+print(f"Detected stars: {int(observed_data['lsst_yr1_flag_observed'].sum())}")
 ```
 
 ### What the Injector Does
@@ -102,11 +108,14 @@ The `StreamInjector` applies several observational effects:
 4. **Detection completeness**: Applies magnitude-dependent detection probability
 
 
-The output dataframe includes:
+The output dataframe includes (all magnitude/flag columns are **survey-namespaced**
+as `<namespace>_...`, where the namespace is `{name}_{release}`; for the LSST/yr1
+survey loaded above it is `lsst_yr1`):
 - `ra`, `dec`: Sky coordinates
-- `mag_g_obs`, `mag_r_obs`: Observed magnitudes with errors
-- `magerr_g`, `magerr_r`: Photometric uncertainties
-- `flag_observed`: Detection and clasification flag (1=detected & classified as a star, 0=not detected of not classified as a star)
+- `lsst_yr1_g_true`, `lsst_yr1_r_true`: True (noiseless) apparent magnitudes
+- `lsst_yr1_g_obs`, `lsst_yr1_r_obs`: Observed (noisy) magnitudes
+- `lsst_yr1_g_err`, `lsst_yr1_r_err`: Reported photometric uncertainties
+- `lsst_yr1_flag_observed`: Detection and classification flag (`True`=detected & classified as a star, `False`=not detected or not classified as a star)
 
 
 ## Next Steps

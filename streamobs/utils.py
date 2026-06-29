@@ -2,6 +2,7 @@
 """
 Utils for streamobs
 """
+
 import yaml
 
 
@@ -19,6 +20,6 @@ def parse_config(config):
     try:
         # If `config` is a file
         return yaml.safe_load(open(config, "r"))
-    except (OSError, FileNotFoundError):
+    except OSError, FileNotFoundError:
         # Otherwise assume it is a string
         return yaml.safe_load(config)
