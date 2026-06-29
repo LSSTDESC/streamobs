@@ -142,6 +142,7 @@ docs/source/roman_multisurvey_plan.md
 # Local-only Roman notebooks (kept un-tracked; the production scripts are the source)
 notebooks/create_streamobs_files_hlwas.ipynb
 notebooks/roman_depth_validation.ipynb
+notebooks/roman_curve_inspection.ipynb
 scripts/roman/script_to_notebook.py
 
 # Local-only notebook generators (kept un-tracked; the production scripts/products
