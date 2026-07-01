@@ -932,6 +932,19 @@ eff_tab = pd.DataFrame({
     "classification_detection_eff": eff_both,
 })
 eff_tab = eff_tab[n_all >= 20].fillna(0.0)
+
+# Zero the detection efficiency in the faint tail (delta_mag > 1, i.e. more than 1 mag
+# fainter than the maglim). The measured values there are a small, noisy 0.05-0.17 from
+# only a handful of true stars per bin; user decision (2026-07-01) is to treat true stars
+# more than 1 mag past the limit as undetected. `classifiction_eff` (a ratio among the
+# detected) is left untouched; `classification_detection_eff` = detection_eff *
+# classifiction_eff, so it becomes 0 there too.
+DET_EFF_DELTA_MAX = 1.0
+_faint_tail = eff_tab["delta_mag"] > DET_EFF_DELTA_MAX
+eff_tab.loc[_faint_tail, "detection_eff"] = 0.0
+eff_tab.loc[_faint_tail, "classification_detection_eff"] = 0.0
+print(f"  zeroed detection_eff for {int(_faint_tail.sum())} bins with delta_mag > {DET_EFF_DELTA_MAX}")
+
 feff = OUT_DIR / "roman_stellar_efficiency_cutf158.csv"
 np.savetxt(feff, eff_tab.values, delimiter=",",
            header="mag_f158,delta_mag,detection_eff,classifiction_eff,classification_detection_eff",
