@@ -1,0 +1,15 @@
+# LSST DC2 photo-error afterburner corrections.
+#
+# Human-authored, tracked corrections applied to the *measured* photo-error curves
+# by scripts/lsst/create_streamobs_files_lsst_dc2.py, after writing the untouched
+# *_raw.csv. Mirrors config/surveys/roman_photoerror_corrections.yaml.
+#
+# Keys are curve ids: `r_sample` (truth-based scatter, drives the noise draw) and
+# `r_catalog` (reported magerr, drives the S/N cut). Supported rule: `clamp_faint`
+#   clamp_faint: {delta_mag_min: <float>, value: <log10 sigma floor>}
+#
+# No rules yet — populated once the raw curves are inspected (the faint end may not
+# need the Roman-style floor if LSST reported errors are well-calibrated).
+
+r_sample: {}
+r_catalog: {}

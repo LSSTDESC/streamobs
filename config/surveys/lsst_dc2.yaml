@@ -5,16 +5,28 @@ survey_files:
     # Path to data files (leave empty for default location)
     file_path: ''
 
-    # Band-specific magnitude limit maps
-    maglim_map_g: supreme_dc2_dr6d_v3_g_maglim_psf_wmean.fits.gz
-    maglim_map_r: supreme_dc2_dr6d_v3_r_maglim_psf_wmean.fits.gz
+    # Band-specific magnitude limit maps: truth-anchored S/N=5 point-source depth.
+    # supreme_dc2 spatial structure + footprint, degraded to nside=1024, with the
+    # absolute scale shifted so each band's median = the truth-based S/N=5 depth
+    # (where the scatter of obs-true reaches S/N=5; r median ~26.5). The delta_mag
+    # axes of the completeness + photo-error tables are keyed to this convention.
+    # Derivation: scripts/lsst/create_streamobs_files_lsst_dc2.py.
+    maglim_map_r: lsst_dc2_maglim_r_nside1024.fits.gz
+    maglim_map_g: lsst_dc2_maglim_g_nside1024.fits.gz
+    # r-derived completeness + photo-error, applied to all bands band-independently
+    # (via delta_mag = maglim_band - true_mag), per the streamobs convention.
 
     # Band-independent maps
     ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
-    completeness: lsst_stellar_efficiency_cutr.csv
-    completeness_band: r # the completenesshas been obtained in r-band
-    log_photo_error: lsst_photoerror_r.csv
-    #coverage: supreme_dc2_dr6d_v3_gr_fracdet.fits.gz # Optional coverage map, if not provided, coverage is built using maglim maps
+    completeness: lsst_dc2_stellar_efficiency_cutr.csv
+    completeness_band: r # the completeness has been obtained in the r band
+
+    # Two-curve photometric error model (streamobs Survey.get_photo_error):
+    #   catalog = median reported magerr    -> written as `magerr`, drives the S/N cut;
+    #   sample  = truth-based scatter of (obs - true) -> drives the noise draw
+    #             (the true scatter is ~1.4x the reported magerr in the DC2 coadds).
+    log_photo_error_catalog: lsst_dc2_photoerror_r_catalog.csv
+    log_photo_error_sample: lsst_dc2_photoerror_r.csv
 
 survey_properties: 
   bands: ['u', 'g', 'r', 'i', 'z', 'y']

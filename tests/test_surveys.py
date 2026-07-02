@@ -109,6 +109,22 @@ SURVEY_REGISTRY = [
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
     },
+    # LSST DC2 — truth-anchored r/g depth maps + two-curve photo-error, derived from
+    # the DC2 object+truth skims (scripts/lsst/create_streamobs_files_lsst_dc2.py).
+    # Same Roman-style threshold overrides: the two-curve model anchors the maglim
+    # map to the SAMPLE (truth-scatter) curve while get_photo_error returns the
+    # CATALOG (reported) curve, so SNR@maglim > 5; and the efficiency/photo-error
+    # tables are truth-derived rather than on the generic LSST completeness grid.
+    {
+        "survey": "lsst",
+        "release": "dc2",
+        "expected_bands": ["g", "r"],
+        "expected_maglim": ["g", "r"],
+        "skip_sat_photoerr_check": True,
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+        "skip_snr_maglim_check": True,
+    },
     {
         "survey": "des",
         "release": "yr6",
