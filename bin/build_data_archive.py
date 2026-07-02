@@ -56,7 +56,6 @@ EXCLUDE_FILE_GLOBS = [
     "dc2_object_*",              # LSST DC2 object skims
     "dc2_run2.2i_truth_*",       # LSST DC2 truth skims
     "*_raw.csv",                 # photo-error provenance (raw, pre-afterburner)
-    "roman_galaxy_misclass_*.csv",  # analysis output (injector does not consume it)
     "map_HLWAS-*",               # raw HLWAS exposure-time maps (build inputs)
     "*_rough_maglim*",           # intermediate rough maglim maps
     "*.README.md",
