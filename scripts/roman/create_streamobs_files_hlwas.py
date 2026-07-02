@@ -209,7 +209,7 @@ print(f"F158 error factor = {F_H:.2f} -> true S/N>{SNR_DEPTH} in H: reported "
 # **per-magnitude-optimized `class_star`** threshold (loosest threshold reaching the same
 # 0.875 purity target, in bins of observed F158 mag). Each classifier is applied
 # operationally (observed quantities only) and we report, against TRUE F158 magnitude,
-# its `classifiction_eff` (recall of true stars among the detected sample) and its
+# its `classification_eff` (recall of true stars among the detected sample) and its
 # purity. The envelope matches the optimized-`class_star` curve while needing only the
 # single F158 band.
 
@@ -283,14 +283,14 @@ for nm, (sel, c) in _SELS.items():
     axB.plot(MAG_MID, eff, "-", color=c, lw=2.0)
     axBr.plot(MAG_MID, pur, "--", color=c, lw=1.4)
 axBr.axhline(ENV_PURITY, color="0.5", ls=":", lw=0.8)
-axB.set(xlabel="true F158 mag", ylabel="classifiction_eff (solid)", xlim=(20, 27.5), ylim=(0, 1.05))
+axB.set(xlabel="true F158 mag", ylabel="classification_eff (solid)", xlim=(20, 27.5), ylim=(0, 1.05))
 axBr.set_ylabel("purity (dashed)"); axBr.set_ylim(0, 1.05)
 axB.grid(alpha=0.3)
 from matplotlib.lines import Line2D
 _lh = [Line2D([], [], color=c, lw=2) for _, (_, c) in _SELS.items()]
 _lh += [Line2D([], [], color="0.3", lw=2, ls="-"), Line2D([], [], color="0.3", lw=1.4, ls="--")]
-axB.legend(_lh, list(_SELS.keys()) + ["classifiction_eff", "purity"], loc="lower left", fontsize=8.5)
-axB.set_title("classifiction_eff & purity vs true mag")
+axB.legend(_lh, list(_SELS.keys()) + ["classification_eff", "purity"], loc="lower left", fontsize=8.5)
+axB.set_title("classification_eff & purity vs true mag")
 fig.suptitle("Star classifier comparison: F158 size envelope vs class_star (clean, true S/N>5)", y=1.02)
 fig.tight_layout()
 fig.savefig(FIG_DIR / "classifier_comparison.png", dpi=130, bbox_inches="tight")
@@ -789,8 +789,9 @@ for b in BANDS:
 #   NOT used (it underestimates the true scatter ~2×); it is kept only as a
 #   comparison curve in the figure.
 # - `roman_stellar_efficiency_cutf158.csv` —
-#   `# mag_f158,delta_mag,detection_eff,classifiction_eff,classification_detection_eff`
-#   (the `classifiction_eff` typo is intentional: `set_completeness` looks that name up).
+#   `# mag_f158,delta_mag,detection_eff,classification_eff,classification_detection_eff`
+#   (`set_completeness` loads this as `classification_eff`; the loader also accepts the
+#   legacy misspelled `classifiction_eff` column name for older/Zenodo data packages).
 #   `delta_mag` is keyed to the **median of the measured maglim map** (the maps and the
 #   tables share one internal convention; no renormalization is applied anywhere).
 #   Runtime maglim maps for other footprints (e.g. the HLWAS exptime-scaled map) should
@@ -928,7 +929,7 @@ eff_tab = pd.DataFrame({
     "mag_f158": MAG_MID,
     "delta_mag": MAG_MID - MAGLIM_REF,
     "detection_eff": eff_det,
-    "classifiction_eff": eff_cls,
+    "classification_eff": eff_cls,
     "classification_detection_eff": eff_both,
 })
 eff_tab = eff_tab[n_all >= 20].fillna(0.0)
@@ -936,9 +937,9 @@ eff_tab = eff_tab[n_all >= 20].fillna(0.0)
 # Zero the detection efficiency in the faint tail (delta_mag > 1, i.e. more than 1 mag
 # fainter than the maglim). The measured values there are a small, noisy 0.05-0.17 from
 # only a handful of true stars per bin; user decision (2026-07-01) is to treat true stars
-# more than 1 mag past the limit as undetected. `classifiction_eff` (a ratio among the
+# more than 1 mag past the limit as undetected. `classification_eff` (a ratio among the
 # detected) is left untouched; `classification_detection_eff` = detection_eff *
-# classifiction_eff, so it becomes 0 there too.
+# classification_eff, so it becomes 0 there too.
 DET_EFF_DELTA_MAX = 1.0
 _faint_tail = eff_tab["delta_mag"] > DET_EFF_DELTA_MAX
 eff_tab.loc[_faint_tail, "detection_eff"] = 0.0
@@ -947,7 +948,7 @@ print(f"  zeroed detection_eff for {int(_faint_tail.sum())} bins with delta_mag 
 
 feff = OUT_DIR / "roman_stellar_efficiency_cutf158.csv"
 np.savetxt(feff, eff_tab.values, delimiter=",",
-           header="mag_f158,delta_mag,detection_eff,classifiction_eff,classification_detection_eff",
+           header="mag_f158,delta_mag,detection_eff,classification_eff,classification_detection_eff",
            fmt="%.6f")
 print(f"wrote {feff.relative_to(REPO)}  ({len(eff_tab)} rows)")
 

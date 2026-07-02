@@ -39,9 +39,9 @@ depends on magnitude only through the local depth. Maps and tables are released 
 **one** convention (see *Depth maps* below); substituting a shallower or deeper map
 translates the curves to the corresponding depth.
 
-> **Header spelling note.** The completeness CSV column is named
-> `classifiction_eff` (the misspelling is intentional and load-bearing — the loader
-> greps that exact string). Keep it when re-deriving products for other surveys.
+> **Header spelling note.** The completeness CSV column is named `classification_eff`.
+> The loader also accepts the legacy misspelled `classifiction_eff` column name for
+> older/Zenodo data packages that pre-date this correction.
 
 > **Column namespacing.** True-magnitude columns use the survey *name* only
 > (`roman_F158_true`; true mags are release-independent), while observed/error/flag
@@ -271,7 +271,7 @@ exposures (read-noise makes the shortest exposures slightly shallower than predi
 - **Test suite.** `tests/test_roman.py` (26 tests) covers loading each Roman release,
   `{name}_{release}` column namespacing on inject, Vega→AB offsets, the two-curve
   photo-error model, completeness behaviour (bright ≳ plateau, zero below
-  saturation), and the `classifiction_eff` misspelled-header fallback.
+  saturation), and the legacy `classifiction_eff` misspelled-header fallback.
   `tests/test_surveys.py` registers `roman/dc2` + the three HLWAS tiers in
   `SURVEY_REGISTRY` (skipped gracefully if a config is absent).
 
@@ -331,6 +331,6 @@ To re-derive LSST/DES products self-consistently:
 3. Re-measure the two photo-error curves and the truth-based depth anchor; clean the
    curves via the YAML afterburner.
 4. Emit the `delta_mag`-keyed completeness / photo-error CSVs and the truth-anchored
-   maglim maps in the shared convention (keep the `classifiction_eff` header).
+   maglim maps in the shared convention (use the `classification_eff` column header).
 5. Register the release in `config/surveys/` and `SURVEY_REGISTRY`, and add a thin
    per-release data page that references this methodology page for the "how".

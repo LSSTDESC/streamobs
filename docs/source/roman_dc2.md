@@ -38,10 +38,11 @@ survey depth.*
 
 `roman_stellar_efficiency_cutf158.csv` gives, in bins of true F158 magnitude for true
 stars: `detection_eff` (fraction with a clean true-S/N>5-in-F158 detection, against
-the full truth-star denominator), `classifiction_eff` (fraction of those detected
+the full truth-star denominator), `classification_eff` (fraction of those detected
 stars classified as point sources by the F158 size envelope), and
-`classification_detection_eff` (their product). The classifier and the misspelled
-`classifiction_eff` header are explained in the methodology page.
+`classification_detection_eff` (their product). The classifier is explained on the
+methodology page; the loader also accepts the legacy misspelled `classifiction_eff`
+column name for older/Zenodo data packages.
 
 ![Star classifier comparison](_static/roman_dc2/classifier_comparison.png)
 
@@ -66,7 +67,7 @@ rate of detected compact (<0.3″) true galaxies on the same axes (below 1% brig
 than F158 ≈ 25.5, rising to ~5% toward the faint end).*
 
 The standalone galaxy-misclassification product (`roman_galaxy_misclass_cutf158.csv`,
-columns `delta_mag, mag_F158, classifiction_eff`) and the merged LSST↔Roman table
+columns `delta_mag, mag_F158, classification_eff`) and the merged LSST↔Roman table
 (`roman_lsst_matched.parquet`) are built by
 `scripts/roman/build_roman_galaxy_misclass.py`. The compact-galaxy size currently
 uses the interim measured-Roman proxy (`SIZE_SOURCE=measured_roman`); the cosmoDC2

@@ -389,13 +389,13 @@ def main():
 
     # ----------------------------------------------------------------------- #
     # Stage D: write the misclassification CSV
-    #   columns: delta_mag, mag_F158, classifiction_eff   (keep the misspelling)
+    #   columns: delta_mag, mag_F158, classification_eff
     #   mag_F158 = REF_MAGLIM - delta_mag  =>  delta_mag = REF_MAGLIM - mag_F158
     # ----------------------------------------------------------------------- #
     tab = pd.DataFrame({
         "delta_mag": REF_MAGLIM - MAG_MID,
         "mag_F158": MAG_MID,
-        "classifiction_eff": misclass_eff,
+        "classification_eff": misclass_eff,
     })
     tab = tab[n_gal >= 20].copy().fillna(0.0)
 
@@ -406,8 +406,7 @@ def main():
         f"REF_MAGLIM = {REF_MAGLIM:.4f}  (median of DC2 F158 maglim map "
         f"{MAGLIM_MAP.name});  mag_F158 = REF_MAGLIM - delta_mag\n"
         f"SIZE_SOURCE = {size_source}  ({size_desc})\n"
-        f"classifiction_eff header misspelling is intentional (loader greps that name).\n"
-        f"delta_mag,mag_F158,classifiction_eff"
+        f"delta_mag,mag_F158,classification_eff"
     )
     np.savetxt(MISCLASS_CSV, tab.values, delimiter=",", header=header, fmt="%.6f")
     print(f"\nwrote {MISCLASS_CSV} ({len(tab)} rows)")

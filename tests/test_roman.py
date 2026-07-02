@@ -9,8 +9,9 @@ These tests verify *runtime behavior* of the Roman pipeline:
   an inject.
 - Vega→AB conversion is applied for Roman bands (``F158``, ``F106``, etc.) and
   is a no-op for non-Roman bands.
-- The completeness and photo-error loaders work, including the intentionally
-  misspelled ``classifiction_eff`` column fallback path.
+- The completeness and photo-error loaders work, including both the standard
+  ``classification_eff`` column and the legacy misspelled ``classifiction_eff``
+  fallback path (kept for backward compatibility with older/Zenodo data packages).
 
 All tests that require the ``roman_dc2`` data files under
 ``data/surveys/roman_dc2/`` skip gracefully when those files are absent.
@@ -462,12 +463,91 @@ class TestRomanDC2Efficiencies:
         )
 
     @_skip_no_data
-    def test_classifiction_eff_fallback_via_csv(self):
-        """set_completeness() must load 'classifiction_eff' (misspelled) column.
+    def test_classifiction_eff_legacy_fallback_via_csv(self):
+        """set_completeness() must accept the legacy misspelled 'classifiction_eff' column.
 
-        The roman_dc2 efficiency CSV uses the intentionally misspelled header
-        ``classifiction_eff``. Verify that the loader accepts this column name
-        and returns a callable interpolator.
+        This test exercises the *legacy* fallback path in the loader: it writes a
+        temporary CSV with the misspelled ``classifiction_eff`` column (as found in
+        older/Zenodo data packages) and verifies the loader still returns a callable
+        interpolator.  The primary column name is now ``classification_eff``; this
+        fallback is kept for backward compatibility only.
+        """
+        import tempfile
+
+        from streamobs.surveys import SurveyFactory
+
+        # Build a minimal CSV with the MISSPELLED column (legacy format).
+        rows = "\n".join(
+            f"{dm:.1f},{eff:.4f},{eff:.4f}"
+            for dm, eff in [(-3.0, 0.95), (-2.0, 0.90), (-1.0, 0.75), (0.0, 0.50)]
+        )
+        csv_content = f"delta_mag,classifiction_eff,classification_detection_eff\n{rows}\n"
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".csv", delete=False
+        ) as tmp:
+            tmp.write(csv_content)
+            tmp_path = tmp.name
+
+        try:
+            func = SurveyFactory.set_completeness(tmp_path, selection="classified")
+            assert callable(func), (
+                "set_completeness(..., selection='classified') should return callable "
+                "even with legacy misspelled 'classifiction_eff' column"
+            )
+            delta_mags = np.linspace(-3.0, 0.0, 10)
+            vals = func(delta_mags)
+            assert np.all(np.isfinite(vals)), "Efficiency values should be finite"
+            assert np.all((vals >= 0.0) & (vals <= 1.0)), (
+                f"Efficiency values should be in [0, 1]: {vals}"
+            )
+        finally:
+            os.unlink(tmp_path)
+
+    @_skip_no_data
+    def test_classification_eff_correct_spelling_via_csv(self):
+        """set_completeness() must load the correctly-spelled 'classification_eff' column.
+
+        Verifies the primary (non-legacy) path: a CSV written with the correct
+        ``classification_eff`` column name loads successfully and returns a callable
+        interpolator.  This is the standard format used by all current data products.
+        """
+        import tempfile
+
+        from streamobs.surveys import SurveyFactory
+
+        # Build a minimal CSV with the CORRECT column spelling.
+        rows = "\n".join(
+            f"{dm:.1f},{eff:.4f},{eff:.4f}"
+            for dm, eff in [(-3.0, 0.95), (-2.0, 0.90), (-1.0, 0.75), (0.0, 0.50)]
+        )
+        csv_content = f"delta_mag,classification_eff,classification_detection_eff\n{rows}\n"
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".csv", delete=False
+        ) as tmp:
+            tmp.write(csv_content)
+            tmp_path = tmp.name
+
+        try:
+            func = SurveyFactory.set_completeness(tmp_path, selection="classified")
+            assert callable(func), (
+                "set_completeness(..., selection='classified') should return callable "
+                "with correctly-spelled 'classification_eff' column"
+            )
+            delta_mags = np.linspace(-3.0, 0.0, 10)
+            vals = func(delta_mags)
+            assert np.all(np.isfinite(vals)), "Efficiency values should be finite"
+            assert np.all((vals >= 0.0) & (vals <= 1.0)), (
+                f"Efficiency values should be in [0, 1]: {vals}"
+            )
+        finally:
+            os.unlink(tmp_path)
+
+    @_skip_no_data
+    def test_classification_eff_real_csv_loads(self):
+        """set_completeness() loads correctly from the real roman_dc2 efficiency CSV.
+
+        The real CSV now uses the correctly-spelled ``classification_eff`` column.
+        Verify that selection='classified' still returns sensible values.
         """
         from streamobs.surveys import SurveyFactory
 
@@ -477,8 +557,7 @@ class TestRomanDC2Efficiencies:
 
         func = SurveyFactory.set_completeness(csv_path, selection="classified")
         assert callable(func), (
-            "set_completeness(..., selection='classified') should return callable "
-            "even with misspelled 'classifiction_eff' column"
+            "set_completeness(..., selection='classified') should return callable"
         )
         # Verify it returns sensible values in [-1, 0] delta_mag range
         delta_mags = np.linspace(-3.0, 0.0, 10)
