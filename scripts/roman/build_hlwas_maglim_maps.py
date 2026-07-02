@@ -140,7 +140,9 @@ def get_dc2_ref_depth(band: str) -> float:
         f"roman_dc2_maglim_{band.lower()}_nside1024.fits.gz",
     )
     if not os.path.exists(dc2_path):
-        raise FileNotFoundError(f"DC2 reference maglim map not found: {dc2_path}")
+        raise FileNotFoundError(
+            f"DC2 reference maglim map not found: {dc2_path}"
+        )
     dc2_map = hp.read_map(dc2_path, nest=False, verbose=False)
     valid = dc2_map > hp.UNSEEN + 1
     return float(np.median(dc2_map[valid]))
@@ -291,9 +293,7 @@ def main() -> None:
     print(f"Output nside: {NSIDE_OUT}")
     print(f"Aux data dir: {AUX_DATA_DIR}")
     print(f"DC2_REF_EXPTIME: {DC2_REF_EXPTIME:.1f} s")
-    print(
-        f"Recipe: depth(pix) = DC2_REF_DEPTH_band + 1.25 * log10( t(pix) / {DC2_REF_EXPTIME:.1f} )"
-    )
+    print(f"Recipe: depth(pix) = DC2_REF_DEPTH_band + 1.25 * log10( t(pix) / {DC2_REF_EXPTIME:.1f} )")
     print()
 
     processed_tiers = set()
@@ -303,9 +303,7 @@ def main() -> None:
 
         # Per-band DC2 reference depth (read at runtime)
         dc2_ref_depth = get_dc2_ref_depth(band)
-        print(
-            f"  DC2_REF_DEPTH_{band} (read from DC2 {band} map): {dc2_ref_depth:.6f} AB"
-        )
+        print(f"  DC2_REF_DEPTH_{band} (read from DC2 {band} map): {dc2_ref_depth:.6f} AB")
 
         hsp_filename = f"map_HLWAS-{tier}_{band}.hsp"
         hsp_path = os.path.join(AUX_DATA_DIR, hsp_filename)
