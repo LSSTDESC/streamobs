@@ -371,3 +371,92 @@ def plot_healsparse_map(map):
 def plot_maglim(maglim_map):
     fig, ax = plot_healsparse_map(maglim_map)
     return fig, ax
+
+
+def plot_healpix_counts(
+    ra,
+    dec,
+    nside=64,
+    ax=None,
+    title="",
+    cmap="viridis",
+    nest=False,
+    colorbar_label="Counts / pixel",
+    **kwargs,
+):
+    """Plot a HEALPix object-count density map from (ra, dec) coordinates.
+
+    Bins the supplied coordinates into a HEALPix map and displays it using
+    ``skyproj``.  Empty pixels are set to ``NaN`` so they render as white /
+    transparent rather than zero.
+
+    Parameters
+    ----------
+    ra, dec : array-like
+        ICRS sky coordinates in degrees.
+    nside : int, optional
+        HEALPix resolution. Default ``64``.
+    ax : matplotlib.axes.Axes, optional
+        Axes to draw into.  A new figure + axes is created when ``None``.
+    title : str, optional
+        Plot title.
+    cmap : str, optional
+        Matplotlib colormap name. Default ``'viridis'``.
+    nest : bool, optional
+        HEALPix pixel ordering — ``False`` (RING) by default.
+    colorbar_label : str, optional
+        Label for the colorbar.
+    **kwargs
+        ``vmin`` / ``vmax`` are forwarded to ``draw_hpxmap``; everything else
+        is ignored.
+
+    Returns
+    -------
+    sp : skyproj projection object
+    """
+    if hp is None or skyproj is None:
+        raise ImportError(
+            "healpy and skyproj must be installed to use plot_healpix_counts"
+        )
+    from matplotlib.colors import LogNorm
+
+    ra, dec = np.asarray(ra, dtype=float), np.asarray(dec, dtype=float)
+
+    # Build count map
+    n_pix = hp.nside2npix(nside)
+    sky_map = np.zeros(n_pix)
+    if len(ra) > 0:
+        pix = hp.ang2pix(nside, ra, dec, lonlat=True, nest=nest)
+        np.add.at(sky_map, pix, 1)
+
+    # Empty pixels → NaN (rendered as background colour by skyproj)
+    sky_map[sky_map == 0] = np.nan
+
+    if ax is None:
+        _, ax = plt.subplots(figsize=(8, 5))
+
+    # Centre the projection on the data
+    ra_center = float(np.nanmean(ra)) if len(ra) > 0 else 0.0
+
+    draw_kw = {k: kwargs[k] for k in ("vmin", "vmax") if k in kwargs}
+
+    vmin, vmax = kwargs.get("vmin"), kwargs.get("vmax")
+    if vmin is None:
+        vmin = np.nanpercentile(sky_map, 0.1)
+    if vmax is None:
+        vmax = np.nanpercentile(sky_map, 99.9)
+    draw_kw.setdefault("vmin", vmin)
+    draw_kw.setdefault("vmax", vmax)
+
+    norm = kwargs.get("norm", "linear")
+    if norm == "log":
+        draw_kw["norm"] = LogNorm(vmin=vmin, vmax=vmax)
+    elif norm == "linear":
+        draw_kw["norm"] = None
+
+    sp = skyproj.McBrydeSkyproj(ax=ax, ra_0=ra_center)
+    sp.draw_hpxmap(sky_map, nest=nest, cmap=cmap, **draw_kw)
+    sp.draw_colorbar(label=colorbar_label)
+    ax.set_title(title)
+
+    return sp
