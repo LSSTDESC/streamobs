@@ -132,10 +132,24 @@ dmypy.json
 data/surveys/*
 data/others/*
 .DS_Store
-
 # External reference repos (design references only, not part of streamobs)
 /survey_systematics_in_LSST_streams/
 /rubin_roman_object_classification/
 /lsst_dc2_scratch/
 /artifacts/
 docs/source/roman_multisurvey_plan.md
+
+# Local-only Roman notebooks (kept un-tracked; the production scripts are the source)
+notebooks/create_streamobs_files_hlwas.ipynb
+notebooks/roman_depth_validation.ipynb
+notebooks/roman_curve_inspection.ipynb
+scripts/roman/script_to_notebook.py
+
+# Local-only notebook generators (kept un-tracked; the production scripts/products
+# are the source of truth, not the rendered notebooks they build)
+build_*_nb.py
+scripts/**/build_*_nb.py
+
+artifacts/
+# Staged data archive for upload (built by bin/build_data_archive.py)
+/archive/
