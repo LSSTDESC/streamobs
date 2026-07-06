@@ -197,8 +197,6 @@ class BackgroundResourceBuilder:
         """Resolve a survey spec (Survey instance, str, or dict) to a Survey."""
         if isinstance(spec, Survey):
             return spec
-        if isinstance(spec, str):
-            return SurveyFactory.create_survey(spec)
         if isinstance(spec, dict):
             return SurveyFactory.create_survey(**spec)
         raise TypeError(f"Unsupported survey spec type: {type(spec)}")
@@ -276,6 +274,14 @@ class BackgroundResourceBuilder:
                 survey_band_limits[sid] = (s, {})
             survey_band_limits[sid][1][b] = float(ml)
 
+        # Ensure the completeness_band is injected for each unique survey so the
+        # detection flag is computed correctly.  Its maglim is set to the same
+        # depth as the first CMD band already registered for that survey.
+        for sid, (s, band_limits) in survey_band_limits.items():
+            cb = s.completeness_band
+            if cb is not None and cb not in band_limits:
+                band_limits[cb] = next(iter(band_limits.values()))
+
         # One deep copy per unique survey
         prepared: dict = {}  # {survey_id: prepared_survey}
         for sid, (s, band_limits) in survey_band_limits.items():
@@ -286,6 +292,24 @@ class BackgroundResourceBuilder:
         pair0_ns = pair0_prep.namespace
         pair1_ns = pair1_prep.namespace
 
+        # Bands dict: CMD bands + completeness bands, grouped by namespace
+        bands_dict: dict = {}
+        for s, b in zip(surveys_list, bands):
+            ns = prepared[id(s)].namespace
+            bands_dict.setdefault(ns, []).append(b)
+        for sid, (_, band_limits) in survey_band_limits.items():
+            prep = prepared[sid]
+            for b in band_limits:
+                if b not in bands_dict.get(prep.namespace, []):
+                    bands_dict[prep.namespace].append(b)
+
+        # All true magnitude columns required across both surveys (CMD + completeness)
+        required_true_cols = list(dict.fromkeys(
+            true_col(b, prep.namespace)
+            for _, prep in prepared.items()
+            for b in bands_dict.get(prep.namespace, [])
+        ))
+
         catalog = self._prepare_catalog(
             catalog,
             bands,
@@ -293,18 +317,13 @@ class BackgroundResourceBuilder:
             survey=pair0_prep,
             namespaces=(pair0_ns, pair1_ns),
             uniform_maglim={bands[0]: float(maglim_b1), bands[1]: float(maglim_b2)},
+            required_true_cols=required_true_cols,
         )
         n_ref = len(catalog)
 
         # Build injector: unique prepared surveys
         unique_prepared = list({sid: prep for sid, prep in prepared.items()}.values())
         inj = BackgroundCatalogInjector(unique_prepared[0] if len(unique_prepared) == 1 else unique_prepared)
-
-        # Bands dict: group by namespace
-        bands_dict: dict = {}
-        for s, b in zip(surveys_list, bands):
-            ns = prepared[id(s)].namespace
-            bands_dict.setdefault(ns, []).append(b)
 
         if source_type == "stars":
             observed = inj.inject_stars(catalog, bands=bands_dict, **kwargs)
@@ -378,6 +397,7 @@ class BackgroundResourceBuilder:
         uniform_maglim: dict = None,
         survey: Survey = None,
         namespaces: tuple = None,
+        required_true_cols: list = None,
     ) -> "pd.DataFrame":
         """
         Prepare the catalog for injection.
@@ -387,18 +407,28 @@ class BackgroundResourceBuilder:
 
         ``namespaces`` overrides ``survey.namespace`` with per-band namespaces
         ``(ns0, ns1)`` for multi-survey use.
+
+        ``required_true_cols`` lists every true-magnitude column that must exist
+        (CMD bands + completeness bands).  Defaults to the two CMD band columns.
         """
-        # Validate required magnitude columns before any allocation.
+        # Resolve namespaces for default required-columns computation.
         if namespaces is not None:
             ns0, ns1 = namespaces
         else:
             ns0 = ns1 = survey.namespace
-        true_band1 = true_col(bands[0], ns0)
-        true_band2 = true_col(bands[1], ns1)
-        if true_band1 not in catalog.columns or true_band2 not in catalog.columns:
+
+        if required_true_cols is None:
+            required_true_cols = list(dict.fromkeys([
+                true_col(bands[0], ns0),
+                true_col(bands[1], ns1),
+            ]))
+
+        missing = [c for c in required_true_cols if c not in catalog.columns]
+        if missing:
             raise ValueError(
-                f"True background catalog must contain true magnitudes for bands {bands} "
-                f"as columns '{true_band1}' and '{true_band2}'. "
+                f"True background catalog is missing required true-magnitude columns: "
+                f"{missing}. Ensure the catalog includes true magnitudes for all "
+                f"injected bands and each survey's completeness_band. "
                 f"Available columns: {list(catalog.columns)}"
             )
 
@@ -419,7 +449,7 @@ class BackgroundResourceBuilder:
         # Only copy the columns the injector needs (true magnitudes + positions).
         # Discarding unrelated columns here avoids doubling memory for large catalogs.
         pos_cols = [] if needs_positions else ["ra", "dec"]
-        cat = catalog[[true_band1, true_band2] + pos_cols].copy()
+        cat = catalog[list(dict.fromkeys(required_true_cols + pos_cols))].copy()
 
         if needs_positions:
             if uniform_maglim is not None:
