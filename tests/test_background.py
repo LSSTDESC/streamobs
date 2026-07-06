@@ -40,7 +40,6 @@ def _make_fake_grid(n_color=8, n_mag=8):
             "cmd_hist": cmd_raw / area_ref_deg2,  # counts per deg²
             "color_edges": color_edges,
             "mag_edges": mag_edges,
-            "n_ref": 500,
         }
     return grid
 
@@ -227,7 +226,6 @@ class TestBackgroundStorage:
             assert np.allclose(loaded["cmd_hist"], expected["cmd_hist"])
             assert np.allclose(loaded["color_edges"], expected["color_edges"])
             assert np.allclose(loaded["mag_edges"], expected["mag_edges"])
-            assert loaded["n_ref"] == expected["n_ref"]
             assert "area_ref_deg2" not in loaded
 
     def test_load_all_roundtrip(self, tmp_path):
@@ -244,7 +242,6 @@ class TestBackgroundStorage:
             assert np.allclose(loaded[key]["cmd_hist"], grid[key]["cmd_hist"])
             assert np.allclose(loaded[key]["color_edges"], grid[key]["color_edges"])
             assert np.allclose(loaded[key]["mag_edges"], grid[key]["mag_edges"])
-            assert loaded[key]["n_ref"] == grid[key]["n_ref"]
             assert "area_ref_deg2" not in loaded[key]
 
     def test_exists_false_before_save(self, tmp_path):
@@ -340,15 +337,9 @@ class TestBackgroundResourceBuilder:
             mag_range=(14, 30),
             area_ref_deg2=1.0,
         )
-        assert set(result.keys()) == {
-            "cmd_hist",
-            "color_edges",
-            "mag_edges",
-            "n_ref",
-        }
+        assert set(result.keys()) == {"cmd_hist", "color_edges", "mag_edges"}
         assert result["cmd_hist"].shape == (10, 10)
         assert result["cmd_hist"].sum() >= 0
-        assert result["n_ref"] == len(stream_catalog)
 
     def test_save_via_storage(self, tmp_path, stream_catalog):
         """save must write a parquet file via BackgroundStorage."""
@@ -646,7 +637,6 @@ class TestLightBackgroundGenerator:
                     "cmd_hist": cmd_raw / area_ref,  # counts per deg²
                     "color_edges": color_edges,
                     "mag_edges": mag_edges,
-                    "n_ref": int(20 * scale),  # small → ~1-3 objects per pixel
                 }
             storage.save_data(grid, source_type, ("g", "r"))
 
@@ -779,13 +769,11 @@ class TestLightBackgroundGenerator:
                 "cmd_hist": 2 * flat_cmd.copy() / area_ref,
                 "color_edges": color_edges,
                 "mag_edges": mag_edges,
-                "n_ref": 5000,
             },
             (26.0, 26.0): {
                 "cmd_hist": 10 * flat_cmd.copy() / area_ref,
                 "color_edges": color_edges,
                 "mag_edges": mag_edges,
-                "n_ref": 5000,
             },
         }
         storage.save_data(grid, "stars", ("g", "r"))
@@ -1179,7 +1167,6 @@ class TestMultiSurveyBackground:
                 "cmd_hist": rng.uniform(0.5, 2.0, (n_color, n_mag)),  # counts/deg²
                 "color_edges": color_edges,
                 "mag_edges": mag_edges,
-                "n_ref": 100,
             },
         }
         storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst_roman")

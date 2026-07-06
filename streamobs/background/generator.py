@@ -413,7 +413,6 @@ class LightBackgroundGenerator:
         ]
 
         H_interp = None
-        n_ref_interp = 0.0
         w_total = 0.0
         first_key = None
 
@@ -425,7 +424,6 @@ class LightBackgroundGenerator:
                 first_key = key
             else:
                 H_interp = H_interp + grid[key]["cmd_hist"] * w
-            n_ref_interp += w * grid[key]["n_ref"]
             w_total += w
 
         if H_interp is None:
@@ -434,13 +432,11 @@ class LightBackgroundGenerator:
         # Re-normalise weights if some corners were missing
         if w_total > 0 and abs(w_total - 1.0) > 1e-9:
             H_interp /= w_total
-            n_ref_interp /= w_total
 
         return {
             "cmd_hist": np.clip(H_interp, 0, None),
             "color_edges": grid[first_key]["color_edges"],
             "mag_edges": grid[first_key]["mag_edges"],
-            "n_ref": n_ref_interp,
         }
 
     def _scale_n_objects(

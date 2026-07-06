@@ -24,7 +24,7 @@ class BackgroundStorage:
 
     **File format** — one row per ``(maglim_b2, maglim_b1)`` pair::
 
-        maglim_b2 | maglim_b1 | n_ref
+        maglim_b2 | maglim_b1
         | color_edge_min | color_edge_max | n_color
         | mag_edge_min   | mag_edge_max   | n_mag
         | counts  (list of n_color × n_mag floats per deg², row-major)
@@ -93,7 +93,7 @@ class BackgroundStorage:
         data : dict
             Full grid keyed by ``(maglim_b2, maglim_b1)``, each value being
             a dict with keys ``cmd_hist`` (counts per deg²), ``color_edges``,
-            ``mag_edges``, ``n_ref``.  ``b1 = bands[0]``, ``b2 = bands[1]``.
+            ``mag_edges``.  ``b1 = bands[0]``, ``b2 = bands[1]``.
         source_type : str
             ``'stars'`` or ``'galaxies'``.
         bands : tuple of str
@@ -112,7 +112,6 @@ class BackgroundStorage:
                 {
                     "maglim_b2": round(float(maglim_b2), 4),
                     "maglim_b1": round(float(maglim_b1), 4),
-                    "n_ref": int(d["n_ref"]),
                     "color_edge_min": float(color_edges[0]),
                     "color_edge_max": float(color_edges[-1]),
                     "n_color": int(len(color_edges) - 1),
@@ -159,7 +158,7 @@ class BackgroundStorage:
         Returns
         -------
         dict
-            ``{'cmd_hist', 'color_edges', 'mag_edges', 'n_ref'}``.
+            ``{'cmd_hist', 'color_edges', 'mag_edges'}``.
         """
         row = (
             self._load_table(source_type, bands, maglim_b2, maglim_b1)
@@ -175,8 +174,8 @@ class BackgroundStorage:
         Returns
         -------
         dict
-            ``{(maglim_b2, maglim_b1): {'cmd_hist', 'color_edges', 'mag_edges',
-            'n_ref'}}`` where ``b1 = bands[0]``, ``b2 = bands[1]``.
+            ``{(maglim_b2, maglim_b1): {'cmd_hist', 'color_edges', 'mag_edges'}}``
+            where ``b1 = bands[0]``, ``b2 = bands[1]``.
         """
         df = self._load_table(source_type, bands).to_pandas()
         return {
@@ -240,5 +239,4 @@ class BackgroundStorage:
             "cmd_hist": np.array(counts).reshape(n_color, n_mag),
             "color_edges": color_edges,
             "mag_edges": mag_edges,
-            "n_ref": int(row["n_ref"]),
         }

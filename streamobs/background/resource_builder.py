@@ -256,7 +256,7 @@ class BackgroundResourceBuilder:
         -------
         dict
             ``{'cmd_hist': np.ndarray (counts/deg²), 'color_edges': np.ndarray,
-            'mag_edges': np.ndarray, 'n_ref': int}``
+            'mag_edges': np.ndarray}``
         """
         # Resolve to [survey_band0, survey_band1]
         if isinstance(survey, list):
@@ -319,7 +319,6 @@ class BackgroundResourceBuilder:
             uniform_maglim={bands[0]: float(maglim_b1), bands[1]: float(maglim_b2)},
             required_true_cols=required_true_cols,
         )
-        n_ref = len(catalog)
 
         # Build injector: unique prepared surveys
         unique_prepared = list({sid: prep for sid, prep in prepared.items()}.values())
@@ -348,7 +347,7 @@ class BackgroundResourceBuilder:
         # Normalize to counts per deg²
         hist["cmd_hist"] = hist["cmd_hist"] / area
 
-        return {**hist, "n_ref": n_ref}
+        return hist
 
     def _prepare_survey(
         self,
