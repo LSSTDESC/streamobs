@@ -25,19 +25,22 @@ pytestmark = pytest.mark.background
 
 
 def _make_fake_grid(n_color=8, n_mag=8):
-    """Return a minimal 2-pair CMD grid for storage round-trip tests."""
+    """Return a minimal 2-pair CMD grid for storage round-trip tests.
+
+    cmd_hist values are counts per deg² (normalized by area_ref_deg2=100.0).
+    """
     rng = np.random.default_rng(7)
     color_edges = np.linspace(-1.0, 3.0, n_color + 1)
     mag_edges = np.linspace(18.0, 28.0, n_mag + 1)
+    area_ref_deg2 = 100.0
     grid = {}
     for mr, mg in [(24.0, 24.0), (25.0, 25.0)]:
-        cmd = rng.integers(0, 20, size=(n_color, n_mag)).astype(float)
+        cmd_raw = rng.integers(0, 20, size=(n_color, n_mag)).astype(float)
         grid[(mr, mg)] = {
-            "cmd_hist": cmd,
+            "cmd_hist": cmd_raw / area_ref_deg2,  # counts per deg²
             "color_edges": color_edges,
             "mag_edges": mag_edges,
             "n_ref": 500,
-            "area_ref_deg2": 100.0,
         }
     return grid
 
@@ -225,7 +228,7 @@ class TestBackgroundStorage:
             assert np.allclose(loaded["color_edges"], expected["color_edges"])
             assert np.allclose(loaded["mag_edges"], expected["mag_edges"])
             assert loaded["n_ref"] == expected["n_ref"]
-            assert np.isclose(loaded["area_ref_deg2"], expected["area_ref_deg2"])
+            assert "area_ref_deg2" not in loaded
 
     def test_load_all_roundtrip(self, tmp_path):
         """load_all must recover the full grid saved by save_data."""
@@ -242,7 +245,7 @@ class TestBackgroundStorage:
             assert np.allclose(loaded[key]["color_edges"], grid[key]["color_edges"])
             assert np.allclose(loaded[key]["mag_edges"], grid[key]["mag_edges"])
             assert loaded[key]["n_ref"] == grid[key]["n_ref"]
-            assert np.isclose(loaded[key]["area_ref_deg2"], grid[key]["area_ref_deg2"])
+            assert "area_ref_deg2" not in loaded[key]
 
     def test_exists_false_before_save(self, tmp_path):
         """exists must return False when the file is not on disk."""
@@ -299,7 +302,6 @@ class TestBackgroundResourceBuilder:
             "color_edges",
             "mag_edges",
             "n_ref",
-            "area_ref_deg2",
         }
         assert result["cmd_hist"].shape == (10, 10)
         assert result["cmd_hist"].sum() >= 0
@@ -589,18 +591,19 @@ class TestLightBackgroundGenerator:
         mag_edges = np.linspace(18.0, 28.0, n_mag + 1)
 
         # 2×2 grid; deeper pair has proportionally more counts
+        # cmd_hist is stored as counts per deg² (normalized by area_ref_deg2=10.0)
+        area_ref = 10.0
         pairs = [(24.0, 24.0), (24.0, 24.5), (24.5, 24.0), (24.5, 24.5)]
         for source_type in ("stars", "galaxies"):
             grid = {}
             for mr, mg in pairs:
                 scale = (mr + mg) / (24.0 + 24.0)
-                cmd = rng.integers(1, 5, size=(n_color, n_mag)).astype(float) * scale
+                cmd_raw = rng.integers(1, 5, size=(n_color, n_mag)).astype(float) * scale
                 grid[(mr, mg)] = {
-                    "cmd_hist": cmd,
+                    "cmd_hist": cmd_raw / area_ref,  # counts per deg²
                     "color_edges": color_edges,
                     "mag_edges": mag_edges,
                     "n_ref": int(20 * scale),  # small → ~1-3 objects per pixel
-                    "area_ref_deg2": 10.0,
                 }
             storage.save_data(grid, source_type, ("g", "r"))
 
@@ -613,8 +616,8 @@ class TestLightBackgroundGenerator:
 
         storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst")
         gen = LightBackgroundGenerator(storage, fast_survey)
-        assert gen.survey is fast_survey
-        assert gen.bands == ("g", "r")
+        assert gen.surveys_canonical[0] is fast_survey
+        assert gen.bands_canonical == ("g", "r")
         assert gen._resources == {}
 
     def _verify_dataframe_content(self, df, meta, bands, survey):
@@ -726,20 +729,20 @@ class TestLightBackgroundGenerator:
         mag_edges = np.linspace(18, 28, n_mag + 1)
         flat_cmd = np.ones((n_color, n_mag))
 
+        # cmd_hist stored as counts per deg² (normalized by area_ref_deg2=10.0)
+        area_ref = 10.0
         grid = {
             (22.0, 22.0): {
-                "cmd_hist": 2 * flat_cmd.copy(),
+                "cmd_hist": 2 * flat_cmd.copy() / area_ref,
                 "color_edges": color_edges,
                 "mag_edges": mag_edges,
                 "n_ref": 5000,
-                "area_ref_deg2": 10.0,
             },
             (26.0, 26.0): {
-                "cmd_hist": 10 * flat_cmd.copy(),
+                "cmd_hist": 10 * flat_cmd.copy() / area_ref,
                 "color_edges": color_edges,
                 "mag_edges": mag_edges,
                 "n_ref": 5000,
-                "area_ref_deg2": 10.0,
             },
         }
         storage.save_data(grid, "stars", ("g", "r"))
@@ -1030,3 +1033,128 @@ class TestBackground:
         bg = Background(mock_survey, method="injection", source_type="galaxies")
         with pytest.raises(ValueError, match="catalog_galaxies"):
             bg.generate(phi1_limits=(-10, 10), phi2_limits=(-2, 2))
+
+
+# ---------------------------------------------------------------------------
+# Part 8 — Multi-survey background generation
+# ---------------------------------------------------------------------------
+
+
+class TestMultiSurveyBackground:
+    """Tests for multi-survey background generation."""
+
+    def test_catalog_injector_multi_survey(self, mock_survey):
+        """BackgroundCatalogInjector with two surveys returns separate magnitude
+        and flag columns for each survey.
+
+        The second survey is a deep copy of mock_survey renamed 'roman' so it
+        shares the same photometric error models without needing a real Roman
+        data file.  Each survey must receive the bands required by its detection
+        flag (completeness_band='r' for lsst_yr4, same for the roman copy).
+        True magnitudes must be present for every (survey, band) pair injected.
+        """
+        import copy
+
+        from streamobs.background import BackgroundCatalogInjector
+        from streamobs.columns import flag_col, obs_col
+
+        survey2 = copy.deepcopy(mock_survey)
+        survey2.name = "roman"
+        ns1 = mock_survey.namespace   # 'lsst_yr4'
+        ns2 = survey2.namespace       # 'roman_yr4'
+
+        rng = np.random.default_rng(0)
+        n = 200
+        cat = pd.DataFrame({
+            "ra": rng.uniform(30.0, 60.0, n),
+            "dec": rng.uniform(-20.0, 0.0, n),
+            # true_col('g', ns1) and true_col('r', ns1)
+            "lsst_g_true": rng.uniform(20.0, 26.0, n),
+            "lsst_r_true": rng.uniform(20.0, 26.0, n),
+            # true_col('g', ns2) and true_col('r', ns2)
+            "roman_g_true": rng.uniform(20.0, 26.0, n),
+            "roman_r_true": rng.uniform(20.0, 26.0, n),
+        })
+
+        inj = BackgroundCatalogInjector([mock_survey, survey2])
+        result = inj.inject_stars(cat, bands={ns1: ["g", "r"], ns2: ["g", "r"]})
+
+        assert isinstance(result, pd.DataFrame)
+        assert len(result) > 0
+        # Both surveys must contribute independent flag and magnitude columns
+        assert flag_col(ns1) in result.columns
+        assert flag_col(ns2) in result.columns
+        for band in ("g", "r"):
+            assert obs_col(band, ns1) in result.columns
+            assert obs_col(band, ns2) in result.columns
+
+    def test_light_method_multi_survey(self, tmp_path):
+        """LightBackgroundGenerator with one band per survey produces per-survey
+        magnitude columns and correct meta.namespaces.
+
+        Uses two minimal in-memory surveys (no disk I/O).  The CMD grid is stored
+        under the canonical directory 'lsst_roman' because sorted(['lsst','roman'])
+        gives that key.
+        """
+        import healpy as hp
+
+        from streamobs.background import BackgroundStorage, LightBackgroundGenerator
+        from streamobs.columns import obs_col
+        from streamobs.surveys import Survey
+
+        nside = 8
+        n_pix = hp.nside2npix(nside)
+        survey_lsst = Survey(
+            name="lsst", release="yr4",
+            maglim_maps={"g": np.full(n_pix, 24.3)},
+            coeff_extinc={"g": 3.303},
+            ebv_map=np.full(n_pix, 0.01),
+        )
+        survey_roman = Survey(
+            name="roman", release="dc2",
+            maglim_maps={"r": np.full(n_pix, 26.0)},
+            coeff_extinc={"r": 2.285},
+            ebv_map=np.full(n_pix, 0.01),
+        )
+
+        # Canonical sort: [('lsst','g'), ('roman','r')] → dir='lsst_roman', bands='gr'
+        rng = np.random.default_rng(0)
+        n_color, n_mag = 5, 5
+        color_edges = np.linspace(-1.0, 3.0, n_color + 1)
+        mag_edges = np.linspace(18.0, 28.0, n_mag + 1)
+        grid = {
+            (24.0, 24.0): {
+                "cmd_hist": rng.uniform(0.5, 2.0, (n_color, n_mag)),  # counts/deg²
+                "color_edges": color_edges,
+                "mag_edges": mag_edges,
+                "n_ref": 100,
+            },
+        }
+        storage = BackgroundStorage(base_path=str(tmp_path), survey_name="lsst_roman")
+        storage.save_data(grid, "stars", ("g", "r"))
+
+        gen = LightBackgroundGenerator(
+            storage, [survey_lsst, survey_roman], bands=("g", "r")
+        )
+
+        # Canonical sort places lsst-g first, roman-r second
+        assert gen.bands_canonical == ("g", "r")
+        assert gen.surveys_canonical[0].name == "lsst"
+        assert gen.surveys_canonical[1].name == "roman"
+
+        gc_frame = _make_gc_frame()
+        df, meta = gen.generate(
+            phi1_limits=(-5, 5),
+            phi2_limits=(-1, 1),
+            gc_frame=gc_frame,
+            nside=nside,
+            source_type="stars",
+            seed=0,
+        )
+
+        assert isinstance(df, pd.DataFrame)
+        assert obs_col("g", "lsst_yr4") in df.columns
+        assert obs_col("r", "roman_dc2") in df.columns
+        assert meta["namespaces"] == ["lsst_yr4", "roman_dc2"]
+        assert meta["band1"] == "g"
+        assert meta["band2"] == "r"

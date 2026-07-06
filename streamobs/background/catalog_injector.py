@@ -30,7 +30,7 @@ class BackgroundCatalogInjector:
     >>> obs_gals  = injector.inject_galaxies(catalog_df, bands=['g', 'r'])
     """
 
-    def __init__(self, survey: Survey, **kwargs):
+    def __init__(self, survey, **kwargs):
         self._survey = survey
         self.streaminjector = StreamInjector(self._survey, **kwargs)
 

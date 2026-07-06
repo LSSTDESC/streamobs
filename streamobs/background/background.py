@@ -2,11 +2,9 @@
 Top-level background generation wrapper.
 """
 
-import os
-
 import pandas as pd
 
-from ..surveys import Survey
+from ..utils import canonical_survey_bands
 from .catalog_injector import BackgroundCatalogInjector
 from .generator import LightBackgroundGenerator
 from .storage import BackgroundStorage
@@ -22,8 +20,8 @@ class Background:
 
     Parameters
     ----------
-    survey : Survey
-        Survey instance defining the observation conditions.
+    surveys : Survey or list of Survey
+        One or more survey instances.  A single Survey is wrapped in a list.
     source_type : {'stars', 'galaxies', 'both'}, optional
         Which components to generate. Default ``'both'``.
     method : {'light', 'injection'}, optional
@@ -44,7 +42,7 @@ class Background:
 
     def __init__(
         self,
-        survey: Survey,
+        surveys=None,
         source_type: str = "both",
         method: str = "light",
         storage: BackgroundStorage = None,
@@ -60,7 +58,10 @@ class Background:
         if method not in ("light", "injection"):
             raise ValueError(f"method must be 'light' or 'injection', got '{method}'.")
 
-        self.survey = survey
+        if surveys is None:
+            raise ValueError("surveys must be provided.")
+        self._surveys = surveys if isinstance(surveys, list) else [surveys]
+
         self.source_type = source_type
         self.method = method
         self.bands = bands
@@ -69,7 +70,7 @@ class Background:
         self._kwargs = kwargs
 
         if storage is None and method == "light":
-            storage = self._default_storage(survey)
+            storage = self._default_storage(self._surveys, bands)
         self.storage = storage
 
     def generate(
@@ -116,7 +117,7 @@ class Background:
         **kwargs,
     ) -> pd.DataFrame:
         """Inject catalogs for each active source type and concatenate."""
-        inj = BackgroundCatalogInjector(self.survey)
+        inj = BackgroundCatalogInjector(self._surveys)
         call_kwargs = {**self._kwargs, **kwargs}
         parts = []
         if self.source_type in ("stars", "both"):
@@ -154,7 +155,7 @@ class Background:
         **kwargs,
     ):
         """Delegate to LightBackgroundGenerator."""
-        gen = LightBackgroundGenerator(self.storage, self.survey, bands=self.bands)
+        gen = LightBackgroundGenerator(self.storage, self._surveys, bands=self.bands)
         return gen.generate(
             phi1_limits=phi1_limits,
             phi2_limits=phi2_limits,
@@ -164,6 +165,7 @@ class Background:
         )
 
     @staticmethod
-    def _default_storage(survey: Survey) -> BackgroundStorage:
+    def _default_storage(surveys: list, bands: tuple) -> BackgroundStorage:
         """Return a BackgroundStorage pointing to bundled package resources."""
-        return BackgroundStorage(survey_name=survey.name)
+        _, _, dir_name, _ = canonical_survey_bands(surveys, list(bands))
+        return BackgroundStorage(survey_name=dir_name)

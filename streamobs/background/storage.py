@@ -9,6 +9,7 @@ import pandas as pd
 import pyarrow.parquet as pq
 
 
+
 class BackgroundStorage:
     """
     Save and load precomputed color–magnitude diagram (CMD) histogram grids.
@@ -18,12 +19,15 @@ class BackgroundStorage:
     ``(maglim_b2, maglim_b1)`` grid point, where ``b1 = bands[0]`` (color
     band) and ``b2 = bands[1]`` (reference/magnitude band).
 
+    CMD counts are stored as **density** (counts per deg²).  Multiply by the
+    target pixel area to obtain expected object counts.
+
     **File format** — one row per ``(maglim_b2, maglim_b1)`` pair::
 
-        maglim_b2 | maglim_b1 | n_ref | area_ref_deg2
+        maglim_b2 | maglim_b1 | n_ref
         | color_edge_min | color_edge_max | n_color
         | mag_edge_min   | mag_edge_max   | n_mag
-        | counts  (list of n_color × n_mag floats, row-major)
+        | counts  (list of n_color × n_mag floats per deg², row-major)
 
     Bin edges are derived from ``(edge_min, edge_max, n_bins)`` on load.
     Bin centers are not stored; compute them from edges when needed.
@@ -88,8 +92,8 @@ class BackgroundStorage:
         ----------
         data : dict
             Full grid keyed by ``(maglim_b2, maglim_b1)``, each value being
-            a dict with keys ``cmd_hist``, ``color_edges``, ``mag_edges``,
-            ``n_ref``, ``area_ref_deg2``.  ``b1 = bands[0]``, ``b2 = bands[1]``.
+            a dict with keys ``cmd_hist`` (counts per deg²), ``color_edges``,
+            ``mag_edges``, ``n_ref``.  ``b1 = bands[0]``, ``b2 = bands[1]``.
         source_type : str
             ``'stars'`` or ``'galaxies'``.
         bands : tuple of str
@@ -109,7 +113,6 @@ class BackgroundStorage:
                     "maglim_b2": round(float(maglim_b2), 4),
                     "maglim_b1": round(float(maglim_b1), 4),
                     "n_ref": int(d["n_ref"]),
-                    "area_ref_deg2": float(d["area_ref_deg2"]),
                     "color_edge_min": float(color_edges[0]),
                     "color_edge_max": float(color_edges[-1]),
                     "n_color": int(len(color_edges) - 1),
@@ -156,7 +159,7 @@ class BackgroundStorage:
         Returns
         -------
         dict
-            ``{'cmd_hist', 'color_edges', 'mag_edges', 'n_ref', 'area_ref_deg2'}``.
+            ``{'cmd_hist', 'color_edges', 'mag_edges', 'n_ref'}``.
         """
         row = (
             self._load_table(source_type, bands, maglim_b2, maglim_b1)
@@ -173,7 +176,7 @@ class BackgroundStorage:
         -------
         dict
             ``{(maglim_b2, maglim_b1): {'cmd_hist', 'color_edges', 'mag_edges',
-            'n_ref', 'area_ref_deg2'}}`` where ``b1 = bands[0]``, ``b2 = bands[1]``.
+            'n_ref'}}`` where ``b1 = bands[0]``, ``b2 = bands[1]``.
         """
         df = self._load_table(source_type, bands).to_pandas()
         return {
@@ -238,5 +241,4 @@ class BackgroundStorage:
             "color_edges": color_edges,
             "mag_edges": mag_edges,
             "n_ref": int(row["n_ref"]),
-            "area_ref_deg2": float(row["area_ref_deg2"]),
         }

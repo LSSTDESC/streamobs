@@ -10,7 +10,7 @@ import numpy as np
 
 from ..columns import flag_col, obs_col, true_col
 from ..surveys import Survey, SurveyFactory
-from ..utils import load_catalog
+from ..utils import canonical_survey_bands, load_catalog
 from .catalog_injector import BackgroundCatalogInjector
 from .storage import BackgroundStorage
 
@@ -52,9 +52,10 @@ class BackgroundResourceBuilder:
     >>> builder.save(storage)
     """
 
-    def __init__(self, survey_name="lsst", release=None, **kwargs):
+    def __init__(self, survey_name="lsst", release=None, surveys=None, **kwargs):
         self.survey_name = survey_name
         self.release = release
+        self._surveys_spec = surveys  # None → use survey_name + release
         self._kwargs = kwargs
         # Nested dict: {source_type: {(maglim_b2, maglim_b1): config_dict}}
         self.resources: dict = {}
@@ -124,16 +125,32 @@ class BackgroundResourceBuilder:
         -------
         self
         """
-        survey = SurveyFactory.create_survey(
-            self.survey_name, release=self.release, **self._kwargs
-        )
-        self.bands = bands
+        if len(bands) != 2:
+            raise ValueError("bands must contain exactly 2 entries.")
 
-        # Build 2-D meshgrid of (maglim_b2, maglim_b1) pairs
+        # Resolve survey list
+        if self._surveys_spec is not None:
+            raw = self._surveys_spec if isinstance(self._surveys_spec, list) else [self._surveys_spec]
+            surveys_list = [self._resolve_survey_spec(s) for s in raw]
+        else:
+            s = SurveyFactory.create_survey(self.survey_name, release=self.release, **self._kwargs)
+            surveys_list = [s]
+
+        # Expand single survey to cover both bands
+        if len(surveys_list) == 1:
+            surveys_list = [surveys_list[0], surveys_list[0]]
+        elif len(surveys_list) != 2:
+            raise ValueError("surveys must resolve to 1 or 2 Survey instances for the light method.")
+
+        # Canonical (survey, band) order — sort by (survey.name, band)
+        surveys_canonical, bands_canonical, _, _ = canonical_survey_bands(surveys_list, bands)
+        self.bands = bands_canonical
+
+        # Build 2-D meshgrid of maglim pairs (symmetric over canonical bands)
         maglim_1d = np.arange(maglim_min, maglim_max + maglim_step / 2, maglim_step)
-        mg_b2, mg_b1 = np.meshgrid(maglim_1d, maglim_1d)
-        mask_delta = np.abs(mg_b2 - mg_b1) < max_delta
-        pairs = list(zip(mg_b2[mask_delta].ravel(), mg_b1[mask_delta].ravel()))
+        mg1, mg2 = np.meshgrid(maglim_1d, maglim_1d)
+        mask_delta = np.abs(mg1 - mg2) < max_delta
+        pairs_raw = list(zip(mg1[mask_delta].ravel(), mg2[mask_delta].ravel()))
 
         active = ["stars", "galaxies"] if source_type == "both" else [source_type]
 
@@ -143,20 +160,21 @@ class BackgroundResourceBuilder:
 
             cat = load_catalog(catalog_stars if st == "stars" else catalog_galaxies)
             self.resources.setdefault(st, {})
-            for maglim_b2, maglim_b1 in pairs:
+            for ml0, ml1 in pairs_raw:
+                # ml0 → canonical band 0 (color), ml1 → canonical band 1 (reference)
+                mb1_key = round(float(ml0), 4)  # maglim for canonical pair 0
+                mb2_key = round(float(ml1), 4)  # maglim for canonical pair 1
                 if verbose:
                     print(
                         f"  Building CMD histogram for {st} with "
-                        f"maglim_b2={maglim_b2:.2f}, maglim_b1={maglim_b1:.2f}..."
+                        f"maglim_b2={mb2_key:.2f}, maglim_b1={mb1_key:.2f}..."
                     )
 
-                mb2_key = round(float(maglim_b2), 4)
-                mb1_key = round(float(maglim_b1), 4)
                 result = self._build_one_config(
                     catalog=cat,
-                    survey=survey,
+                    survey=surveys_canonical,
                     source_type=st,
-                    bands=bands,
+                    bands=bands_canonical,
                     maglim_b2=mb2_key,
                     maglim_b1=mb1_key,
                     n_bins_color=n_bins_color,
@@ -174,10 +192,21 @@ class BackgroundResourceBuilder:
 
         return self
 
+    @staticmethod
+    def _resolve_survey_spec(spec) -> Survey:
+        """Resolve a survey spec (Survey instance, str, or dict) to a Survey."""
+        if isinstance(spec, Survey):
+            return spec
+        if isinstance(spec, str):
+            return SurveyFactory.create_survey(spec)
+        if isinstance(spec, dict):
+            return SurveyFactory.create_survey(**spec)
+        raise TypeError(f"Unsupported survey spec type: {type(spec)}")
+
     def _build_one_config(
         self,
         catalog,
-        survey: Survey,
+        survey,  # Survey or list of Survey (len 2, one per canonical band)
         source_type: str,
         bands: tuple,
         maglim_b2: float,
@@ -192,15 +221,17 @@ class BackgroundResourceBuilder:
         """
         Build the CMD histogram for a single ``(maglim_b2, maglim_b1)`` pair.
 
-        Creates a uniform survey (no dust, constant maglim), injects the catalog,
-        and histograms the detected sources.
+        Creates uniform survey copies (no dust, constant maglim), injects the
+        catalog, and histograms the detected sources.  CMD counts are normalized
+        to density (counts per deg²) by dividing by ``area_ref_deg2``.
 
         Parameters
         ----------
         catalog : pd.DataFrame
             True background catalog (stars or galaxies).
-        survey : Survey
-            Loaded survey instance to prepare.
+        survey : Survey or list of Survey
+            Single Survey (used for both bands) or a list of two Survey
+            instances ``[survey_band0, survey_band1]`` in canonical order.
         source_type : str
             ``'stars'`` or ``'galaxies'``.
         bands : tuple of str
@@ -218,60 +249,87 @@ class BackgroundResourceBuilder:
         mag_range : tuple of float
             Magnitude axis range.
         area_ref_deg2 : float, optional
-            Reference area in deg² for count normalisation.
+            Reference area in deg².  CMD counts are divided by this value to
+            produce density; defaults to ``1.0`` (no normalisation).
         **kwargs
             Forwarded to the injector.
 
         Returns
         -------
         dict
-            ``{'cmd_hist': np.ndarray, 'color_edges': np.ndarray,
-            'mag_edges': np.ndarray, 'n_ref': int, 'area_ref_deg2': float}``
+            ``{'cmd_hist': np.ndarray (counts/deg²), 'color_edges': np.ndarray,
+            'mag_edges': np.ndarray, 'n_ref': int}``
         """
-        prepared = self._prepare_survey(
-            survey,
-            uniform_maglim={bands[0]: float(maglim_b1), bands[1]: float(maglim_b2)},
-        )
+        # Resolve to [survey_band0, survey_band1]
+        if isinstance(survey, list):
+            surveys_list = survey  # already [s0, s1] in canonical order
+        else:
+            surveys_list = [survey, survey]
+
+        area = float(area_ref_deg2) if area_ref_deg2 is not None else 1.0
+
+        # Group bands by survey identity to avoid duplicate deep copies
+        survey_band_limits: dict = {}  # {survey_id: (survey_obj, {band: maglim})}
+        for s, b, ml in zip(surveys_list, bands, [maglim_b1, maglim_b2]):
+            sid = id(s)
+            if sid not in survey_band_limits:
+                survey_band_limits[sid] = (s, {})
+            survey_band_limits[sid][1][b] = float(ml)
+
+        # One deep copy per unique survey
+        prepared: dict = {}  # {survey_id: prepared_survey}
+        for sid, (s, band_limits) in survey_band_limits.items():
+            prepared[sid] = self._prepare_survey(s, uniform_maglim=band_limits)
+
+        pair0_prep = prepared[id(surveys_list[0])]
+        pair1_prep = prepared[id(surveys_list[1])]
+        pair0_ns = pair0_prep.namespace
+        pair1_ns = pair1_prep.namespace
 
         catalog = self._prepare_catalog(
             catalog,
             bands,
             area_ref_deg2=area_ref_deg2,
-            survey=prepared,
+            survey=pair0_prep,
+            namespaces=(pair0_ns, pair1_ns),
             uniform_maglim={bands[0]: float(maglim_b1), bands[1]: float(maglim_b2)},
         )
-        n_ref = len(catalog)  # capture before deletion
+        n_ref = len(catalog)
 
-        inj = BackgroundCatalogInjector(prepared)
+        # Build injector: unique prepared surveys
+        unique_prepared = list({sid: prep for sid, prep in prepared.items()}.values())
+        inj = BackgroundCatalogInjector(unique_prepared[0] if len(unique_prepared) == 1 else unique_prepared)
+
+        # Bands dict: group by namespace
+        bands_dict: dict = {}
+        for s, b in zip(surveys_list, bands):
+            ns = prepared[id(s)].namespace
+            bands_dict.setdefault(ns, []).append(b)
+
         if source_type == "stars":
-            observed = inj.inject_stars(catalog, bands=list(bands), **kwargs)
+            observed = inj.inject_stars(catalog, bands=bands_dict, **kwargs)
         else:
-            observed = inj.inject_galaxies(catalog, bands=list(bands), **kwargs)
+            observed = inj.inject_galaxies(catalog, bands=bands_dict, **kwargs)
 
-        # Free the catalog copy and injector (holds a ref to prepared) as soon as
-        # injection is done — they are not needed for the histogram step.
         del catalog
         del inj
-
-        namespace = prepared.namespace
-        del prepared  # survey deep-copy no longer needed
+        del prepared
 
         hist = self._compute_cmd_histogram(
             observed,
-            namespace,
-            bands,
-            n_bins_color,
-            n_bins_mag,
+            band0=bands[0], ns0=pair0_ns,
+            band1=bands[1], ns1=pair1_ns,
+            n_bins_color=n_bins_color,
+            n_bins_mag=n_bins_mag,
             color_range=color_range,
             mag_range=mag_range,
         )
-        del observed  # large observed DataFrame freed after histogram is built
+        del observed
 
-        return {
-            **hist,
-            "n_ref": n_ref,
-            "area_ref_deg2": float(area_ref_deg2) if area_ref_deg2 is not None else 1.0,
-        }
+        # Normalize to counts per deg²
+        hist["cmd_hist"] = hist["cmd_hist"] / area
+
+        return {**hist, "n_ref": n_ref}
 
     def _prepare_survey(
         self,
@@ -319,16 +377,24 @@ class BackgroundResourceBuilder:
         area_ref_deg2=None,
         uniform_maglim: dict = None,
         survey: Survey = None,
+        namespaces: tuple = None,
     ) -> "pd.DataFrame":
         """
         Prepare the catalog for injection.
         Samples positions if they are missing, and checks that the catalog covers
         approximately the requested reference area.
         Also checks that the required true magnitude columns are present.
+
+        ``namespaces`` overrides ``survey.namespace`` with per-band namespaces
+        ``(ns0, ns1)`` for multi-survey use.
         """
         # Validate required magnitude columns before any allocation.
-        true_band1 = true_col(bands[0], survey.namespace)
-        true_band2 = true_col(bands[1], survey.namespace)
+        if namespaces is not None:
+            ns0, ns1 = namespaces
+        else:
+            ns0 = ns1 = survey.namespace
+        true_band1 = true_col(bands[0], ns0)
+        true_band2 = true_col(bands[1], ns1)
         if true_band1 not in catalog.columns or true_band2 not in catalog.columns:
             raise ValueError(
                 f"True background catalog must contain true magnitudes for bands {bands} "
@@ -466,8 +532,10 @@ class BackgroundResourceBuilder:
     def _compute_cmd_histogram(
         self,
         observed_df,
-        namespace: str,
-        bands: tuple,
+        band0: str,
+        ns0: str,
+        band1: str,
+        ns1: str,
         n_bins_color: int,
         n_bins_mag: int,
         color_range=(-2, 3),
@@ -476,17 +544,18 @@ class BackgroundResourceBuilder:
         """
         Build a 2-D color–magnitude histogram from an observed catalog.
 
-        Color = ``mag_band_g_obs − mag_band_r_obs``; magnitude = ``mag_band_r_obs``.
-        Only objects with ``flag_observed == 1`` are counted.
+        Color = ``obs_col(band0, ns0) − obs_col(band1, ns1)``; magnitude =
+        ``obs_col(band1, ns1)``.  Only objects detected in **all** surveys are
+        counted (AND mask across flag columns).
 
         Parameters
         ----------
         observed_df : pd.DataFrame
-            Output of the catalog injector (observed magnitudes + flags).
-        namespace : str
-            Survey namespace prefix (e.g. ``'lsst_yr4'``).
-        bands : tuple of str
-            ``(band_g, band_r)``.
+            Output of the catalog injector.
+        band0, ns0 : str
+            Color-band name and its survey namespace.
+        band1, ns1 : str
+            Reference-band name and its survey namespace.
         n_bins_color, n_bins_mag : int
             Number of histogram bins on each axis.
         color_range, mag_range : tuple of float
@@ -501,7 +570,11 @@ class BackgroundResourceBuilder:
         color_edges = np.linspace(color_range[0], color_range[1], n_bins_color + 1)
         mag_edges = np.linspace(mag_range[0], mag_range[1], n_bins_mag + 1)
 
-        mask = observed_df[flag_col(namespace)] == 1
+        # AND mask: object must be detected in all surveys
+        mask = observed_df[flag_col(ns0)] == 1
+        if ns0 != ns1:
+            mask = mask & (observed_df[flag_col(ns1)] == 1)
+
         if not mask.any():
             return {
                 "cmd_hist": np.zeros((n_bins_color, n_bins_mag)),
@@ -509,12 +582,8 @@ class BackgroundResourceBuilder:
                 "mag_edges": mag_edges,
             }
 
-        # Extract only the two needed columns filtered to detected rows — avoids
-        # materialising a full-width filtered copy of the observed DataFrame.
-        # The mask is applied BEFORE converting to float so that non-numeric
-        # sentinel values in undetected rows ('BAD_MAG') are never encountered.
-        col_b1 = obs_col(bands[0], namespace)
-        col_b2 = obs_col(bands[1], namespace)
+        col_b1 = obs_col(band0, ns0)
+        col_b2 = obs_col(band1, ns1)
         mag = observed_df.loc[mask, col_b2].to_numpy(dtype=float)
         color = observed_df.loc[mask, col_b1].to_numpy(dtype=float) - mag
 

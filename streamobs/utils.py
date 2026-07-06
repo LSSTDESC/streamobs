@@ -40,6 +40,43 @@ def load_catalog(catalog):
     )
 
 
+def canonical_survey_bands(surveys, bands):
+    """Sort ``(survey, band)`` pairs to a deterministic canonical order.
+
+    Sorting key is ``(survey.name, band)`` so any permutation of the same
+    inputs produces identical output.  Use this whenever building file paths,
+    column names, or ordered survey/band sequences that must be commutative.
+
+    Parameters
+    ----------
+    surveys : list of Survey
+        One Survey per band (may repeat the same instance).
+    bands : sequence of str
+        Band name for each survey, parallel to *surveys*.
+
+    Returns
+    -------
+    surveys_sorted : list of Survey
+    bands_sorted : tuple of str
+    dir_name : str
+        Canonical directory name for storage paths, e.g. ``'lsst'`` or
+        ``'lsst_roman'`` (survey names deduplicated, underscore-joined).
+    bands_str : str
+        Canonical band string for file names, e.g. ``'gr'`` or ``'gF158'``.
+
+    Examples
+    --------
+    >>> canonical_survey_bands([roman, lsst], ['F158', 'g'])
+    ([lsst, roman], ('g', 'F158'), 'lsst_roman', 'gF158')
+    """
+    raw = sorted(zip(surveys, list(bands)), key=lambda t: (t[0].name, t[1]))
+    surveys_sorted = [t[0] for t in raw]
+    bands_sorted = tuple(t[1] for t in raw)
+    dir_name = "_".join(dict.fromkeys(s.name for s in surveys_sorted))
+    bands_str = "".join(bands_sorted)
+    return surveys_sorted, bands_sorted, dir_name, bands_str
+
+
 def parse_config(config):
     """Parse a yaml formatted file or string into a dict.
 

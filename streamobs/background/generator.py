@@ -12,6 +12,7 @@ import pandas as pd
 
 from ..columns import obs_col
 from ..surveys import Survey
+from ..utils import canonical_survey_bands
 from .storage import BackgroundStorage
 
 
@@ -59,13 +60,27 @@ class LightBackgroundGenerator:
     def __init__(
         self,
         storage: BackgroundStorage,
-        survey: Survey,
+        surveys,  # Survey or list of Survey
         bands=("g", "r"),
         **kwargs,
     ):
         self.storage = storage
-        self.survey = survey
-        self.bands = bands
+
+        # Normalize to list
+        if isinstance(surveys, Survey):
+            surveys_list = [surveys, surveys]
+        elif isinstance(surveys, list) and len(surveys) == 1:
+            surveys_list = [surveys[0], surveys[0]]
+        elif isinstance(surveys, list) and len(surveys) == 2:
+            surveys_list = surveys
+        else:
+            raise ValueError("surveys must be a Survey instance or a list of 1 or 2 Survey instances.")
+
+        # Sort (survey, band) pairs to canonical order
+        self.surveys_canonical, self.bands_canonical, _, _ = canonical_survey_bands(
+            surveys_list, bands
+        )
+
         # Lazy cache: {source_type: grid_dict}
         self._resources: dict = {}
 
@@ -111,11 +126,10 @@ class LightBackgroundGenerator:
 
         # Cap nside to the resolution of the magnitude-limit maps.
         # There's no benefit to sampling positions at sub-pixel resolution relative to the depth maps.
-        maglim_nsides = [
-            hp.get_nside(self.survey.maglim_maps[b])
-            for b in self.bands
-            if self.survey.maglim_maps.get(b) is not None
-        ]
+        maglim_nsides = []
+        for s, b in zip(self.surveys_canonical, self.bands_canonical):
+            if s.maglim_maps.get(b) is not None:
+                maglim_nsides.append(hp.get_nside(s.maglim_maps[b]))
         if maglim_nsides:
             maglim_nside = min(maglim_nsides)
             if nside > maglim_nside:
@@ -138,9 +152,11 @@ class LightBackgroundGenerator:
             if len(df) > 0:
                 catalogs.append(df)
 
-        namespace = self.survey.namespace
-        b1, b2 = self.bands[0], self.bands[1]
-        col1, col2 = obs_col(b1, namespace), obs_col(b2, namespace)
+        b1 = self.bands_canonical[0]
+        b2 = self.bands_canonical[1]
+        ns1 = self.surveys_canonical[0].namespace
+        ns2 = self.surveys_canonical[1].namespace
+        col1, col2 = obs_col(b1, ns1), obs_col(b2, ns2)
 
         catalog = (
             pd.concat(catalogs, ignore_index=True)
@@ -152,7 +168,7 @@ class LightBackgroundGenerator:
 
         meta = {
             "nside": nside,
-            "namespace": namespace,
+            "namespaces": [ns1, ns2],
             "band1": b1,
             "band2": b2,
         }
@@ -169,7 +185,7 @@ class LightBackgroundGenerator:
         """Load CMD grid for *source_type* from storage and cache it."""
         if source_type not in self._resources:
             self._resources[source_type] = self.storage.load_all(
-                source_type, self.bands
+                source_type, self.bands_canonical
             )
 
     def _generate_one_type(
@@ -190,9 +206,11 @@ class LightBackgroundGenerator:
         self._load_resources(source_type)
 
         pixels = self._get_footprint_pixels(phi1_limits, phi2_limits, gc_frame, nside)
-        namespace = self.survey.namespace
-        b1, b2 = self.bands[0], self.bands[1]  # b1 = color band, b2 = reference band
-        col1, col2 = obs_col(b1, namespace), obs_col(b2, namespace)
+        b1 = self.bands_canonical[0]  # color band
+        b2 = self.bands_canonical[1]  # reference band
+        ns1 = self.surveys_canonical[0].namespace
+        ns2 = self.surveys_canonical[1].namespace
+        col1, col2 = obs_col(b1, ns1), obs_col(b2, ns2)
         empty = pd.DataFrame(
             columns=["ra", "dec", "phi1", "phi2", col1, col2, "source_type"]
         )
@@ -202,8 +220,8 @@ class LightBackgroundGenerator:
         pixel_area_deg2 = hp.nside2pixarea(nside, degrees=True)
         # b2 is the reference (magnitude) band; b1 is the color (secondary) band.
         # Grid keys are (maglim_b2, maglim_b1), matching how storage was built.
-        maglim_b2_eff = self._get_effective_maglim(pixels, b2, nside)
-        maglim_b1_eff = self._get_effective_maglim(pixels, b1, nside)
+        maglim_b2_eff = self._get_effective_maglim(pixels, 1, nside)
+        maglim_b1_eff = self._get_effective_maglim(pixels, 0, nside)
 
         # Accumulate samples; defer gala transform to a single batch call
         all_ra: list = []
@@ -227,7 +245,7 @@ class LightBackgroundGenerator:
 
             # Scale the pixel's expected object count from the reference area to the pixel area.
             n_objects = self._scale_n_objects(
-                cmd["cmd_hist"].sum(), cmd["area_ref_deg2"], pixel_area_deg2, rng
+                cmd["cmd_hist"].sum(), pixel_area_deg2, rng
             )
             if n_objects == 0:
                 continue
@@ -313,27 +331,34 @@ class LightBackgroundGenerator:
     def _get_effective_maglim(
         self,
         pixels: np.ndarray,
-        band: str,
+        pair_index: int,
         nside: int,
     ) -> np.ndarray:
         """
         Compute effective magnitude limit for each pixel.
 
         ``maglim_eff = maglim_obs - A_band``  (dust reduces the effective depth).
+
+        Parameters
+        ----------
+        pair_index : int
+            Index into ``self.surveys_canonical`` / ``self.bands_canonical`` (0 or 1).
         """
+        survey = self.surveys_canonical[pair_index]
+        band = self.bands_canonical[pair_index]
         ra, dec = hp.pix2ang(nside, pixels, lonlat=True)
 
         # Maglim — re-pixelise to the survey map's nside if different
-        maglim_map = self.survey.maglim_maps[band]
+        maglim_map = survey.maglim_maps[band]
         nside_maglim = hp.get_nside(maglim_map)
         pix_maglim = hp.ang2pix(nside_maglim, ra, dec, lonlat=True)
         maglim = maglim_map[pix_maglim].astype(float)
 
         # Extinction
-        if self.survey.ebv_map is not None and band in self.survey.coeff_extinc:
-            nside_ebv = hp.get_nside(self.survey.ebv_map)
+        if survey.ebv_map is not None and band in survey.coeff_extinc:
+            nside_ebv = hp.get_nside(survey.ebv_map)
             pix_ebv = hp.ang2pix(nside_ebv, ra, dec, lonlat=True)
-            extinction = self.survey.coeff_extinc[band] * self.survey.ebv_map[pix_ebv]
+            extinction = survey.coeff_extinc[band] * survey.ebv_map[pix_ebv]
         else:
             extinction = np.zeros_like(maglim)
 
@@ -389,7 +414,6 @@ class LightBackgroundGenerator:
 
         H_interp = None
         n_ref_interp = 0.0
-        area_interp = 0.0
         w_total = 0.0
         first_key = None
 
@@ -402,7 +426,6 @@ class LightBackgroundGenerator:
             else:
                 H_interp = H_interp + grid[key]["cmd_hist"] * w
             n_ref_interp += w * grid[key]["n_ref"]
-            area_interp += w * grid[key]["area_ref_deg2"]
             w_total += w
 
         if H_interp is None:
@@ -412,33 +435,26 @@ class LightBackgroundGenerator:
         if w_total > 0 and abs(w_total - 1.0) > 1e-9:
             H_interp /= w_total
             n_ref_interp /= w_total
-            area_interp /= w_total
 
         return {
             "cmd_hist": np.clip(H_interp, 0, None),
             "color_edges": grid[first_key]["color_edges"],
             "mag_edges": grid[first_key]["mag_edges"],
             "n_ref": n_ref_interp,
-            "area_ref_deg2": area_interp,
         }
 
     def _scale_n_objects(
         self,
-        n_detected: float,
-        area_ref_deg2: float,
+        n_per_deg2: float,
         pixel_area_deg2: float,
         rng: np.random.Generator,
     ) -> int:
         """Poisson draw for the expected object count in one pixel.
 
-        ``n_detected`` is ``cmd_hist.sum()`` — the number of sources actually
-        detected in the reference area at this effective maglim, not the number
-        injected (``n_ref``).  Using detected counts means the rate naturally
-        reflects survey depth: a shallower CMD has fewer counts and therefore
-        produces fewer objects per pixel.
+        ``n_per_deg2`` is ``cmd_hist.sum()`` — the CMD density (objects per deg²)
+        at this effective maglim.  Multiply by pixel area to get expected count.
         """
-        lam = n_detected * pixel_area_deg2 / area_ref_deg2
-        return int(rng.poisson(lam))
+        return int(rng.poisson(n_per_deg2 * pixel_area_deg2))
 
     def _sample_from_cmd(
         self,
