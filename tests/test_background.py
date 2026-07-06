@@ -632,7 +632,9 @@ class TestLightBackgroundGenerator:
             grid = {}
             for mr, mg in pairs:
                 scale = (mr + mg) / (24.0 + 24.0)
-                cmd_raw = rng.integers(1, 5, size=(n_color, n_mag)).astype(float) * scale
+                cmd_raw = (
+                    rng.integers(1, 5, size=(n_color, n_mag)).astype(float) * scale
+                )
                 grid[(mr, mg)] = {
                     "cmd_hist": cmd_raw / area_ref,  # counts per deg²
                     "color_edges": color_edges,
@@ -1095,7 +1097,9 @@ class TestMultiSurveyBackground:
             "F158": mock_survey.coeff_extinc.get("r", 1.5),
         }
         roman.saturation = {
-            "F106": mock_survey.saturation.get("g", mock_survey.saturation.get("r", 16.0)),
+            "F106": mock_survey.saturation.get(
+                "g", mock_survey.saturation.get("r", 16.0)
+            ),
             "F158": mock_survey.saturation.get("r", 16.0),
         }
         roman.completeness_band = "F158"
@@ -1111,12 +1115,14 @@ class TestMultiSurveyBackground:
         """
         rng = np.random.default_rng(0)
         n = 400
-        return pd.DataFrame({
-            "lsst_g_true":    rng.uniform(20.0, 26.0, n),
-            "lsst_r_true":    rng.uniform(20.0, 26.0, n),
-            "roman_F106_true": rng.uniform(20.0, 26.0, n),
-            "roman_F158_true": rng.uniform(20.0, 26.0, n),
-        })
+        return pd.DataFrame(
+            {
+                "lsst_g_true": rng.uniform(20.0, 26.0, n),
+                "lsst_r_true": rng.uniform(20.0, 26.0, n),
+                "roman_F106_true": rng.uniform(20.0, 26.0, n),
+                "roman_F158_true": rng.uniform(20.0, 26.0, n),
+            }
+        )
 
     @pytest.fixture(scope="class")
     def gen_surveys(self):
@@ -1128,13 +1134,15 @@ class TestMultiSurveyBackground:
         nside = 8
         n_pix = hp.nside2npix(nside)
         lsst = Survey(
-            name="lsst", release="yr4",
+            name="lsst",
+            release="yr4",
             maglim_maps={"g": np.full(n_pix, 24.3)},
             coeff_extinc={"g": 3.303},
             ebv_map=np.full(n_pix, 0.01),
         )
         roman = Survey(
-            name="roman", release="dc2",
+            name="roman",
+            release="dc2",
             maglim_maps={"F158": np.full(n_pix, 26.0)},
             coeff_extinc={"F158": 0.614},
             ebv_map=np.full(n_pix, 0.01),
@@ -1156,18 +1164,18 @@ class TestMultiSurveyBackground:
         from streamobs.background import BackgroundCatalogInjector
         from streamobs.columns import flag_col, obs_col
 
-        ns1 = mock_survey.namespace    # 'lsst_yr4'
-        ns2 = roman_survey.namespace   # 'roman_dc2'
+        ns1 = mock_survey.namespace  # 'lsst_yr4'
+        ns2 = roman_survey.namespace  # 'roman_dc2'
 
         # Injection requires sky positions — add them here (only this test needs them).
         rng = np.random.default_rng(99)
         n = len(multi_cat)
-        cat = multi_cat.assign(ra=rng.uniform(30.0, 60.0, n), dec=rng.uniform(-20.0, 0.0, n))
+        cat = multi_cat.assign(
+            ra=rng.uniform(30.0, 60.0, n), dec=rng.uniform(-20.0, 0.0, n)
+        )
 
         inj = BackgroundCatalogInjector([mock_survey, roman_survey])
-        result = inj.inject_stars(
-            cat, bands={ns1: ["g", "r"], ns2: ["F106", "F158"]}
-        )
+        result = inj.inject_stars(cat, bands={ns1: ["g", "r"], ns2: ["F106", "F158"]})
 
         assert isinstance(result, pd.DataFrame)
         assert len(result) > 0
@@ -1185,7 +1193,8 @@ class TestMultiSurveyBackground:
         The CMD grid is stored under the canonical directory 'lsst_roman' because
         sorted(['lsst', 'roman']) gives that key.
         """
-        from streamobs.background import BackgroundStorage, LightBackgroundGenerator
+        from streamobs.background import (BackgroundStorage,
+                                          LightBackgroundGenerator)
         from streamobs.columns import obs_col
 
         lsst_gen, roman_gen = gen_surveys
@@ -1230,7 +1239,9 @@ class TestMultiSurveyBackground:
         assert meta["band1"] == "g"
         assert meta["band2"] == "F158"
 
-    def test_build_multi_survey_from_surveys_spec(self, tmp_path, mock_survey, roman_survey, multi_cat):
+    def test_build_multi_survey_from_surveys_spec(
+        self, tmp_path, mock_survey, roman_survey, multi_cat
+    ):
         """BackgroundResourceBuilder built with surveys= two Survey instances
         exercises the _surveys_spec path and _resolve_survey_spec for Survey objects.
 
@@ -1238,7 +1249,8 @@ class TestMultiSurveyBackground:
         lsst.completeness_band='r' is not in the CMD bands → must be auto-added.
         roman.completeness_band='F158' is not in the CMD bands → must be auto-added.
         """
-        from streamobs.background import BackgroundResourceBuilder, BackgroundStorage
+        from streamobs.background import (BackgroundResourceBuilder,
+                                          BackgroundStorage)
 
         builder = BackgroundResourceBuilder(surveys=[mock_survey, roman_survey])
         builder.build(
@@ -1266,7 +1278,9 @@ class TestMultiSurveyBackground:
         builder.save(storage, source_type="stars")
         assert storage.exists("stars", ("g", "F106"))
 
-    def test_build_and_generate_multi_survey(self, tmp_path, mock_survey, roman_survey, multi_cat, gen_surveys, gc_frame):
+    def test_build_and_generate_multi_survey(
+        self, tmp_path, mock_survey, roman_survey, multi_cat, gen_surveys, gc_frame
+    ):
         """Full pipeline: build CMD resources for lsst-g × roman-F158, save, then
         generate a background catalog with LightBackgroundGenerator.
 

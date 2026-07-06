@@ -74,7 +74,9 @@ class LightBackgroundGenerator:
         elif isinstance(surveys, list) and len(surveys) == 2:
             surveys_list = surveys
         else:
-            raise ValueError("surveys must be a Survey instance or a list of 1 or 2 Survey instances.")
+            raise ValueError(
+                "surveys must be a Survey instance or a list of 1 or 2 Survey instances."
+            )
 
         # Sort (survey, band) pairs to canonical order
         self.surveys_canonical, self.bands_canonical, _, _ = canonical_survey_bands(

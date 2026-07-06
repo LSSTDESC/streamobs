@@ -9,7 +9,6 @@ import pandas as pd
 import pyarrow.parquet as pq
 
 
-
 class BackgroundStorage:
     """
     Save and load precomputed color–magnitude diagram (CMD) histogram grids.

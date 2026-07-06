@@ -130,20 +130,30 @@ class BackgroundResourceBuilder:
 
         # Resolve survey list
         if self._surveys_spec is not None:
-            raw = self._surveys_spec if isinstance(self._surveys_spec, list) else [self._surveys_spec]
+            raw = (
+                self._surveys_spec
+                if isinstance(self._surveys_spec, list)
+                else [self._surveys_spec]
+            )
             surveys_list = [self._resolve_survey_spec(s) for s in raw]
         else:
-            s = SurveyFactory.create_survey(self.survey_name, release=self.release, **self._kwargs)
+            s = SurveyFactory.create_survey(
+                self.survey_name, release=self.release, **self._kwargs
+            )
             surveys_list = [s]
 
         # Expand single survey to cover both bands
         if len(surveys_list) == 1:
             surveys_list = [surveys_list[0], surveys_list[0]]
         elif len(surveys_list) != 2:
-            raise ValueError("surveys must resolve to 1 or 2 Survey instances for the light method.")
+            raise ValueError(
+                "surveys must resolve to 1 or 2 Survey instances for the light method."
+            )
 
         # Canonical (survey, band) order — sort by (survey.name, band)
-        surveys_canonical, bands_canonical, _, _ = canonical_survey_bands(surveys_list, bands)
+        surveys_canonical, bands_canonical, _, _ = canonical_survey_bands(
+            surveys_list, bands
+        )
         self.bands = bands_canonical
 
         # Build 2-D meshgrid of maglim pairs (symmetric over canonical bands)
@@ -304,11 +314,13 @@ class BackgroundResourceBuilder:
                     bands_dict[prep.namespace].append(b)
 
         # All true magnitude columns required across both surveys (CMD + completeness)
-        required_true_cols = list(dict.fromkeys(
-            true_col(b, prep.namespace)
-            for _, prep in prepared.items()
-            for b in bands_dict.get(prep.namespace, [])
-        ))
+        required_true_cols = list(
+            dict.fromkeys(
+                true_col(b, prep.namespace)
+                for _, prep in prepared.items()
+                for b in bands_dict.get(prep.namespace, [])
+            )
+        )
 
         catalog = self._prepare_catalog(
             catalog,
@@ -322,7 +334,9 @@ class BackgroundResourceBuilder:
 
         # Build injector: unique prepared surveys
         unique_prepared = list({sid: prep for sid, prep in prepared.items()}.values())
-        inj = BackgroundCatalogInjector(unique_prepared[0] if len(unique_prepared) == 1 else unique_prepared)
+        inj = BackgroundCatalogInjector(
+            unique_prepared[0] if len(unique_prepared) == 1 else unique_prepared
+        )
 
         if source_type == "stars":
             observed = inj.inject_stars(catalog, bands=bands_dict, **kwargs)
@@ -335,8 +349,10 @@ class BackgroundResourceBuilder:
 
         hist = self._compute_cmd_histogram(
             observed,
-            band0=bands[0], ns0=pair0_ns,
-            band1=bands[1], ns1=pair1_ns,
+            band0=bands[0],
+            ns0=pair0_ns,
+            band1=bands[1],
+            ns1=pair1_ns,
             n_bins_color=n_bins_color,
             n_bins_mag=n_bins_mag,
             color_range=color_range,
@@ -417,10 +433,14 @@ class BackgroundResourceBuilder:
             ns0 = ns1 = survey.namespace
 
         if required_true_cols is None:
-            required_true_cols = list(dict.fromkeys([
-                true_col(bands[0], ns0),
-                true_col(bands[1], ns1),
-            ]))
+            required_true_cols = list(
+                dict.fromkeys(
+                    [
+                        true_col(bands[0], ns0),
+                        true_col(bands[1], ns1),
+                    ]
+                )
+            )
 
         missing = [c for c in required_true_cols if c not in catalog.columns]
         if missing:
