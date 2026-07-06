@@ -1074,47 +1074,97 @@ class TestBackground:
 class TestMultiSurveyBackground:
     """Tests for multi-survey background generation."""
 
-    def test_catalog_injector_multi_survey(self, mock_survey):
-        """BackgroundCatalogInjector with two surveys returns separate magnitude
-        and flag columns for each survey.
+    @pytest.fixture(scope="class")
+    def roman_survey(self, mock_survey):
+        """Roman survey — deep copy of mock_survey with g/r remapped to F106/F158.
 
-        Roman is a deep copy of mock_survey with its maps remapped to the
-        realistic Roman bands F106/F158.  lsst injects g+r (r is its
-        completeness_band); roman injects F106+F158 (F158 is its
-        completeness_band).  True magnitudes must be present for every
-        (survey, band) pair.
+        Both F106 and F158 are kept so the fixture can serve every test in the
+        class regardless of which Roman bands are injected.
         """
         import copy
-
-        from streamobs.background import BackgroundCatalogInjector
-        from streamobs.columns import flag_col, obs_col
 
         roman = copy.deepcopy(mock_survey)
         roman.name = "roman"
         roman.release = "dc2"
-        roman.maglim_maps = {"F106": mock_survey.maglim_maps["g"],
-                             "F158": mock_survey.maglim_maps["r"]}
-        roman.coeff_extinc = {"F106": mock_survey.coeff_extinc.get("g", 2.0),
-                              "F158": mock_survey.coeff_extinc.get("r", 1.5)}
-        roman.saturation = {"F106": mock_survey.saturation.get("g", mock_survey.saturation.get("r", 16.0)),
-                            "F158": mock_survey.saturation.get("r", 16.0)}
+        roman.maglim_maps = {
+            "F106": copy.deepcopy(mock_survey.maglim_maps["g"]),
+            "F158": copy.deepcopy(mock_survey.maglim_maps["r"]),
+        }
+        roman.coeff_extinc = {
+            "F106": mock_survey.coeff_extinc.get("g", 2.0),
+            "F158": mock_survey.coeff_extinc.get("r", 1.5),
+        }
+        roman.saturation = {
+            "F106": mock_survey.saturation.get("g", mock_survey.saturation.get("r", 16.0)),
+            "F158": mock_survey.saturation.get("r", 16.0),
+        }
         roman.completeness_band = "F158"
+        return roman
 
-        ns1 = mock_survey.namespace   # 'lsst_yr4'
-        ns2 = roman.namespace         # 'roman_dc2'
+    @pytest.fixture(scope="class")
+    def multi_cat(self):
+        """True-magnitude catalog shared across multi-survey tests.
 
+        Contains all lsst+roman bands (CMD bands + completeness bands for each
+        survey).  No sky positions — the build pipeline samples them internally;
+        the injection test adds them from its own RNG.
+        """
         rng = np.random.default_rng(0)
-        n = 200
-        cat = pd.DataFrame({
-            "ra": rng.uniform(30.0, 60.0, n),
-            "dec": rng.uniform(-20.0, 0.0, n),
-            "lsst_g_true": rng.uniform(20.0, 26.0, n),
-            "lsst_r_true": rng.uniform(20.0, 26.0, n),
+        n = 400
+        return pd.DataFrame({
+            "lsst_g_true":    rng.uniform(20.0, 26.0, n),
+            "lsst_r_true":    rng.uniform(20.0, 26.0, n),
             "roman_F106_true": rng.uniform(20.0, 26.0, n),
             "roman_F158_true": rng.uniform(20.0, 26.0, n),
         })
 
-        inj = BackgroundCatalogInjector([mock_survey, roman])
+    @pytest.fixture(scope="class")
+    def gen_surveys(self):
+        """Minimal in-memory Survey instances for the generation phase (no disk I/O)."""
+        import healpy as hp
+
+        from streamobs.surveys import Survey
+
+        nside = 8
+        n_pix = hp.nside2npix(nside)
+        lsst = Survey(
+            name="lsst", release="yr4",
+            maglim_maps={"g": np.full(n_pix, 24.3)},
+            coeff_extinc={"g": 3.303},
+            ebv_map=np.full(n_pix, 0.01),
+        )
+        roman = Survey(
+            name="roman", release="dc2",
+            maglim_maps={"F158": np.full(n_pix, 26.0)},
+            coeff_extinc={"F158": 0.614},
+            ebv_map=np.full(n_pix, 0.01),
+        )
+        return lsst, roman
+
+    @pytest.fixture(scope="class")
+    def gc_frame(self):
+        """Great-circle frame, built once for all tests in this class."""
+        return _make_gc_frame()
+
+    def test_catalog_injector_multi_survey(self, mock_survey, roman_survey, multi_cat):
+        """BackgroundCatalogInjector with two surveys returns separate magnitude
+        and flag columns for each survey.
+
+        lsst injects g+r (r is its completeness_band); roman injects F106+F158
+        (F158 is its completeness_band).
+        """
+        from streamobs.background import BackgroundCatalogInjector
+        from streamobs.columns import flag_col, obs_col
+
+        ns1 = mock_survey.namespace    # 'lsst_yr4'
+        ns2 = roman_survey.namespace   # 'roman_dc2'
+
+        # Injection requires sky positions — add them here (only this test needs them).
+        rng = np.random.default_rng(99)
+        n = len(multi_cat)
+        cat = multi_cat.assign(ra=rng.uniform(30.0, 60.0, n), dec=rng.uniform(-20.0, 0.0, n))
+
+        inj = BackgroundCatalogInjector([mock_survey, roman_survey])
         result = inj.inject_stars(
             cat, bands={ns1: ["g", "r"], ns2: ["F106", "F158"]}
         )
@@ -1128,36 +1178,19 @@ class TestMultiSurveyBackground:
         for band in ("F106", "F158"):
             assert obs_col(band, ns2) in result.columns
 
-    def test_light_method_multi_survey(self, tmp_path):
+    def test_light_method_multi_survey(self, tmp_path, gen_surveys, gc_frame):
         """LightBackgroundGenerator with one band per survey produces per-survey
         magnitude columns and correct meta.namespaces.
 
-        Uses two minimal in-memory surveys (no disk I/O).  The CMD grid is stored
-        under the canonical directory 'lsst_roman' because sorted(['lsst','roman'])
-        gives that key.
+        The CMD grid is stored under the canonical directory 'lsst_roman' because
+        sorted(['lsst', 'roman']) gives that key.
         """
-        import healpy as hp
-
         from streamobs.background import BackgroundStorage, LightBackgroundGenerator
         from streamobs.columns import obs_col
-        from streamobs.surveys import Survey
 
+        lsst_gen, roman_gen = gen_surveys
         nside = 8
-        n_pix = hp.nside2npix(nside)
-        survey_lsst = Survey(
-            name="lsst", release="yr4",
-            maglim_maps={"g": np.full(n_pix, 24.3)},
-            coeff_extinc={"g": 3.303},
-            ebv_map=np.full(n_pix, 0.01),
-        )
-        survey_roman = Survey(
-            name="roman", release="dc2",
-            maglim_maps={"F158": np.full(n_pix, 26.0)},
-            coeff_extinc={"F158": 0.614},
-            ebv_map=np.full(n_pix, 0.01),
-        )
 
-        # Canonical sort: [('lsst','g'), ('roman','F158')] → dir='lsst_roman', bands='gF158'
         rng = np.random.default_rng(0)
         n_color, n_mag = 5, 5
         color_edges = np.linspace(-1.0, 3.0, n_color + 1)
@@ -1173,7 +1206,7 @@ class TestMultiSurveyBackground:
         storage.save_data(grid, "stars", ("g", "F158"))
 
         gen = LightBackgroundGenerator(
-            storage, [survey_lsst, survey_roman], bands=("g", "F158")
+            storage, [lsst_gen, roman_gen], bands=("g", "F158")
         )
 
         # Canonical sort places lsst-g first, roman-F158 second
@@ -1181,7 +1214,6 @@ class TestMultiSurveyBackground:
         assert gen.surveys_canonical[0].name == "lsst"
         assert gen.surveys_canonical[1].name == "roman"
 
-        gc_frame = _make_gc_frame()
         df, meta = gen.generate(
             phi1_limits=(-5, 5),
             phi2_limits=(-1, 1),
@@ -1198,45 +1230,19 @@ class TestMultiSurveyBackground:
         assert meta["band1"] == "g"
         assert meta["band2"] == "F158"
 
-    def test_build_multi_survey_from_surveys_spec(self, tmp_path, mock_survey):
+    def test_build_multi_survey_from_surveys_spec(self, tmp_path, mock_survey, roman_survey, multi_cat):
         """BackgroundResourceBuilder built with surveys= two Survey instances
         exercises the _surveys_spec path and _resolve_survey_spec for Survey objects.
 
-        Roman is a deep copy of mock_survey with g/r remapped to F106/F158 so
-        the same photometric models are reused without loading files from disk.
         Bands ('g', 'F106'): lsst covers g (color), roman covers F106 (reference).
         lsst.completeness_band='r' is not in the CMD bands → must be auto-added.
         roman.completeness_band='F158' is not in the CMD bands → must be auto-added.
         """
-        import copy
-
         from streamobs.background import BackgroundResourceBuilder, BackgroundStorage
 
-        roman = copy.deepcopy(mock_survey)
-        roman.name = "roman"
-        roman.release = "dc2"
-        roman.maglim_maps = {"F106": mock_survey.maglim_maps["g"],
-                             "F158": mock_survey.maglim_maps["r"]}
-        roman.coeff_extinc = {"F106": mock_survey.coeff_extinc.get("g", 2.0),
-                              "F158": mock_survey.coeff_extinc.get("r", 1.5)}
-        roman.saturation = {"F106": mock_survey.saturation.get("g", 16.0),
-                            "F158": mock_survey.saturation.get("r", 16.0)}
-        roman.completeness_band = "F158"
-
-        # Catalog must include: lsst_g_true (CMD), lsst_r_true (completeness),
-        # roman_F106_true (CMD), roman_F158_true (completeness)
-        rng = np.random.default_rng(7)
-        n = 300
-        cat = pd.DataFrame({
-            "lsst_g_true":   rng.uniform(20.0, 26.0, n),
-            "lsst_r_true":   rng.uniform(20.0, 26.0, n),
-            "roman_F106_true": rng.uniform(20.0, 26.0, n),
-            "roman_F158_true": rng.uniform(20.0, 26.0, n),
-        })
-
-        builder = BackgroundResourceBuilder(surveys=[mock_survey, roman])
+        builder = BackgroundResourceBuilder(surveys=[mock_survey, roman_survey])
         builder.build(
-            catalog_stars=cat,
+            catalog_stars=multi_cat,
             bands=("g", "F106"),
             maglim_min=24.0,
             maglim_max=24.0,
@@ -1260,42 +1266,25 @@ class TestMultiSurveyBackground:
         builder.save(storage, source_type="stars")
         assert storage.exists("stars", ("g", "F106"))
 
-    def test_build_and_generate_multi_survey(self, tmp_path, mock_survey):
+    def test_build_and_generate_multi_survey(self, tmp_path, mock_survey, roman_survey, multi_cat, gen_surveys, gc_frame):
         """Full pipeline: build CMD resources for lsst-g × roman-F158, save, then
         generate a background catalog with LightBackgroundGenerator.
 
         Verifies that the two per-survey magnitude columns appear in the output
         and that meta.namespaces reflects the canonical ordering.
         """
-        import copy
-        import healpy as hp
-
         from streamobs.background import (BackgroundResourceBuilder,
                                           BackgroundStorage,
                                           LightBackgroundGenerator)
         from streamobs.columns import obs_col
-        from streamobs.surveys import Survey
+
+        lsst_gen, roman_gen = gen_surveys
+        nside = 8
 
         # --- Build phase ---
-        roman_inj = copy.deepcopy(mock_survey)
-        roman_inj.name = "roman"
-        roman_inj.release = "dc2"
-        roman_inj.maglim_maps = {"F158": mock_survey.maglim_maps["r"]}
-        roman_inj.coeff_extinc = {"F158": mock_survey.coeff_extinc.get("r", 1.5)}
-        roman_inj.saturation = {"F158": mock_survey.saturation.get("r", 16.0)}
-        roman_inj.completeness_band = "F158"
-
-        rng = np.random.default_rng(3)
-        n = 400
-        cat = pd.DataFrame({
-            "lsst_g_true":   rng.uniform(20.0, 26.0, n),
-            "lsst_r_true":   rng.uniform(20.0, 26.0, n),  # lsst completeness_band
-            "roman_F158_true": rng.uniform(20.0, 26.0, n),
-        })
-
-        builder = BackgroundResourceBuilder(surveys=[mock_survey, roman_inj])
+        builder = BackgroundResourceBuilder(surveys=[mock_survey, roman_survey])
         builder.build(
-            catalog_stars=cat,
+            catalog_stars=multi_cat,
             bands=("g", "F158"),
             maglim_min=24.0,
             maglim_max=24.0,
@@ -1314,25 +1303,9 @@ class TestMultiSurveyBackground:
         builder.save(storage, source_type="stars", verbose=False)
 
         # --- Generate phase ---
-        nside = 8
-        n_pix = hp.nside2npix(nside)
-        lsst_gen = Survey(
-            name="lsst", release="yr4",
-            maglim_maps={"g": np.full(n_pix, 24.3)},
-            coeff_extinc={"g": 3.303},
-            ebv_map=np.full(n_pix, 0.01),
-        )
-        roman_gen = Survey(
-            name="roman", release="dc2",
-            maglim_maps={"F158": np.full(n_pix, 26.0)},
-            coeff_extinc={"F158": 0.614},
-            ebv_map=np.full(n_pix, 0.01),
-        )
-
         gen = LightBackgroundGenerator(
             storage, [lsst_gen, roman_gen], bands=("g", "F158")
         )
-        gc_frame = _make_gc_frame()
         df, meta = gen.generate(
             phi1_limits=(-5, 5),
             phi2_limits=(-1, 1),
