@@ -98,6 +98,46 @@ Three selections define the sample the products are measured on:
 > re-apply a reference-band S/N cut on top of them — doing so would double-count the
 > detection probability.
 
+### Why the curves are measured on the *detected* population (validated 2026-07)
+
+The injector draws the detection flag (from the efficiency curves) and the
+photometric noise (from the photo-error curves) **independently**. Under that
+architecture the curves must describe the population they are applied to — the
+S/N > 5-detected one — and this convention was validated quantitatively against
+the alternatives on both the Roman and LSST DC2 matched catalogs:
+
+- Feeding the *unconditioned* ("no-cut") error curve instead inflates the
+  detected population's photometric scatter by up to **+0.24 dex (Roman) /
+  +0.34 dex (LSST)** near the survey limit, and produces "detected" objects whose
+  implied errors exceed the S/N = 5 threshold — objects that cannot exist in a
+  real catalog (100% of the faintest detected bin).
+- A correlated per-object error draw (detection made deterministic given a drawn
+  reported error) was prototyped and **not adopted**: the naive one-factor noise
+  model deviates from the real detected scatter by 0.16–0.21 dex, and closing
+  that gap requires additional calibrated products with no guaranteed gain over
+  the present convention, which matches the detected population by construction.
+- The same conditioning applies to every curve the injector evaluates for
+  detected objects: `classification_eff` and the galaxy-misclassification curve
+  keep detection in their denominators (removing it changes nothing brightward
+  of the maglim — < 0.015 — and biases the faint tail, where the conditional
+  correctly *rises* for the well-measured survivors of a hard S/N cut).
+
+The supporting analysis lives in the local evidence notebooks
+(`roman_photoerr_detection_correlation` / `lsst_photoerr_detection_correlation`,
+built by the gitignored `build_photoerr_correlation_nb.py` generators).
+
+**Known, unmodeled photometric bias of the DC2 mock.** The Roman DC2 `MAG_AUTO`
+photometry is systematically *fainter* than truth for detected true stars —
+median (obs − true) grows from **+0.10 mag** at `delta_mag = −8` to **+0.43 mag**
+at `delta_mag ≈ −0.4` (SExtractor aperture flux loss; the LSST DC2 **PSF**
+photometry control is unbiased at < 0.006 mag over the same range). No product
+models this offset: flight Roman photometry will be PSF-based, so it is treated
+as a mock artifact. Corollary: injected observed magnitudes should not be
+compared against raw DC2 `MAG_AUTO` CMDs without accounting for the offset, and
+the Roman products should be re-derived from PSF photometry when it becomes
+available (expect a slightly smaller error-inflation factor and ~0.1–0.2 mag
+deeper truth-anchored depths).
+
 ## Star classification: the single-band size envelope
 
 Rather than a scalar `class_star`/`extendedness` threshold, stars are classified
@@ -217,6 +257,14 @@ the [desqr](https://github.com/kadrlica/desqr/blob/main/desqr/depth.py) recipe:
 
 The depth sample is the **same** true-star-passing-classification population as the
 photo-error model, so the maps and the error model describe one population.
+
+> **Anchor-sample footnote (2026-07).** The anchoring in step 5 is conceptually a
+> *no-cut* quantity (the magnitude where the full population's truth scatter
+> reaches S/N = 5), but the current generator's anchor sample includes the
+> detection cut. The measured effect is ≲ 0.01 mag (the no-cut sample curve
+> crosses S/N = 5 at `delta_mag = +0.008` instead of exactly 0) — far below the
+> 0.25-mag depth binning — so the fix (dropping `det_ok` from the anchor sample)
+> is deferred to the next product regeneration rather than regenerating for it.
 
 ### Exposure-scaled quasi-depth (Option B)
 
