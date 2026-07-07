@@ -4,4 +4,4 @@
 sphinx>=8.0
 sphinx-book-theme
 numpydoc
-myst-parser
+myst-nb  # supersedes myst-parser; brings myst_parser as a dependency

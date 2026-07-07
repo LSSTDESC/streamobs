@@ -1,0 +1,63 @@
+# Configuration file for the Roman DC2 synthetic survey (reference HLIS depth)
+#
+# Selection function derived from the Roman-Rubin DC2 synthetic survey
+# (Troxel et al. 2023, arXiv:2209.06829), which simulates the reference HLIS
+# at full depth (5-sigma point-source ~26.9 AB in F106/F129/F158, 26.2 in F184).
+# Derivation: scripts/roman/create_streamobs_files_hlwas.py (see docs page
+# "Roman DC2 Survey Files" for details and caveats).
+name: roman
+release: dc2
+survey_files:
+    # Path to data files (leave empty for default location: data/surveys/roman_dc2)
+    file_path: ''
+
+    # Band-specific magnitude limit maps: truth-anchored S/N=5 point-source
+    # depth (desqr spatial structure from the reported errors, absolute scale
+    # set by where the truth-based scatter of obs-true reaches S/N=5; F158
+    # median 25.98). The delta_mag axes of the completeness and photo-error
+    # tables are keyed to this map's median, so any replacement map (e.g. an
+    # exposure-time-scaled HLWAS map) must be expressed in the same convention,
+    # i.e. scaled relative to the DC2 depth.
+    maglim_map_F106: roman_dc2_maglim_f106_nside1024.fits.gz
+    maglim_map_F129: roman_dc2_maglim_f129_nside1024.fits.gz
+    maglim_map_F158: roman_dc2_maglim_f158_nside1024.fits.gz
+    # NOTE: the completeness + photo-error tables below are F158-derived and applied
+    # to ALL bands band-independently (via delta_mag = maglim_band - true_mag), per
+    # the streamobs convention (e.g. LSST applies its r-band curves to g as well).
+
+    # Band-independent maps
+    ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
+    completeness: roman_stellar_efficiency_cutf158.csv
+    completeness_band: F158 # the completeness has been obtained in the F158 band
+
+    # Two-curve photometric error model (streamobs Survey.get_photo_error):
+    #   catalog = median reported SExtractor magerr  -> written as `magerr`,
+    #             drives the S/N cut;
+    #   sample  = truth-based scatter of (obs - true) -> drives the noise draw
+    #             (the true scatter is ~2x the reported magerr in the DC2 coadds).
+    log_photo_error_catalog: roman_photoerror_f158_catalog.csv
+    log_photo_error_sample: roman_photoerror_f158.csv
+
+survey_properties:
+  # F184 is excluded: it is deep-tier-only in the community-defined HLWAS and
+  # has a known unresolved chromatic calibration issue in the DC2 mock
+  # (Troxel+23 Sec 5.3 / Fig 6).
+  bands: ['F106', 'F129', 'F158']
+
+  # Extinction coefficients per band (A_band / E(B-V))
+  # Official STScI values from Roman-STScI-000825 (Sharma), Table 3:
+  # bandpass-integrated with synphot for a solar-parameter Phoenix spectrum.
+  # Band ratios independently validated to ~1% against the DC2 truth
+  # dereddening corrections.
+  coeff_extinc_F106: 1.1495
+  coeff_extinc_F129: 0.8497
+  coeff_extinc_F158: 0.6140
+
+  # Systematic photometric errors (mag), or could be specified per band
+  sys_error: 0.005
+
+  # Saturation: the mock clips pixels at ~1.1e5 e- and saturation effects
+  # appear brighter than mag ~17 (Troxel+23 Fig 7); stars brighter than 15
+  # are not chromatically rendered.
+  saturation: 17.0
+  delta_saturation: -9.0   # = saturation - reference maglim (25.98)

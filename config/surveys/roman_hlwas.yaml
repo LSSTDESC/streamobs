@@ -1,0 +1,23 @@
+# Configuration file for the Roman High Latitude Wide Area Survey (HLWAS)
+#
+# PLACEHOLDER — not yet populated. The selection function (completeness,
+# photo-error tables) is characterized from the Roman DC2 mock: see
+# config/surveys/roman_dc2.yaml and the "Roman DC2 Survey Files" docs page.
+# This config will describe the real HLWAS footprint once the exposure-time-
+# scaled magnitude-limit maps are ready (see data/surveys/roman_hlwas/*.hsp
+# and notebooks/roman_hlwas_exptime_map.ipynb). The maps must be expressed in
+# the same truth-anchored S/N=5 convention as the DC2 maps (scaled relative to
+# the DC2 depth) for the DC2-derived tables to apply.
+name: roman
+release: hlwas
+# survey_files:
+#     file_path: ''
+#     maglim_map_F158: <exptime-scaled HLWAS maglim map, DC2-relative convention>
+#     ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
+#     completeness: roman_stellar_efficiency_cutf158.csv   # from roman_dc2
+#     completeness_band: F158
+#     log_photo_error: roman_photoerror_f158.csv           # from roman_dc2
+#
+# survey_properties:
+#     (copy from roman_dc2.yaml; delta_saturation must be re-keyed to the
+#      HLWAS map's median maglim)
