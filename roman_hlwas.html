@@ -1,0 +1,711 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Roman HLWAS Survey Files &#8212; streamobs  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'roman_hlwas';</script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Content" href="modules.html" />
+    <link rel="prev" title="Roman DC2 Survey Files" href="roman_dc2.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">streamobs  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/multisurvey_cmd.html">Multi-survey CMDs: LSST + Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background generation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background_light.html">Light method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background_injection.html">Injection method</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.utils.html">streamobs.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/roman_hlwas.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Roman HLWAS Survey Files</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#survey-tiers">Survey tiers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exposure-time-maps">Exposure-time maps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quasi-depth-maps-option-b">Quasi-depth maps (Option B)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#measured-map-medians">Measured map medians</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selection-function-tables">Selection-function tables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-surveys-in-streamobs">Using the surveys in streamobs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regenerating-the-maps">Regenerating the maps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#caveats">Caveats</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="roman-hlwas-survey-files">
+<h1>Roman HLWAS Survey Files<a class="headerlink" href="#roman-hlwas-survey-files" title="Link to this heading">#</a></h1>
+<p>This page is the <strong>data sheet</strong> for the three real-footprint Roman High Latitude Wide
+Area Survey (HLWAS) releases: <code class="docutils literal notranslate"><span class="pre">hlwas_wide</span></code>, <code class="docutils literal notranslate"><span class="pre">hlwas_medium</span></code>, and <code class="docutils literal notranslate"><span class="pre">hlwas_all</span></code>. All three
+reuse the DC2-derived selection-function tables (:doc:<code class="docutils literal notranslate"><span class="pre">roman_dc2</span></code>); the only
+tier-specific product is the F158 magnitude-limit map, built from the official HLWAS
+exposure-time maps via the exposure-scaled quasi-depth recipe (<strong>Option B</strong>)
+documented in :doc:<code class="docutils literal notranslate"><span class="pre">selection_function_methodology</span></code>. Validation figures are embedded
+in that methodology page’s <em>Validation &amp; audits</em> section.</p>
+<section id="survey-tiers">
+<h2>Survey tiers<a class="headerlink" href="#survey-tiers" title="Link to this heading">#</a></h2>
+<p>The HLWAS comprises four nested tiers; streamobs supports three:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Release</p></th>
+<th class="head"><p>Footprint</p></th>
+<th class="head"><p>F158 measured map median</p></th>
+<th class="head"><p>Valid pixels (nside=1024)</p></th>
+<th class="head"><p>Area</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hlwas_wide</span></code></p></td>
+<td><p>Wide tier only</p></td>
+<td><p>26.2842 AB</p></td>
+<td><p>~1,028,570</p></td>
+<td><p>~3372 deg²</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hlwas_medium</span></code></p></td>
+<td><p>Medium tier only</p></td>
+<td><p>26.2894 AB</p></td>
+<td><p>~879,052</p></td>
+<td><p>~2882 deg²</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hlwas_all</span></code></p></td>
+<td><p>All tiers stacked (wide + medium + deep + ultra-deep)</p></td>
+<td><p>26.2894 AB</p></td>
+<td><p>~1,792,907</p></td>
+<td><p>~5878 deg²</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>F158 wide ≈ medium because the medium tier’s extra depth relative to wide is in
+<em>other</em> HLWAS bands, not F158 — both tiers have the same median F158 exposure time
+(~645 s) and therefore nearly identical F158 maglim medians under the recipe. The deep
+and ultra-deep tiers contribute &lt;0.5% of <code class="docutils literal notranslate"><span class="pre">hlwas_all</span></code> pixels, so the stacked median
+stays at the wide/medium level (their deeper pixels appear locally in the map but do
+not shift footprint-wide statistics).</p>
+</section>
+<section id="exposure-time-maps">
+<h2>Exposure-time maps<a class="headerlink" href="#exposure-time-maps" title="Link to this heading">#</a></h2>
+<p>Exposure-time maps (F158, healsparse <code class="docutils literal notranslate"><span class="pre">.hsp</span></code>, nside=4096) are sourced from the
+<a class="reference external" href="https://github.com/spacetelescope/roman_notebooks/tree/main/notebooks/footprint_visualization/aux_data">spacetelescope/roman_notebooks</a>
+repository (<code class="docutils literal notranslate"><span class="pre">map_HLWAS-wide_F158.hsp</span></code>, <code class="docutils literal notranslate"><span class="pre">map_HLWAS-medium_F158.hsp</span></code>,
+<code class="docutils literal notranslate"><span class="pre">map_HLWAS-all_F158.hsp</span></code>). Values are total on-sky integration time in seconds
+(accounting for the planned dither/pass strategy) and are used directly — no unit
+conversion or per-tier normalisation. The F158 exposure time is quantised in ~107.5 s
+single-exposure units.</p>
+</section>
+<section id="quasi-depth-maps-option-b">
+<h2>Quasi-depth maps (Option B)<a class="headerlink" href="#quasi-depth-maps-option-b" title="Link to this heading">#</a></h2>
+<p>The maglim maps apply the exposure-scaled quasi-depth recipe (derivation and
+rationale in :doc:<code class="docutils literal notranslate"><span class="pre">selection_function_methodology</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">depth</span><span class="p">(</span><span class="n">pix</span><span class="p">)</span> <span class="o">=</span> <span class="n">DC2_REF_DEPTH</span> <span class="o">+</span> <span class="mf">1.25</span> <span class="o">*</span> <span class="n">log10</span><span class="p">(</span> <span class="n">t</span><span class="p">(</span><span class="n">pix</span><span class="p">)</span> <span class="o">/</span> <span class="n">DC2_REF_EXPTIME</span> <span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DC2_REF_DEPTH</span></code> ≈ 26.375 AB — median of the DC2 F158 truth-anchored maglim map
+(<code class="docutils literal notranslate"><span class="pre">roman_dc2_maglim_f158_nside1024.fits.gz</span></code>), read from the file at runtime (not
+hardcoded).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DC2_REF_EXPTIME</span></code> = 770.0 s — the DC2 HLIS reference per-pixel exposure time
+(5.5 dithers × 140 s; Troxel et al. 2023, Sec. 3.1).</p></li>
+</ul>
+<p>Option B anchors all tiers to the same DC2 truth-anchored reference (not to per-tier
+STScI ETC depths of mixed vintage), so the maps land exactly on the DC2-relative
+<code class="docutils literal notranslate"><span class="pre">delta_mag</span></code> convention the shared tables need, and inter-tier comparisons are
+self-consistent. The HLWAS medians (~26.28–26.29) sit slightly below the DC2 reference
+because the typical HLWAS exposure (~645 s) is shorter than the DC2 reference (770 s):
+<code class="docutils literal notranslate"><span class="pre">26.375</span> <span class="pre">+</span> <span class="pre">1.25</span> <span class="pre">×</span> <span class="pre">log10(645/770)</span> <span class="pre">≈</span> <span class="pre">26.28</span></code>.</p>
+<section id="measured-map-medians">
+<h3>Measured map medians<a class="headerlink" href="#measured-map-medians" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Release</p></th>
+<th class="head"><p>t_median (s)</p></th>
+<th class="head"><p>DC2_REF_DEPTH</p></th>
+<th class="head"><p>DC2_REF_EXPTIME</p></th>
+<th class="head"><p>measured median (AB)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hlwas_wide</span></code></p></td>
+<td><p>645.1</p></td>
+<td><p>26.375</p></td>
+<td><p>770.0</p></td>
+<td><p>26.2842</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hlwas_medium</span></code></p></td>
+<td><p>645.1</p></td>
+<td><p>26.375</p></td>
+<td><p>770.0</p></td>
+<td><p>26.2894</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hlwas_all</span></code></p></td>
+<td><p>645.1</p></td>
+<td><p>26.375</p></td>
+<td><p>770.0</p></td>
+<td><p>26.2894</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Maps are written at nside=1024 (RING, float32) to match the DC2 maps, by
+<code class="docutils literal notranslate"><span class="pre">scripts/roman/build_hlwas_maglim_maps.py</span></code>, to <code class="docutils literal notranslate"><span class="pre">data/surveys/roman_hlwas_&lt;tier&gt;/</span></code>
+(gitignored). For reference, the
+<a class="reference external" href="https://roman-docs.stsci.edu/roman-community-defined-surveys/high-latitude-wide-area-survey">STScI community-defined HLWAS median 5σ point-source depths</a>
+are F158 26.2 (wide) and 26.4 (medium); these differ from F158-only because the
+medium tier’s reported depth includes additional bands.</p>
+</section>
+</section>
+<section id="selection-function-tables">
+<h2>Selection-function tables<a class="headerlink" href="#selection-function-tables" title="Link to this heading">#</a></h2>
+<p>The completeness and photo-error tables are <strong>identical</strong> to <code class="docutils literal notranslate"><span class="pre">roman_dc2</span></code> and live
+under <code class="docutils literal notranslate"><span class="pre">data/surveys/roman_dc2/</span></code>; the build script symlinks them into each tier’s data
+directory so the loader finds them at the default path:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">roman_stellar_efficiency_cutf158.csv</span></code></p></td>
+<td><p>F158 detection + classification efficiency vs delta_mag</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">roman_photoerror_f158_catalog.csv</span></code></p></td>
+<td><p>Median reported magerr vs delta_mag (S/N cut)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">roman_photoerror_f158.csv</span></code></p></td>
+<td><p>Truth-based scatter of (obs − true) vs delta_mag (noise draw)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>See :doc:<code class="docutils literal notranslate"><span class="pre">roman_dc2</span></code> for these products and :doc:<code class="docutils literal notranslate"><span class="pre">selection_function_methodology</span></code> for
+how they are derived.</p>
+</section>
+<section id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
+<p>Each tier is a YAML in <code class="docutils literal notranslate"><span class="pre">config/surveys/</span></code>: <code class="docutils literal notranslate"><span class="pre">roman_hlwas_wide.yaml</span></code>,
+<code class="docutils literal notranslate"><span class="pre">roman_hlwas_medium.yaml</span></code>, <code class="docutils literal notranslate"><span class="pre">roman_hlwas_all.yaml</span></code> (releases <code class="docutils literal notranslate"><span class="pre">hlwas_wide</span></code>,
+<code class="docutils literal notranslate"><span class="pre">hlwas_medium</span></code>, <code class="docutils literal notranslate"><span class="pre">hlwas_all</span></code>). All use F158 only (F106/F129 HLWAS maps are not yet
+built; F184 is excluded per the DC2 documentation). Extinction coefficients and the
+saturation threshold are copied from <code class="docutils literal notranslate"><span class="pre">roman_dc2.yaml</span></code> (same instrument). The
+<code class="docutils literal notranslate"><span class="pre">delta_saturation</span></code> (= saturation − map median) is keyed to each tier’s measured
+median:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Release</p></th>
+<th class="head"><p>map_median (AB)</p></th>
+<th class="head"><p>delta_saturation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hlwas_wide</span></code></p></td>
+<td><p>26.2842</p></td>
+<td><p>−9.2842</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hlwas_medium</span></code></p></td>
+<td><p>26.2894</p></td>
+<td><p>−9.2894</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hlwas_all</span></code></p></td>
+<td><p>26.2894</p></td>
+<td><p>−9.2894</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The column namespace per release is <code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code>: <code class="docutils literal notranslate"><span class="pre">roman_hlwas_wide</span></code>,
+<code class="docutils literal notranslate"><span class="pre">roman_hlwas_medium</span></code>, <code class="docutils literal notranslate"><span class="pre">roman_hlwas_all</span></code>.</p>
+</section>
+<section id="using-the-surveys-in-streamobs">
+<h2>Using the surveys in streamobs<a class="headerlink" href="#using-the-surveys-in-streamobs" title="Link to this heading">#</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.surveys</span><span class="w"> </span><span class="kn">import</span> <span class="n">Survey</span>
+
+<span class="n">survey_wide</span> <span class="o">=</span> <span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;roman&#39;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s1">&#39;hlwas_wide&#39;</span><span class="p">)</span>
+<span class="n">maglim</span> <span class="o">=</span> <span class="n">survey_wide</span><span class="o">.</span><span class="n">get_maglim</span><span class="p">(</span><span class="s1">&#39;F158&#39;</span><span class="p">,</span> <span class="n">pixel</span><span class="o">=</span><span class="mi">123456</span><span class="p">)</span>
+<span class="n">eff</span>    <span class="o">=</span> <span class="n">survey_wide</span><span class="o">.</span><span class="n">get_completeness</span><span class="p">(</span><span class="s1">&#39;F158&#39;</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="mf">25.0</span><span class="p">,</span> <span class="n">maglim</span><span class="o">=</span><span class="n">maglim</span><span class="p">)</span>
+<span class="n">err</span>    <span class="o">=</span> <span class="n">survey_wide</span><span class="o">.</span><span class="n">get_photo_error</span><span class="p">(</span><span class="s1">&#39;F158&#39;</span><span class="p">,</span> <span class="n">magnitude</span><span class="o">=</span><span class="mf">25.0</span><span class="p">,</span> <span class="n">maglim</span><span class="o">=</span><span class="n">maglim</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="regenerating-the-maps">
+<h2>Regenerating the maps<a class="headerlink" href="#regenerating-the-maps" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>streamobs
+python<span class="w"> </span>scripts/roman/build_hlwas_maglim_maps.py
+</pre></div>
+</div>
+<p>This reads the healsparse exposure-time maps, reads <code class="docutils literal notranslate"><span class="pre">DC2_REF_DEPTH</span></code> from the DC2 F158
+maglim map at runtime, applies the Option B recipe, writes the three nside=1024 maglim
+maps, and symlinks the DC2 CSV files into each tier’s data directory.</p>
+</section>
+<section id="caveats">
+<h2>Caveats<a class="headerlink" href="#caveats" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>The quasi-depth recipe assumes photon-noise-limited exposures and a uniform PSF;
+real HLWAS depths vary with detector gaps, background, and read noise in the
+shortest exposures.</p></li>
+<li><p>The DC2-derived completeness/photo-error tables characterise the deep DC2 reference
+simulation; their use for HLWAS relies on the selection function depending on
+magnitude only through <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">mag</span> <span class="pre">−</span> <span class="pre">maglim</span></code>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">hlwas_all</span></code> map includes deep/ultra-deep pixels (t up to ~23,600 s; local maglim
+up to ~29.5 AB) where the shallow DC2 selection function may be unreliable.</p></li>
+<li><p>ETC-derived or truth-anchored depth maps for the real HLWAS are a future upgrade
+that will supersede this quasi-depth approach.</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="roman_dc2.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Roman DC2 Survey Files</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="modules.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Content</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#survey-tiers">Survey tiers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exposure-time-maps">Exposure-time maps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quasi-depth-maps-option-b">Quasi-depth maps (Option B)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#measured-map-medians">Measured map medians</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selection-function-tables">Selection-function tables</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-surveys-in-streamobs">Using the surveys in streamobs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#regenerating-the-maps">Regenerating the maps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#caveats">Caveats</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By DESC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, DESC.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

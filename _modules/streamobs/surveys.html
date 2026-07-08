@@ -15,41 +15,37 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/streamobs/surveys';</script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -65,8 +61,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -74,6 +81,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -81,8 +89,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -100,8 +108,7 @@
       
         
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -131,11 +138,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -153,6 +164,7 @@
 
 
 <li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/multisurvey_cmd.html">Multi-survey CMDs: LSST + Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
@@ -161,16 +173,26 @@
 <li class="toctree-l1"><a class="reference internal" href="../../surveys/LSST.html">LSST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../surveys/Roman.html">Roman</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background generation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../background.html">Background generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background_light.html">Light method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background_injection.html">Injection method</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../modifying_streamobs.html">Contributing to StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_survey.html">Adding a New Photometric Survey</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../build_background_resources.html">Building background resources</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../streamobs.functions.html">streamobs.functions module</a></li>
@@ -192,14 +214,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -234,7 +251,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -248,16 +265,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 
 </div></div>
       
@@ -408,6 +433,8 @@
     <span class="n">delta_saturation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">log_photo_error_catalog</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">log_photo_error_sample</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">gal_misclassification</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">gal_misclassification_detection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Band-independent maps</span>
     <span class="n">ebv_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -838,38 +865,155 @@
 <span class="sd">        get_detection_efficiency : Convenience wrapper for detection-only.</span>
 <span class="sd">        get_classification_efficiency : Convenience wrapper for classification-only.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;completeness&quot;</span><span class="p">:</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completeness</span>
-        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;detection_efficiency&quot;</span><span class="p">:</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">efficiency_detection</span>
-        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;classification_efficiency&quot;</span><span class="p">:</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">efficiency_classification</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Efficiency type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">&#39; not recognized.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Efficiency function for type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">&#39; not loaded&quot;</span><span class="p">)</span>
-
         <span class="n">delta_saturation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delta_saturation&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">)</span>
-
-        <span class="c1"># Calculate delta_mag</span>
         <span class="n">delta_mag</span> <span class="o">=</span> <span class="n">magnitude</span> <span class="o">-</span> <span class="n">maglim</span>
 
-        <span class="c1"># Apply saturation condition: 1 padding for objects fainter than saturation but equivalent mag brighter than saturation0</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;missclassified&quot;</span><span class="p">,</span> <span class="s2">&quot;detected_missclassified&quot;</span><span class="p">):</span>
+            <span class="c1"># Galaxy-related efficiencies: no 1-padding at the bright end.</span>
+            <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;missclassified&quot;</span><span class="p">:</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gal_misclassification</span>
+                <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Efficiency function for type &#39;missclassified&#39; not loaded.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># detected_missclassified</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;gal_misclassification_detection&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Fallback: missclassification × detection efficiency.</span>
+                    <span class="n">mis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gal_misclassification</span>
+                    <span class="n">det</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;efficiency_detection&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">mis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">det</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;Efficiency function for type &#39;detected_missclassified&#39; not &quot;</span>
+                            <span class="s2">&quot;loaded and cannot be derived (need both &#39;missclassified&#39; and &quot;</span>
+                            <span class="s2">&quot;&#39;detection_efficiency&#39;).&quot;</span>
+                        <span class="p">)</span>
+                    <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">dm</span><span class="p">:</span> <span class="n">mis</span><span class="p">(</span><span class="n">dm</span><span class="p">)</span> <span class="o">*</span> <span class="n">det</span><span class="p">(</span><span class="n">dm</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
+            <span class="n">compl</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">delta_mag</span><span class="p">)</span>
+            <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">magnitude</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">compl</span><span class="p">)</span>
+            <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">maglim</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">])</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">maglim</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">compl</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">compl</span>
+
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;completeness&quot;</span><span class="p">,</span> <span class="s2">&quot;classification_detection&quot;</span><span class="p">):</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completeness</span>
+            <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Fallback: compute classification × detection on the fly.</span>
+                <span class="n">det</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;efficiency_detection&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">cls_</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;efficiency_classification&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">det</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cls_</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Efficiency function for type &#39;completeness&#39; not loaded and &quot;</span>
+                        <span class="s2">&quot;cannot be derived (need both detection and classification).&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">dm</span><span class="p">:</span> <span class="n">det</span><span class="p">(</span><span class="n">dm</span><span class="p">)</span> <span class="o">*</span> <span class="n">cls_</span><span class="p">(</span><span class="n">dm</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;detection_efficiency&quot;</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;efficiency_detection&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;classification_efficiency&quot;</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;efficiency_classification&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Efficiency type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">&#39; not recognized. Valid types: &quot;</span>
+                <span class="s2">&quot;&#39;completeness&#39;, &#39;classification_detection&#39;, &#39;detection_efficiency&#39;, &quot;</span>
+                <span class="s2">&quot;&#39;classification_efficiency&#39;, &#39;missclassified&#39;, &#39;detected_missclassified&#39;.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Efficiency function for type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">&#39; not loaded.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># 1-padding: bright sources (well above saturation) are always detected.</span>
         <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
             <span class="p">(</span><span class="n">magnitude</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">delta_mag</span> <span class="o">&lt;=</span> <span class="n">delta_saturation</span><span class="p">),</span>
             <span class="mf">1.0</span><span class="p">,</span>
             <span class="n">func</span><span class="p">(</span><span class="n">delta_mag</span><span class="p">),</span>
-        <span class="p">)</span>  <span class="c1"># 1 padded</span>
-
-        <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-            <span class="n">magnitude</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">compl</span>
-        <span class="p">)</span>  <span class="c1"># saturation at the bright end</span>
-
+        <span class="p">)</span>
+        <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">magnitude</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">compl</span><span class="p">)</span>
         <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
             <span class="p">(</span><span class="n">maglim</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">])</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">maglim</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">compl</span>
-        <span class="p">)</span>  <span class="c1"># not observed if the area is not covered</span>
-
+        <span class="p">)</span>
         <span class="k">return</span> <span class="n">compl</span></div>
+
+
+<div class="viewcode-block" id="Survey.get_gal_misclassification">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.get_gal_misclassification">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_gal_misclassification</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">maglim</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get galaxy misclassification efficiency (probability a galaxy passes stellar selection).</span>
+
+<span class="sd">        Mirrors :meth:`get_efficiency` for the ``&quot;completeness&quot;`` type, but</span>
+<span class="sd">        **without 1-padding at the bright end**: bright galaxies are not forced</span>
+<span class="sd">        to efficiency = 1 when their delta_mag falls below the saturation</span>
+<span class="sd">        threshold. This reproduces the behaviour of ``custom_get_completeness``</span>
+<span class="sd">        used for galaxies in external background-generation scripts.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        band : str</span>
+<span class="sd">            Band identifier (e.g., &#39;g&#39;, &#39;r&#39;).</span>
+<span class="sd">        magnitude : float or np.ndarray</span>
+<span class="sd">            True apparent magnitude(s) including extinction.</span>
+<span class="sd">        maglim : float or np.ndarray</span>
+<span class="sd">            Magnitude limit(s) at the source position(s).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            delta_saturation : float, optional</span>
+<span class="sd">                Override the survey&#39;s default saturation threshold.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or np.ndarray</span>
+<span class="sd">            Misclassification probability in [0, 1].</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If :attr:`gal_misclassification` has not been loaded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_efficiency</span><span class="p">(</span>
+            <span class="n">band</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">,</span> <span class="n">maglim</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;missclassified&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Survey.get_gal_misclassification_detection">
+<a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.get_gal_misclassification_detection">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_gal_misclassification_detection</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">maglim</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get galaxy misclassification × detection efficiency.</span>
+
+<span class="sd">        Mirrors :meth:`get_efficiency` for the ``&quot;detected_missclassified&quot;`` type,</span>
+<span class="sd">        but **without 1-padding at the bright end**: bright galaxies are not forced</span>
+<span class="sd">        to efficiency = 1 when their delta_mag falls below the saturation</span>
+<span class="sd">        threshold. This reproduces the behaviour of ``custom_get_completeness``</span>
+<span class="sd">        used for galaxies in external background-generation scripts.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        band : str</span>
+<span class="sd">            Band identifier (e.g., &#39;g&#39;, &#39;r&#39;).</span>
+<span class="sd">        magnitude : float or np.ndarray</span>
+<span class="sd">            True apparent magnitude(s) including extinction.</span>
+<span class="sd">        maglim : float or np.ndarray</span>
+<span class="sd">            Magnitude limit(s) at the source position(s).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            delta_saturation : float, optional</span>
+<span class="sd">                Override the survey&#39;s default saturation threshold.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or np.ndarray</span>
+<span class="sd">            Misclassification × detection probability in [0, 1].</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If :attr:`gal_misclassification_detection` has not been loaded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_efficiency</span><span class="p">(</span>
+            <span class="n">band</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">,</span> <span class="n">maglim</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;detected_missclassified&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div>
 </div>
 
 
@@ -1489,6 +1633,52 @@
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No classification efficiency file found, skipping.&quot;</span><span class="p">)</span>
 
+        <span class="c1"># Load galaxy misclassification efficiency (optional).</span>
+        <span class="c1"># Uses the explicit &#39;gal_misclassification&#39; config key when present,</span>
+        <span class="c1"># otherwise falls back to the completeness file (same CSV, different column).</span>
+        <span class="n">_gal_mis_file</span> <span class="o">=</span> <span class="n">survey_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s2">&quot;gal_misclassification&quot;</span><span class="p">,</span> <span class="n">survey_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;completeness&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">_gal_mis_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span>
+                    <span class="n">survey</span><span class="p">,</span>
+                    <span class="n">survey_config</span><span class="p">,</span>
+                    <span class="s2">&quot;gal_misclassification&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Galaxy misclassification efficiency&quot;</span><span class="p">,</span>
+                    <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span>
+                        <span class="n">f</span><span class="p">,</span>
+                        <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">,</span>
+                        <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;missclassified&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">data_path_survey</span><span class="p">,</span>
+                    <span class="n">data_path_others</span><span class="p">,</span>
+                    <span class="n">filename</span><span class="o">=</span><span class="n">_gal_mis_file</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>  <span class="c1"># column absent in this survey&#39;s file — silently skip</span>
+
+            <span class="c1"># Also try the combined detection × misclassification from the same file.</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span>
+                    <span class="n">survey</span><span class="p">,</span>
+                    <span class="n">survey_config</span><span class="p">,</span>
+                    <span class="s2">&quot;gal_misclassification_detection&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Galaxy misclassification × detection efficiency&quot;</span><span class="p">,</span>
+                    <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span>
+                        <span class="n">f</span><span class="p">,</span>
+                        <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">,</span>
+                        <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;detected_missclassified&quot;</span><span class="p">,</span>
+                    <span class="p">),</span>
+                    <span class="n">data_path_survey</span><span class="p">,</span>
+                    <span class="n">data_path_others</span><span class="p">,</span>
+                    <span class="n">filename</span><span class="o">=</span><span class="n">_gal_mis_file</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">pass</span>  <span class="c1"># column absent — fallback to product at call time</span>
+
         <span class="c1"># Load photometric error model(s), same for all bands. Two curves:</span>
         <span class="c1">#   - catalog : reported error vs delta_mag (the survey&#39;s photoerror file).</span>
         <span class="c1">#               Written as magerr and used for the S/N cut. Always loaded.</span>
@@ -1730,6 +1920,8 @@
 <span class="sd">            - &#39;classification_eff&#39; : Classification efficiency only (the legacy</span>
 <span class="sd">              misspelled header &#39;classifiction_eff&#39; is also accepted)</span>
 <span class="sd">            - &#39;classification_detection_eff&#39; : Combined efficiency</span>
+<span class="sd">            - &#39;missclassification_eff&#39; : Galaxy misclassification efficiency</span>
+<span class="sd">              (probability a galaxy passes stellar selection)</span>
 
 <span class="sd">        delta_saturation : float, optional</span>
 <span class="sd">            Magnitude difference threshold for saturation. Default is -10.4.</span>
@@ -1739,7 +1931,10 @@
 <span class="sd">            - &#39;detected&#39; : Detection efficiency only (column &#39;detection_eff&#39;)</span>
 <span class="sd">            - &#39;classified&#39; : Classification efficiency only (column</span>
 <span class="sd">              &#39;classification_eff&#39;, or legacy &#39;classifiction_eff&#39;)</span>
-<span class="sd">            - &#39;both&#39; : Combined detection and classification (column &#39;classification_detection_eff&#39;)</span>
+<span class="sd">            - &#39;both&#39; : Combined detection and classification (column</span>
+<span class="sd">              &#39;classification_detection_eff&#39;)</span>
+<span class="sd">            - &#39;missclassified&#39; : Galaxy misclassification efficiency (column</span>
+<span class="sd">              &#39;missclassification_eff&#39;)</span>
 
 <span class="sd">            Default is &#39;both&#39;.</span>
 
@@ -1751,7 +1946,7 @@
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        ValueError</span>
-<span class="sd">            If selection is not one of &#39;detected&#39;, &#39;classified&#39;, or &#39;both&#39;.</span>
+<span class="sd">            If selection is not one of the recognised values.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1775,9 +1970,14 @@
                 <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;classifiction_eff&quot;</span><span class="p">]</span>
         <span class="k">elif</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span><span class="p">:</span>
             <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;classification_detection_eff&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;missclassified&quot;</span><span class="p">:</span>
+            <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;missclassification_eff&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">selection</span> <span class="o">==</span> <span class="s2">&quot;detected_missclassified&quot;</span><span class="p">:</span>
+            <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;missclassification_detection_eff&quot;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Invalid selection &#39;</span><span class="si">{</span><span class="n">selection</span><span class="si">}</span><span class="s2">&#39;. Must be &#39;detected&#39;, &#39;classified&#39;, or &#39;both&#39;&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid selection &#39;</span><span class="si">{</span><span class="n">selection</span><span class="si">}</span><span class="s2">&#39;. Must be &#39;detected&#39;, &#39;classified&#39;, &quot;</span>
+                <span class="s2">&quot;&#39;both&#39;, &#39;missclassified&#39;, or &#39;detected_missclassified&#39;.&quot;</span>
             <span class="p">)</span>
 
         <span class="c1"># Extend efficiency to bright end (force to zero at saturation)</span>
@@ -1994,8 +2194,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

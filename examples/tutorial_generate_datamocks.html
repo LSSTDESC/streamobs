@@ -16,34 +16,33 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'examples/tutorial_generate_datamocks';</script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
@@ -52,7 +51,6 @@
     <link rel="prev" title="Citation" href="../citation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -68,8 +66,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../search.html"
       method="get">
@@ -77,6 +86,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -84,8 +94,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -101,8 +111,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -132,11 +141,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -154,6 +167,7 @@
 
 
 <li class="toctree-l1"><a class="reference internal" href="tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey_cmd.html">Multi-survey CMDs: LSST + Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
@@ -162,16 +176,26 @@
 <li class="toctree-l1"><a class="reference internal" href="../surveys/LSST.html">LSST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../surveys/Roman.html">Roman</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background generation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../background_light.html">Light method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../background_injection.html">Injection method</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../modifying_streamobs.html">Contributing to StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../new_survey.html">Adding a New Photometric Survey</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../build_background_resources.html">Building background resources</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../streamobs.functions.html">streamobs.functions module</a></li>
@@ -193,14 +217,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -283,7 +302,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -297,17 +316,25 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
 </div></div>
@@ -354,7 +381,7 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="streamobs-generate-stream-mocks">
+  <section class="tex2jax_ignore mathjax_ignore" id="streamobs-generate-stream-mocks">
 <h1>Streamobs: generate stream mocks<a class="headerlink" href="#streamobs-generate-stream-mocks" title="Link to this heading">#</a></h1>
 <p>Generate stellar stream mock catalogs from configuration files and complete existing tables with missing columns.
 <strong>Streamobs</strong> allows sampling of the following quantities:</p>
@@ -397,13 +424,13 @@ For more details, see the notebook <em><code class="docutils literal notranslate
 </div>
 </div>
 </section>
-<section id="build-a-stream-configuration">
+<section class="tex2jax_ignore mathjax_ignore" id="build-a-stream-configuration">
 <h1>1) Build a stream configuration<a class="headerlink" href="#build-a-stream-configuration" title="Link to this heading">#</a></h1>
 <p>To set up a stream model, we use a configuration file or dictionary that defines all necessary components. It can include:</p>
 <ul class="simple">
 <li><p><strong>density</strong> – samples <code class="docutils literal notranslate"><span class="pre">phi1</span></code> values along the stream</p></li>
 <li><p><strong>track</strong> – gives <code class="docutils literal notranslate"><span class="pre">phi2</span></code> as a function of <code class="docutils literal notranslate"><span class="pre">phi1</span></code> (center + spread, using a Gaussian or Uniform sampler)</p></li>
-<li><p><strong>distance_modulus</strong> – defines $DM(phi1)$ for computing apparent magnitudes</p></li>
+<li><p><strong>distance_modulus</strong> – defines <span class="math notranslate nohighlight">\(DM(phi1)\)</span> for computing apparent magnitudes</p></li>
 <li><p><strong>isochrone</strong> – samples the color–magnitude diagram (required to generate magnitudes)</p></li>
 </ul>
 <p>You can choose how each quantity depends on <code class="docutils literal notranslate"><span class="pre">phi1</span></code> (e.g., constant, linear, spline, etc.).</p>
@@ -417,33 +444,38 @@ For more details, see the notebook <em><code class="docutils literal notranslate
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Build a config dictionary directly</span>
 
-<span class="n">config</span> <span class="o">=</span> <span class="p">{</span> 
-          <span class="c1"># Density model</span>
-          <span class="s1">&#39;density&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Uniform&#39;</span><span class="p">,</span> <span class="s1">&#39;xmin&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9.0</span><span class="p">,</span> <span class="s1">&#39;xmax&#39;</span><span class="p">:</span> <span class="mf">9.0</span><span class="p">},</span> 
-
-          <span class="c1"># Track model</span>
-           <span class="s1">&#39;track&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Constant&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span> <span class="c1"># center line of the stream in degrees</span>
-                     <span class="s1">&#39;spread&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Constant&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span> <span class="c1"># spread of the stream in degrees</span>
-                     <span class="s1">&#39;sampler&#39;</span><span class="p">:</span> <span class="s1">&#39;Gaussian&#39;</span><span class="p">},</span> <span class="c1"># how to sample across the stream</span>
-
-            <span class="c1"># Isochrone model</span>
-            <span class="s1">&#39;isochrone&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Marigo2017&#39;</span><span class="p">,</span> <span class="c1"># isochrone set name</span>
-                          <span class="s1">&#39;survey&#39;</span><span class="p">:</span> <span class="s1">&#39;lsst&#39;</span><span class="p">,</span> <span class="c1"># survey for filter set</span>
-                          <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mf">12.0</span><span class="p">,</span> <span class="c1"># Age in Gyr of the population</span>
-                          <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">0.0006</span><span class="p">,</span> <span class="c1"># Metallicity of the population</span>
-                          <span class="s1">&#39;band_1&#39;</span><span class="p">:</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="c1"># first band for color-magnitude</span>
-                          <span class="s1">&#39;band_2&#39;</span><span class="p">:</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="c1"># second band for color-magnitude</span>
-                          <span class="s1">&#39;band_1_detection&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> 
-
-            <span class="c1"># Distance modulus model. Here an example of a constant distance modulus</span>
-            <span class="s1">&#39;distance_modulus&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;center&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Constant&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">16.5</span><span class="p">},</span> 
-                                 <span class="s1">&#39;spread&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Constant&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span> 
-                                <span class="p">}</span>
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># Density model</span>
+    <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">9.0</span><span class="p">,</span> <span class="s2">&quot;xmax&quot;</span><span class="p">:</span> <span class="mf">9.0</span><span class="p">},</span>
+    <span class="c1"># Track model</span>
+    <span class="s2">&quot;track&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;center&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+        <span class="p">},</span>  <span class="c1"># center line of the stream in degrees</span>
+        <span class="s2">&quot;spread&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">},</span>  <span class="c1"># spread of the stream in degrees</span>
+        <span class="s2">&quot;sampler&quot;</span><span class="p">:</span> <span class="s2">&quot;Gaussian&quot;</span><span class="p">,</span>
+    <span class="p">},</span>  <span class="c1"># how to sample across the stream</span>
+    <span class="c1"># Isochrone model</span>
+    <span class="s2">&quot;isochrone&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Marigo2017&quot;</span><span class="p">,</span>  <span class="c1"># isochrone set name</span>
+        <span class="s2">&quot;survey&quot;</span><span class="p">:</span> <span class="s2">&quot;lsst&quot;</span><span class="p">,</span>  <span class="c1"># survey for filter set</span>
+        <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mf">12.0</span><span class="p">,</span>  <span class="c1"># Age in Gyr of the population</span>
+        <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="mf">0.0006</span><span class="p">,</span>  <span class="c1"># Metallicity of the population</span>
+        <span class="s2">&quot;band_1&quot;</span><span class="p">:</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span>  <span class="c1"># first band for color-magnitude</span>
+        <span class="s2">&quot;band_2&quot;</span><span class="p">:</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span>  <span class="c1"># second band for color-magnitude</span>
+        <span class="s2">&quot;band_1_detection&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="c1"># Distance modulus model. Here an example of a constant distance modulus</span>
+    <span class="s2">&quot;distance_modulus&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;center&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">16.5</span><span class="p">},</span>
+        <span class="s2">&quot;spread&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="p">},</span>
 <span class="p">}</span>
 
 <span class="c1"># or load from a config file</span>
-<span class="c1">#config_path = os.path.join(base_dir, &#39;config&#39;, &#39;toy1_config.yaml&#39;)</span>
-<span class="c1">#config = parse_config(config_path)[&#39;stream&#39;]</span>
+<span class="c1"># config_path = os.path.join(base_dir, &#39;config&#39;, &#39;toy1_config.yaml&#39;)</span>
+<span class="c1"># config = parse_config(config_path)[&#39;stream&#39;]</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 </pre></div>
@@ -473,18 +505,18 @@ For more details, see the notebook <em><code class="docutils literal notranslate
 
 First 5 stars:
        phi1      phi2  dist   mu1   mu2    rv  lsst_g_true  lsst_r_true  \
-0 -7.002897  0.059450  16.5  None  None  None    27.496973    26.283101   
-1 -4.650306  0.076031  16.5  None  None  None    30.968998    29.341002   
-2  0.584491 -0.236149  16.5  None  None  None    29.161576    27.739697   
-3 -7.613039  0.293508  16.5  None  None  None    22.790578    22.371315   
-4 -2.429573  0.113915  16.5  None  None  None    30.026950    28.501102   
+0  4.739512  0.015756  16.5  None  None  None    28.982359    27.582928   
+1 -1.499554 -0.343139  16.5  None  None  None    27.581603    26.354772   
+2  8.207016 -0.176948  16.5  None  None  None    26.265005    25.228614   
+3  0.680482 -0.088033  16.5  None  None  None    27.004769    25.868177   
+4  4.064195  0.077374  16.5  None  None  None    27.373922    26.179369   
 
        mass  
-0  0.253647  
-1  0.105539  
-2  0.150859  
-3  0.645271  
-4  0.122032  
+0  0.158219  
+1  0.246747  
+2  0.387048  
+3  0.299648  
+4  0.265148  
 </pre></div>
 </div>
 </div>
@@ -495,23 +527,28 @@ First 5 stars:
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
 <span class="c1"># Stream on the sky</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">stream_df</span><span class="p">[</span><span class="s1">&#39;phi1&#39;</span><span class="p">],</span> <span class="n">stream_df</span><span class="p">[</span><span class="s1">&#39;phi2&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;phi1 (deg)&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;phi2 (deg)&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Stream on the sky&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">stream_df</span><span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">],</span> <span class="n">stream_df</span><span class="p">[</span><span class="s2">&quot;phi2&quot;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;phi1 (deg)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;phi2 (deg)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Stream on the sky&quot;</span><span class="p">)</span>
 
 <span class="c1"># 1D density</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">stream_df</span><span class="p">[</span><span class="s1">&#39;phi1&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;phi1 (deg)&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Number of stars&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;1D Density along the stream&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">stream_df</span><span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;phi1 (deg)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Number of stars&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;1D Density along the stream&quot;</span><span class="p">)</span>
 
 <span class="c1"># Color-magnitude diagram</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">stream_df</span><span class="p">[</span><span class="s1">&#39;lsst_g_true&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">stream_df</span><span class="p">[</span><span class="s1">&#39;lsst_r_true&#39;</span><span class="p">],</span> <span class="n">stream_df</span><span class="p">[</span><span class="s1">&#39;lsst_g_true&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;g - r (mag)&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;g (mag)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">stream_df</span><span class="p">[</span><span class="s2">&quot;lsst_g_true&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">stream_df</span><span class="p">[</span><span class="s2">&quot;lsst_r_true&quot;</span><span class="p">],</span>
+    <span class="n">stream_df</span><span class="p">[</span><span class="s2">&quot;lsst_g_true&quot;</span><span class="p">],</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;g - r (mag)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;g (mag)&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Color-Magnitude Diagram&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Color-Magnitude Diagram&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -519,14 +556,14 @@ First 5 stars:
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Color-Magnitude Diagram&#39;)
 </pre></div>
 </div>
-<img alt="../_images/bc5daaebbaf41e8476769fd8ef1e60f87645108bdf8d9b841cbfe98c0fa2d4be.png" src="../_images/bc5daaebbaf41e8476769fd8ef1e60f87645108bdf8d9b841cbfe98c0fa2d4be.png" />
+<img alt="../_images/f339e0b73183cb3357ddb8a1c6292232e9d512e44a540bcbd39888570e8c8358.png" src="../_images/f339e0b73183cb3357ddb8a1c6292232e9d512e44a540bcbd39888570e8c8358.png" />
 </div>
 </div>
 <section id="spline-based-configuration">
 <h2>2) Spline-based configuration<a class="headerlink" href="#spline-based-configuration" title="Link to this heading">#</a></h2>
 <p>You can model a more realistic stream shape using cubic splines, particularly for:</p>
 <ul class="simple">
-<li><p><strong>Linear density:</strong> $\sqrt{2\pi} \times \text{peak intensity} \times \text{spread}$</p></li>
+<li><p><strong>Linear density:</strong> <span class="math notranslate nohighlight">\(\sqrt{2\pi} \times \text{peak intensity} \times \text{spread}\)</span></p></li>
 <li><p><strong>Distance modulus</strong></p></li>
 <li><p><strong>Track and width</strong></p></li>
 </ul>
@@ -535,47 +572,71 @@ First 5 stars:
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Nodes and values for the spline-based stream model (from Patrick et al. 2022, for Phoenix stream)</span>
 <span class="c1"># One may read these from a CSV file instead of hardcoding them, cf to config/atlas_spline_config.yaml</span>
-<span class="n">intensity_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">13.</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.75</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.125</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.1640625</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.25</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.625</span><span class="p">,</span> <span class="mf">1.625</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">,</span> <span class="mf">8.125</span><span class="p">,</span> <span class="mf">13.</span><span class="p">])</span>
-<span class="n">intensity_node_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.35582279e-07</span><span class="p">,</span> <span class="mf">2.65789495e-02</span><span class="p">,</span> <span class="mf">5.94765580e-02</span><span class="p">,</span> <span class="mf">7.20106921e-02</span><span class="p">,</span> <span class="mf">9.96003626e-02</span><span class="p">,</span> <span class="mf">4.68656926e-02</span><span class="p">,</span> <span class="mf">7.42352023e-02</span><span class="p">,</span> <span class="mf">4.75688845e-06</span><span class="p">,</span> <span class="mf">1.73046024e-02</span><span class="p">,</span> <span class="mf">4.08879937e-08</span><span class="p">])</span>
-<span class="n">spread_nodes</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">13.</span> <span class="p">,</span> <span class="mf">13.</span><span class="p">])</span>
-<span class="n">spread_node_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0992389</span><span class="p">,</span>  <span class="mf">0.17083177</span><span class="p">])</span>
-<span class="n">center_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">13.</span><span class="p">,</span> <span class="mf">4.33333333</span><span class="p">,</span> <span class="mf">13.</span><span class="p">])</span>
+<span class="n">intensity_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="p">[</span><span class="o">-</span><span class="mf">13.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.75</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.125</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.1640625</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.25</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.625</span><span class="p">,</span> <span class="mf">1.625</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">,</span> <span class="mf">8.125</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">intensity_node_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="mf">2.35582279e-07</span><span class="p">,</span>
+        <span class="mf">2.65789495e-02</span><span class="p">,</span>
+        <span class="mf">5.94765580e-02</span><span class="p">,</span>
+        <span class="mf">7.20106921e-02</span><span class="p">,</span>
+        <span class="mf">9.96003626e-02</span><span class="p">,</span>
+        <span class="mf">4.68656926e-02</span><span class="p">,</span>
+        <span class="mf">7.42352023e-02</span><span class="p">,</span>
+        <span class="mf">4.75688845e-06</span><span class="p">,</span>
+        <span class="mf">1.73046024e-02</span><span class="p">,</span>
+        <span class="mf">4.08879937e-08</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="n">spread_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">13.0</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">])</span>
+<span class="n">spread_node_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0992389</span><span class="p">,</span> <span class="mf">0.17083177</span><span class="p">])</span>
+<span class="n">center_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">13.0</span><span class="p">,</span> <span class="mf">4.33333333</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">])</span>
 <span class="n">center_node_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.19313599</span><span class="p">,</span> <span class="mf">0.07139282</span><span class="p">,</span> <span class="mf">0.60245054</span><span class="p">])</span>
-<span class="n">distance_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">13.</span><span class="p">,</span> <span class="mf">13.</span><span class="p">])</span>
+<span class="n">distance_nodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">13.0</span><span class="p">,</span> <span class="mf">13.0</span><span class="p">])</span>
 <span class="n">distance_node_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">16.38285347</span><span class="p">,</span> <span class="mf">16.1136374</span><span class="p">])</span>
 
 
 <span class="n">config_spline</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># Density model using cubic splines from CSV</span>
-    <span class="s1">&#39;density&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;lineardensitycubicsplineinterpolation&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;intensity_nodes&#39;</span><span class="p">:</span> <span class="n">intensity_nodes</span><span class="p">,</span>
-        <span class="s1">&#39;intensity_node_values&#39;</span><span class="p">:</span> <span class="n">intensity_node_values</span><span class="p">,</span>
-        <span class="s1">&#39;spread_nodes&#39;</span><span class="p">:</span> <span class="n">spread_nodes</span><span class="p">,</span>
-        <span class="s1">&#39;spread_node_values&#39;</span><span class="p">:</span> <span class="n">spread_node_values</span><span class="p">,</span>
+    <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;lineardensitycubicsplineinterpolation&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;intensity_nodes&quot;</span><span class="p">:</span> <span class="n">intensity_nodes</span><span class="p">,</span>
+        <span class="s2">&quot;intensity_node_values&quot;</span><span class="p">:</span> <span class="n">intensity_node_values</span><span class="p">,</span>
+        <span class="s2">&quot;spread_nodes&quot;</span><span class="p">:</span> <span class="n">spread_nodes</span><span class="p">,</span>
+        <span class="s2">&quot;spread_node_values&quot;</span><span class="p">:</span> <span class="n">spread_node_values</span><span class="p">,</span>
     <span class="p">},</span>
-
     <span class="c1"># Track model: center and spread as cubic splines</span>
-    <span class="s1">&#39;track&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;CubicSplineInterpolation&#39;</span><span class="p">,</span> <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">center_nodes</span><span class="p">,</span> <span class="s1">&#39;node_values&#39;</span><span class="p">:</span> <span class="n">center_node_values</span><span class="p">},</span>
-        <span class="s1">&#39;spread&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;CubicSplineInterpolation&#39;</span><span class="p">,</span> <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">spread_nodes</span><span class="p">,</span> <span class="s1">&#39;node_values&#39;</span><span class="p">:</span> <span class="n">spread_node_values</span><span class="p">},</span>
+    <span class="s2">&quot;track&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;center&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;CubicSplineInterpolation&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nodes&quot;</span><span class="p">:</span> <span class="n">center_nodes</span><span class="p">,</span>
+            <span class="s2">&quot;node_values&quot;</span><span class="p">:</span> <span class="n">center_node_values</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;spread&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;CubicSplineInterpolation&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nodes&quot;</span><span class="p">:</span> <span class="n">spread_nodes</span><span class="p">,</span>
+            <span class="s2">&quot;node_values&quot;</span><span class="p">:</span> <span class="n">spread_node_values</span><span class="p">,</span>
+        <span class="p">},</span>
     <span class="p">},</span>
-
     <span class="c1"># Isochrone model</span>
-    <span class="s1">&#39;isochrone&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Marigo2017&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;survey&#39;</span><span class="p">:</span> <span class="s1">&#39;lsst&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mf">13.0</span><span class="p">,</span>
-        <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">0.0004</span><span class="p">,</span>
-        <span class="s1">&#39;band_1&#39;</span><span class="p">:</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;band_2&#39;</span><span class="p">:</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;band_1_detection&#39;</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="s2">&quot;isochrone&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Marigo2017&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;survey&quot;</span><span class="p">:</span> <span class="s2">&quot;lsst&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mf">13.0</span><span class="p">,</span>
+        <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="mf">0.0004</span><span class="p">,</span>
+        <span class="s2">&quot;band_1&quot;</span><span class="p">:</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band_2&quot;</span><span class="p">:</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band_1_detection&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">},</span>
-
     <span class="c1"># Distance modulus model as a cubic spline (flat default)</span>
-    <span class="s1">&#39;distance_modulus&#39;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;CubicSplineInterpolation&#39;</span><span class="p">,</span> <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="n">distance_nodes</span><span class="p">,</span> <span class="s1">&#39;node_values&#39;</span><span class="p">:</span> <span class="n">distance_node_values</span><span class="p">},</span>
-        <span class="s1">&#39;spread&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Constant&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;distance_modulus&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;center&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;CubicSplineInterpolation&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;nodes&quot;</span><span class="p">:</span> <span class="n">distance_nodes</span><span class="p">,</span>
+            <span class="s2">&quot;node_values&quot;</span><span class="p">:</span> <span class="n">distance_node_values</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;spread&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
     <span class="p">},</span>
 <span class="p">}</span>
 </pre></div>
@@ -629,63 +690,63 @@ First 5 stars:
   <tbody>
     <tr>
       <th>0</th>
-      <td>10.397634</td>
-      <td>0.310376</td>
-      <td>16.140584</td>
+      <td>11.025280</td>
+      <td>0.206266</td>
+      <td>16.134085</td>
       <td>None</td>
       <td>None</td>
       <td>None</td>
-      <td>26.403952</td>
-      <td>25.349445</td>
-      <td>0.302596</td>
+      <td>27.764482</td>
+      <td>26.518739</td>
+      <td>0.189837</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>-8.270033</td>
-      <td>0.112434</td>
-      <td>16.333877</td>
+      <td>-3.956590</td>
+      <td>0.141461</td>
+      <td>16.289214</td>
       <td>None</td>
       <td>None</td>
       <td>None</td>
-      <td>27.693353</td>
-      <td>26.489565</td>
-      <td>0.205496</td>
+      <td>28.585344</td>
+      <td>27.239462</td>
+      <td>0.156199</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>12.074131</td>
-      <td>0.742666</td>
-      <td>16.123224</td>
+      <td>11.894469</td>
+      <td>0.613266</td>
+      <td>16.125085</td>
       <td>None</td>
       <td>None</td>
       <td>None</td>
-      <td>28.314820</td>
-      <td>26.981231</td>
-      <td>0.160797</td>
+      <td>26.288612</td>
+      <td>25.246169</td>
+      <td>0.315157</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>-10.734857</td>
-      <td>0.279835</td>
-      <td>16.359399</td>
+      <td>-3.768348</td>
+      <td>-0.184497</td>
+      <td>16.287265</td>
       <td>None</td>
       <td>None</td>
       <td>None</td>
-      <td>28.972575</td>
-      <td>27.591541</td>
-      <td>0.142679</td>
+      <td>28.440219</td>
+      <td>27.112679</td>
+      <td>0.162797</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>8.248972</td>
-      <td>0.372761</td>
-      <td>16.162832</td>
+      <td>3.090001</td>
+      <td>0.247316</td>
+      <td>16.216250</td>
       <td>None</td>
       <td>None</td>
       <td>None</td>
-      <td>26.958202</td>
-      <td>25.839279</td>
-      <td>0.247097</td>
+      <td>26.211489</td>
+      <td>25.189501</td>
+      <td>0.336810</td>
     </tr>
   </tbody>
 </table>
@@ -695,28 +756,39 @@ First 5 stars:
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
-<span class="c1"># plotting the stream on the sky </span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;phi1&#39;</span><span class="p">],</span> <span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;phi2&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Generated stars&quot;</span><span class="p">)</span>
-<span class="n">x_val</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;phi1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="c1"># plotting the stream on the sky</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">stream_df_spline</span><span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">],</span>
+    <span class="n">stream_df_spline</span><span class="p">[</span><span class="s2">&quot;phi2&quot;</span><span class="p">],</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Generated stars&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">x_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">stream_df_spline</span><span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="n">spline_val</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">CubicSpline</span><span class="p">(</span><span class="n">center_nodes</span><span class="p">,</span> <span class="n">center_node_values</span><span class="p">)(</span><span class="n">x_val</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span> <span class="n">spline_val</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Spline track model&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;phi1 (deg)&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;phi2 (deg)&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Stream on the sky&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span> <span class="n">spline_val</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Spline track model&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;phi1 (deg)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;phi2 (deg)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Stream on the sky&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
 <span class="c1"># Plotting the 1D density along the stream</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;phi1&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;phi1 (deg)&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Number of stars&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;1D Density along the stream&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">stream_df_spline</span><span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;phi1 (deg)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Number of stars&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;1D Density along the stream&quot;</span><span class="p">)</span>
 
 <span class="c1"># plotting  Color magnitude diagram</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;lsst_g_true&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;lsst_r_true&#39;</span><span class="p">],</span> <span class="n">stream_df_spline</span><span class="p">[</span><span class="s1">&#39;lsst_g_true&#39;</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;g - r (mag)&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;g (mag)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">stream_df_spline</span><span class="p">[</span><span class="s2">&quot;lsst_g_true&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">stream_df_spline</span><span class="p">[</span><span class="s2">&quot;lsst_r_true&quot;</span><span class="p">],</span>
+    <span class="n">stream_df_spline</span><span class="p">[</span><span class="s2">&quot;lsst_g_true&quot;</span><span class="p">],</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;g - r (mag)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;g (mag)&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Color-Magnitude Diagram&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Color-Magnitude Diagram&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -724,12 +796,12 @@ First 5 stars:
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Color-Magnitude Diagram&#39;)
 </pre></div>
 </div>
-<img alt="../_images/0deb32010a4cfb22708ca03bd12707eb199d943a7e2473bbebb274579951cc13.png" src="../_images/0deb32010a4cfb22708ca03bd12707eb199d943a7e2473bbebb274579951cc13.png" />
+<img alt="../_images/274d2f062f8702f40f6726f6f73c1d60a81dd1f35f893ab26c0b904950ad1c33.png" src="../_images/274d2f062f8702f40f6726f6f73c1d60a81dd1f35f893ab26c0b904950ad1c33.png" />
 </div>
 </div>
 </section>
 </section>
-<section id="complete-an-existing-catalog">
+<section class="tex2jax_ignore mathjax_ignore" id="complete-an-existing-catalog">
 <h1>3) Complete an existing catalog<a class="headerlink" href="#complete-an-existing-catalog" title="Link to this heading">#</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">StreamModel.complete_catalog</span></code> fills only the requested columns while preserving existing values (except for magnitudes and velocities, which are regenerated together for consistency).</p>
 <ul class="simple">
@@ -745,7 +817,9 @@ First 5 stars:
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let&#39;s build a catalog with missing columns to complete</span>
 <span class="c1"># Here for example we keep only &#39;phi1&#39; and &#39;phi2&#39;, and drop others</span>
-<span class="n">stream_df_sub</span> <span class="o">=</span> <span class="n">stream_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;lsst_r_true&#39;</span><span class="p">,</span> <span class="s1">&#39;dist&#39;</span><span class="p">,</span> <span class="s1">&#39;lsst_g_true&#39;</span><span class="p">,</span> <span class="s1">&#39;mu1&#39;</span><span class="p">,</span> <span class="s1">&#39;mu2&#39;</span><span class="p">,</span> <span class="s1">&#39;rv&#39;</span> <span class="p">])</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">stream_df_sub</span> <span class="o">=</span> <span class="n">stream_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;lsst_r_true&quot;</span><span class="p">,</span> <span class="s2">&quot;dist&quot;</span><span class="p">,</span> <span class="s2">&quot;lsst_g_true&quot;</span><span class="p">,</span> <span class="s2">&quot;mu1&quot;</span><span class="p">,</span> <span class="s2">&quot;mu2&quot;</span><span class="p">,</span> <span class="s2">&quot;rv&quot;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Catalog with missing columns:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">stream_df_sub</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
@@ -754,11 +828,11 @@ First 5 stars:
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Catalog with missing columns:
        phi1      phi2      mass
-0 -7.002897  0.059450  0.253647
-1 -4.650306  0.076031  0.105539
-2  0.584491 -0.236149  0.150859
-3 -7.613039  0.293508  0.645271
-4 -2.429573  0.113915  0.122032
+0  4.739512  0.015756  0.158219
+1 -1.499554 -0.343139  0.246747
+2  8.207016 -0.176948  0.387048
+3  0.680482 -0.088033  0.299648
+4  4.064195  0.077374  0.265148
 </pre></div>
 </div>
 </div>
@@ -769,10 +843,7 @@ First 5 stars:
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Now we can use `complete_catalog` to fill in the missing columns amoung [&#39;phi1&#39;, &#39;phi2&#39;, &#39;dist&#39;, &#39;mag_g&#39;, &#39;mag_r&#39;, &#39;mu1&#39;, &#39;mu2&#39;, &#39;rv&#39;]</span>
 <span class="n">completed_catalog</span> <span class="o">=</span> <span class="n">stream_model</span><span class="o">.</span><span class="n">complete_catalog</span><span class="p">(</span>
-    <span class="n">catalog</span><span class="o">=</span><span class="n">stream_df_sub</span><span class="p">,</span>
-    <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">catalog</span><span class="o">=</span><span class="n">stream_df_sub</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">completed_catalog</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
@@ -783,11 +854,11 @@ First 5 stars:
 Filled 4500 dist values.
 Filled [&#39;lsst_g_true&#39;, &#39;lsst_r_true&#39;] (missing rows only).
        phi1      phi2      mass  dist  lsst_g_true  lsst_r_true
-0 -7.002897  0.059450  0.253647  16.5    27.496973    26.283101
-1 -4.650306  0.076031  0.105539  16.5    30.968998    29.341002
-2  0.584491 -0.236149  0.150859  16.5    29.161576    27.739697
-3 -7.613039  0.293508  0.645271  16.5    22.790578    22.371315
-4 -2.429573  0.113915  0.122032  16.5    30.026950    28.501102
+0  4.739512  0.015756  0.158219  16.5    28.982359    27.582928
+1 -1.499554 -0.343139  0.246747  16.5    27.581603    26.354772
+2  8.207016 -0.176948  0.387048  16.5    26.265005    25.228614
+3  0.680482 -0.088033  0.299648  16.5    27.004769    25.868177
+4  4.064195  0.077374  0.265148  16.5    27.373922    26.179369
 </pre></div>
 </div>
 </div>
@@ -843,48 +914,48 @@ Filled [&#39;lsst_g_true&#39;, &#39;lsst_r_true&#39;] (missing rows only).
   <tbody>
     <tr>
       <th>0</th>
-      <td>-7.002897</td>
-      <td>0.059450</td>
-      <td>0.253647</td>
+      <td>4.739512</td>
+      <td>0.015756</td>
+      <td>0.158219</td>
       <td>16.5</td>
-      <td>27.496973</td>
-      <td>26.283101</td>
+      <td>28.982359</td>
+      <td>27.582928</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>-4.650306</td>
-      <td>0.076031</td>
-      <td>0.105539</td>
+      <td>-1.499554</td>
+      <td>-0.343139</td>
+      <td>0.246747</td>
       <td>16.5</td>
-      <td>30.968998</td>
-      <td>29.341002</td>
+      <td>27.581603</td>
+      <td>26.354772</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>0.584491</td>
-      <td>-0.236149</td>
-      <td>0.150859</td>
+      <td>8.207016</td>
+      <td>-0.176948</td>
+      <td>0.387048</td>
       <td>16.5</td>
-      <td>29.161576</td>
-      <td>27.739697</td>
+      <td>26.265005</td>
+      <td>25.228614</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>-7.613039</td>
-      <td>0.293508</td>
-      <td>0.645271</td>
+      <td>0.680482</td>
+      <td>-0.088033</td>
+      <td>0.299648</td>
       <td>16.5</td>
-      <td>22.790578</td>
-      <td>22.371315</td>
+      <td>27.004769</td>
+      <td>25.868177</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>-2.429573</td>
-      <td>0.113915</td>
-      <td>0.122032</td>
+      <td>4.064195</td>
+      <td>0.077374</td>
+      <td>0.265148</td>
       <td>16.5</td>
-      <td>30.026950</td>
-      <td>28.501102</td>
+      <td>27.373922</td>
+      <td>26.179369</td>
     </tr>
   </tbody>
 </table>
@@ -902,7 +973,7 @@ Filled [&#39;lsst_g_true&#39;, &#39;lsst_r_true&#39;] (missing rows only).
 </ul>
 </section>
 </section>
-<section id="conclusion">
+<section class="tex2jax_ignore mathjax_ignore" id="conclusion">
 <h1>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h1>
 <p>Streamobs provides a flexible framework to build and complete stellar stream mock catalogs, from simple analytic models to spline-based configurations.
 Future updates will include proper motions, velocities, and improved documentation for easier user adoption.</p>
@@ -945,16 +1016,14 @@ Future updates will include proper motions, velocities, and improved documentati
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-  <div class="sidebar-secondary-item"><div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
   </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+  <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Streamobs: generate stream mocks</a></li>
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#build-a-stream-configuration">1) Build a stream configuration</a><ul class="visible nav section-nav flex-column">
@@ -1017,8 +1086,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

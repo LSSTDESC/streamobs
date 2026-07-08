@@ -15,41 +15,37 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/streamobs/observed';</script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -65,8 +61,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -74,6 +81,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -81,8 +89,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -100,8 +108,7 @@
       
         
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -131,11 +138,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -153,6 +164,7 @@
 
 
 <li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/multisurvey_cmd.html">Multi-survey CMDs: LSST + Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
@@ -161,16 +173,26 @@
 <li class="toctree-l1"><a class="reference internal" href="../../surveys/LSST.html">LSST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../surveys/Roman.html">Roman</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background generation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../background.html">Background generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background_light.html">Light method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background_injection.html">Injection method</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../modifying_streamobs.html">Contributing to StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../new_survey.html">Adding a New Photometric Survey</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../build_background_resources.html">Building background resources</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../streamobs.functions.html">streamobs.functions module</a></li>
@@ -192,14 +214,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -234,7 +251,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -248,16 +265,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 
 </div></div>
       
@@ -534,6 +559,12 @@
 <span class="sd">            perfect_galstarsep : bool, optional</span>
 <span class="sd">                If True, also computes a flag assuming perfect star/galaxy separation</span>
 <span class="sd">                (detection efficiency only, no classification losses). Default is False.</span>
+<span class="sd">                Only applies when ``source_type=&#39;stars&#39;``.</span>
+<span class="sd">            source_type : str, optional</span>
+<span class="sd">                Type of source being injected. Either ``&#39;stars&#39;`` (default) or</span>
+<span class="sd">                ``&#39;galaxies&#39;``. When ``&#39;galaxies&#39;``, the detection flag uses</span>
+<span class="sd">                :meth:`~streamobs.surveys.Survey.get_gal_misclassification`</span>
+<span class="sd">                instead of the star completeness function.</span>
 <span class="sd">            verbose : bool, optional</span>
 <span class="sd">                Whether to print progress information. Default is True.</span>
 
@@ -561,7 +592,9 @@
 
         <span class="c1"># Set the seed for reproducibility</span>
         <span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;rng&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rng</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
         <span class="c1"># Shared sky placement + shared true-magnitude fill (masses sampled once</span>
         <span class="c1"># across all surveys). This is the same completion exposed publicly as</span>
@@ -651,7 +684,7 @@
 <span class="sd">            Seed used to build an RNG when ``rng`` is None.</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            ``nside``, ``detection_mag_cut``, ``dust_correction``,</span>
-<span class="sd">            ``perfect_galstarsep``, ``verbose`` (see :meth:`inject`).</span>
+<span class="sd">            ``perfect_galstarsep``, ``source_type``, ``verbose`` (see :meth:`inject`).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -750,6 +783,7 @@
 
             <span class="c1"># Compute detection flag for completeness-band (reference band)</span>
             <span class="k">if</span> <span class="n">band</span> <span class="o">==</span> <span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="p">:</span>
+                <span class="n">source_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source_type&quot;</span><span class="p">,</span> <span class="s2">&quot;stars&quot;</span><span class="p">)</span>
                 <span class="n">flag_completeness_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_flag</span><span class="p">(</span>
                     <span class="n">pix_maglim</span><span class="p">,</span>
                     <span class="n">survey</span><span class="o">=</span><span class="n">survey</span><span class="p">,</span>
@@ -760,7 +794,7 @@
                     <span class="n">perfect_galstarsep</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">perfect_galstarsep</span> <span class="ow">and</span> <span class="n">source_type</span> <span class="o">==</span> <span class="s2">&quot;stars&quot;</span><span class="p">:</span>
                     <span class="n">flag_detection_only_band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detect_flag</span><span class="p">(</span>
                         <span class="n">pix_maglim</span><span class="p">,</span>
                         <span class="n">survey</span><span class="o">=</span><span class="n">survey</span><span class="p">,</span>
@@ -991,6 +1025,7 @@
                 <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                 <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
                 <span class="n">dist</span><span class="o">=</span><span class="n">dist</span><span class="p">,</span>
+                <span class="n">rng</span><span class="o">=</span><span class="n">rng</span><span class="p">,</span>
             <span class="p">)</span>
 
         <span class="c1"># Convert (phi1, phi2) -&gt; (ra, dec) using the primary survey footprint.</span>
@@ -1465,10 +1500,14 @@
 <a class="viewcode-back" href="../../streamobs.observed.html#streamobs.observed.StreamInjector.detect_flag">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">detect_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pix</span><span class="p">,</span> <span class="n">survey</span><span class="p">,</span> <span class="n">mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Apply the survey selection to determine detection flags for stars.</span>
+<span class="sd">        Apply the survey selection to determine detection flags.</span>
 
-<span class="sd">        This method uses the survey completeness function and random sampling</span>
-<span class="sd">        to determine which stars would be detected by the survey.</span>
+<span class="sd">        For stars (``source_type=&#39;stars&#39;``, the default), uses the survey&#39;s</span>
+<span class="sd">        combined completeness (detection × classification) or detection-only</span>
+<span class="sd">        efficiency when ``perfect_galstarsep=True``. For galaxies</span>
+<span class="sd">        (``source_type=&#39;galaxies&#39;``), uses</span>
+<span class="sd">        :meth:`~streamobs.surveys.Survey.get_gal_misclassification_detection` and</span>
+<span class="sd">        ignores ``perfect_galstarsep``.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1479,8 +1518,7 @@
 <span class="sd">        band : str, optional</span>
 <span class="sd">            Band to consider for detection. Default is &#39;r&#39;.</span>
 <span class="sd">        survey : Survey</span>
-<span class="sd">            Survey whose completeness/detection-efficiency curves to use</span>
-<span class="sd">            (required).</span>
+<span class="sd">            Survey whose efficiency curves to use (required).</span>
 <span class="sd">        **kwargs</span>
 <span class="sd">            Additional keyword arguments:</span>
 
@@ -1488,13 +1526,17 @@
 <span class="sd">                Random number generator instance.</span>
 <span class="sd">            seed : int, optional</span>
 <span class="sd">                Random seed if rng is not provided.</span>
+<span class="sd">            source_type : str, optional</span>
+<span class="sd">                ``&#39;stars&#39;`` (default) or ``&#39;galaxies&#39;``.</span>
 <span class="sd">            perfect_galstarsep : bool, optional</span>
-<span class="sd">                If True, assumes perfect star/galaxy separation. Default is False.</span>
+<span class="sd">                If True and ``source_type=&#39;stars&#39;``, uses detection-only</span>
+<span class="sd">                efficiency (no classification losses). Ignored for galaxies.</span>
+<span class="sd">                Default is False.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        np.ndarray</span>
-<span class="sd">            Boolean array: True for detected stars, False otherwise.</span>
+<span class="sd">            Boolean array: True for detected objects, False otherwise.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -1507,16 +1549,18 @@
             <span class="n">seed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
-        <span class="c1"># Select the appropriate magnitude and map depending on the band</span>
         <span class="n">maglim</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_maglim</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">pixel</span><span class="o">=</span><span class="n">pix</span><span class="p">)</span>
 
-        <span class="n">perfect_galstarsep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;perfect_galstarsep&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
-            <span class="n">compl</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_detection_efficiency</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">maglim</span><span class="p">)</span>
+        <span class="n">source_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source_type&quot;</span><span class="p">,</span> <span class="s2">&quot;stars&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">source_type</span> <span class="o">==</span> <span class="s2">&quot;galaxies&quot;</span><span class="p">:</span>
+            <span class="n">compl</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_gal_misclassification_detection</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">maglim</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">compl</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_completeness</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">maglim</span><span class="p">)</span>
+            <span class="n">perfect_galstarsep</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;perfect_galstarsep&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">perfect_galstarsep</span><span class="p">:</span>
+                <span class="n">compl</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_detection_efficiency</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">maglim</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">compl</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_completeness</span><span class="p">(</span><span class="n">band</span><span class="p">,</span> <span class="n">mag</span><span class="p">,</span> <span class="n">maglim</span><span class="p">)</span>
 
-        <span class="c1"># Set the threshold using completeness</span>
         <span class="n">threshold</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">mag</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">compl</span>
 
         <span class="k">return</span> <span class="n">threshold</span></div>
@@ -1777,8 +1821,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

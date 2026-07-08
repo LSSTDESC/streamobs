@@ -1,0 +1,931 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Quickstart: complete stellar stream analysis pipeline &#8212; streamobs  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/tutorial_quickstart';</script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">streamobs  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation &amp; Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multisurvey.html">Injecting one or many surveys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey_cmd.html">Multi-survey CMDs: LSST + Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../surveys/DES.html">DES</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="../surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../surveys/Roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background generation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../background_light.html">Light method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../background_injection.html">Injection method</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../build_background_resources.html">Building background resources</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../column_convention.html">Output column convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.utils.html">streamobs.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/examples/tutorial_quickstart.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Quickstart: complete stellar stream analysis pipeline</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#imports">Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-survey-and-great-circle-frame">Step 1 — Survey and great-circle frame</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-inject-a-stream">Step 2 — Inject a stream</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-generate-background">Step 3 — Generate background</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-apply-the-match-filter">Step 4 — Apply the match filter</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-colormagnitude-diagrams">Step 5 — Color–magnitude diagrams</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-2-d-sky-maps">Step 6 — 2-D sky maps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="quickstart-complete-stellar-stream-analysis-pipeline">
+<h1>Quickstart: complete stellar stream analysis pipeline<a class="headerlink" href="#quickstart-complete-stellar-stream-analysis-pipeline" title="Link to this heading">#</a></h1>
+<p>This notebook walks through the full pipeline in one place:</p>
+<ol class="arabic simple">
+<li><p><strong>Stream injection</strong> — place a mock stream on realistic survey data</p></li>
+<li><p><strong>Background generation</strong> — generate a realistic field-star and galaxy background</p></li>
+<li><p><strong>Match filter</strong> — select stars whose color–magnitude position is consistent with the stream’s stellar population</p></li>
+<li><p><strong>CMD visualisation</strong> — visualise color magnitude distribution of stream and
+background objects</p></li>
+<li><p><strong>2-D sky maps</strong> — visualise the stream and show the depth variation across the field</p></li>
+</ol>
+<blockquote>
+<div><p><strong>Companion tutorials</strong></p>
+<ul class="simple">
+<li><p>Full injection walkthrough: <a class="reference internal" href="tutorial_inject_stream.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">tutorial_inject_stream.ipynb</span></code></span></a></p></li>
+<li><p>Isochrone / data-mock generation: <a class="reference internal" href="tutorial_generate_datamocks.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">tutorial_generate_datamocks.ipynb</span></code></span></a></p></li>
+</ul>
+</div></blockquote>
+<section id="imports">
+<h2>Imports<a class="headerlink" href="#imports" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 2
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpatches</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.colors</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogNorm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">coord</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gala.coordinates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gc</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.surveys</span><span class="w"> </span><span class="kn">import</span> <span class="n">Survey</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.observed</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamInjector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.background</span><span class="w"> </span><span class="kn">import</span> <span class="n">Background</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.match_filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">build_match_filter</span><span class="p">,</span> <span class="n">is_in_match_filter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_healpix_counts</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-1-survey-and-great-circle-frame">
+<h2>Step 1 — Survey and great-circle frame<a class="headerlink" href="#step-1-survey-and-great-circle-frame" title="Link to this heading">#</a></h2>
+<p>We load the LSST yr1 survey and define a great-circle frame that spans
+<code class="docutils literal notranslate"><span class="pre">Dec</span> <span class="pre">=</span> <span class="pre">-30°</span> <span class="pre">→</span> <span class="pre">-60°</span></code> at <code class="docutils literal notranslate"><span class="pre">RA</span> <span class="pre">=</span> <span class="pre">60°</span></code>. This object is then used to find (ra,dec)
+coordinates for the stream and the background.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">survey</span> <span class="o">=</span> <span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;lsst&quot;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s2">&quot;yr1&quot;</span><span class="p">)</span>
+
+<span class="n">end1</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="mf">60.0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">dec</span><span class="o">=-</span><span class="mf">30.0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
+<span class="n">end2</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="mf">60.0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">dec</span><span class="o">=-</span><span class="mf">60.0</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
+<span class="n">gc_frame</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">GreatCircleICRSFrame</span><span class="o">.</span><span class="n">from_endpoints</span><span class="p">(</span><span class="n">end1</span><span class="p">,</span> <span class="n">end2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loading survey data for &#39;lsst_yr1&#39;...
+  Loading config from: lsst_yr1.yaml
+
+======================================================================
+LOADING SURVEY DATA FILES
+======================================================================
+Survey data directory: /sps/lsst/users/mpelissi/packages/streamobs/streamobs/../data/surveys/lsst_yr1
+
+Fallback directory for shared data files: /sps/lsst/users/mpelissi/packages/streamobs/streamobs/../data/others
+
+Available bands: g, i, r, u, y, z
+
+
+Loading survey properties...
+Loading magnitude limit maps...
+  ✓ Success for g-band magnitude limit
+  ⚠ Warning: &#39;maglim_map_i&#39; not specified in config (skipping i-band)
+  ✓ Success for r-band magnitude limit
+  ⚠ Warning: &#39;maglim_map_u&#39; not specified in config (skipping u-band)
+  ⚠ Warning: &#39;maglim_map_y&#39; not specified in config (skipping y-band)
+  ⚠ Warning: &#39;maglim_map_z&#39; not specified in config (skipping z-band)
+
+Loading completeness/efficiency function...
+  Loading Completeness/efficiency function...
+    File: lsst_stellar_efficiency_cutr.csv
+    ✓ Success
+  Loading Detection efficiency function...
+    File: lsst_stellar_efficiency_cutr.csv
+    ✓ Success
+  Loading Classification efficiency function...
+    File: lsst_stellar_efficiency_cutr.csv
+    ✓ Success
+  Loading Galaxy misclassification efficiency...
+    File: lsst_stellar_efficiency_cutr.csv
+    ✓ Success
+  Loading Galaxy misclassification × detection efficiency...
+    File: lsst_stellar_efficiency_cutr.csv
+    ✗ Failed to load gal_misclassification_detection: no field of name missclassification_detection_eff
+
+Loading photometric error model...
+  Loading Photometric error model (catalog / reported)...
+    File: lsst_photoerror_r.csv
+    ✓ Success
+
+Loading band-independent maps...
+  Loading E(B-V) extinction map...
+    File: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
+    ✓ Success
+  ⚠ Warning: &#39;coverage&#39; not specified in config (skipping)
+
+Building coverage map from magnitude limit maps...
+  ✓ Built coverage map (nside=128, 132437 pixels covered)
+
+Survey properties summary:
+  g-band:
+    Extinction coefficient: 3.661
+    Saturation limit: 16.0 mag
+    Systematic error: 0.0050 mag
+  i-band:
+    Extinction coefficient: 2.054
+    Saturation limit: 16.0 mag
+    Systematic error: 0.0050 mag
+  r-band:
+    Extinction coefficient: 2.701
+    Saturation limit: 16.0 mag
+    Systematic error: 0.0050 mag
+  u-band:
+    Extinction coefficient: 4.757
+    Saturation limit: 16.0 mag
+    Systematic error: 0.0050 mag
+  y-band:
+    Extinction coefficient: 1.308
+    Saturation limit: 16.0 mag
+    Systematic error: 0.0050 mag
+  z-band:
+    Extinction coefficient: 1.590
+    Saturation limit: 16.0 mag
+    Systematic error: 0.0050 mag
+
+======================================================================
+SURVEY DATA LOADED SUCCESSFULLY
+======================================================================
+
+✓ Survey &#39;lsst_yr1&#39; loaded and cached successfully
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-2-inject-a-stream">
+<h2>Step 2 — Inject a stream<a class="headerlink" href="#step-2-inject-a-stream" title="Link to this heading">#</a></h2>
+<p>We create a simple mock stream using <code class="docutils literal notranslate"><span class="pre">StreamModel</span></code> and inject it into
+the LSST yr1 survey at the great-circle frame defined above.</p>
+<blockquote>
+<div><p><strong>Tip</strong>: replace <code class="docutils literal notranslate"><span class="pre">stream_raw</span></code> below with your own simulation output
+(any <code class="docutils literal notranslate"><span class="pre">pd.DataFrame</span></code> with <code class="docutils literal notranslate"><span class="pre">phi1</span></code>, <code class="docutils literal notranslate"><span class="pre">phi2</span></code> columns, and optionally
+<code class="docutils literal notranslate"><span class="pre">lsst_g_true</span></code> / <code class="docutils literal notranslate"><span class="pre">lsst_r_true</span></code> if you already have magnitudes).
+See <a class="reference internal" href="tutorial_inject_stream.html"><span class="std std-doc"><code class="docutils literal notranslate"><span class="pre">tutorial_inject_stream.ipynb</span></code></span></a>
+for a detailed description of all injection options.</p>
+</div></blockquote>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">stream_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Uniform&quot;</span><span class="p">,</span> <span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">18.0</span><span class="p">,</span> <span class="s2">&quot;xmax&quot;</span><span class="p">:</span> <span class="mf">18.0</span><span class="p">},</span>
+    <span class="s2">&quot;track&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;center&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+        <span class="s2">&quot;spread&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">},</span>
+        <span class="s2">&quot;sampler&quot;</span><span class="p">:</span> <span class="s2">&quot;Gaussian&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;isochrone&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Marigo2017&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;survey&quot;</span><span class="p">:</span> <span class="s2">&quot;lsst&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mf">12.0</span><span class="p">,</span>  <span class="c1"># Gyr</span>
+        <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="mf">0.0006</span><span class="p">,</span>  <span class="c1"># metallicity</span>
+        <span class="s2">&quot;band_1&quot;</span><span class="p">:</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band_2&quot;</span><span class="p">:</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;band_1_detection&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;distance_modulus&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;center&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">16.8</span><span class="p">},</span>
+        <span class="s2">&quot;spread&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+
+<span class="c1"># Generate the stream model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">StreamModel</span><span class="p">(</span><span class="n">stream_config</span><span class="p">)</span>
+<span class="n">stream_raw</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">100000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inject the stream into the survey</span>
+<span class="n">injector</span> <span class="o">=</span> <span class="n">StreamInjector</span><span class="p">(</span><span class="n">survey</span><span class="o">=</span><span class="n">survey</span><span class="p">)</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">injector</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span>
+    <span class="n">stream_raw</span><span class="p">,</span> <span class="n">gc_frame</span><span class="o">=</span><span class="n">gc_frame</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">perfect_galstarsep</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="c1"># Select only the stars that are observed in the survey</span>
+<span class="n">stream_detected</span> <span class="o">=</span> <span class="n">stream</span><span class="p">[</span><span class="n">stream</span><span class="p">[</span><span class="s2">&quot;lsst_yr1_flag_observed&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected stream stars: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stream_detected</span><span class="p">)</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/sps/lsst/users/mpelissi/envs/env_miniconda_py13/lib/python3.13/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Applying dust correction for r-band on observed magnitudes.
+Applying dust correction for g-band on observed magnitudes.
+Applying detection cut on g-band with SNR &gt;= 5.0
+Detected stream stars: 10499 / 100000
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/sps/lsst/users/mpelissi/envs/env_miniconda_py13/lib/python3.13/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
+  result = getattr(ufunc, method)(*inputs, **kwargs)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-3-generate-background">
+<h2>Step 3 — Generate background<a class="headerlink" href="#step-3-generate-background" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Background</span></code> class with <code class="docutils literal notranslate"><span class="pre">method='light'</span></code> samples from precomputed
+CMD grids, so it is fast even for large fields. It reads the local
+magnitude limit at each sky position and draws the appropriate number
+of stars and galaxies. It includes survey selection effects, errors, and
+fluctuations due to survey depth variation. This light version needs ressources
+that are automatically downloaded when installing the package</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>bin/download_data.py
+</pre></div>
+</div>
+<p>You can also decide to inject your own background model instead of using the
+light method (see <a class="reference external" href="https://lsstdesc.github.io/streamobs/">full documentation</a>).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate both stars and galaxies in the background catalog, using the light method</span>
+<span class="n">bg_gen</span> <span class="o">=</span> <span class="n">Background</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="n">source_type</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;light&quot;</span><span class="p">)</span>
+
+<span class="c1"># generate the background catalog in the same region of the sky as the stream</span>
+<span class="c1"># The output catalog contains observed background objects</span>
+<span class="n">bg_catalog</span><span class="p">,</span> <span class="n">bg_meta</span> <span class="o">=</span> <span class="n">bg_gen</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">phi1_limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">phi2_limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">gc_frame</span><span class="o">=</span><span class="n">gc_frame</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Background objects: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bg_catalog</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Columns: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">bg_catalog</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/sps/lsst/users/mpelissi/packages/streamobs/streamobs/background/background.py:158: UserWarning: Requested nside=4096 exceeds the magnitude-limit map resolution (nside=128). Capping to nside=128.
+  return gen.generate(
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Background objects: 12497466
+Columns: [&#39;ra&#39;, &#39;dec&#39;, &#39;phi1&#39;, &#39;phi2&#39;, &#39;lsst_yr1_r_obs&#39;, &#39;lsst_yr1_g_obs&#39;, &#39;source_type&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-4-apply-the-match-filter">
+<h2>Step 4 — Apply the match filter<a class="headerlink" href="#step-4-apply-the-match-filter" title="Link to this heading">#</a></h2>
+<p>The match filter selects stars whose (g−r, g) position is consistent
+with the stream’s isochrone at the given distance, accounting for
+photometric errors and a small distance spread.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DISTANCE_MODULUS</span> <span class="o">=</span> <span class="n">stream_config</span><span class="p">[</span><span class="s2">&quot;distance_modulus&quot;</span><span class="p">][</span><span class="s2">&quot;center&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+<span class="n">AGE</span> <span class="o">=</span> <span class="n">stream_config</span><span class="p">[</span><span class="s2">&quot;isochrone&quot;</span><span class="p">][</span><span class="s2">&quot;age&quot;</span><span class="p">]</span>
+<span class="n">METALLICITY</span> <span class="o">=</span> <span class="n">stream_config</span><span class="p">[</span><span class="s2">&quot;isochrone&quot;</span><span class="p">][</span><span class="s2">&quot;z&quot;</span><span class="p">]</span>
+
+<span class="c1"># Creating match filter shape in color-magnitude space</span>
+<span class="n">polygon_vertices</span> <span class="o">=</span> <span class="n">build_match_filter</span><span class="p">(</span>
+    <span class="n">distance_modulus</span><span class="o">=</span><span class="n">DISTANCE_MODULUS</span><span class="p">,</span>
+    <span class="n">age</span><span class="o">=</span><span class="n">AGE</span><span class="p">,</span>
+    <span class="n">metallicity</span><span class="o">=</span><span class="n">METALLICITY</span><span class="p">,</span>
+    <span class="n">survey</span><span class="o">=</span><span class="s2">&quot;lsst&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Selecting stars in the stream and background catalogs that are inside the match filter polygon</span>
+<span class="n">stream_in_mf</span> <span class="o">=</span> <span class="n">is_in_match_filter</span><span class="p">(</span>
+    <span class="n">stream_detected</span><span class="p">[</span><span class="s2">&quot;lsst_yr1_g_obs&quot;</span><span class="p">],</span>
+    <span class="n">stream_detected</span><span class="p">[</span><span class="s2">&quot;lsst_yr1_r_obs&quot;</span><span class="p">],</span>
+    <span class="n">polygon_vertices</span><span class="o">=</span><span class="n">polygon_vertices</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;Stream selected by match filter: </span><span class="si">{</span><span class="n">stream_in_mf</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stream_detected</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">stream_in_mf</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)&quot;</span>
+<span class="p">)</span>
+
+<span class="n">bg_in_mf</span> <span class="o">=</span> <span class="n">is_in_match_filter</span><span class="p">(</span>
+    <span class="n">bg_catalog</span><span class="p">[</span><span class="s2">&quot;lsst_yr1_g_obs&quot;</span><span class="p">],</span>
+    <span class="n">bg_catalog</span><span class="p">[</span><span class="s2">&quot;lsst_yr1_r_obs&quot;</span><span class="p">],</span>
+    <span class="n">polygon_vertices</span><span class="o">=</span><span class="n">polygon_vertices</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;Background selected: </span><span class="si">{</span><span class="n">bg_in_mf</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bg_catalog</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span>
+    <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">bg_in_mf</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Stream selected by match filter: 9364 / 10499 (89.2%)
+Background selected: 1187213 / 12497466 (9.5%)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Combine the stream and background catalogs into a single DataFrame</span>
+<span class="n">combined</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">stream_detected</span><span class="p">[</span><span class="n">stream_in_mf</span><span class="p">],</span>
+        <span class="n">bg_catalog</span><span class="p">[</span><span class="n">bg_in_mf</span><span class="p">],</span>
+    <span class="p">],</span>
+    <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="step-5-colormagnitude-diagrams">
+<h2>Step 5 — Color–magnitude diagrams<a class="headerlink" href="#step-5-colormagnitude-diagrams" title="Link to this heading">#</a></h2>
+<p>Left: the injected stream stars (detected) with the match filter polygon.
+Right: stream + background together, to show how the filter isolates
+the stream’s stellar locus from the bulk of the background.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">COLOR_RANGE</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
+<span class="n">MAG_RANGE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">27</span><span class="p">)</span>
+<span class="n">N_BINS</span> <span class="o">=</span> <span class="mi">70</span>
+
+<span class="n">g_str</span> <span class="o">=</span> <span class="n">stream_detected</span><span class="p">[</span><span class="s2">&quot;lsst_yr1_g_obs&quot;</span><span class="p">]</span>
+<span class="n">r_str</span> <span class="o">=</span> <span class="n">stream_detected</span><span class="p">[</span><span class="s2">&quot;lsst_yr1_r_obs&quot;</span><span class="p">]</span>
+<span class="n">g_bg</span> <span class="o">=</span> <span class="n">bg_catalog</span><span class="p">[</span><span class="s2">&quot;lsst_yr1_g_obs&quot;</span><span class="p">]</span>
+<span class="n">r_bg</span> <span class="o">=</span> <span class="n">bg_catalog</span><span class="p">[</span><span class="s2">&quot;lsst_yr1_r_obs&quot;</span><span class="p">]</span>
+
+<span class="n">mf_patch_kw</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Match filter&quot;</span>
+<span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># --- Left: stream only ---</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">hist2d</span><span class="p">(</span>
+    <span class="n">g_str</span> <span class="o">-</span> <span class="n">r_str</span><span class="p">,</span>
+    <span class="n">g_str</span><span class="p">,</span>
+    <span class="n">bins</span><span class="o">=</span><span class="n">N_BINS</span><span class="p">,</span>
+    <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">COLOR_RANGE</span><span class="p">,</span> <span class="n">MAG_RANGE</span><span class="p">],</span>
+    <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(),</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Blues&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">mpatches</span><span class="o">.</span><span class="n">PathPatch</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">polygon_vertices</span><span class="p">),</span> <span class="o">**</span><span class="n">mf_patch_kw</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">*</span><span class="n">COLOR_RANGE</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">MAG_RANGE</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">MAG_RANGE</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;g - r&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;g (mag)&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Stream stars (detected)&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="c1"># --- Right: stream + background ---</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist2d</span><span class="p">(</span>
+    <span class="n">g_bg</span> <span class="o">-</span> <span class="n">r_bg</span><span class="p">,</span>
+    <span class="n">g_bg</span><span class="p">,</span>
+    <span class="n">bins</span><span class="o">=</span><span class="n">N_BINS</span><span class="p">,</span>
+    <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">COLOR_RANGE</span><span class="p">,</span> <span class="n">MAG_RANGE</span><span class="p">],</span>
+    <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(),</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Greys&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hist2d</span><span class="p">(</span>
+    <span class="n">g_str</span> <span class="o">-</span> <span class="n">r_str</span><span class="p">,</span>
+    <span class="n">g_str</span><span class="p">,</span>
+    <span class="n">bins</span><span class="o">=</span><span class="n">N_BINS</span><span class="p">,</span>
+    <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">COLOR_RANGE</span><span class="p">,</span> <span class="n">MAG_RANGE</span><span class="p">],</span>
+    <span class="n">norm</span><span class="o">=</span><span class="n">LogNorm</span><span class="p">(),</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Blues&quot;</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">mpatches</span><span class="o">.</span><span class="n">PathPatch</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">polygon_vertices</span><span class="p">),</span> <span class="o">**</span><span class="n">mf_patch_kw</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">*</span><span class="n">COLOR_RANGE</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;g - r&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Stream + Background&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+    <span class="n">a</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">MAG_RANGE</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">MAG_RANGE</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Invert y axis</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/0780bcd22cdcf5954701b12e28cd82f868f54e5980ed2b40a9741805e5e5c76d.png" src="../_images/0780bcd22cdcf5954701b12e28cd82f868f54e5980ed2b40a9741805e5e5c76d.png" />
+</div>
+</div>
+</section>
+<section id="step-6-2-d-sky-maps">
+<h2>Step 6 — 2-D sky maps<a class="headerlink" href="#step-6-2-d-sky-maps" title="Link to this heading">#</a></h2>
+<p>The stream is placed along the great-circle frame defined in Step 1.  The
+background star counts per HEALPix pixel reflect the actual LSST depth at
+each sky position — note how the density changes along the Dec gradient,
+which runs from <code class="docutils literal notranslate"><span class="pre">+20°</span></code> (phi1 ≈ −20°) to <code class="docutils literal notranslate"><span class="pre">−20°</span></code> (phi1 ≈ +20°) in this frame.
+This spatial depth variation is automatically taken into account by the
+background generator.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_healpix_counts</span><span class="p">(</span>
+    <span class="n">stream_detected</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">],</span>
+    <span class="n">stream_detected</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">],</span>
+    <span class="n">nside</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Stream stars (detected)&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/614e02f5c92e0a1a58d07e9f1d96ddd196cc9198b7c7753b58e375272e919ce3.png" src="../_images/614e02f5c92e0a1a58d07e9f1d96ddd196cc9198b7c7753b58e375272e919ce3.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gals_cut</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">combined</span><span class="p">[</span><span class="s2">&quot;lsst_yr1_g_obs&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">25.0</span>
+<span class="p">)</span>  <span class="c1"># Remove some galaxies and inhomogeneities imprinted by the survey depth variations</span>
+<span class="n">plot_healpix_counts</span><span class="p">(</span>
+    <span class="n">combined</span><span class="p">[</span><span class="n">gals_cut</span><span class="p">][</span><span class="s2">&quot;ra&quot;</span><span class="p">],</span>
+    <span class="n">combined</span><span class="p">[</span><span class="n">gals_cut</span><span class="p">][</span><span class="s2">&quot;dec&quot;</span><span class="p">],</span>
+    <span class="n">nside</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Stream + Background (after match filter)&quot;</span><span class="p">,</span>
+    <span class="n">vmin</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>
+    <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Greys&quot;</span><span class="p">,</span>
+    <span class="n">norm</span><span class="o">=</span><span class="s2">&quot;log&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/106aa99ef7b3d65822f05a1058ec1b6565562d85b816ed4270c0e2b321644f15.png" src="../_images/106aa99ef7b3d65822f05a1058ec1b6565562d85b816ed4270c0e2b321644f15.png" />
+</div>
+</div>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h2>
+<p>In a few commands we went from a mock stellar stream to a realistic observational
+picture: realistic survey selection, variable survey depth, realistic photometric noise, and a match filter
+that boosts the stream signal relative to the background. This pipeline can then
+easily be used to train stream detection algorithms and more realistic stream analyses on injected simulations.</p>
+<p>You can find more information in the <a class="reference external" href="https://lsstdesc.github.io/streamobs/">full documentation</a>.</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#imports">Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-survey-and-great-circle-frame">Step 1 — Survey and great-circle frame</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-inject-a-stream">Step 2 — Inject a stream</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-generate-background">Step 3 — Generate background</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-apply-the-match-filter">Step 4 — Apply the match filter</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-5-colormagnitude-diagrams">Step 5 — Color–magnitude diagrams</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#step-6-2-d-sky-maps">Step 6 — 2-D sky maps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By DESC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, DESC.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

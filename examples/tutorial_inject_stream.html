@@ -16,43 +16,39 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'examples/tutorial_inject_stream';</script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="DES" href="../surveys/DES.html" />
+    <link rel="next" title="Multi-survey CMDs: LSST + Roman" href="multisurvey_cmd.html" />
     <link rel="prev" title="Streamobs: generate stream mocks" href="tutorial_generate_datamocks.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -68,8 +64,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../search.html"
       method="get">
@@ -77,6 +84,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -84,8 +92,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -101,8 +109,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -132,11 +139,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -154,6 +165,7 @@
 
 
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Injecting stream mocks into a survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey_cmd.html">Multi-survey CMDs: LSST + Roman</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
@@ -162,16 +174,26 @@
 <li class="toctree-l1"><a class="reference internal" href="../surveys/LSST.html">LSST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../surveys/Roman.html">Roman</a></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background generation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../background_light.html">Light method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../background_injection.html">Injection method</a></li>
+</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../modifying_streamobs.html">Contributing to StreamObs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../new_survey.html">Adding a New Photometric Survey</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../build_background_resources.html">Building background resources</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../streamobs.functions.html">streamobs.functions module</a></li>
@@ -193,14 +215,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -283,7 +300,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -297,17 +314,25 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
 </div></div>
@@ -355,7 +380,7 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="injecting-stream-mocks-into-a-survey">
+  <section class="tex2jax_ignore mathjax_ignore" id="injecting-stream-mocks-into-a-survey">
 <h1>Injecting stream mocks into a survey<a class="headerlink" href="#injecting-stream-mocks-into-a-survey" title="Link to this heading">#</a></h1>
 <p>This short tutorial shows how to:</p>
 <ul class="simple">
@@ -391,7 +416,7 @@
 <p>We load LSST yr5 once; the data is cached for efficiency (bands, depth maps, extinction, completeness, and photometric error models).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lsst_yr4</span><span class="o">=</span> <span class="n">surveys</span><span class="o">.</span><span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">survey</span> <span class="o">=</span> <span class="s1">&#39;lsst&#39;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s1">&#39;yr4&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lsst_yr4</span> <span class="o">=</span> <span class="n">surveys</span><span class="o">.</span><span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">survey</span><span class="o">=</span><span class="s2">&quot;lsst&quot;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s2">&quot;yr4&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -402,9 +427,9 @@
 ======================================================================
 LOADING SURVEY DATA FILES
 ======================================================================
-Survey data directory: /astro/store/shire/pferguso/software/streamobs/streamobs/../data/surveys/lsst_yr4
+Survey data directory: /Users/pelissier/Documents/Codes/packages/streamobs/streamobs/../data/surveys/lsst_yr4
 
-Fallback directory for shared data files: /astro/store/shire/pferguso/software/streamobs/streamobs/../data/others
+Fallback directory for shared data files: /Users/pelissier/Documents/Codes/packages/streamobs/streamobs/../data/others
 
 Available bands: g, i, r, u, y, z
 
@@ -483,26 +508,26 @@ SURVEY DATA LOADED SUCCESSFULLY
 <p>Both depend on magnitude relative to the local limit (delta_mag = mag - maglim). We can visualize them for the r-band at a chosen magnitude limit.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mag_r_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mag_r_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">maglim_r_dc2</span> <span class="o">=</span> <span class="mf">26.8</span>
-<span class="n">completeness_val</span> <span class="o">=</span> <span class="n">lsst_yr4</span><span class="o">.</span><span class="n">get_completeness</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">mag_r_test</span><span class="p">,</span> <span class="n">maglim_r_dc2</span><span class="p">)</span>
-<span class="n">mag_error_val</span> <span class="o">=</span> <span class="n">lsst_yr4</span><span class="o">.</span><span class="n">get_photo_error</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">mag_r_test</span><span class="p">,</span> <span class="n">maglim_r_dc2</span><span class="p">)</span>
+<span class="n">completeness_val</span> <span class="o">=</span> <span class="n">lsst_yr4</span><span class="o">.</span><span class="n">get_completeness</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">mag_r_test</span><span class="p">,</span> <span class="n">maglim_r_dc2</span><span class="p">)</span>
+<span class="n">mag_error_val</span> <span class="o">=</span> <span class="n">lsst_yr4</span><span class="o">.</span><span class="n">get_photo_error</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">mag_r_test</span><span class="p">,</span> <span class="n">maglim_r_dc2</span><span class="p">)</span>
 
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mag_r_test</span><span class="p">,</span> <span class="n">completeness_val</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Completeness&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">maglim_r_dc2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Magnitude Limit&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Apparent r-band magnitude&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Completeness&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;LSST DC2 Completeness Function&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mag_r_test</span><span class="p">,</span> <span class="n">completeness_val</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Completeness&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">maglim_r_dc2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Magnitude Limit&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Apparent r-band magnitude&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Completeness&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;LSST DC2 Completeness Function&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>  
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mag_r_test</span><span class="p">,</span> <span class="n">mag_error_val</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Photometric Error&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">maglim_r_dc2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Magnitude Limit&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Apparent r-band magnitude&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Photometric Error (mag)&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;LSST DC2 Photometric Error Model&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mag_r_test</span><span class="p">,</span> <span class="n">mag_error_val</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Photometric Error&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;orange&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">maglim_r_dc2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Magnitude Limit&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Apparent r-band magnitude&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Photometric Error (mag)&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;LSST DC2 Photometric Error Model&quot;</span><span class="p">)</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -510,7 +535,7 @@ SURVEY DATA LOADED SUCCESSFULLY
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/920947100d68ff0ffd8b3b4b0ccaf9385b3a2690e118937874889ed36856a88c.png" src="../_images/920947100d68ff0ffd8b3b4b0ccaf9385b3a2690e118937874889ed36856a88c.png" />
+<img alt="../_images/fa02550dc3adbc75fec0a392b5343ba724d75865899d66e3e6175c62360c467a.png" src="../_images/fa02550dc3adbc75fec0a392b5343ba724d75865899d66e3e6175c62360c467a.png" />
 </div>
 </div>
 </section>
@@ -521,16 +546,20 @@ To force reloading of a survey, you must clear the cache first.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Once a survey has been loaded once, it can be reused directly from the cache</span>
-<span class="n">lsst_yr4</span> <span class="o">=</span> <span class="n">surveys</span><span class="o">.</span><span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">survey</span> <span class="o">=</span> <span class="s1">&#39;lsst&#39;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s1">&#39;yr4&#39;</span><span class="p">)</span> <span class="c1"># reuses the cached survey object</span>
+<span class="n">lsst_yr4</span> <span class="o">=</span> <span class="n">surveys</span><span class="o">.</span><span class="n">Survey</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+    <span class="n">survey</span><span class="o">=</span><span class="s2">&quot;lsst&quot;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s2">&quot;yr4&quot;</span>
+<span class="p">)</span>  <span class="c1"># reuses the cached survey object</span>
 
 <span class="c1"># Check the cache content</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Current cache content: &quot;</span><span class="p">,</span> <span class="n">surveys</span><span class="o">.</span><span class="n">SurveyFactory</span><span class="o">.</span><span class="n">list_cached_surveys</span><span class="p">())</span>
 
-<span class="n">surveys</span><span class="o">.</span><span class="n">SurveyFactory</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">(</span><span class="n">survey</span> <span class="o">=</span> <span class="s1">&#39;lsst&#39;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s1">&#39;yr4&#39;</span><span class="p">)</span>
+<span class="n">surveys</span><span class="o">.</span><span class="n">SurveyFactory</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">(</span><span class="n">survey</span><span class="o">=</span><span class="s2">&quot;lsst&quot;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="s2">&quot;yr4&quot;</span><span class="p">)</span>
 <span class="c1"># surveys.SurveyFactory.clear_cache(survey = &#39;lsst&#39;) # to clear all releases of &#39;lsst&#39;</span>
 <span class="c1"># surveys.SurveyFactory.clear_cache() # to clear the entire cache</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cache content after clearing &#39;lsst&#39;: &quot;</span><span class="p">,</span> <span class="n">surveys</span><span class="o">.</span><span class="n">SurveyFactory</span><span class="o">.</span><span class="n">list_cached_surveys</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;Cache content after clearing &#39;lsst&#39;: &quot;</span><span class="p">,</span> <span class="n">surveys</span><span class="o">.</span><span class="n">SurveyFactory</span><span class="o">.</span><span class="n">list_cached_surveys</span><span class="p">()</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -565,9 +594,9 @@ Cache content after clearing &#39;lsst&#39;:  []
 ======================================================================
 LOADING SURVEY DATA FILES
 ======================================================================
-Survey data directory: /astro/store/shire/pferguso/software/streamobs/streamobs/../data/surveys/lsst_yr4
+Survey data directory: /Users/pelissier/Documents/Codes/packages/streamobs/streamobs/../data/surveys/lsst_yr4
 
-Fallback directory for shared data files: /astro/store/shire/pferguso/software/streamobs/streamobs/../data/others
+Fallback directory for shared data files: /Users/pelissier/Documents/Codes/packages/streamobs/streamobs/../data/others
 
 Available bands: g, i, r, u, y, z
 
@@ -692,28 +721,36 @@ SURVEY DATA LOADED SUCCESSFULLY
 <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
 <span class="c1"># Replace with your actual data</span>
-<span class="n">data_test</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s1">&#39;phi1&#39;</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span>
-    <span class="s1">&#39;phi2&#39;</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span>
-<span class="p">})</span>
+<span class="n">data_test</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;phi1&quot;</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span>
+        <span class="s2">&quot;phi2&quot;</span><span class="p">:</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span>
+    <span class="p">}</span>
+<span class="p">)</span>
 
 
-<span class="c1"># Since our data set does not have magnitudes, we need to provide an isochrone and distance model </span>
+<span class="c1"># Since our data set does not have magnitudes, we need to provide an isochrone and distance model</span>
 <span class="c1"># - cf tutorial_generate_datamocks.ipynb</span>
 <span class="c1"># This step can be skipped if the input data already has magnitudes in the desired bands</span>
 
-<span class="n">isochrone_config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;isochrone&#39;</span><span class="p">:{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Marigo2017&#39;</span><span class="p">,</span> <span class="c1"># isochrone set name</span>
-                          <span class="s1">&#39;survey&#39;</span><span class="p">:</span> <span class="s1">&#39;lsst&#39;</span><span class="p">,</span> <span class="c1"># survey for filter set</span>
-                          <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mf">12.0</span><span class="p">,</span> <span class="c1"># Age in Gyr of the population</span>
-                          <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mf">0.0006</span><span class="p">,</span> <span class="c1"># Metallicity of the population</span>
-                          <span class="s1">&#39;band_1&#39;</span><span class="p">:</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="c1"># first band for color-magnitude</span>
-                          <span class="s1">&#39;band_2&#39;</span><span class="p">:</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="c1"># second band for color-magnitude</span>
-                          <span class="s1">&#39;band_1_detection&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+<span class="n">isochrone_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;isochrone&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Marigo2017&quot;</span><span class="p">,</span>  <span class="c1"># isochrone set name</span>
+        <span class="s2">&quot;survey&quot;</span><span class="p">:</span> <span class="s2">&quot;lsst&quot;</span><span class="p">,</span>  <span class="c1"># survey for filter set</span>
+        <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mf">12.0</span><span class="p">,</span>  <span class="c1"># Age in Gyr of the population</span>
+        <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="mf">0.0006</span><span class="p">,</span>  <span class="c1"># Metallicity of the population</span>
+        <span class="s2">&quot;band_1&quot;</span><span class="p">:</span> <span class="s2">&quot;g&quot;</span><span class="p">,</span>  <span class="c1"># first band for color-magnitude</span>
+        <span class="s2">&quot;band_2&quot;</span><span class="p">:</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span>  <span class="c1"># second band for color-magnitude</span>
+        <span class="s2">&quot;band_1_detection&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">},</span>
 <span class="p">}</span>
 
-<span class="n">distance_modulus_config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;distance_modulus&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;center&#39;</span><span class="p">:</span>  <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Constant&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">16.5</span><span class="p">},</span> 
-                                 <span class="s1">&#39;spread&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;Constant&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span> 
-                                <span class="p">}}</span>
+<span class="n">distance_modulus_config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;distance_modulus&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;center&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">16.5</span><span class="p">},</span>
+        <span class="s2">&quot;spread&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Constant&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
 <span class="n">stream_config</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">isochrone_config</span><span class="p">,</span> <span class="o">**</span><span class="n">distance_modulus_config</span><span class="p">}</span>
 </pre></div>
@@ -722,12 +759,22 @@ SURVEY DATA LOADED SUCCESSFULLY
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mask_type</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;footprint&#39;</span><span class="p">,</span> <span class="s1">&#39;ebv&#39;</span><span class="p">]</span> <span class="c1"># Restrict to survey footprint and apply extinction mask</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mask_type</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;footprint&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ebv&quot;</span><span class="p">,</span>
+<span class="p">]</span>  <span class="c1"># Restrict to survey footprint and apply extinction mask</span>
 
 <span class="c1"># By default the bands used for detection are (g and r)</span>
 <span class="c1"># You can also add perfect_galstarsep=True to get bolean flag related to</span>
 <span class="c1"># detection only (no classification).</span>
-<span class="n">injected_data_full</span> <span class="o">=</span> <span class="n">stream_injector</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="n">data_test</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">mask_type</span><span class="o">=</span><span class="n">mask_type</span><span class="p">,</span> <span class="n">stream_config</span><span class="o">=</span><span class="n">stream_config</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">perfect_galstarsep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">injected_data_full</span> <span class="o">=</span> <span class="n">stream_injector</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span>
+    <span class="n">data_test</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+    <span class="n">mask_type</span><span class="o">=</span><span class="n">mask_type</span><span class="p">,</span>
+    <span class="n">stream_config</span><span class="o">=</span><span class="n">stream_config</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">perfect_galstarsep</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -738,19 +785,15 @@ Building new mask for [&#39;ebv&#39;, &#39;footprint&#39;]...
   Resampling ebv from nside=512 to nside=128
 ✓ Mask created: valid pixels fraction = 0.5
   Cached with key: (&#39;lsst&#39;, (&#39;ebv&#39;, &#39;footprint&#39;), 0.2)
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Found suitable great circle frame after 2 trials with 100.00% points inside the mask.
+Found suitable great circle frame after 2 trials with 100.00% points inside the mask.
 Applying dust correction for r-band on observed magnitudes.
 Applying dust correction for g-band on observed magnitudes.
+Applying detection cut on g-band with SNR &gt;= 5.0
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Applying detection cut on g-band with SNR &gt;= 5.0
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/astro/store/shiren/conda-envs/stream_team/envs/streamobs/lib/python3.14/site-packages/pandas/core/arraylike.py:402: RuntimeWarning: invalid value encountered in log10
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/opt/anaconda3/envs/streamsim_dev/lib/python3.11/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
   result = getattr(ufunc, method)(*inputs, **kwargs)
-/astro/store/shiren/conda-envs/stream_team/envs/streamobs/lib/python3.14/site-packages/pandas/core/arraylike.py:402: RuntimeWarning: invalid value encountered in log10
+/opt/anaconda3/envs/streamsim_dev/lib/python3.11/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
   result = getattr(ufunc, method)(*inputs, **kwargs)
 </pre></div>
 </div>
@@ -767,7 +810,7 @@ Applying dust correction for g-band on observed magnitudes.
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Index([&#39;phi1&#39;, &#39;phi2&#39;, &#39;dist&#39;, &#39;lsst_g_true&#39;, &#39;lsst_r_true&#39;, &#39;ra&#39;, &#39;dec&#39;,
        &#39;lsst_yr4_r_obs&#39;, &#39;lsst_yr4_r_err&#39;, &#39;lsst_yr4_g_obs&#39;, &#39;lsst_yr4_g_err&#39;,
        &#39;lsst_yr4_flag_observed&#39;, &#39;lsst_yr4_flag_perfect_galstarsep&#39;],
-      dtype=&#39;str&#39;)
+      dtype=&#39;object&#39;)
 </pre></div>
 </div>
 <div class="output text_html"><div>
@@ -809,13 +852,13 @@ Applying dust correction for g-band on observed magnitudes.
       <td>2.739560</td>
       <td>-0.875874</td>
       <td>16.5</td>
-      <td>32.328966</td>
-      <td>30.569154</td>
+      <td>30.303281</td>
+      <td>28.747045</td>
       <td>309.295394</td>
       <td>-10.749590</td>
-      <td>28.854136</td>
-      <td>10.000001</td>
-      <td>29.643407</td>
+      <td>27.944501</td>
+      <td>2.839885</td>
+      <td>27.617721</td>
       <td>10.000001</td>
       <td>False</td>
       <td>False</td>
@@ -825,13 +868,13 @@ Applying dust correction for g-band on observed magnitudes.
       <td>-0.611216</td>
       <td>-0.083476</td>
       <td>16.5</td>
-      <td>30.636139</td>
-      <td>29.044023</td>
+      <td>29.728133</td>
+      <td>28.237061</td>
       <td>310.268379</td>
       <td>-14.058956</td>
-      <td>27.692093</td>
-      <td>4.434801</td>
-      <td>29.476972</td>
+      <td>27.607724</td>
+      <td>1.408137</td>
+      <td>28.568965</td>
       <td>10.000001</td>
       <td>False</td>
       <td>False</td>
@@ -841,29 +884,29 @@ Applying dust correction for g-band on observed magnitudes.
       <td>3.585979</td>
       <td>-0.741940</td>
       <td>16.5</td>
-      <td>22.057757</td>
-      <td>21.739372</td>
+      <td>28.225967</td>
+      <td>26.902620</td>
       <td>308.757294</td>
       <td>-10.075699</td>
-      <td>21.739197</td>
-      <td>0.006071</td>
-      <td>22.060185</td>
-      <td>0.006775</td>
-      <td>True</td>
-      <td>True</td>
+      <td>26.892841</td>
+      <td>0.341235</td>
+      <td>28.845171</td>
+      <td>1.318412</td>
+      <td>False</td>
+      <td>False</td>
     </tr>
     <tr>
       <th>3</th>
       <td>1.973680</td>
       <td>-0.695347</td>
       <td>16.5</td>
-      <td>31.024475</td>
-      <td>29.390498</td>
+      <td>29.385597</td>
+      <td>27.935658</td>
       <td>309.516004</td>
       <td>-11.506027</td>
       <td>BAD_MAG</td>
-      <td>10.000001</td>
-      <td>28.36586</td>
+      <td>1.061085</td>
+      <td>26.726983</td>
       <td>10.000001</td>
       <td>False</td>
       <td>False</td>
@@ -873,14 +916,14 @@ Applying dust correction for g-band on observed magnitudes.
       <td>-4.058227</td>
       <td>0.264566</td>
       <td>16.5</td>
-      <td>28.807770</td>
-      <td>27.426669</td>
+      <td>28.291092</td>
+      <td>26.960775</td>
       <td>311.724304</td>
       <td>-17.227233</td>
-      <td>26.727859</td>
-      <td>0.669861</td>
-      <td>27.541542</td>
-      <td>4.024381</td>
+      <td>26.483797</td>
+      <td>0.409048</td>
+      <td>27.505773</td>
+      <td>1.932585</td>
       <td>False</td>
       <td>False</td>
     </tr>
@@ -891,19 +934,19 @@ Applying dust correction for g-band on observed magnitudes.
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you want to work only with detected and classified stars</span>
-<span class="n">detected_data</span> <span class="o">=</span> <span class="n">injected_data_full</span><span class="p">[</span><span class="n">injected_data_full</span><span class="p">[</span><span class="s1">&#39;lsst_yr4_flag_observed&#39;</span><span class="p">]]</span>
+<span class="n">detected_data</span> <span class="o">=</span> <span class="n">injected_data_full</span><span class="p">[</span><span class="n">injected_data_full</span><span class="p">[</span><span class="s2">&quot;lsst_yr4_flag_observed&quot;</span><span class="p">]]</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">detected_data</span><span class="p">),</span> <span class="s2">&quot;stars detected out of&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">injected_data_full</span><span class="p">))</span>
 
 <span class="c1"># When applying the perfect galstar separation, all detected stars are</span>
 <span class="c1"># classified as stars, so we have:</span>
-<span class="n">classified_data</span> <span class="o">=</span> <span class="n">injected_data_full</span><span class="p">[</span><span class="n">injected_data_full</span><span class="p">[</span><span class="s1">&#39;lsst_yr4_flag_observed&#39;</span><span class="p">]]</span>
+<span class="n">classified_data</span> <span class="o">=</span> <span class="n">injected_data_full</span><span class="p">[</span><span class="n">injected_data_full</span><span class="p">[</span><span class="s2">&quot;lsst_yr4_flag_observed&quot;</span><span class="p">]]</span>
 <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">classified_data</span><span class="p">),</span> <span class="s2">&quot;stars classified as stars out of&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">injected_data_full</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>182 stars detected out of 1000
-182 stars classified as stars out of 1000
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>160 stars detected out of 1000
+160 stars classified as stars out of 1000
 </pre></div>
 </div>
 </div>
@@ -921,7 +964,7 @@ Applying dust correction for g-band on observed magnitudes.
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(&lt;Figure size 800x500 with 2 Axes&gt;, &lt;Axes: &gt;)
 </pre></div>
 </div>
-<img alt="../_images/0fd570529aaaf8250ad99c9e2d6292b1068bbeec6b6f03213e485c7cc01f59cc.png" src="../_images/0fd570529aaaf8250ad99c9e2d6292b1068bbeec6b6f03213e485c7cc01f59cc.png" />
+<img alt="../_images/a122a4bd875b80e8c4211c7f567a4ebafe7c328113c1dd17d767505524b36f9e.png" src="../_images/a122a4bd875b80e8c4211c7f567a4ebafe7c328113c1dd17d767505524b36f9e.png" />
 </div>
 </div>
 <p>The stream lies entirely within the chosen mask.</p>
@@ -930,13 +973,13 @@ Applying dust correction for g-band on observed magnitudes.
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_inject</span>
 
 <span class="c1"># Plot results</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_inject</span><span class="p">(</span><span class="n">injected_data_full</span><span class="p">,</span> <span class="n">lsst_yr4</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">],</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_inject</span><span class="p">(</span><span class="n">injected_data_full</span><span class="p">,</span> <span class="n">lsst_yr4</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">],</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/e7e0eb4462e7eea16e529861a19a244b735a7cc9c881a118c52aefe8e77b3631.png" src="../_images/e7e0eb4462e7eea16e529861a19a244b735a7cc9c881a118c52aefe8e77b3631.png" />
+<img alt="../_images/57b79e17f4404b245f9c7f92cfd67e01a62a6121f4b753a8bb0faf54e929388d.png" src="../_images/57b79e17f4404b245f9c7f92cfd67e01a62a6121f4b753a8bb0faf54e929388d.png" />
 </div>
 </div>
 </section>
@@ -946,7 +989,11 @@ Applying dust correction for g-band on observed magnitudes.
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let&#39;s build a data set containing only (ra, dec) coordinates</span>
-<span class="n">data_set_radec</span> <span class="o">=</span> <span class="n">injected_data_full</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">injected_data_full</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;dist&#39;</span><span class="p">]])</span>
+<span class="n">data_set_radec</span> <span class="o">=</span> <span class="n">injected_data_full</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">injected_data_full</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">,</span> <span class="s2">&quot;dec&quot;</span><span class="p">,</span> <span class="s2">&quot;dist&quot;</span><span class="p">]</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 <span class="n">data_set_radec</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1012,7 +1059,13 @@ Applying dust correction for g-band on observed magnitudes.
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">injected_data</span> <span class="o">=</span> <span class="n">stream_injector</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="n">data_set_radec</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">mask_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stream_config</span><span class="o">=</span><span class="n">isochrone_config</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">injected_data</span> <span class="o">=</span> <span class="n">stream_injector</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span>
+    <span class="n">data_set_radec</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+    <span class="n">mask_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">stream_config</span><span class="o">=</span><span class="n">isochrone_config</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="n">injected_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1025,9 +1078,9 @@ Applying dust correction for g-band on observed magnitudes.
 Applying detection cut on g-band with SNR &gt;= 5.0
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/astro/store/shiren/conda-envs/stream_team/envs/streamobs/lib/python3.14/site-packages/pandas/core/arraylike.py:402: RuntimeWarning: invalid value encountered in log10
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/opt/anaconda3/envs/streamsim_dev/lib/python3.11/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
   result = getattr(ufunc, method)(*inputs, **kwargs)
-/astro/store/shiren/conda-envs/stream_team/envs/streamobs/lib/python3.14/site-packages/pandas/core/arraylike.py:402: RuntimeWarning: invalid value encountered in log10
+/opt/anaconda3/envs/streamsim_dev/lib/python3.11/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
   result = getattr(ufunc, method)(*inputs, **kwargs)
 </pre></div>
 </div>
@@ -1067,25 +1120,25 @@ Applying detection cut on g-band with SNR &gt;= 5.0
       <td>16.5</td>
       <td>309.295394</td>
       <td>-10.749590</td>
-      <td>28.225967</td>
-      <td>26.902620</td>
-      <td>26.764177</td>
-      <td>0.352966</td>
-      <td>BAD_MAG</td>
-      <td>1.069716</td>
-      <td>False</td>
+      <td>22.307507</td>
+      <td>21.958448</td>
+      <td>21.955709</td>
+      <td>0.006555</td>
+      <td>22.315017</td>
+      <td>0.007065</td>
+      <td>True</td>
     </tr>
     <tr>
       <th>1</th>
       <td>16.5</td>
       <td>310.268379</td>
       <td>-14.058956</td>
-      <td>27.275481</td>
-      <td>26.096385</td>
-      <td>25.99584</td>
-      <td>0.173962</td>
-      <td>27.174552</td>
-      <td>0.484952</td>
+      <td>31.246381</td>
+      <td>29.588484</td>
+      <td>27.543322</td>
+      <td>10.000001</td>
+      <td>30.050405</td>
+      <td>10.000001</td>
       <td>False</td>
     </tr>
     <tr>
@@ -1093,12 +1146,12 @@ Applying detection cut on g-band with SNR &gt;= 5.0
       <td>16.5</td>
       <td>308.757294</td>
       <td>-10.075699</td>
-      <td>27.549356</td>
-      <td>26.327356</td>
-      <td>26.321674</td>
-      <td>0.197877</td>
-      <td>27.489263</td>
-      <td>0.588899</td>
+      <td>28.129792</td>
+      <td>26.820850</td>
+      <td>26.811599</td>
+      <td>0.322715</td>
+      <td>28.015569</td>
+      <td>1.148001</td>
       <td>False</td>
     </tr>
     <tr>
@@ -1106,12 +1159,12 @@ Applying detection cut on g-band with SNR &gt;= 5.0
       <td>16.5</td>
       <td>309.516004</td>
       <td>-11.506027</td>
-      <td>32.487390</td>
-      <td>30.713502</td>
-      <td>BAD_MAG</td>
-      <td>10.000001</td>
-      <td>31.482682</td>
-      <td>10.000001</td>
+      <td>29.071968</td>
+      <td>27.661313</td>
+      <td>29.617694</td>
+      <td>0.836162</td>
+      <td>28.525326</td>
+      <td>4.297743</td>
       <td>False</td>
     </tr>
     <tr>
@@ -1119,12 +1172,12 @@ Applying detection cut on g-band with SNR &gt;= 5.0
       <td>16.5</td>
       <td>311.724304</td>
       <td>-17.227233</td>
-      <td>28.355676</td>
-      <td>27.019012</td>
-      <td>26.529163</td>
-      <td>0.422768</td>
-      <td>26.465912</td>
-      <td>2.120820</td>
+      <td>30.192328</td>
+      <td>28.648052</td>
+      <td>26.836684</td>
+      <td>3.190956</td>
+      <td>26.780333</td>
+      <td>10.000001</td>
       <td>False</td>
     </tr>
   </tbody>
@@ -1138,7 +1191,13 @@ Applying detection cut on g-band with SNR &gt;= 5.0
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let&#39;s build a dataset containing (ra, dec) coordinates and magnitudes</span>
-<span class="n">data_set_radecmag</span> <span class="o">=</span> <span class="n">injected_data_full</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">injected_data_full</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ra&#39;</span><span class="p">,</span> <span class="s1">&#39;dec&#39;</span><span class="p">,</span> <span class="s1">&#39;lsst_g_true&#39;</span><span class="p">,</span> <span class="s1">&#39;lsst_r_true&#39;</span><span class="p">]])</span>
+<span class="n">data_set_radecmag</span> <span class="o">=</span> <span class="n">injected_data_full</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">col</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">injected_data_full</span><span class="o">.</span><span class="n">columns</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">,</span> <span class="s2">&quot;dec&quot;</span><span class="p">,</span> <span class="s2">&quot;lsst_g_true&quot;</span><span class="p">,</span> <span class="s2">&quot;lsst_r_true&quot;</span><span class="p">]</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 <span class="n">data_set_radecmag</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1171,36 +1230,36 @@ Applying detection cut on g-band with SNR &gt;= 5.0
   <tbody>
     <tr>
       <th>0</th>
-      <td>32.328966</td>
-      <td>30.569154</td>
+      <td>30.303281</td>
+      <td>28.747045</td>
       <td>309.295394</td>
       <td>-10.749590</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>30.636139</td>
-      <td>29.044023</td>
+      <td>29.728133</td>
+      <td>28.237061</td>
       <td>310.268379</td>
       <td>-14.058956</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>22.057757</td>
-      <td>21.739372</td>
+      <td>28.225967</td>
+      <td>26.902620</td>
       <td>308.757294</td>
       <td>-10.075699</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>31.024475</td>
-      <td>29.390498</td>
+      <td>29.385597</td>
+      <td>27.935658</td>
       <td>309.516004</td>
       <td>-11.506027</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>28.807770</td>
-      <td>27.426669</td>
+      <td>28.291092</td>
+      <td>26.960775</td>
       <td>311.724304</td>
       <td>-17.227233</td>
     </tr>
@@ -1210,7 +1269,9 @@ Applying detection cut on g-band with SNR &gt;= 5.0
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">injected_data</span> <span class="o">=</span> <span class="n">stream_injector</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="n">data_set_radecmag</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">mask_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stream_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">injected_data</span> <span class="o">=</span> <span class="n">stream_injector</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span>
+    <span class="n">data_set_radecmag</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">mask_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stream_config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
 <span class="n">injected_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1221,9 +1282,9 @@ Applying dust correction for g-band on observed magnitudes.
 Applying detection cut on g-band with SNR &gt;= 5.0
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/astro/store/shiren/conda-envs/stream_team/envs/streamobs/lib/python3.14/site-packages/pandas/core/arraylike.py:402: RuntimeWarning: invalid value encountered in log10
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/opt/anaconda3/envs/streamsim_dev/lib/python3.11/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
   result = getattr(ufunc, method)(*inputs, **kwargs)
-/astro/store/shiren/conda-envs/stream_team/envs/streamobs/lib/python3.14/site-packages/pandas/core/arraylike.py:402: RuntimeWarning: invalid value encountered in log10
+/opt/anaconda3/envs/streamsim_dev/lib/python3.11/site-packages/pandas/core/arraylike.py:399: RuntimeWarning: invalid value encountered in log10
   result = getattr(ufunc, method)(*inputs, **kwargs)
 </pre></div>
 </div>
@@ -1259,62 +1320,62 @@ Applying detection cut on g-band with SNR &gt;= 5.0
   <tbody>
     <tr>
       <th>0</th>
-      <td>32.328966</td>
-      <td>30.569154</td>
+      <td>30.303281</td>
+      <td>28.747045</td>
       <td>309.295394</td>
       <td>-10.749590</td>
-      <td>28.854136</td>
-      <td>10.000001</td>
+      <td>27.944501</td>
+      <td>2.839885</td>
       <td>BAD_MAG</td>
       <td>10.000001</td>
       <td>False</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>30.636139</td>
-      <td>29.044023</td>
+      <td>29.728133</td>
+      <td>28.237061</td>
       <td>310.268379</td>
       <td>-14.058956</td>
-      <td>27.692093</td>
-      <td>4.434801</td>
-      <td>29.440163</td>
+      <td>27.607724</td>
+      <td>1.408137</td>
+      <td>28.532156</td>
       <td>10.000001</td>
       <td>False</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>22.057757</td>
-      <td>21.739372</td>
+      <td>28.225967</td>
+      <td>26.902620</td>
       <td>308.757294</td>
       <td>-10.075699</td>
-      <td>21.739197</td>
-      <td>0.006071</td>
-      <td>22.057046</td>
-      <td>0.006775</td>
-      <td>True</td>
+      <td>26.892841</td>
+      <td>0.341235</td>
+      <td>28.095768</td>
+      <td>1.318412</td>
+      <td>False</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>31.024475</td>
-      <td>29.390498</td>
+      <td>29.385597</td>
+      <td>27.935658</td>
       <td>309.516004</td>
       <td>-11.506027</td>
       <td>BAD_MAG</td>
-      <td>10.000001</td>
-      <td>30.019766</td>
+      <td>1.061085</td>
+      <td>28.380889</td>
       <td>10.000001</td>
       <td>False</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>28.807770</td>
-      <td>27.426669</td>
+      <td>28.291092</td>
+      <td>26.960775</td>
       <td>311.724304</td>
       <td>-17.227233</td>
-      <td>26.727859</td>
-      <td>0.669861</td>
-      <td>26.316567</td>
-      <td>4.024381</td>
+      <td>26.483797</td>
+      <td>0.409048</td>
+      <td>26.483845</td>
+      <td>1.932585</td>
       <td>False</td>
     </tr>
   </tbody>
@@ -1335,7 +1396,7 @@ Applying detection cut on g-band with SNR &gt;= 5.0
         <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
     <span class="c1"># Compute 1D density along phi1</span>
-    <span class="n">phi1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;phi1&#39;</span><span class="p">])</span>
+    <span class="n">phi1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;phi1&quot;</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">phi1_bin_edges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">phi1_bin_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">phi1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">phi1</span><span class="p">),</span> <span class="mi">50</span><span class="p">)</span>
     <span class="n">counts</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">phi1</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">phi1_bin_edges</span><span class="p">)</span>
@@ -1343,20 +1404,21 @@ Applying detection cut on g-band with SNR &gt;= 5.0
 
     <span class="c1"># Compute power spectrum using cross-spectral density method from scipy</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">csd</span>
+
     <span class="n">fs</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">bin_centers</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bin_centers</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># Sampling frequency</span>
     <span class="n">k</span><span class="p">,</span> <span class="n">Pxx</span> <span class="o">=</span> <span class="n">csd</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">nperseg</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">counts</span><span class="p">),</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
 
     <span class="c1"># Plot density</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bin_centers</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">drawstyle</span><span class="o">=</span><span class="s1">&#39;steps-mid&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;phi1 (deg)&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Star counts&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;1D Density along phi1&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bin_centers</span><span class="p">,</span> <span class="n">counts</span><span class="p">,</span> <span class="n">drawstyle</span><span class="o">=</span><span class="s2">&quot;steps-mid&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;phi1 (deg)&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Star counts&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;1D Density along phi1&quot;</span><span class="p">)</span>
 
     <span class="c1"># Plot power spectrum (1/k, P(k)) in log-log scale</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">k</span><span class="p">,</span> <span class="n">Pxx</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;1/k (deg)&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;P(k)&#39;</span><span class="p">)</span>
-    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Power Spectrum of 1D Density&#39;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">k</span><span class="p">,</span> <span class="n">Pxx</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;1/k (deg)&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;P(k)&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Power Spectrum of 1D Density&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ax</span><span class="o">.</span><span class="n">flatten</span><span class="p">():</span>
         <span class="n">a</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
@@ -1371,18 +1433,26 @@ Applying detection cut on g-band with SNR &gt;= 5.0
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare the power spectrum of all stars vs. detected stars only</span>
 <span class="n">phi1_bin_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_power_spectrum</span><span class="p">(</span><span class="n">injected_data_full</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;All data&#39;</span><span class="p">,</span> <span class="n">phi1_bin_edges</span><span class="o">=</span><span class="n">phi1_bin_edges</span><span class="p">)</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_power_spectrum</span><span class="p">(</span><span class="n">injected_data_full</span><span class="p">[</span><span class="n">injected_data_full</span><span class="p">[</span><span class="s1">&#39;lsst_yr4_flag_observed&#39;</span><span class="p">]],</span> <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Detected data&#39;</span><span class="p">,</span> <span class="n">phi1_bin_edges</span><span class="o">=</span><span class="n">phi1_bin_edges</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_power_spectrum</span><span class="p">(</span>
+    <span class="n">injected_data_full</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;All data&quot;</span><span class="p">,</span> <span class="n">phi1_bin_edges</span><span class="o">=</span><span class="n">phi1_bin_edges</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_power_spectrum</span><span class="p">(</span>
+    <span class="n">injected_data_full</span><span class="p">[</span><span class="n">injected_data_full</span><span class="p">[</span><span class="s2">&quot;lsst_yr4_flag_observed&quot;</span><span class="p">]],</span>
+    <span class="n">fig</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span>
+    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Detected data&quot;</span><span class="p">,</span>
+    <span class="n">phi1_bin_edges</span><span class="o">=</span><span class="n">phi1_bin_edges</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/local/tmp/ipykernel_2248288/3483219967.py:25: RuntimeWarning: divide by zero encountered in divide
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/var/folders/9j/zk4h50g505d635j69p9tgwbc0000gp/T/ipykernel_10726/3483219967.py:25: RuntimeWarning: divide by zero encountered in divide
   ax[1].loglog(1/k, Pxx, label=label)
 </pre></div>
 </div>
-<img alt="../_images/e2bf6cc0fcc00895edcdada0ae69a2ef1ab35086403bc5d2964b244c01610f93.png" src="../_images/e2bf6cc0fcc00895edcdada0ae69a2ef1ab35086403bc5d2964b244c01610f93.png" />
+<img alt="../_images/f3a1acbc4546d6ea4fc505cdd6acb0a6205e56efbfc8c1cfd073c5e7424f7f13.png" src="../_images/f3a1acbc4546d6ea4fc505cdd6acb0a6205e56efbfc8c1cfd073c5e7424f7f13.png" />
 </div>
 </div>
 </section>
@@ -1414,11 +1484,11 @@ Applying detection cut on g-band with SNR &gt;= 5.0
       </div>
     </a>
     <a class="right-next"
-       href="../surveys/DES.html"
+       href="multisurvey_cmd.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">DES</p>
+        <p class="prev-next-title">Multi-survey CMDs: LSST + Roman</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1429,16 +1499,14 @@ Applying detection cut on g-band with SNR &gt;= 5.0
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-  <div class="sidebar-secondary-item"><div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
   </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+  <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-the-survey-cached">1) Load the survey (cached)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#completeness-and-photometric-error">Completeness and photometric error</a></li>
@@ -1502,8 +1570,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>
