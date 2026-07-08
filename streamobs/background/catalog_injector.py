@@ -18,14 +18,18 @@ class BackgroundCatalogInjector:
 
     Parameters
     ----------
-    survey : Survey
-        Survey instance to inject into.
+    survey : Survey or list of Survey
+        Survey (or surveys, for multi-survey injection) to inject into.
+        Passed through to :class:`~streamobs.observed.StreamInjector`, which
+        handles both forms; with multiple surveys the output carries each
+        survey's namespaced columns.
     **kwargs
         Forwarded to :class:`~streamobs.observed.StreamInjector`.
 
     Examples
     --------
     >>> injector = BackgroundCatalogInjector(survey)
+    >>> injector = BackgroundCatalogInjector([survey_lsst, survey_roman])
     >>> obs_stars = injector.inject_stars(catalog_df, bands=['g', 'r'])
     >>> obs_gals  = injector.inject_galaxies(catalog_df, bands=['g', 'r'])
     """

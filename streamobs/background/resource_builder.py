@@ -32,6 +32,10 @@ class BackgroundResourceBuilder:
         Survey identifier (e.g. ``'lsst'``).
     release : str, optional
         Survey release string (e.g. ``'yr5'``).
+    rng : numpy.random.Generator, int, or None, optional
+        Random generator (or seed) used when the input catalog has no
+        positions and ra/dec must be sampled.  Pass a seed for reproducible
+        background resources.
     **kwargs
         Forwarded to :meth:`~streamobs.surveys.SurveyFactory.create_survey`.
 
@@ -52,10 +56,13 @@ class BackgroundResourceBuilder:
     >>> builder.save(storage)
     """
 
-    def __init__(self, survey_name="lsst", release=None, surveys=None, **kwargs):
+    def __init__(
+        self, survey_name="lsst", release=None, surveys=None, rng=None, **kwargs
+    ):
         self.survey_name = survey_name
         self.release = release
         self._surveys_spec = surveys  # None → use survey_name + release
+        self._rng = np.random.default_rng(rng)
         self._kwargs = kwargs
         # Nested dict: {source_type: {(maglim_b2, maglim_b1): config_dict}}
         self.resources: dict = {}
@@ -481,9 +488,9 @@ class BackgroundResourceBuilder:
                 # toward dec=0.  RA is sampled over the projection-corrected
                 # extent so the enclosed solid angle equals area_ref_deg2.
                 cat["dec"] = np.degrees(
-                    np.arcsin(np.random.uniform(0.0, sin_max, size=len(cat)))
+                    np.arcsin(self._rng.uniform(0.0, sin_max, size=len(cat)))
                 )
-                cat["ra"] = np.random.uniform(0.0, ra_extent_deg, size=len(cat))
+                cat["ra"] = self._rng.uniform(0.0, ra_extent_deg, size=len(cat))
             else:
                 raise ValueError(
                     "Positions are required when the survey is not uniform."

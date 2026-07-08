@@ -110,9 +110,8 @@ class StreamModel(ConfigurableModel):
         """Build isochrone model from ``config['isochrone']`` if present."""
         config = self._config.get("isochrone")
         if config:
-            iso = IsochroneModel(config)
-            iso.create_isochrone(config)
-            return iso
+            # IsochroneModel.__init__ already builds the ugali isochrone grids
+            return IsochroneModel(config)
         else:
             return None
 

@@ -1617,7 +1617,7 @@ class SurveyFactory:
         else:
             raise ValueError(
                 f"Invalid selection '{selection}'. Must be 'detected', 'classified', "
-                "'both', or 'missclassified'."
+                "'both', 'missclassified', or 'detected_missclassified'."
             )
 
         # Extend efficiency to bright end (force to zero at saturation)
