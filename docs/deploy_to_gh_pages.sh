@@ -89,6 +89,12 @@ echo ""
 echo "Switching to gh-pages branch..."
 git checkout gh-pages
 
+# Sync with remote so we don't build on top of a stale local branch
+# (gh-pages only holds generated output, so a hard reset to the remote tip is safe)
+echo "Syncing local gh-pages with origin/gh-pages..."
+git fetch origin gh-pages
+git reset --hard origin/gh-pages
+
 # Remove old files (except .git and .nojekyll)
 echo "Removing old documentation files..."
 find . -maxdepth 1 ! -name '.git' ! -name '.nojekyll' ! -name '.' -exec rm -rf {} \; 2>/dev/null || true
