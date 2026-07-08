@@ -1594,8 +1594,21 @@ class SurveyFactory:
         - Faint stars (beyond data): Returns efficiency = 0.0.
         - The saturation parameter is automatically passed from the survey object.
         """
-        # Load photometric error data
-        data = np.genfromtxt(filename, delimiter=",", names=True)
+        # Load the efficiency table. Product CSVs may carry a multi-line "#"
+        # provenance comment whose LAST line is the column header (np.savetxt
+        # with a multi-line header string); genfromtxt(names=True) only parses
+        # the header correctly when it is the first line seen, so skip the
+        # leading comment lines down to it.
+        with open(filename) as fh:
+            n_comment = 0
+            for line in fh:
+                if line.startswith("#"):
+                    n_comment += 1
+                else:
+                    break
+        data = np.genfromtxt(
+            filename, delimiter=",", names=True, skip_header=max(0, n_comment - 1)
+        )
         delta_mags = data["delta_mag"]
 
         # Select efficiency column based on user choice
@@ -1677,8 +1690,21 @@ class SurveyFactory:
         - Faint stars (beyond data): Returns log10(error) = 1.0 (error = 10 mag).
         - The saturation parameter is automatically passed from the survey object.
         """
-        # Load photometric error data
-        data = np.genfromtxt(filename, delimiter=",", names=True)
+        # Load the efficiency table. Product CSVs may carry a multi-line "#"
+        # provenance comment whose LAST line is the column header (np.savetxt
+        # with a multi-line header string); genfromtxt(names=True) only parses
+        # the header correctly when it is the first line seen, so skip the
+        # leading comment lines down to it.
+        with open(filename) as fh:
+            n_comment = 0
+            for line in fh:
+                if line.startswith("#"):
+                    n_comment += 1
+                else:
+                    break
+        data = np.genfromtxt(
+            filename, delimiter=",", names=True, skip_header=max(0, n_comment - 1)
+        )
         delta_mags = data["delta_mag"]
         log_errors = data["log_mag_err"]
 

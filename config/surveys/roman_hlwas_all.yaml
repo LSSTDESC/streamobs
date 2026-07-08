@@ -44,6 +44,11 @@ survey_files:
     # Selection-function tables (DC2-derived, symlinked from data/surveys/roman_dc2/
     # by scripts/roman/build_hlwas_maglim_maps.py; reused for all HLWAS tiers)
     completeness: roman_stellar_efficiency_cutf158.csv
+    # Galaxy misclassification: fraction of compact (size_true < 0.3") true
+    # galaxies detected (S/N>5) yet classified as stars by the F158 size
+    # envelope, vs delta_mag = mag_F158 - maglim_F158
+    # (built by scripts/roman/build_roman_galaxy_misclass.py).
+    gal_misclassification: roman_galaxy_misclass_cutf158.csv
     completeness_band: F158   # completeness derived in the F158 band
 
     # Two-curve photometric error model:
