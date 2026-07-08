@@ -36,14 +36,18 @@ from scipy.interpolate import PchipInterpolator
 # --------------------------------------------------------------------------- #
 # Classifier hyper-parameters (the single authoritative copy).
 # --------------------------------------------------------------------------- #
-BAND = "H158"                       # mock column name == Roman F158
-FLAG_CUT = 1                        # flags < 1, i.e. flags == 0
-ENV_PURITY = 0.875                  # COMPLETE target (DES Y6 0<=EXT_XGB<=1)
-ENV_N_SIG = 4.0                     # bright-end cap: half-width <= N_SIG * stellar log-size scatter
-ENV_MAX_D = 0.6                     # absolute ceiling on the half-width (dex), safety only
-ENV_FREEZE = 24.0                   # hold Delta constant (fixed dex offset) faintward of this mag
-ENV_UP_KNEE, ENV_UP_BRIGHT, ENV_UP_BRIGHT_VAL = 23.0, 18.0, 0.15  # upper-bound bright flare (arcsec @ mag)
-SN_GATE = 1.0857 / 5.0              # magerr at S/N=5; gate the envelope fit to S/N>5 detections
+BAND = "H158"  # mock column name == Roman F158
+FLAG_CUT = 1  # flags < 1, i.e. flags == 0
+ENV_PURITY = 0.875  # COMPLETE target (DES Y6 0<=EXT_XGB<=1)
+ENV_N_SIG = 4.0  # bright-end cap: half-width <= N_SIG * stellar log-size scatter
+ENV_MAX_D = 0.6  # absolute ceiling on the half-width (dex), safety only
+ENV_FREEZE = 24.0  # hold Delta constant (fixed dex offset) faintward of this mag
+ENV_UP_KNEE, ENV_UP_BRIGHT, ENV_UP_BRIGHT_VAL = (
+    23.0,
+    18.0,
+    0.15,
+)  # upper-bound bright flare (arcsec @ mag)
+SN_GATE = 1.0857 / 5.0  # magerr at S/N=5; gate the envelope fit to S/N>5 detections
 
 
 def size_sb(df) -> np.ndarray:
@@ -52,10 +56,11 @@ def size_sb(df) -> np.ndarray:
     ``size_sb = sqrt(lambda1) * 3600"``, where ``lambda1`` is the larger eigenvalue
     of the windowed second-moment matrix (``x2/y2/xywin_world_H158``).
     """
-    x2 = np.asarray(df["x2win_world_H158"]); y2 = np.asarray(df["y2win_world_H158"])
+    x2 = np.asarray(df["x2win_world_H158"])
+    y2 = np.asarray(df["y2win_world_H158"])
     xy = np.asarray(df["xywin_world_H158"])
     half = 0.5 * (x2 + y2)
-    root = np.sqrt(np.clip((0.5 * (x2 - y2)) ** 2 + xy ** 2, 0, None))
+    root = np.sqrt(np.clip((0.5 * (x2 - y2)) ** 2 + xy**2, 0, None))
     return np.sqrt(np.clip(half + root, 0, None)) * 3600.0
 
 
@@ -76,6 +81,7 @@ class EnvelopeClassifier:
     locus_mag, locus_logsize : np.ndarray
         Bin midpoints and the fitted log10 stellar-locus size (for plotting the locus).
     """
+
     classify: Callable
     env_upper_size: Callable
     env_lower_size: Callable
@@ -100,58 +106,92 @@ def build_env_classifier(cat: pd.DataFrame) -> EnvelopeClassifier:
     cat = cat.copy()
     if "size_sb" not in cat.columns:
         cat["size_sb"] = size_sb(cat)
-    base = (cat["matched"] & (cat["flags"] < FLAG_CUT)
-            & np.isfinite(cat["size_sb"]) & (cat["size_sb"] > 0)
-            & np.isfinite(cat[f"mag_auto_{BAND}"])
-            & (cat[f"magerr_auto_{BAND}"] < SN_GATE))
+    base = (
+        cat["matched"]
+        & (cat["flags"] < FLAG_CUT)
+        & np.isfinite(cat["size_sb"])
+        & (cat["size_sb"] > 0)
+        & np.isfinite(cat[f"mag_auto_{BAND}"])
+        & (cat[f"magerr_auto_{BAND}"] < SN_GATE)
+    )
 
     # stellar locus L0(mag) and robust log-size scatter sigma_L(mag) from clean true stars
     fit = cat.loc[base & (cat["truth_gal_star"] == 1)]
-    Ls = np.log10(fit["size_sb"].values); ms = fit[f"mag_auto_{BAND}"].values
-    lb = np.arange(17, 27.51, 0.25); lm = 0.5 * (lb[1:] + lb[:-1])
-    mu = np.full(lm.size, np.nan); sg = np.full(lm.size, np.nan)
+    Ls = np.log10(fit["size_sb"].values)
+    ms = fit[f"mag_auto_{BAND}"].values
+    lb = np.arange(17, 27.51, 0.25)
+    lm = 0.5 * (lb[1:] + lb[:-1])
+    mu = np.full(lm.size, np.nan)
+    sg = np.full(lm.size, np.nan)
     sbin = np.digitize(ms, lb) - 1
     for i in range(lm.size):
-        v = Ls[sbin == i]; v = v[np.isfinite(v)]
+        v = Ls[sbin == i]
+        v = v[np.isfinite(v)]
         if v.size >= 30:
-            mu[i] = np.median(v); sg[i] = 1.4826 * np.median(np.abs(v - mu[i])) + 1e-9
-    sm = lambda a: pd.Series(a).rolling(3, center=True, min_periods=1).median().ffill().bfill().to_numpy()
+            mu[i] = np.median(v)
+            sg[i] = 1.4826 * np.median(np.abs(v - mu[i])) + 1e-9
+    sm = (
+        lambda a: pd.Series(a)
+        .rolling(3, center=True, min_periods=1)
+        .median()
+        .ffill()
+        .bfill()
+        .to_numpy()
+    )
     mu, sg = sm(mu), sm(sg)
     L0_at = lambda m: np.interp(m, lm, mu)
     sigL_at = lambda m: np.interp(m, lm, sg)
     locus_lin = lambda m: 10.0 ** L0_at(m)
 
     # per-mag purity-target half-width Delta(mag): single-peaked, PCHIP-splined, frozen >24
-    eb = np.arange(18, 28.01, 0.25); emid = 0.5 * (eb[1:] + eb[:-1])
+    eb = np.arange(18, 28.01, 0.25)
+    emid = 0.5 * (eb[1:] + eb[:-1])
     ebi = lambda m: np.digitize(m, eb) - 1
     fit_all = cat.loc[base]
     m_all = fit_all[f"mag_auto_{BAND}"].values
     d_all = np.abs(np.log10(fit_all["size_sb"].values) - L0_at(m_all))
-    lab_all = (fit_all["truth_gal_star"].values == 1)
+    lab_all = fit_all["truth_gal_star"].values == 1
 
     def fit_delta(X, keep=0.02):
-        mb = ebi(m_all); Dc = np.full(emid.size, np.nan)
+        mb = ebi(m_all)
+        Dc = np.full(emid.size, np.nan)
         for i in range(emid.size):
-            mm = mb == i; ns = lab_all[mm].sum()
+            mm = mb == i
+            ns = lab_all[mm].sum()
             if mm.sum() < 200 or ns < 10:
                 continue
-            ds = d_all[mm]; ls = lab_all[mm]
-            qs = np.unique(np.nanquantile(ds, np.linspace(0, 1, 200))); best = qs[0]
-            for t in qs[::-1]:                                       # loose (wide) -> tight
-                s = ds < t; n = s.sum()
+            ds = d_all[mm]
+            ls = lab_all[mm]
+            qs = np.unique(np.nanquantile(ds, np.linspace(0, 1, 200)))
+            best = qs[0]
+            for t in qs[::-1]:  # loose (wide) -> tight
+                s = ds < t
+                n = s.sum()
                 if n == 0:
                     continue
                 if (s & ls).sum() / n >= X and (s & ls).sum() / ns >= keep:
-                    best = t; break
+                    best = t
+                    break
             Dc[i] = best
-        valid = np.isfinite(Dc); xb = emid[valid]
-        cap = np.minimum(ENV_N_SIG * sigL_at(xb), ENV_MAX_D)         # bright end tracks stellar scatter
+        valid = np.isfinite(Dc)
+        xb = emid[valid]
+        cap = np.minimum(
+            ENV_N_SIG * sigL_at(xb), ENV_MAX_D
+        )  # bright end tracks stellar scatter
         Db = np.minimum(np.clip(Dc[valid], 0, None), cap)
-        Db = pd.Series(Db).rolling(5, center=True, min_periods=1).median().to_numpy().copy()
-        pk = int(np.argmax(Db))                                      # single-peaked: rise then only tighten
-        Db[:pk + 1] = np.maximum.accumulate(Db[:pk + 1]); Db[pk:] = np.minimum.accumulate(Db[pk:])
-        pch = PchipInterpolator(xb, Db); hi = min(ENV_FREEZE, xb[-1])
-        return (lambda m: pch(np.clip(np.asarray(m, float), xb[0], hi)))
+        Db = (
+            pd.Series(Db)
+            .rolling(5, center=True, min_periods=1)
+            .median()
+            .to_numpy()
+            .copy()
+        )
+        pk = int(np.argmax(Db))  # single-peaked: rise then only tighten
+        Db[: pk + 1] = np.maximum.accumulate(Db[: pk + 1])
+        Db[pk:] = np.minimum.accumulate(Db[pk:])
+        pch = PchipInterpolator(xb, Db)
+        hi = min(ENV_FREEZE, xb[-1])
+        return lambda m: pch(np.clip(np.asarray(m, float), xb[0], hi))
 
     Dfun = fit_delta(ENV_PURITY)
 
@@ -171,7 +211,11 @@ def build_env_classifier(cat: pd.DataFrame) -> EnvelopeClassifier:
 
     def classify_star(df):
         """Envelope star classifier: True where lower(mag) < size_sb < upper(mag)."""
-        sz = df["size_sb"].values if "size_sb" in getattr(df, "columns", []) else size_sb(df)
+        sz = (
+            df["size_sb"].values
+            if "size_sb" in getattr(df, "columns", [])
+            else size_sb(df)
+        )
         m = df[f"mag_auto_{BAND}"].values
         with np.errstate(invalid="ignore"):
             ok = np.isfinite(sz) & (sz > 0) & np.isfinite(m)

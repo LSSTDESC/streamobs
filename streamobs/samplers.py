@@ -51,7 +51,7 @@ def sampler_factory(type_, **kwargs):
     return sampler
 
 
-def inverse_transform_sample(vals, pdf, size):
+def inverse_transform_sample(vals, pdf, size, rng=None):
     """Perform inverse transform sampling
 
     Parameters
@@ -59,18 +59,22 @@ def inverse_transform_sample(vals, pdf, size):
     vals: value at which pdf is measured
     pdf : pdf value
     size : number of stars to sample
+    rng : numpy.random.Generator, optional
+        Random number generator used to draw the underlying uniform variates.
+        A fresh, unseeded generator is created if omitted.
 
     Returns
     -------
     samples : samples of vals
     """
+    rng = np.random.default_rng() if rng is None else rng
 
     cdf = np.cumsum(pdf)
     cdf /= cdf[-1]
     fn = scipy.interpolate.interp1d(
         cdf, list(range(0, len(cdf))), bounds_error=False, fill_value=0.0
     )
-    x_new = scipy.stats.uniform.rvs(size=np.rint(size).astype(int))
+    x_new = rng.uniform(size=np.rint(size).astype(int))
     index = np.rint(fn(x_new)).astype(int)
     return vals[index]
 
@@ -87,7 +91,7 @@ class Sampler(object):
     def pdf(self, values):
         return self._pdf(values)
 
-    def sample(self, size):
+    def sample(self, size, rng=None):
         pass
 
 
@@ -98,8 +102,8 @@ class ScipySampler(Sampler):
     def pdf(self, x):
         return self._rv.pdf(x)
 
-    def sample(self, size, random_state=None):
-        return self._rv.rvs(size=int(size), random_state=random_state)
+    def sample(self, size, rng=None):
+        return self._rv.rvs(size=int(size), random_state=rng)
 
 
 class UniformSampler(ScipySampler):
@@ -158,10 +162,10 @@ class InterpolationSampler(Sampler):
         """
         self.interp = Interpolation(xvals, yvals, **kwargs)
 
-    def sample(self, size, nsteps=1e5):
+    def sample(self, size, nsteps=1e5, rng=None):
         xvals = np.linspace(self.interp.xmin, self.interp.xmax, int(nsteps))
         pdf = self.interp(xvals)
-        return inverse_transform_sample(xvals, pdf, size=size)
+        return inverse_transform_sample(xvals, pdf, size=size, rng=rng)
 
 
 class FileInterpolationSampler(InterpolationSampler):
