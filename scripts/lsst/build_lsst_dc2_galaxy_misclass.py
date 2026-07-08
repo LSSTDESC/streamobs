@@ -43,16 +43,33 @@ MISCLASS_CSV = OUT_DIR / "lsst_dc2_galaxy_misclass_cutr.csv"
 
 BAND = "r"
 SNR_DEPTH = 5
-EXT_CUT = 0.5                    # extendedness < cut -> classified as point source (star)
-TRUTH_GAL = 1                    # truth_type: 1=galaxy, 2=star, 3=SN
-MATCH_RADIUS = 1.0               # arcsec
-GAL_SIZE_MAX = 0.3               # arcsec: "compact" galaxy cut (matches Roman)
+EXT_CUT = 0.5  # extendedness < cut -> classified as point source (star)
+TRUTH_GAL = 1  # truth_type: 1=galaxy, 2=star, 3=SN
+MATCH_RADIUS = 1.0  # arcsec
+GAL_SIZE_MAX = 0.3  # arcsec: "compact" galaxy cut (matches Roman)
 NSIDE = 1024
 MAG_BINS = np.arange(15.0, 29.0 + 1e-6, 0.25)
 MAG_MID = 0.5 * (MAG_BINS[1:] + MAG_BINS[:-1])
+EFF_DELTA_MIN = -11.0  # drop curve rows with delta_mag < this (bright/saturation cut)
 
-OBJ_COLS = ["ra", "dec", f"mag_{BAND}", f"psFlux_{BAND}", f"psFluxErr_{BAND}", "extendedness", "clean"]
-TRU_COLS = ["ra", "dec", "truth_type", "id", "cosmodc2_id", "cosmodc2_hp", f"mag_{BAND}"]
+OBJ_COLS = [
+    "ra",
+    "dec",
+    f"mag_{BAND}",
+    f"psFlux_{BAND}",
+    f"psFluxErr_{BAND}",
+    "extendedness",
+    "clean",
+]
+TRU_COLS = [
+    "ra",
+    "dec",
+    "truth_type",
+    "id",
+    "cosmodc2_id",
+    "cosmodc2_hp",
+    f"mag_{BAND}",
+]
 
 
 def load_cols(path, cols):
@@ -97,8 +114,18 @@ def build_matched_galaxies(n_tracts=0):
         g = obj[obj["matched"] & (obj["truth_type"] == TRUTH_GAL) & det_ok].copy()
         # one detection per true galaxy (nearest), like the Roman builder
         g = g.sort_values("match_sep").drop_duplicates("truth_id")
-        frames.append(g[["truth_id", "cosmodc2_id", "cosmodc2_hp",
-                         f"truth_mag_{BAND}", f"mag_{BAND}", "extendedness"]])
+        frames.append(
+            g[
+                [
+                    "truth_id",
+                    "cosmodc2_id",
+                    "cosmodc2_hp",
+                    f"truth_mag_{BAND}",
+                    f"mag_{BAND}",
+                    "extendedness",
+                ]
+            ]
+        )
         print(f"tract {tract}: {len(g):,} detected matched true galaxies")
     return pd.concat(frames, ignore_index=True).drop_duplicates("truth_id")
 
@@ -145,14 +172,18 @@ def main(n_tracts=0, refresh=False):
         sizes = pd.read_parquet(CACHE_SIZE)
     else:
         print("joining cosmoDC2 size_true:")
-        sizes = load_cosmodc2_sizes(gal["cosmodc2_id"].values, gal["cosmodc2_hp"].values)
+        sizes = load_cosmodc2_sizes(
+            gal["cosmodc2_id"].values, gal["cosmodc2_hp"].values
+        )
         if not n_tracts:
             sizes.to_parquet(CACHE_SIZE)
     lut = dict(zip(sizes["cosmodc2_id"].astype("i8"), sizes["size_true"]))
     gal["size_true"] = gal["cosmodc2_id"].astype("i8").map(lut)
     cov = gal["size_true"].notna()
-    print(f"size coverage: {cov.mean():.1%} of matched galaxies "
-          f"({int(cov.sum()):,}/{len(gal):,})")
+    print(
+        f"size coverage: {cov.mean():.1%} of matched galaxies "
+        f"({int(cov.sum()):,}/{len(gal):,})"
+    )
     if cov.sum():
         p = np.percentile(gal.loc[cov, "size_true"], [10, 50, 90]).round(3)
         print(f"size_true p10/50/90 = {p} arcsec")
@@ -161,24 +192,32 @@ def main(n_tracts=0, refresh=False):
     compact = gal["size_true"] < GAL_SIZE_MAX
     mag_true = gal[f"truth_mag_{BAND}"].values
     sel = compact.values & np.isfinite(mag_true)
-    print(f"compact (size<{GAL_SIZE_MAX}\") detected true galaxies: {int(sel.sum()):,}")
+    print(f'compact (size<{GAL_SIZE_MAX}") detected true galaxies: {int(sel.sum()):,}')
 
     mg = mag_true[sel]
-    is_star = (gal["extendedness"].values[sel] < EXT_CUT)   # classified as point source
+    is_star = gal["extendedness"].values[sel] < EXT_CUT  # classified as point source
     n_gal = np.histogram(mg, MAG_BINS)[0]
     n_false = np.histogram(mg[is_star], MAG_BINS)[0]
     with np.errstate(invalid="ignore"):
         misclass_eff = np.where(n_gal >= 20, n_false / np.maximum(n_gal, 1), np.nan)
 
-    tab = pd.DataFrame({
-        "mag_r": MAG_MID,
-        "delta_mag": MAG_MID - MAGLIM_REF,
-        "missclassification_eff": misclass_eff,
-    })
+    tab = pd.DataFrame(
+        {
+            "mag_r": MAG_MID,
+            "delta_mag": MAG_MID - MAGLIM_REF,
+            "missclassification_eff": misclass_eff,
+        }
+    )
     tab = tab[n_gal >= 20].copy().fillna(0.0)
+    # bright cut, matching the stellar efficiency curve convention
+    _bright = tab["delta_mag"] < EFF_DELTA_MIN
+    tab = tab[~_bright].copy()
+    print(
+        f"  dropped {int(_bright.sum())} bins with delta_mag < {EFF_DELTA_MIN} (bright cut)"
+    )
     header = (
         "LSST DC2 galaxy MISCLASSIFICATION efficiency curve\n"
-        f"fraction of COMPACT true galaxies (truth_type==1, cosmoDC2 size_true<{GAL_SIZE_MAX}\")\n"
+        f'fraction of COMPACT true galaxies (truth_type==1, cosmoDC2 size_true<{GAL_SIZE_MAX}")\n'
         "that are DETECTED (S/N>5, clean) yet classified as point sources "
         "(extendedness<0.5), vs r mag.\n"
         f"reference maglim (median of {MAGLIM_MAP.name}) = {MAGLIM_REF:.4f}; "
@@ -188,15 +227,30 @@ def main(n_tracts=0, refresh=False):
     np.savetxt(MISCLASS_CSV, tab.values, delimiter=",", header=header, fmt="%.6f")
     print(f"\nwrote {MISCLASS_CSV.relative_to(REPO)} ({len(tab)} rows)")
     print("\ncurve (mag_r, delta_mag, missclass_eff, N_compact):")
-    full = pd.DataFrame({"mag_r": MAG_MID, "delta_mag": MAG_MID - MAGLIM_REF,
-                         "eff": misclass_eff, "n": n_gal})
+    full = pd.DataFrame(
+        {
+            "mag_r": MAG_MID,
+            "delta_mag": MAG_MID - MAGLIM_REF,
+            "eff": misclass_eff,
+            "n": n_gal,
+        }
+    )
     for _, r in full[full.n >= 20].iterrows():
-        print(f"  r={r.mag_r:6.3f}  delta={r.delta_mag:+6.3f}  eff={r.eff:6.4f}  N={int(r.n):>6}")
+        print(
+            f"  r={r.mag_r:6.3f}  delta={r.delta_mag:+6.3f}  eff={r.eff:6.4f}  N={int(r.n):>6}"
+        )
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--tracts", type=int, default=0, help="limit to first N tracts (0=all; bypasses cache)")
-    ap.add_argument("--refresh", action="store_true", help="rebuild the match + size caches")
+    ap.add_argument(
+        "--tracts",
+        type=int,
+        default=0,
+        help="limit to first N tracts (0=all; bypasses cache)",
+    )
+    ap.add_argument(
+        "--refresh", action="store_true", help="rebuild the match + size caches"
+    )
     args = ap.parse_args()
     main(n_tracts=args.tracts, refresh=args.refresh)

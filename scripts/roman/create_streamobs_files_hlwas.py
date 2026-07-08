@@ -170,8 +170,7 @@ print(
 # cannot drift). We fit it on the matched det->truth catalog and pull the artifacts the
 # products + figures need (the size, the boundaries, the half-width Delta, the stellar locus).
 import roman_star_classifier as rsc
-from roman_star_classifier import \
-    ENV_PURITY  # purity target (figure + class_star-opt)
+from roman_star_classifier import ENV_PURITY  # purity target (figure + class_star-opt)
 from roman_star_classifier import ENV_UP_BRIGHT_VAL  # plot annotations
 from roman_star_classifier import ENV_FREEZE, ENV_UP_BRIGHT, ENV_UP_KNEE
 
@@ -272,6 +271,10 @@ _obs = cat.loc[_cmp, f"mag_auto_{BAND}"].values
 _tru = cat.loc[_cmp, f"truth_mag_{BAND}"].values
 _cs = cat.loc[_cmp, "class_star"].values
 _isstar = cat.loc[_cmp, "truth_gal_star"].values == 1
+
+
+_emid = MAG_MID
+_ebi = lambda x: np.digitize(x, MAG_BINS) - 1  # noqa: E731
 
 
 def _opt_classstar_thr(X=ENV_PURITY, keep=0.02):
@@ -1202,6 +1205,14 @@ def _apply_photoerr_corrections(tab, curve_id, corrections_path):
                 f"delta_mag>={d_min:.3f} -> log_mag_err=max(raw,{v:.4f})  "
                 f"({n_before} bins affected)"
             )
+        elif rule_name == "cut_bright":
+            d_min = float(params["delta_mag_min"])
+            n_drop = int((out["delta_mag"] < d_min).sum())
+            out = out[out["delta_mag"] >= d_min].copy()
+            print(
+                f"  [afterburner] {curve_id}: cut_bright "
+                f"dropped {n_drop} bins with delta_mag < {d_min:.3f}"
+            )
         else:
             print(
                 f"  [afterburner] WARNING: unknown rule '{rule_name}' for curve '{curve_id}' — skipped"
@@ -1276,6 +1287,18 @@ eff_tab = pd.DataFrame(
     }
 )
 eff_tab = eff_tab[n_all >= 20].fillna(0.0)
+
+# Bright cut: the F158 truth-scatter photo-error curve shows a saturation jump at
+# delta_mag ~ -8.8 (scatter inflated brighter than that), so curve rows brighter
+# than -8.7 are dropped entirely — the injector's saturation handling (efficiency
+# forced to zero at delta_saturation, interpolated up to the first curve point)
+# governs brighter magnitudes. Matches the LSST convention (EFF_DELTA_MIN=-11).
+EFF_DELTA_MIN = -8.7
+_bright = eff_tab["delta_mag"] < EFF_DELTA_MIN
+eff_tab = eff_tab[~_bright]
+print(
+    f"  dropped {int(_bright.sum())} bins with delta_mag < {EFF_DELTA_MIN} (bright cut)"
+)
 
 # Zero the detection efficiency in the faint tail (delta_mag > 1, i.e. more than 1 mag
 # fainter than the maglim). The measured values there are a small, noisy 0.05-0.17 from

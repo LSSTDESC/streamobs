@@ -51,24 +51,28 @@ DATA_DIR = Path("/astro/store/shire/stream_team/stream_finding/data/lsst_dc2")
 OUT_DIR = REPO / "data/surveys/lsst_dc2"
 FIG_DIR = REPO / "lsst_dc2_scratch/figs"
 CORRECTIONS_FILE = REPO / "config/surveys/lsst_photoerror_corrections.yaml"
-CACHE = OUT_DIR / "_cache_matched_stars.parquet"        # matched true-star object rows
-CACHE_TS = OUT_DIR / "_cache_truth_stars.parquet"       # truth-star denominator
+CACHE = OUT_DIR / "_cache_matched_stars.parquet"  # matched true-star object rows
+CACHE_TS = OUT_DIR / "_cache_truth_stars.parquet"  # truth-star denominator
 
-REF_BAND = "r"                   # curves keyed to r (applied to g via delta_mag)
-BANDS = ["r", "g"]               # depth maps built for these
-SNR_DEPTH = 5                    # S/N cut and reference depth
-EXT_CUT = 0.5                    # extendedness < cut  -> classified as point source (star)
-TRUTH_STAR, TRUTH_GAL = 2, 1     # truth_type: 1=galaxy, 2=star, 3=SN
-MATCH_RADIUS = 1.0               # arcsec, object -> nearest truth
-NSIDE = 1024                     # output maglim-map resolution (matches Roman)
+REF_BAND = "r"  # curves keyed to r (applied to g via delta_mag)
+BANDS = ["r", "g"]  # depth maps built for these
+SNR_DEPTH = 5  # S/N cut and reference depth
+EXT_CUT = 0.5  # extendedness < cut  -> classified as point source (star)
+TRUTH_STAR, TRUTH_GAL = 2, 1  # truth_type: 1=galaxy, 2=star, 3=SN
+MATCH_RADIUS = 1.0  # arcsec, object -> nearest truth
+NSIDE = 1024  # output maglim-map resolution (matches Roman)
 MAG_BINS = np.arange(15.0, 29.0 + 1e-6, 0.25)
 MAG_MID = 0.5 * (MAG_BINS[1:] + MAG_BINS[:-1])
-SIG_SN5 = 2.5 / np.log(10) / SNR_DEPTH   # magerr at S/N=5 = 0.2171
-DET_EFF_DELTA_MAX = 1.0          # zero detection_eff for delta_mag > this (faint-tail clamp)
+SIG_SN5 = 2.5 / np.log(10) / SNR_DEPTH  # magerr at S/N=5 = 0.2171
+DET_EFF_DELTA_MAX = 1.0  # zero detection_eff for delta_mag > this (faint-tail clamp)
+EFF_DELTA_MIN = -11.0  # drop curve rows with delta_mag < this (bright/saturation cut)
 
-OBJ_COLS = (["ra", "dec", "extendedness", "clean", "blendedness"]
-            + [f"mag_{b}" for b in BANDS] + [f"magerr_{b}" for b in BANDS]
-            + [f"psFlux_{REF_BAND}", f"psFluxErr_{REF_BAND}"])
+OBJ_COLS = (
+    ["ra", "dec", "extendedness", "clean", "blendedness"]
+    + [f"mag_{b}" for b in BANDS]
+    + [f"magerr_{b}" for b in BANDS]
+    + [f"psFlux_{REF_BAND}", f"psFluxErr_{REF_BAND}"]
+)
 TRU_COLS = ["ra", "dec", "truth_type", "id"] + [f"mag_{b}" for b in BANDS]
 
 plt.rcParams.update({"figure.dpi": 110, "font.size": 11})
@@ -114,10 +118,13 @@ def build_matched_catalog(n_tracts=0):
         obj["truth_id"] = tru["id"].values[idx]
         obj_star = obj[obj["matched"] & (obj["truth_type"] == TRUTH_STAR)].copy()
         obj_frames.append(obj_star)
-        truthstar_frames.append(tru.loc[tru["truth_type"] == TRUTH_STAR,
-                                        ["id", f"mag_{REF_BAND}"]].copy())
-        print(f"tract {tract}: {len(obj):,} objs, {obj.matched.mean():.1%} matched; "
-              f"{len(obj_star):,} matched true stars")
+        truthstar_frames.append(
+            tru.loc[tru["truth_type"] == TRUTH_STAR, ["id", f"mag_{REF_BAND}"]].copy()
+        )
+        print(
+            f"tract {tract}: {len(obj):,} objs, {obj.matched.mean():.1%} matched; "
+            f"{len(obj_star):,} matched true stars"
+        )
     cat = pd.concat(obj_frames, ignore_index=True)
     truth_stars = pd.concat(truthstar_frames, ignore_index=True).drop_duplicates("id")
     return cat, truth_stars
@@ -147,14 +154,17 @@ def anchored_maglim_map(band, m5):
     its median equals the truth-based S/N=5 depth ``m5``.  Returns a dense RING
     healpix map (hp.UNSEEN off-footprint)."""
     import healsparse as hsp
+
     src = OUT_DIR / f"supreme_dc2_dr6d_v3_{band}_maglim_psf_wmean.hs"
     m = hsp.HealSparseMap.read(str(src)).degrade(NSIDE, reduction="mean")
-    hpmap = m.generate_healpix_map(nest=False)          # RING, hp.UNSEEN off-footprint
+    hpmap = m.generate_healpix_map(nest=False)  # RING, hp.UNSEEN off-footprint
     cov = (hpmap != hp.UNSEEN) & np.isfinite(hpmap)
     raw_med = float(np.median(hpmap[cov]))
-    hpmap[cov] += m5 - raw_med                          # truth-anchor: median -> m5
-    print(f"  {band}: supreme median={raw_med:.3f} -> truth-anchored {m5:.3f} "
-          f"(shift {m5 - raw_med:+.3f}); {cov.sum():,} pixels @ nside={NSIDE}")
+    hpmap[cov] += m5 - raw_med  # truth-anchor: median -> m5
+    print(
+        f"  {band}: supreme median={raw_med:.3f} -> truth-anchored {m5:.3f} "
+        f"(shift {m5 - raw_med:+.3f}); {cov.sum():,} pixels @ nside={NSIDE}"
+    )
     return hpmap
 
 
@@ -164,7 +174,9 @@ def main(n_tracts=0, refresh=False):
 
     # ---- 1. matched catalog (cached) ------------------------------------
     if CACHE.exists() and CACHE_TS.exists() and not refresh and not n_tracts:
-        print(f"loading cached match from {CACHE.name}, {CACHE_TS.name} (use --refresh to rebuild)")
+        print(
+            f"loading cached match from {CACHE.name}, {CACHE_TS.name} (use --refresh to rebuild)"
+        )
         cat = pd.read_parquet(CACHE)
         truth_stars = pd.read_parquet(CACHE_TS)
     else:
@@ -173,13 +185,15 @@ def main(n_tracts=0, refresh=False):
             cat.to_parquet(CACHE)
             truth_stars.to_parquet(CACHE_TS)
             print(f"cached match -> {CACHE.name}, {CACHE_TS.name}")
-    print(f"\n{len(cat):,} matched true-star object rows; {len(truth_stars):,} unique true stars")
+    print(
+        f"\n{len(cat):,} matched true-star object rows; {len(truth_stars):,} unique true stars"
+    )
 
     sn = cat[f"psFlux_{REF_BAND}"] / cat[f"psFluxErr_{REF_BAND}"]
     clean = cat["clean"].astype(bool)
     det_ok = (sn > SNR_DEPTH) & clean
     is_ptsrc = cat["extendedness"] < EXT_CUT
-    star_ptsrc = is_ptsrc & clean                       # matched true stars are all rows in cat
+    star_ptsrc = is_ptsrc & clean  # matched true stars are all rows in cat
 
     # ---- 2. truth-anchored depth maps (r, g) ----------------------------
     print("\nbuilding truth-anchored maglim maps:")
@@ -194,15 +208,21 @@ def main(n_tracts=0, refresh=False):
 
     mlm_r = maglim_maps[REF_BAND]
     covered = mlm_r != hp.UNSEEN
-    MAGLIM_REF = float(np.median(mlm_r[covered]))        # curves keyed to the r map median
+    MAGLIM_REF = float(np.median(mlm_r[covered]))  # curves keyed to the r map median
     print(f"reference maglim = r map median = {MAGLIM_REF:.3f}")
 
     # ---- 3. detection & classification efficiency (true stars) ----------
-    star_dets = (cat.loc[det_ok, ["truth_id", "match_sep", "extendedness"]]
-                 .sort_values("match_sep").drop_duplicates("truth_id"))
+    star_dets = (
+        cat.loc[det_ok, ["truth_id", "match_sep", "extendedness"]]
+        .sort_values("match_sep")
+        .drop_duplicates("truth_id")
+    )
     detected_ids = set(star_dets["truth_id"].dropna().astype("i8"))
-    classified_ids = set(star_dets.loc[star_dets["extendedness"] < EXT_CUT, "truth_id"]
-                         .dropna().astype("i8"))
+    classified_ids = set(
+        star_dets.loc[star_dets["extendedness"] < EXT_CUT, "truth_id"]
+        .dropna()
+        .astype("i8")
+    )
     ts = truth_stars.copy()
     ts["is_det"] = ts["id"].astype("i8").isin(detected_ids)
     ts["is_cls"] = ts["id"].astype("i8").isin(classified_ids)
@@ -215,12 +235,16 @@ def main(n_tracts=0, refresh=False):
         eff_det = n_det / n_all
         eff_cls = np.where(n_det > 0, n_cls / np.maximum(n_det, 1), np.nan)
         eff_both = n_cls / n_all
-    print(f"efficiency sample: {ok.sum():,} true stars "
-          f"({len(detected_ids):,} detected, {len(classified_ids):,} classified)")
+    print(
+        f"efficiency sample: {ok.sum():,} true stars "
+        f"({len(detected_ids):,} detected, {len(classified_ids):,} classified)"
+    )
 
     # ---- 4. two-curve photo-error (delta keyed to the per-pixel r map) ---
-    pe = cat.loc[star_ptsrc & det_ok,
-                 ["ra", "dec", f"truth_mag_{REF_BAND}", f"mag_{REF_BAND}", f"magerr_{REF_BAND}"]].dropna()
+    pe = cat.loc[
+        star_ptsrc & det_ok,
+        ["ra", "dec", f"truth_mag_{REF_BAND}", f"mag_{REF_BAND}", f"magerr_{REF_BAND}"],
+    ].dropna()
     pix = hp.ang2pix(NSIDE, pe["ra"].values, pe["dec"].values, lonlat=True)
     ml_local = mlm_r[pix]
     good = ml_local != hp.UNSEEN
@@ -244,68 +268,161 @@ def main(n_tracts=0, refresh=False):
     near = (dmid[keep] > -3) & (dmid[keep] < 0.5)
     print("\n" + "=" * 64)
     print("ERROR-INFLATION FACTOR (truth scatter / reported magerr):")
-    print(f"  median over delta_mag in (-3, 0.5): {np.nanmedian(factor[near]):.2f}  "
-          "(Roman F158 ~1.9-2.0; ~1 = well-calibrated)")
+    print(
+        f"  median over delta_mag in (-3, 0.5): {np.nanmedian(factor[near]):.2f}  "
+        "(Roman F158 ~1.9-2.0; ~1 = well-calibrated)"
+    )
     print("=" * 64 + "\n")
 
-    photoerr_tab = pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": log_scatter[keep]})
-    catalog_tab = pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": med_logerr_rep[keep]})
+    photoerr_tab = pd.DataFrame(
+        {"delta_mag": dmid[keep], "log_mag_err": log_scatter[keep]}
+    )
+    catalog_tab = pd.DataFrame(
+        {"delta_mag": dmid[keep], "log_mag_err": med_logerr_rep[keep]}
+    )
 
-    np.savetxt(OUT_DIR / "lsst_dc2_photoerror_r_raw.csv", photoerr_tab.values,
-               delimiter=",", header="delta_mag,log_mag_err", fmt="%.6f")
-    np.savetxt(OUT_DIR / "lsst_dc2_photoerror_r_catalog_raw.csv", catalog_tab.values,
-               delimiter=",", header="delta_mag,log_mag_err", fmt="%.6f")
-    photoerr_clean = _apply_photoerr_corrections(photoerr_tab, "r_sample", CORRECTIONS_FILE)
-    catalog_clean = _apply_photoerr_corrections(catalog_tab, "r_catalog", CORRECTIONS_FILE)
-    np.savetxt(OUT_DIR / "lsst_dc2_photoerror_r.csv", photoerr_clean.values,
-               delimiter=",", header="delta_mag,log_mag_err", fmt="%.6f")
-    np.savetxt(OUT_DIR / "lsst_dc2_photoerror_r_catalog.csv", catalog_clean.values,
-               delimiter=",", header="delta_mag,log_mag_err", fmt="%.6f")
-    print(f"wrote photo-error curves (sample {len(photoerr_clean)} rows + catalog + *_raw)")
+    np.savetxt(
+        OUT_DIR / "lsst_dc2_photoerror_r_raw.csv",
+        photoerr_tab.values,
+        delimiter=",",
+        header="delta_mag,log_mag_err",
+        fmt="%.6f",
+    )
+    np.savetxt(
+        OUT_DIR / "lsst_dc2_photoerror_r_catalog_raw.csv",
+        catalog_tab.values,
+        delimiter=",",
+        header="delta_mag,log_mag_err",
+        fmt="%.6f",
+    )
+    photoerr_clean = _apply_photoerr_corrections(
+        photoerr_tab, "r_sample", CORRECTIONS_FILE
+    )
+    catalog_clean = _apply_photoerr_corrections(
+        catalog_tab, "r_catalog", CORRECTIONS_FILE
+    )
+    np.savetxt(
+        OUT_DIR / "lsst_dc2_photoerror_r.csv",
+        photoerr_clean.values,
+        delimiter=",",
+        header="delta_mag,log_mag_err",
+        fmt="%.6f",
+    )
+    np.savetxt(
+        OUT_DIR / "lsst_dc2_photoerror_r_catalog.csv",
+        catalog_clean.values,
+        delimiter=",",
+        header="delta_mag,log_mag_err",
+        fmt="%.6f",
+    )
+    print(
+        f"wrote photo-error curves (sample {len(photoerr_clean)} rows + catalog + *_raw)"
+    )
 
     # ---- 5. stellar efficiency table ------------------------------------
-    eff_tab = pd.DataFrame({
-        "mag_r": MAG_MID,
-        "delta_mag": MAG_MID - MAGLIM_REF,
-        "detection_eff": eff_det,
-        "classification_eff": eff_cls,
-        "classification_detection_eff": eff_both,
-    })
+    eff_tab = pd.DataFrame(
+        {
+            "mag_r": MAG_MID,
+            "delta_mag": MAG_MID - MAGLIM_REF,
+            "detection_eff": eff_det,
+            "classification_eff": eff_cls,
+            "classification_detection_eff": eff_both,
+        }
+    )
     eff_tab = eff_tab[n_all >= 20].fillna(0.0)
+    # bright cut: drop rows entirely so the injector's saturation handling
+    # (efficiency forced to zero at delta_saturation, interpolated up to the
+    # first curve point) governs brighter magnitudes instead of noisy bins
+    _bright = eff_tab["delta_mag"] < EFF_DELTA_MIN
+    eff_tab = eff_tab[~_bright]
+    print(
+        f"  dropped {int(_bright.sum())} bins with delta_mag < {EFF_DELTA_MIN} (bright cut)"
+    )
     _faint = eff_tab["delta_mag"] > DET_EFF_DELTA_MAX
     eff_tab.loc[_faint, "detection_eff"] = 0.0
     eff_tab.loc[_faint, "classification_detection_eff"] = 0.0
-    print(f"  zeroed detection_eff for {int(_faint.sum())} bins with delta_mag > {DET_EFF_DELTA_MAX}")
-    np.savetxt(OUT_DIR / "lsst_dc2_stellar_efficiency_cutr.csv", eff_tab.values, delimiter=",",
-               header="mag_r,delta_mag,detection_eff,classification_eff,classification_detection_eff",
-               fmt="%.6f")
+    print(
+        f"  zeroed detection_eff for {int(_faint.sum())} bins with delta_mag > {DET_EFF_DELTA_MAX}"
+    )
+    np.savetxt(
+        OUT_DIR / "lsst_dc2_stellar_efficiency_cutr.csv",
+        eff_tab.values,
+        delimiter=",",
+        header="mag_r,delta_mag,detection_eff,classification_eff,classification_detection_eff",
+        fmt="%.6f",
+    )
     print(f"wrote lsst_dc2_stellar_efficiency_cutr.csv ({len(eff_tab)} rows)")
 
     # ---- 6. sanity overlay vs existing external LSST tables -------------
-    ext_pe = np.genfromtxt(REPO / "data/others/lsst_photoerror_r.csv", delimiter=",", names=True)
-    ext_eff = np.genfromtxt(REPO / "data/others/lsst_stellar_efficiency_cutr.csv", delimiter=",", names=True)
+    ext_pe = np.genfromtxt(
+        REPO / "data/others/lsst_photoerror_r.csv", delimiter=",", names=True
+    )
+    ext_eff = np.genfromtxt(
+        REPO / "data/others/lsst_stellar_efficiency_cutr.csv", delimiter=",", names=True
+    )
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
-    axes[0].plot(ext_pe["delta_mag"], ext_pe["log_mag_err"], "-", color="0.6", label="existing (Tsiane+25)")
-    axes[0].plot(photoerr_clean.delta_mag, photoerr_clean.log_mag_err, "C3o-", ms=3, label="DC2 sample (truth)")
-    axes[0].plot(catalog_clean.delta_mag, catalog_clean.log_mag_err, "C0--", label="DC2 catalog (reported)")
-    axes[0].set(xlabel=r"$\Delta$mag", ylabel=r"$\log_{10}\sigma$ [mag]", title="photo-error")
-    axes[0].legend(fontsize=8); axes[0].grid(alpha=0.3)
-    axes[1].plot(ext_eff["delta_mag"], ext_eff["classification_detection_eff"], "-", color="0.6", label="existing")
-    axes[1].plot(eff_tab.delta_mag, eff_tab.classification_detection_eff, "C3o-", ms=3, label="DC2 (truth-anchored)")
-    axes[1].set(xlabel=r"$\Delta$mag", ylabel="classification_detection_eff", title="efficiency")
-    axes[1].legend(); axes[1].grid(alpha=0.3)
-    fig.suptitle(f"LSST DC2 r-band products (maglim_r={MAGLIM_REF:.2f}, S/N>{SNR_DEPTH})")
+    axes[0].plot(
+        ext_pe["delta_mag"],
+        ext_pe["log_mag_err"],
+        "-",
+        color="0.6",
+        label="existing (Tsiane+25)",
+    )
+    axes[0].plot(
+        photoerr_clean.delta_mag,
+        photoerr_clean.log_mag_err,
+        "C3o-",
+        ms=3,
+        label="DC2 sample (truth)",
+    )
+    axes[0].plot(
+        catalog_clean.delta_mag,
+        catalog_clean.log_mag_err,
+        "C0--",
+        label="DC2 catalog (reported)",
+    )
+    axes[0].set(
+        xlabel=r"$\Delta$mag", ylabel=r"$\log_{10}\sigma$ [mag]", title="photo-error"
+    )
+    axes[0].legend(fontsize=8)
+    axes[0].grid(alpha=0.3)
+    axes[1].plot(
+        ext_eff["delta_mag"],
+        ext_eff["classification_detection_eff"],
+        "-",
+        color="0.6",
+        label="existing",
+    )
+    axes[1].plot(
+        eff_tab.delta_mag,
+        eff_tab.classification_detection_eff,
+        "C3o-",
+        ms=3,
+        label="DC2 (truth-anchored)",
+    )
+    axes[1].set(
+        xlabel=r"$\Delta$mag", ylabel="classification_detection_eff", title="efficiency"
+    )
+    axes[1].legend()
+    axes[1].grid(alpha=0.3)
+    fig.suptitle(
+        f"LSST DC2 r-band products (maglim_r={MAGLIM_REF:.2f}, S/N>{SNR_DEPTH})"
+    )
     fig.tight_layout()
     fig.savefig(FIG_DIR / "lsst_dc2_products_r.png", dpi=130, bbox_inches="tight")
     print(f"wrote {(FIG_DIR / 'lsst_dc2_products_r.png').relative_to(REPO)}")
 
-    print("\nTODO: galaxy misclassification curve (cosmoDC2 size_true<0.3\") + lsst_dc2.yaml wiring")
+    print(
+        '\nTODO: galaxy misclassification curve (cosmoDC2 size_true<0.3") + lsst_dc2.yaml wiring'
+    )
 
 
 def _apply_photoerr_corrections(tab, curve_id, corrections_path):
     """Apply afterburner corrections from a YAML file (mirrors the Roman generator)."""
     if not corrections_path.exists():
-        print(f"  [afterburner] corrections file not found: {corrections_path} — skipping")
+        print(
+            f"  [afterburner] corrections file not found: {corrections_path} — skipping"
+        )
         return tab.copy()
     with open(corrections_path) as fh:
         corr = yaml.safe_load(fh) or {}
@@ -319,17 +436,33 @@ def _apply_photoerr_corrections(tab, curve_id, corrections_path):
             v = float(params["value"])
             mask = out["delta_mag"] >= d_min
             out.loc[mask, "log_mag_err"] = np.maximum(out.loc[mask, "log_mag_err"], v)
-            print(f"  [afterburner] {curve_id}: clamp_faint delta_mag>={d_min:.3f} "
-                  f"-> log_mag_err=max(raw,{v:.4f}) ({int(mask.sum())} bins)")
+            print(
+                f"  [afterburner] {curve_id}: clamp_faint delta_mag>={d_min:.3f} "
+                f"-> log_mag_err=max(raw,{v:.4f}) ({int(mask.sum())} bins)"
+            )
+        elif rule_name == "cut_bright":
+            d_min = float(params["delta_mag_min"])
+            n_drop = int((out["delta_mag"] < d_min).sum())
+            out = out[out["delta_mag"] >= d_min].copy()
+            print(
+                f"  [afterburner] {curve_id}: cut_bright dropped {n_drop} bins "
+                f"with delta_mag < {d_min:.3f}"
+            )
         else:
-            print(f"  [afterburner] WARNING: unknown rule '{rule_name}' for '{curve_id}' — skipped")
+            print(
+                f"  [afterburner] WARNING: unknown rule '{rule_name}' for '{curve_id}' — skipped"
+            )
     return out
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--tracts", type=int, default=0,
-                    help="limit to the first N tracts (0 = all 79; also bypasses the cache)")
+    ap.add_argument(
+        "--tracts",
+        type=int,
+        default=0,
+        help="limit to the first N tracts (0 = all 79; also bypasses the cache)",
+    )
     ap.add_argument("--refresh", action="store_true", help="rebuild the match cache")
     args = ap.parse_args()
     main(n_tracts=args.tracts, refresh=args.refresh)

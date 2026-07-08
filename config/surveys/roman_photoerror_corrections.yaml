@@ -12,6 +12,9 @@
 #     delta_mag_min: <D>   # apply to rows where delta_mag >= D
 #     value:         <V>   # set log_mag_err = V for those rows (floor)
 #
+#   cut_bright:
+#     delta_mag_min: <D>   # DROP rows with delta_mag < D (bright/saturation cut)
+#
 # Add more curve keys or rules as needed.  The generator skips unknown rule types
 # with a warning so old correction files stay compatible with new generator versions.
 
@@ -25,7 +28,13 @@
 # holds the error at the ~S/N=6 level rather than implying a spurious brightening
 # or deepening.  Adjust delta_mag_min or value after inspecting the regenerated
 # raw curve.
+# Bright end: the truth-scatter curve steps down by ~0.14 dex between delta_mag
+# = −8.92 (log_mag_err = −1.61, σ ≈ 0.024) and −8.68 (−1.75, σ ≈ 0.018): brighter
+# stars carry saturation-inflated scatter.  Rows brighter than −8.7 are dropped;
+# the injector holds the curve's first value brightward of the domain.
 F158_sample:
+  cut_bright:
+    delta_mag_min: -8.7    # drop rows brighter (saturation scatter jump at ≈ −8.8)
   clamp_faint:
     delta_mag_min: -0.28   # clamp from this bin onward (4 bins affected)
     value: -0.8285          # log10(sigma) at delta_mag = -0.40 (sigma ≈ 0.148 mag)
@@ -35,7 +44,11 @@ F158_sample:
 # 0.003 dex reversal in the very last bin (delta_mag = +0.08 vs the bin at −0.04).
 # We clamp at delta_mag ≥ 0.0 so the curve is monotonically non-decreasing past the
 # S/N=5 boundary.  The effect on any downstream S/N cut is negligible (<0.4%).
+# Bright end: cut at −8.7 to keep the catalog curve on the same delta_mag domain
+# as the sample curve (the catalog curve itself is smooth there).
 F158_catalog:
+  cut_bright:
+    delta_mag_min: -8.7    # same domain as F158_sample
   clamp_faint:
     delta_mag_min: 0.0     # clamp from this bin onward (1 bin affected)
     value: -0.8960          # log10(sigma) at delta_mag = -0.04 (sigma ≈ 0.127 mag)

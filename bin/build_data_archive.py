@@ -38,7 +38,11 @@ ZIP_PATH = OUT / "data.zip"
 # Directories (path relative to data/) skipped entirely — derivation source /
 # intermediates, not needed to load or inject a survey at runtime.
 EXCLUDE_DIRS = {
-    "surveys/lsst_dc2",  # external LSST DC2 skims (contamination derivation)
+    # NOTE: surveys/lsst_dc2 is intentionally NOT excluded — it now holds the
+    # LSST DC2 runtime products (maglim maps + efficiency/misclass/photoerr
+    # tables); its large derivation skims are excluded per-file by the
+    # dc2_object_* / dc2_run2.2i_truth_* / cosmoDC2_* / *.parquet / supreme_*
+    # globs below.
     "surveys/roman_dc2/det",  # raw Roman mock SExtractor detections
     "surveys/roman_dc2/truth",  # raw Roman mock truth tiles
     "surveys/roman_hlwas",  # bare placeholder dir: raw HLWAS exptime maps (build
@@ -55,6 +59,7 @@ EXCLUDE_FILE_GLOBS = [
     "cosmoDC2_*",  # cosmoDC2 size skims (derivation input)
     "dc2_object_*",  # LSST DC2 object skims
     "dc2_run2.2i_truth_*",  # LSST DC2 truth skims
+    "supreme_*",  # supreme HealSparse depth-map source (LSST DC2 build input)
     "*_raw.csv",  # photo-error provenance (raw, pre-afterburner)
     "map_HLWAS-*",  # raw HLWAS exposure-time maps (build inputs)
     "*_rough_maglim*",  # intermediate rough maglim maps
