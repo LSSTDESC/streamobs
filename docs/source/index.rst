@@ -90,6 +90,7 @@ Documentation Contents
    :maxdepth: 1
    :caption: Examples
 
+   examples/tutorial_quickstart
    examples/tutorial_generate_datamocks
    examples/tutorial_inject_stream
    examples/multisurvey_cmd
