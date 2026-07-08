@@ -79,35 +79,60 @@ def _hlwas_entry(tier, release, bands=None):
 
 
 SURVEY_REGISTRY = [
+    # LSST year releases — depth-scaled DC2: RubinSim per-year maglim maps +
+    # the lsst_dc2 selection-function tables (symlinked by
+    # scripts/lsst/link_lsst_yr_products.py), same convention as the Roman HLWAS
+    # tiers. They therefore carry the same DC2-model threshold overrides as the
+    # lsst_dc2 entry below.
     {
         "survey": "lsst",
         "release": "yr1",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
+        "skip_sat_photoerr_check": True,
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+        "skip_snr_maglim_check": True,
     },
     {
         "survey": "lsst",
         "release": "yr2",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
+        "skip_sat_photoerr_check": True,
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+        "skip_snr_maglim_check": True,
     },
     {
         "survey": "lsst",
         "release": "yr3",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
+        "skip_sat_photoerr_check": True,
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+        "skip_snr_maglim_check": True,
     },
     {
         "survey": "lsst",
         "release": "yr4",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
+        "skip_sat_photoerr_check": True,
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+        "skip_snr_maglim_check": True,
     },
     {
         "survey": "lsst",
         "release": "yr5",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
+        "skip_sat_photoerr_check": True,
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+        "skip_snr_maglim_check": True,
     },
     # LSST DC2 — truth-anchored r/g depth maps + two-curve photo-error, derived from
     # the DC2 object+truth skims (scripts/lsst/create_streamobs_files_lsst_dc2.py).

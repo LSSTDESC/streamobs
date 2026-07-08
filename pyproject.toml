@@ -28,14 +28,16 @@ dependencies = [
     "healpy",
     "healsparse",
     "gala",
+    "pyarrow", # parquet I/O (streamobs.background.storage)
 ]
 
 # `ugali` is not on PyPI; for CMD/isochrone sampling install from source:
 #   pip install git+https://github.com/DarkEnergySurvey/ugali.git
 [project.optional-dependencies]
 isochrones = ["ugali"]
+plotting = ["skyproj"] # sky-map helpers (guarded import in streamobs.plotting)
 docs = ["sphinx", "sphinx-book-theme", "numpydoc", "myst-parser"]
-dev = ["pytest"]
+dev = ["pytest", "pytest-cov"] # pytest.ini addopts include --cov flags
 
 [project.urls]
 Homepage = "https://github.com/LSSTDESC/streamobs"
