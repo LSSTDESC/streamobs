@@ -1,0 +1,40 @@
+# Configuration file for the survey LSST
+name: lsst
+release: dp2
+survey_files: 
+    # Path to data files (leave empty for default location)
+    file_path: ''
+
+    # Band-specific magnitude limit maps
+    maglim_map_g: maglim_dp2_r_nside128.hsp
+    maglim_map_r: maglim_dp2_r_nside128.hsp
+
+    # Band-independent maps
+    ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
+    completeness: lsst_stellar_efficiency_cutr.csv
+    completeness_band: r # the completenesshas been obtained in r-band
+    log_photo_error: lsst_photoerror_r.csv
+
+survey_properties: 
+  bands: ['u', 'g', 'r', 'i', 'z', 'y']
+
+  # Extinction coefficients per band (A_band / E(B-V)) 
+  # From rubin_sim (verions = 2.6.0, baseline version = 5.0.0)
+  # from rubin_sim.phot_utils import DustValues
+  # dust_values = DustValues()
+  # print(dust_values.r_x)
+  coeff_extinc_u: 4.757217815396922
+  coeff_extinc_g: 3.6605664439892625
+  coeff_extinc_r: 2.70136780871597
+  coeff_extinc_i: 2.0536599130965882
+  coeff_extinc_z: 1.5900964472616756
+  coeff_extinc_y: 1.3077049588254708
+
+  # Systematic photometric errors (mag), or could be specified as sys_error_g, sys_error_r, etc
+  sys_error : 0.005 # Error common to all bands
+  # sys_error_i: 0.01  # Example to Override for i-band
+
+
+  # Saturation limits per band, or could be specified as saturation_g, saturation_r, etc
+  saturation: 16.0
+  delta_saturation: -10.4
