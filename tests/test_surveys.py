@@ -81,6 +81,12 @@ def _hlwas_entry(tier, release, bands=None):
 SURVEY_REGISTRY = [
     {
         "survey": "lsst",
+        "release": "dp2",
+        "expected_bands": ["g", "r"],
+        "expected_maglim": ["g", "r"],
+    },
+    {
+        "survey": "lsst",
         "release": "yr1",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
