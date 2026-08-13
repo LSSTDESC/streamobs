@@ -30,10 +30,17 @@ dependencies = [
     "gala",
 ]
 
-# `ugali` is not on PyPI; for CMD/isochrone sampling install from source:
+# `ugali` (CMD/isochrone sampling) must be installed from GitHub, NOT from PyPI:
 #   pip install git+https://github.com/DarkEnergySurvey/ugali.git
+# The PyPI release (1.8.0) predates CMD 3.8 isochrone column support and parses
+# those files against the wrong columns, yielding "Probabilities contain NaN"
+# at sampling time. See docs/source/installation.md.
 [project.optional-dependencies]
 isochrones = ["ugali"]
+# `skyproj` backs the sky-projection plots (e.g. `plotting.plot_stream_in_mask`,
+# used by the `tutorial_inject_stream` example); the rest of the package works
+# without it.
+plotting = ["skyproj"]
 docs = ["sphinx", "sphinx-book-theme", "numpydoc", "myst-parser"]
 dev = ["pytest"]
 

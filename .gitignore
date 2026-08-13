@@ -166,3 +166,12 @@ artifacts/
 
 # Development stuff
 .vscode/
+
+# Generated mock catalogs / plots from the quickstart CLI examples
+# (./bin/generate_stream.py config/<name>_config.yaml -o <name>_stream.csv --plot)
+/toy1_stream.csv
+/toy1_stream.png
+/toy2_stream.csv
+/toy2_stream.png
+/pal5_stream.csv
+/pal5_stream.png
