@@ -30,11 +30,17 @@ dependencies = [
     "gala",
 ]
 
-# `ugali` is not on PyPI; for CMD/isochrone sampling install from source:
+# `ugali` (CMD/isochrone sampling) must be installed from GitHub, NOT from PyPI:
 #   pip install git+https://github.com/DarkEnergySurvey/ugali.git
+# The PyPI release (1.8.0) predates CMD 3.8 isochrone column support and parses
+# those files against the wrong columns, yielding "Probabilities contain NaN"
+# at sampling time. See docs/source/installation.md.
 [project.optional-dependencies]
 isochrones = ["ugali"]
-docs = ["sphinx", "sphinx-book-theme", "numpydoc", "myst-parser"]
+# Keep in sync with docs/requirements.txt. `myst-nb` supersedes `myst-parser`
+# (and brings it in as a dependency); `conf.py` loads the `myst_nb` extension,
+# so a `myst-parser`-only install fails the build with an ExtensionError.
+docs = ["sphinx>=8.0", "sphinx-book-theme", "numpydoc", "myst-nb"]
 dev = ["pytest"]
 
 [project.urls]
