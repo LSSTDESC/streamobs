@@ -37,11 +37,10 @@ dependencies = [
 # at sampling time. See docs/source/installation.md.
 [project.optional-dependencies]
 isochrones = ["ugali"]
-# `skyproj` backs the sky-projection plots (e.g. `plotting.plot_stream_in_mask`,
-# used by the `tutorial_inject_stream` example); the rest of the package works
-# without it.
-plotting = ["skyproj"]
-docs = ["sphinx", "sphinx-book-theme", "numpydoc", "myst-parser"]
+# Keep in sync with docs/requirements.txt. `myst-nb` supersedes `myst-parser`
+# (and brings it in as a dependency); `conf.py` loads the `myst_nb` extension,
+# so a `myst-parser`-only install fails the build with an ExtensionError.
+docs = ["sphinx>=8.0", "sphinx-book-theme", "numpydoc", "myst-nb"]
 dev = ["pytest"]
 
 [project.urls]

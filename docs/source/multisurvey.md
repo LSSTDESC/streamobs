@@ -107,13 +107,18 @@ stream:
 ```
 
 ```{important}
-Each `surveys:` **key is the column namespace** the isochrone produces
-(`<key>_<band>_true`), and it must match the injecting survey's namespace
-`{name}_{release}` — otherwise the true-magnitude columns the model emits won't
-line up with the columns the injector looks for. Here the inner `survey:` is the
-*ugali* filter set (no release), while the key carries the release. (In the
-single-survey flat form the namespace is derived as `{survey}_{release}` for you;
-in the multi-survey form you spell it out as the key.)
+Each `surveys:` key names the namespace the isochrone produces true-magnitude
+columns for. Because true magnitudes are release-independent, the release is
+**dropped** from those column names — a key of `lsst_dc2` and a key of `lsst`
+both emit `lsst_<band>_true` (see
+[Output column convention](column_convention.md)). What matters is that the
+key's `{name}` part matches the injecting survey's name, so the columns the
+model emits line up with the ones the injector looks for.
+
+Spelling the key as the full `{name}_{release}` namespace is still recommended,
+since it matches the `survey_bands` keys — which *are* matched on the full
+namespace — and keeps one consistent vocabulary across the config. Here the
+inner `survey:` is the *ugali* filter set, which never carries a release.
 ```
 
 A single-survey isochrone (the flat `survey`/`band_1`/`band_2` form, optionally
@@ -129,9 +134,10 @@ import yaml
 from streamobs.observed import StreamInjector
 
 scene = yaml.safe_load(open("config/scenes/roman_rubin_demo.yaml"))
-inj = StreamInjector(scene["surveys"])              # {"lsst": "lsst", "roman": "roman"}
+inj = StreamInjector(scene["surveys"])       # lsst/dc2 + roman/dc2 -> namespaces
+                                             # "lsst_dc2", "roman_dc2"
 cat = inj.inject(
-    df, bands=scene["survey_bands"],                # {"lsst": [...], "roman": [...]}
+    df, bands=scene["survey_bands"],         # {"lsst_dc2": [...], "roman_dc2": [...]}
     stream_config=scene["stream"], seed=42,
 )
 ```
