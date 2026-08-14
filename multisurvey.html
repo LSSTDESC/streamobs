@@ -16,31 +16,34 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'multisurvey';</script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -49,6 +52,7 @@
     <link rel="prev" title="Quickstart Guide" href="quickstart.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -64,19 +68,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -84,7 +77,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -92,8 +84,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -109,7 +101,8 @@
       
       
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -139,15 +132,11 @@
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -216,9 +205,14 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -301,7 +295,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -315,25 +309,17 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
-<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
 </div></div>
@@ -499,13 +485,17 @@ rather than drawn independently.</p>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Each <code class="docutils literal notranslate"><span class="pre">surveys:</span></code> <strong>key is the column namespace</strong> the isochrone produces
-(<code class="docutils literal notranslate"><span class="pre">&lt;key&gt;_&lt;band&gt;_true</span></code>), and it must match the injecting survey’s namespace
-<code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code> — otherwise the true-magnitude columns the model emits won’t
-line up with the columns the injector looks for. Here the inner <code class="docutils literal notranslate"><span class="pre">survey:</span></code> is the
-<em>ugali</em> filter set (no release), while the key carries the release. (In the
-single-survey flat form the namespace is derived as <code class="docutils literal notranslate"><span class="pre">{survey}_{release}</span></code> for you;
-in the multi-survey form you spell it out as the key.)</p>
+<p>Each <code class="docutils literal notranslate"><span class="pre">surveys:</span></code> key names the namespace the isochrone produces true-magnitude
+columns for. Because true magnitudes are release-independent, the release is
+<strong>dropped</strong> from those column names — a key of <code class="docutils literal notranslate"><span class="pre">lsst_dc2</span></code> and a key of <code class="docutils literal notranslate"><span class="pre">lsst</span></code>
+both emit <code class="docutils literal notranslate"><span class="pre">lsst_&lt;band&gt;_true</span></code> (see
+<a class="reference internal" href="column_convention.html"><span class="std std-doc">Output column convention</span></a>). What matters is that the
+key’s <code class="docutils literal notranslate"><span class="pre">{name}</span></code> part matches the injecting survey’s name, so the columns the
+model emits line up with the ones the injector looks for.</p>
+<p>Spelling the key as the full <code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code> namespace is still recommended,
+since it matches the <code class="docutils literal notranslate"><span class="pre">survey_bands</span></code> keys — which <em>are</em> matched on the full
+namespace — and keeps one consistent vocabulary across the config. Here the
+inner <code class="docutils literal notranslate"><span class="pre">survey:</span></code> is the <em>ugali</em> filter set, which never carries a release.</p>
 </div>
 <p>A single-survey isochrone (the flat <code class="docutils literal notranslate"><span class="pre">survey</span></code>/<code class="docutils literal notranslate"><span class="pre">band_1</span></code>/<code class="docutils literal notranslate"><span class="pre">band_2</span></code> form, optionally
 with <code class="docutils literal notranslate"><span class="pre">release:</span></code>) is just the one-survey case of the same machinery and produces
@@ -517,9 +507,10 @@ isochrone, and the shared stream geometry — is provided as a <em>scene</em> co
 <span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.observed</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamInjector</span>
 
 <span class="n">scene</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;config/scenes/roman_rubin_demo.yaml&quot;</span><span class="p">))</span>
-<span class="n">inj</span> <span class="o">=</span> <span class="n">StreamInjector</span><span class="p">(</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;surveys&quot;</span><span class="p">])</span>              <span class="c1"># {&quot;lsst&quot;: &quot;lsst&quot;, &quot;roman&quot;: &quot;roman&quot;}</span>
+<span class="n">inj</span> <span class="o">=</span> <span class="n">StreamInjector</span><span class="p">(</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;surveys&quot;</span><span class="p">])</span>       <span class="c1"># lsst/dc2 + roman/dc2 -&gt; namespaces</span>
+                                             <span class="c1"># &quot;lsst_dc2&quot;, &quot;roman_dc2&quot;</span>
 <span class="n">cat</span> <span class="o">=</span> <span class="n">inj</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span>
-    <span class="n">df</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;survey_bands&quot;</span><span class="p">],</span>                <span class="c1"># {&quot;lsst&quot;: [...], &quot;roman&quot;: [...]}</span>
+    <span class="n">df</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;survey_bands&quot;</span><span class="p">],</span>         <span class="c1"># {&quot;lsst_dc2&quot;: [...], &quot;roman_dc2&quot;: [...]}</span>
     <span class="n">stream_config</span><span class="o">=</span><span class="n">scene</span><span class="p">[</span><span class="s2">&quot;stream&quot;</span><span class="p">],</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
@@ -642,14 +633,16 @@ scheme and the sample-vs-catalog error split.</p></li>
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-  <div class="sidebar-secondary-item">
-  <div class="page-toc tocsection onthispage">
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
   </div>
-  <nav class="bd-toc-nav page-toc">
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#constructing-an-injector">Constructing an injector</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#injecting">Injecting</a></li>
@@ -710,8 +703,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
   </footer>
