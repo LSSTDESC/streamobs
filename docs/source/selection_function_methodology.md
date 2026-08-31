@@ -7,7 +7,7 @@ photometric-error model, and the magnitude-limit (depth) maps, together with the
 conventions that tie them together.
 
 It is written **survey-agnostically**. The products it describes were first derived
-for Roman from the Roman–Rubin DC2 mock (see :doc:`roman_dc2`), and the same recipe
+for Roman from the Roman–Rubin DC2 mock (see {doc}`roman_dc2`), and the same recipe
 is intended to be re-applied to re-derive the LSST and DES products
 self-consistently. Per-survey numbers (depths, bands, extinction coefficients,
 saturation) live on the per-release data pages; the method lives here.
@@ -325,7 +325,7 @@ applied consistently across tiers.
   reference depth on the native scale, which is *why* its depth map is truth-anchored;
   the ≈1.4× LSST DC2 discrepancy is small enough that its native-scale map reproduces
   an external calibration (Tsiane et al. 2025) to 0.1%, so its map is *not* anchored.
-  Figure: `error_validation.png` on :doc:`roman_dc2`.
+  Figure: `error_validation.png` on {doc}`roman_dc2`.
 - **Depth-map validation notebook** (`notebooks/roman_depth_validation.ipynb`,
   figures under `_static/roman_depth_validation/`; Roman-specific — Roman DC2 remains
   truth-anchored, LSST DC2 does not, see above). It confirms:
@@ -451,7 +451,7 @@ the available ones, and whether the feature distributions actually agree across
 the two catalogues (a feature that is systematically offset between train and
 apply domains must be dropped, however informative it looks).
 
-See :doc:`balrog_selection_functions` for the worked DES/DELVE case, including
+See {doc}`balrog_selection_functions` for the worked DES/DELVE case, including
 the numbers.
 
 ## Re-deriving for another survey

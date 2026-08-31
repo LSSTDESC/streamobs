@@ -1200,7 +1200,8 @@ def main(args):
     print("\npass 2/2: truth anchor + efficiency + photo-error + misclassification")
     anchor = {b: ResidualHist(ANCHOR_BINS) for b in maps}
     # distinct parent sources per magnitude bin, packed as bin*2**32 + src_id
-    uniq_src = set()
+    uniq_src = set()       # true stars
+    uniq_src_gal = set()   # true galaxies (the misclassification denominator)
     n_all = np.zeros(MAG_BINS.size - 1, dtype=np.int64)  # all injected true stars
     n_det = np.zeros_like(n_all)
     n_cls = np.zeros_like(n_all)
@@ -1227,14 +1228,15 @@ def main(args):
         gal = (~c["is_star"]) & ok
         n_all += np.histogram(tm_ref[star], MAG_BINS)[0]
         if "src_id" in c:
-            ib = np.digitize(tm_ref[star], MAG_BINS) - 1
-            good_b = (ib >= 0) & (ib < MAG_BINS.size - 1)
-            uniq_src.update(
-                np.unique(
-                    ib[good_b].astype(np.int64) * (1 << 32)
-                    + c["src_id"][star][good_b].astype(np.int64)
-                ).tolist()
-            )
+            for sel_mask, acc in ((star, uniq_src), (gal, uniq_src_gal)):
+                ib = np.digitize(tm_ref[sel_mask], MAG_BINS) - 1
+                good_b = (ib >= 0) & (ib < MAG_BINS.size - 1)
+                acc.update(
+                    np.unique(
+                        ib[good_b].astype(np.int64) * (1 << 32)
+                        + c["src_id"][sel_mask][good_b].astype(np.int64)
+                    ).tolist()
+                )
         n_det += np.histogram(tm_ref[star & c["detected"]], MAG_BINS)[0]
         n_cls += np.histogram(tm_ref[star & c["classified"]], MAG_BINS)[0]
         n_gal_det += np.histogram(tm_ref[gal & c["detected"]], MAG_BINS)[0]
@@ -1406,6 +1408,28 @@ def main(args):
     # ---- galaxy misclassification ---------------------------------------
     with np.errstate(invalid="ignore", divide="ignore"):
         misclass = np.where(n_gal_det > 0, n_gal_cls / np.maximum(n_gal_det, 1), np.nan)
+    # Same thin-parent-sample hazard as the stellar curve, and just as visible:
+    # unguarded, the bright end read 0.63 and 0.45 at mag_g ~ 15.4-15.6, i.e. half
+    # of bright galaxies called stars.  Clamp (do not drop) for the same reason --
+    # set_completeness ramps linearly from zero at delta_saturation to the first
+    # surviving row.  Bright galaxies are well resolved, so holding the rate at
+    # the brightest well-sampled value is also the physically sensible shape.
+    if uniq_src_gal:
+        n_src_g = np.zeros(MAG_BINS.size - 1, dtype=np.int64)
+        for packed in uniq_src_gal:
+            n_src_g[packed >> 32] += 1
+        ok_g = (n_gal_det >= MIN_COUNT_EFF) & (n_src_g >= MIN_UNIQUE_SRC)
+        rel_g = np.where(ok_g)[0]
+        if rel_g.size:
+            j0 = int(rel_g[0])
+            thin_g = (n_gal_det >= MIN_COUNT_EFF) & (np.arange(misclass.size) < j0)
+            if thin_g.any():
+                misclass = misclass.copy()
+                misclass[thin_g] = misclass[j0]
+                print(f"  clamped missclassification_eff in {int(thin_g.sum())} "
+                      f"bright bins (mag_{ref} <= {MAG_MID[j0 - 1]:.2f}) to "
+                      f"{misclass[j0]:.4f}: fewer than {MIN_UNIQUE_SRC} distinct "
+                      f"parent galaxies there")
     mis = pd.DataFrame(
         {
             f"mag_{ref}": MAG_MID,
@@ -1433,6 +1457,22 @@ def main(args):
         for b, mm in maps.items():
             nso = args.maglim_nside or mm.nside
             d = mm.to_healpix(nso)
+            # Mask junk pixels inherited from the input depth map.  A handful
+            # survive the (15, 30) sanity window while being physically
+            # impossible -- before this, r reached 28.99 (4 mag deeper than its
+            # own median) and 15.56.  They are rare (0.01-0.08% per band) but an
+            # injection landing on one gets a nonsense delta_mag, so they are
+            # dropped rather than shipped.
+            if args.maglim_clip > 0:
+                fin = np.isfinite(d)
+                if fin.any():
+                    med_b = float(np.median(d[fin]))
+                    bad = fin & (np.abs(d - med_b) > args.maglim_clip)
+                    if bad.any():
+                        print(f"  {b}: masked {int(bad.sum())} pixels deviating "
+                              f"> {args.maglim_clip} mag from the median "
+                              f"{med_b:.3f} ({100 * bad.sum() / fin.sum():.4f}%)")
+                        d = np.where(bad, np.nan, d)
             arr = np.where(np.isfinite(d), d, hp.UNSEEN)
             fn = out / f"{tag}_maglim_{b}_nside{nso}.fits.gz"
             hp.write_map(str(fn), arr, overwrite=True, dtype=np.float32)
@@ -1618,6 +1658,15 @@ def build_parser():
         help="trust the input depth map's absolute scale (skip pass 1)",
     )
     p.add_argument("--write-maglim", action="store_true", help="emit anchored depth maps")
+    p.add_argument(
+        "--maglim-clip",
+        type=float,
+        default=1.5,
+        help="mask written-out depth pixels deviating more than this many mag "
+        "from their band median. The input healsparse maps carry a small number "
+        "of physically impossible pixels that pass the (15, 30) window; 0 "
+        "disables the mask and ships them",
+    )
     return p
 
 

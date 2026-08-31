@@ -5,7 +5,7 @@ for the DECam surveys — **DES Y6 Gold** and **DELVE DR3 Gold** — from
 Balrog synthetic-source-injection (SSI) catalogues, and how to re-run the
 derivation on a machine that holds the injections.
 
-It is the DECam counterpart to :doc:`selection_function_methodology`, which
+It is the DECam counterpart to {doc}`selection_function_methodology`, which
 defines the products, the `delta_mag` convention and the truth-anchoring recipe
 survey-agnostically. **Read that page first**; this one only covers what is
 specific to Balrog, and the one problem that is unique to DES/DELVE: the star
