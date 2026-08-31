@@ -136,6 +136,60 @@ class TestSchemaRegistry:
             schema.open(args)
 
 
+class TestProductColumnContract:
+    """The reducer's CSV headers must be exactly what streamobs reads back.
+
+    SurveyFactory loads the misclassification product inside a bare
+    ``except: pass``, so a mis-named column does not raise -- the product just
+    silently becomes None. That is the pre-existing des_yr6 failure mode, so it
+    has to be pinned by a round-trip rather than by eyeballing the header.
+    """
+
+    @staticmethod
+    def _write(tmp_path, header, cols):
+        import numpy as np
+
+        path = tmp_path / "curve.csv"
+        np.savetxt(path, np.column_stack(cols), delimiter=",",
+                   header=header, fmt="%.6f", comments="")
+        return str(path)
+
+    def test_misclass_header_round_trips_through_streamobs(self, tmp_path):
+        from streamobs import surveys
+
+        delta = np.arange(-8.0, 1.0, 0.25)
+        rate = np.clip(0.01 + 0.02 * (delta + 8) / 9, 0, 1)
+        path = self._write(tmp_path, "mag_g,delta_mag,missclassification_eff",
+                           [delta + 25.0, delta, rate])
+        fn = surveys.SurveyFactory.set_completeness(
+            path, delta_saturation=-9.0, selection="missclassified")
+        assert fn(-4.0) == pytest.approx(np.interp(-4.0, delta, rate), abs=1e-6)
+
+    def test_efficiency_header_round_trips_through_streamobs(self, tmp_path):
+        from streamobs import surveys
+
+        delta = np.arange(-8.0, 1.0, 0.25)
+        det = np.clip(1.0 - 0.05 * (delta + 8) / 9, 0, 1)
+        cls_ = np.full(delta.size, 0.92)
+        path = self._write(
+            tmp_path,
+            "mag_g,delta_mag,detection_eff,classification_eff,classification_detection_eff",
+            [delta + 25.0, delta, det, cls_, det * cls_])
+        for sel, want in (("detected", det), ("classified", cls_),
+                          ("both", det * cls_)):
+            fn = surveys.SurveyFactory.set_completeness(
+                path, delta_saturation=-9.0, selection=sel)
+            assert fn(-4.0) == pytest.approx(np.interp(-4.0, delta, want), abs=1e-6)
+
+    def test_reducer_emits_the_expected_header(self, bsf):
+        """Guard the literal the reducer writes, since the loader will not."""
+        src = SCRIPT.read_text()
+        assert "missclassification_eff" in src, (
+            "the misclassification product must use streamobs' column name")
+        assert "misclass_rate" not in src, (
+            "misclass_rate loads as None -- streamobs reads missclassification_eff")
+
+
 class TestSigmaConvention:
     def test_sig_sn5_is_the_5sigma_magnitude_error(self, bsf):
         assert bsf.SIG_SN5 == pytest.approx(0.21715, abs=1e-5)

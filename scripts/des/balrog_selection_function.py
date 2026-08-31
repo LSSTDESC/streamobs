@@ -1308,14 +1308,20 @@ def main(args):
         {
             f"mag_{ref}": MAG_MID,
             "delta_mag": MAG_MID - maglim_ref,
-            "misclass_rate": misclass,
+            # MUST be `missclassification_eff` (sic).  That is the column
+            # streamobs' set_completeness(selection="missclassified") reads, and
+            # SurveyFactory wraps the load in a bare `except: pass`, so any other
+            # spelling makes the product load as None with no error at all --
+            # which is exactly the pre-existing des_yr6 failure mode this
+            # product is meant to fix.
+            "missclassification_eff": misclass,
         }
     )
     mis = mis[n_gal_det >= MIN_COUNT_EFF].fillna(0.0)
     write_csv(
         out / f"{tag}_galaxy_misclass_cut{ref}.csv",
         mis,
-        f"mag_{ref},delta_mag,misclass_rate",
+        f"mag_{ref},delta_mag,missclassification_eff",
     )
 
     # ---- anchored depth maps --------------------------------------------
