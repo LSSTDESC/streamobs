@@ -947,6 +947,51 @@ def apply_photoerr_corrections(tab, curve_id, corrections_path):
     return out
 
 
+def deconvolve_classification_eff(eff_cls, conf, mag_mid, min_sep=0.2,
+                                  min_count=200):
+    """Invert a surrogate's selection back onto the classifier it approximates.
+
+    The surrogate ``S`` is not the real classifier ``X``, so what the injections
+    measure is ``eff_S = P(S=1|star)`` rather than ``eff_X = P(X=1|star)``.
+    Given the per-magnitude confusion measured on the real catalogue,
+
+        a = P(S=1 | X=1)        b = P(S=1 | X=0)
+        eff_S = a*eff_X + b*(1 - eff_X)   ->   eff_X = (eff_S - b)/(a - b)
+
+    Only bins where the two classes are actually separated are corrected: as
+    ``a -> b`` the inversion amplifies noise without bound, so ``min_sep``
+    gates it and everything else is left as measured.
+
+    Returns ``(eff_out, info)``.
+    """
+    good = (conf["n_pos"] > min_count) & (conf["n_neg"] > min_count)
+    if good.sum() < 2:
+        # Nothing well-measured to interpolate between: leave the curve as
+        # measured rather than crashing or inventing a correction.
+        return np.asarray(eff_cls), {
+            "applied": False, "reason": "too few usable confusion bins",
+            "n_bins_corrected": 0, "median_abs_change": 0.0,
+            "max_abs_change": 0.0,
+        }
+    a_i = np.interp(mag_mid, conf.loc[good, "mag_g"], conf.loc[good, "a"],
+                    left=np.nan, right=np.nan)
+    b_i = np.interp(mag_mid, conf.loc[good, "mag_g"], conf.loc[good, "b"],
+                    left=np.nan, right=np.nan)
+    with np.errstate(invalid="ignore", divide="ignore"):
+        sep = a_i - b_i
+        corrected = (eff_cls - b_i) / sep
+    ok = np.isfinite(corrected) & (sep > min_sep)
+    out = np.where(ok, np.clip(corrected, 0.0, 1.0), eff_cls)
+    changed = np.abs(np.nan_to_num(out) - np.nan_to_num(eff_cls))
+    info = {
+        "applied": True,
+        "n_bins_corrected": int(ok.sum()),
+        "median_abs_change": float(np.nanmedian(changed[ok])) if ok.any() else 0.0,
+        "max_abs_change": float(np.nanmax(changed)) if ok.any() else 0.0,
+    }
+    return out, info
+
+
 def write_csv(path, df, header):
     np.savetxt(path, df.values, delimiter=",", header=header, fmt="%.6f", comments="")
     print(f"  wrote {path} ({len(df)} rows)")
@@ -1143,31 +1188,13 @@ def main(args):
     # were measured on -- second-order, and checked externally against SPLASH.
     deconv = {"applied": False}
     if args.confusion:
-        conf = pd.read_csv(args.confusion)
-        good = (conf["n_pos"] > 200) & (conf["n_neg"] > 200)
-        a_i = np.interp(MAG_MID, conf.loc[good, "mag_g"], conf.loc[good, "a"],
-                        left=np.nan, right=np.nan)
-        b_i = np.interp(MAG_MID, conf.loc[good, "mag_g"], conf.loc[good, "b"],
-                        left=np.nan, right=np.nan)
-        raw_cls = eff_cls.copy()
-        with np.errstate(invalid="ignore", divide="ignore"):
-            sep = a_i - b_i
-            corrected = (eff_cls - b_i) / sep
-        # Only trust the inversion where the two classes are well separated;
-        # as a -> b the inversion amplifies noise without bound.
-        ok = np.isfinite(corrected) & (sep > 0.2)
-        eff_cls = np.where(ok, np.clip(corrected, 0.0, 1.0), eff_cls)
-        n_ch = int(ok.sum())
-        shifted = np.abs(np.nan_to_num(eff_cls) - np.nan_to_num(raw_cls))
-        print(f"\n  deconvolved classification_eff in {n_ch} bins "
-              f"(median |change| {np.nanmedian(shifted[ok]) if n_ch else 0:.4f}, "
-              f"max {np.nanmax(shifted) if n_ch else 0:.4f})")
-        deconv = {
-            "applied": True,
-            "confusion": str(args.confusion),
-            "n_bins_corrected": n_ch,
-            "max_abs_change": float(np.nanmax(shifted)) if n_ch else 0.0,
-        }
+        eff_cls, deconv = deconvolve_classification_eff(
+            eff_cls, pd.read_csv(args.confusion), MAG_MID)
+        deconv["confusion"] = str(args.confusion)
+        print(f"\n  deconvolved classification_eff in "
+              f"{deconv['n_bins_corrected']} bins (median |change| "
+              f"{deconv['median_abs_change']:.4f}, "
+              f"max {deconv['max_abs_change']:.4f})")
     elif args.survey == "des_y6":
         print("\n  WARNING: no --confusion given; classification_eff describes "
               "the SURROGATE, not EXT_XGB")
