@@ -37,6 +37,37 @@ Two passes are made over the catalog.  Pass 1 accumulates the truth-anchor
 statistics (needs no depth zero point); pass 2 accumulates every delta_mag-keyed
 histogram using the anchored depth.  Both stream in chunks.
 
+Which population defines the depth (``--anchor-sample``)
+--------------------------------------------------------
+The anchor sample **drops the reference-band S/N cut** (``nosnr``, the default).
+The alternative -- anchoring on the same detected+classified sample the
+photo-error curve describes, which would put sigma = 0.2171 at delta_mag = 0 by
+construction -- was measured on the full DES Y6 catalog and rejected:
+
+    band   nosnr shift   detected shift
+    g         -0.297         +0.395
+    r         -0.280         -0.637
+    i         -0.180         -0.207
+    z         -0.124         -0.116
+
+Under ``detected`` the g and r depths move in opposite directions by more than a
+magnitude in total, which cannot be real depth.  The reason is structural: the
+S/N cut is applied in the *reference band only*, so the g anchor is truncated by
+its own cut while the r/i/z anchor samples are selected on *g* S/N -- a different
+and band-dependent distortion of each scatter curve.  ``nosnr`` gives smooth,
+same-sign shifts that order correctly with wavelength.
+
+This does mean the sample photo-error curve reaches sigma = 0.2171 somewhat
+faintward of delta_mag = 0 rather than exactly at it.  That is already true of
+every truth-anchored streamobs release for a related reason -- the maglim is
+anchored to the SAMPLE curve while ``get_photo_error`` returns the CATALOG curve
+-- which is why they all set ``skip_snr_maglim_check`` in the test registry.
+Roman's own anchor sample does include the detection cut, but its methodology
+footnote records the difference there as <= 0.01 mag, i.e. Roman's anchor is
+numerically indistinguishable from the no-cut one.  DES diverges only because its
+S/N cut truncates much harder relative to its error inflation (1.46 vs ~2), so
+``nosnr`` is the choice that actually matches Roman's *effective* convention.
+
 Usage
 -----
     python balrog_selection_function.py \
@@ -1457,16 +1488,14 @@ def build_parser():
     p.add_argument("--zp-mag-max", type=float, default=22.0, help="faint end of the ZP audit")
     p.add_argument(
         "--anchor-sample",
-        default="detected",
-        choices=["detected", "nosnr"],
-        help="which population defines the depth. 'detected' (default) anchors "
-        "on the SAME sample the photo-error curve describes -- stars that pass "
-        "detection AND classification -- so sigma = 0.2171 at delta_mag = 0 "
-        "holds by construction, matching the Roman and LSST products and the "
-        "streamobs S/N-at-maglim convention. 'nosnr' drops the S/N cut from the "
-        "anchor sample only, which is arguably the truer *physical* depth but "
-        "puts delta_mag = 0 at a different S/N than the other surveys, breaking "
-        "the cross-survey portability the delta_mag keying exists for",
+        default="nosnr",
+        choices=["nosnr", "detected"],
+        help="which population defines the depth. 'nosnr' (default) drops the "
+        "reference-band S/N cut from the anchor sample only. 'detected' anchors "
+        "on the same sample the photo-error curve describes, which would make "
+        "sigma = 0.2171 at delta_mag = 0 hold by construction -- but MEASURED ON "
+        "DES IT IS UNSTABLE ACROSS BANDS (see the module docstring); use it only "
+        "for diagnostics",
     )
     p.add_argument(
         "--no-anchor",

@@ -208,6 +208,49 @@ known stars nor known galaxies, so they cannot inform either.
 DELVE's Balrog-of-the-Stars, by contrast, ships an explicit `truth_STAR` boolean
 at roughly 50/50, so none of this applies there.
 
+## Which population defines the depth
+
+The truth anchor asks "at what magnitude does the truth-based scatter of
+(obs − true) reach σ = 0.2171?" — but *whose* scatter? The reducer's
+`--anchor-sample` selects between the population that has passed the
+reference-band S/N cut and the one that has not, and for DES the two answers are
+a magnitude apart. Measured on the full catalogue:
+
+| band | `nosnr` shift | `detected` shift |
+|---|---|---|
+| g | −0.297 | **+0.395** |
+| r | −0.280 | **−0.637** |
+| i | −0.180 | −0.207 |
+| z | −0.124 | −0.116 |
+
+`detected` moves g deeper by 0.40 while moving r shallower by 0.64 — a 1.03 mag
+swing between adjacent bands, which cannot be real depth. The cause is
+structural: the S/N cut is applied in the **reference band only**, so the g
+anchor is truncated by its own cut (self-referential — asking where the scatter
+of objects selected for having small scatter reaches a threshold that selection
+enforces), while the r/i/z anchor samples are selected on *g* S/N, distorting
+each differently. `nosnr` gives smooth, same-sign shifts ordered correctly with
+wavelength, and is the default.
+
+The trade-off is that the sample photo-error curve then reaches σ = 0.2171
+somewhat faintward of `delta_mag = 0` rather than exactly at it. That is already
+true of every truth-anchored streamobs release for a related reason — the maglim
+is anchored to the *sample* curve while `get_photo_error` returns the *catalog*
+curve — which is why they all carry `skip_snr_maglim_check` in the test registry.
+
+Roman's anchor sample does formally include the detection cut, but its own
+methodology footnote records the difference there as ≲ 0.01 mag, i.e. Roman's
+anchor is numerically indistinguishable from the no-cut one. DES diverges only
+because its S/N cut truncates much harder relative to its error inflation
+(1.46 versus Roman's ~2), leaving far less headroom between "reported error
+passes S/N > 5" and "truth scatter reaches 0.217". So `nosnr` is the choice that
+matches Roman's *effective* convention, even though `detected` matches its code.
+
+> Sanity check to keep: **the per-band anchor shifts must be smooth and
+> same-sign.** A band whose shift departs sharply from its neighbours is
+> signalling a photometry, selection or sentinel-masking problem in that band,
+> not a real depth feature. That check is what caught this.
+
 ## Balrog gotchas that cost real time
 
 - **DES ships two files, DELVE one.** `fiducial_matched_measured_sof.hdf5`
