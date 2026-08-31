@@ -541,7 +541,19 @@ class DesY6Balrog(BalrogSchema):
         quality_nosnr = quality.copy()
         if self.snr_detect:
             j = self.BAND_INDEX[self.ref_band]
-            s2n = scatter(b["meas_psf_flux_s2n"][bsl][:, j], fill=0.0)
+            # Gate on the S/N of the SAME photometry the magnitudes and errors
+            # come from.  meas_psf_flux_s2n would be inconsistent under
+            # --mag-kind bdf (the DES default), and cutting on one photometry
+            # family while measuring the scatter of another distorts the
+            # surviving population's error distribution.
+            if self.mag_kind == "bdf":
+                fl = np.asarray(b["meas_bdf_flux"][bsl][:, j], dtype=float)
+                fe = np.asarray(b["meas_bdf_flux_err"][bsl][:, j], dtype=float)
+                with np.errstate(all="ignore"):
+                    s2n_det = np.where(fe > 0, fl / fe, 0.0)
+                s2n = scatter(s2n_det, fill=0.0)
+            else:
+                s2n = scatter(b["meas_psf_flux_s2n"][bsl][:, j], fill=0.0)
             quality &= s2n > self.snr_detect
         out["detected"] = quality
         out["detected_nosnr"] = quality_nosnr
@@ -1134,7 +1146,9 @@ def main(args):
         with np.errstate(all="ignore"):
             pe_catalog.add(delta[sel], np.log10(c["obs_magerr"][ref][sel]))
         for b in maps:
-            selb = c["is_star"] & c["classified_nosnr"] & keep & c["in_footprint"]
+            # Which population defines "the depth" -- see --anchor-sample.
+            cls_key = "classified" if args.anchor_sample == "detected" else "classified_nosnr"
+            selb = c["is_star"] & c[cls_key] & keep & c["in_footprint"]
             anchor[b].add(
                 c["true_mag"][b][selb],
                 (c["obs_mag"][b] - corr - c["true_mag"][b])[selb],
@@ -1301,6 +1315,7 @@ def main(args):
         "mag_kind": args.mag_kind,
         "snr_detect": args.snr_detect,
         "truth_anchored": not args.no_anchor,
+        "anchor_sample": args.anchor_sample,
         "m5_truth_anchored": {b: float(v) for b, v in m5.items()},
         "maglim_ref_median": maglim_ref,
         "error_inflation_factor": inflation,
@@ -1440,6 +1455,19 @@ def build_parser():
     )
     p.add_argument("--zp-mag-min", type=float, default=19.0, help="bright end of the ZP audit")
     p.add_argument("--zp-mag-max", type=float, default=22.0, help="faint end of the ZP audit")
+    p.add_argument(
+        "--anchor-sample",
+        default="detected",
+        choices=["detected", "nosnr"],
+        help="which population defines the depth. 'detected' (default) anchors "
+        "on the SAME sample the photo-error curve describes -- stars that pass "
+        "detection AND classification -- so sigma = 0.2171 at delta_mag = 0 "
+        "holds by construction, matching the Roman and LSST products and the "
+        "streamobs S/N-at-maglim convention. 'nosnr' drops the S/N cut from the "
+        "anchor sample only, which is arguably the truer *physical* depth but "
+        "puts delta_mag = 0 at a different S/N than the other surveys, breaking "
+        "the cross-survey portability the delta_mag keying exists for",
+    )
     p.add_argument(
         "--no-anchor",
         action="store_true",

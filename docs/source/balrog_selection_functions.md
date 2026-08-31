@@ -364,7 +364,13 @@ Copy back only the CSVs, the depth maps and the audit JSON — they total a few 
   cross-check is weak. Comparing the curves in `delta_mag` needs no sky overlap
   at all, and is precisely what the `delta_mag` keying is for.
 
-> **Bright-end plateau.** These curves plateau *below* 1.0 by construction — the
-> per-object flag cut sits in the numerator, matching the Roman and LSST
-> products. The legacy DES product plateaued at exactly 1.00 and is not
-> comparable.
+> **Bright-end plateau.** In the Roman and LSST products the per-object flag cut
+> sits in the numerator and pulls the bright-end plateau down to ~0.91 — a
+> property of the adopted cut, not the instrument. **DES Y6 Balrog does not
+> behave that way**: its flagged fraction is tiny (0.056% for
+> `meas_flags`/`meas_bdf_flags`, plus 0.2% blend-flagged), because injections are
+> placed on a sparse 20″ hexagonal grid specifically to avoid injection-injection
+> blending. So `detection_eff` plateaus at ~1.0, and that is expected rather than
+> a missing cut. Do not "fix" it by reaching for a harsher flag selection, and do
+> not read the agreement with the legacy DES product's 1.00 plateau as
+> validation — that product reached it for a different reason.
