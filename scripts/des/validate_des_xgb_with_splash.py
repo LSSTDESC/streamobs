@@ -60,6 +60,18 @@ import pandas as pd
 BAD = -9.0e8
 MAG_CAP = 37.0
 
+# SPLASH-SXDF STAR_FLAG encoding, measured on the released catalogue:
+#   1   -> star          (6,309 rows)
+#   0   -> galaxy        (390,447)
+#   -99 -> UNCLASSIFIED  (772,302 -- 66% of the catalogue)
+# -99 is *not* "galaxy".  Folding it into the galaxy class would inflate the
+# apparent contamination of the stellar selection enormously, since two thirds of
+# the field is unclassified.  It is excluded from both the numerator and the
+# denominator, exactly as KNN_CLASS == 0 is on the Balrog side.
+SPLASH_STAR = 1
+SPLASH_GALAXY = 0
+SPLASH_UNCLASSIFIED = -99
+
 
 def load_splash(path: str, radius_pad: float = 0.2):
     """Load the SPLASH-SXDF catalogue, keeping only what the match needs."""
@@ -73,11 +85,16 @@ def load_splash(path: str, radius_pad: float = 0.2):
         missing = [c for c in need if c not in names]
         if missing:
             raise SystemExit(f"SPLASH is missing {missing}; columns are {sorted(names)[:40]}")
-        cols = {c: np.asarray(tab.data[names[c]]) for c in need}
+        # FITS is big-endian; pandas/numpy hashing needs native byte order.
+        def native(a):
+            a = np.asarray(a)
+            return a.astype(a.dtype.newbyteorder("=")) if a.dtype.byteorder == ">" else a
+
+        cols = {c: native(tab.data[names[c]]) for c in need}
         for opt in ("ID", "MAG_AUTO_hsc_i", "MAG_AUTO_hsc_g", "CHI_STAR", "ZPHOT"):
             key = opt.upper()
             if key in names:
-                cols[opt] = np.asarray(tab.data[names[key]])
+                cols[opt] = native(tab.data[names[key]])
     d = pd.DataFrame(cols)
     print(f"  SPLASH: {len(d):,} rows (header says {n_expected:,})")
     if len(d) != n_expected:
@@ -146,7 +163,7 @@ def crossmatch(des: pd.DataFrame, splash: pd.DataFrame, radius_arcsec: float):
 def curves(m: pd.DataFrame, ext_max: int, magcol: str, bins: np.ndarray):
     """Completeness and contamination of 0 <= EXT_XGB <= ext_max vs magnitude."""
     sel = (m["EXT_XGB"] >= 0) & (m["EXT_XGB"] <= ext_max)
-    star = m["splash_star"] > 0
+    star = m["splash_star"] == SPLASH_STAR
     mag = m[magcol].to_numpy()
     rows = []
     for lo, hi in zip(bins[:-1], bins[1:]):
@@ -166,7 +183,7 @@ def curves(m: pd.DataFrame, ext_max: int, magcol: str, bins: np.ndarray):
 
 def integrated(m: pd.DataFrame, ext_max: int, magcol: str, lo: float, hi: float):
     sel = (m["EXT_XGB"] >= 0) & (m["EXT_XGB"] <= ext_max)
-    star = m["splash_star"] > 0
+    star = m["splash_star"] == SPLASH_STAR
     b = (m[magcol] >= lo) & (m[magcol] < hi)
     n_star, n_sel = int((b & star).sum()), int((b & sel).sum())
     return {
@@ -205,8 +222,14 @@ def main() -> None:
     print("\ncrossmatching:")
     m = crossmatch(des, sp, args.radius)
     m = m[np.isfinite(m[args.magcol])]
+    n_before = len(m)
+    m = m[m["splash_star"].isin([SPLASH_STAR, SPLASH_GALAXY])].reset_index(drop=True)
+    print(f"  dropped {n_before - len(m):,} SPLASH-unclassified (STAR_FLAG=-99) "
+          f"matches; they are neither star nor galaxy truth")
     print(f"  usable with finite {args.magcol}: {len(m):,}")
-    print(f"  SPLASH-truth star fraction: {(m['splash_star'] > 0).mean():.4f}")
+    print(f"  usable (SPLASH-classified): {len(m):,}")
+    print(f"  SPLASH-truth star fraction: "
+          f"{(m['splash_star'] == SPLASH_STAR).mean():.4f}")
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)

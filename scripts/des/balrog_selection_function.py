@@ -102,6 +102,28 @@ SIG_SN5 = 2.5 / np.log(10) / SNR_DEPTH  # 0.21715 mag
 DET_EFF_DELTA_MAX = 1.0  # zero detection_eff faintward of this delta_mag
 EFF_DELTA_MIN = -11.0  # drop efficiency rows brighter than this
 MIN_COUNT_EFF = 20  # drop efficiency bins with fewer true stars
+# Balrog injects each parent source many times (DES: 2.8M deep-field objects ->
+# 145.7M injections, ~51 each), so rows in a magnitude bin are NOT independent --
+# the effective sample size is the number of DISTINCT parent sources.  Bright
+# bins are the danger: a 5.9 deg^2 deep field holds few bright stars, and those
+# are saturated in the (much deeper) deep-field imaging, so their injected
+# morphology is corrupt.  Left unguarded this produced a classification_eff of
+# 0.685 at mag_g = 18.125 between neighbours of 1.000 and 0.947, and a run of
+# implausibly exact 1.0000 bins brightward of it.  Schemas that expose a parent
+# id set `src_id`; those that do not fall back to the row count alone.
+# 100 distinct sources gives a binomial precision of ~2% at p ~ 0.95, and on the
+# DES deep fields it lands the threshold at g ~ 18.5, just faintward of where the
+# parent star sample stops being usable.  Distinct deep-field stars per 0.25 mag:
+#   g 16.0-17.75:  1,1,3,0,4,0,2      (nothing at all)
+#   g 17.75-18.00: 13
+#   g 18.00-18.25: 49    <- gave classification_eff 0.685, 8.5 sigma below its
+#                           neighbours: not noise, but a real property of 49
+#                           saturated-in-the-deep-field objects, and flatly
+#                           contradicted by the 98.0% the Y6 Gold paper reports
+#                           over 17.5 <= i <= 22.5 (Table A.3)
+#   g 18.25-18.50: 76
+#   g 18.50-18.75: 123   <- first bin worth trusting
+MIN_UNIQUE_SRC = 100
 MIN_COUNT_PE = 20  # drop photo-error bins with fewer stars
 MAG_BINS = np.arange(15.0, 29.0 + 1e-6, 0.25)
 MAG_MID = 0.5 * (MAG_BINS[1:] + MAG_BINS[:-1])
@@ -546,6 +568,9 @@ class DesY6Balrog(BalrogSchema):
             "dec": a["dec"][sl],
             "is_star": knn == self.KNN_STAR,
             "tile": a["wide_tilename"][sl],  # NOT `tilename` (deep-field source tile)
+            # Parent deep-field object. Each is injected ~51 times, so this is
+            # what makes the effective sample size countable (see MIN_UNIQUE_SRC).
+            "src_id": ids,
         }
 
         # Sky mask AND label availability gate the denominator.  KNN_CLASS == 0
@@ -990,6 +1015,30 @@ def apply_photoerr_corrections(tab, curve_id, corrections_path):
     return out
 
 
+def reapply_corrections(out_dir, tag, band, corrections_path):
+    """Re-run the afterburner from the saved ``*_raw.csv`` provenance files.
+
+    The raw curves exist precisely so the manual cleanup can be revised without
+    re-deriving anything -- the reduction itself is a multi-hour pass over
+    hundreds of GB, and tuning a YAML threshold should not cost that.
+    """
+    out = Path(out_dir)
+    n = 0
+    for name, cid in [(f"{tag}_photoerror_{band}", f"{band}_sample"),
+                      (f"{tag}_photoerror_{band}_catalog", f"{band}_catalog")]:
+        raw = out / f"{name}_raw.csv"
+        if not raw.exists():
+            print(f"  missing {raw}, skipping")
+            continue
+        tab = pd.read_csv(raw)
+        cleaned = apply_photoerr_corrections(tab, cid, corrections_path)
+        write_csv(out / f"{name}.csv", cleaned, "delta_mag,log_mag_err")
+        n += 1
+    if not n:
+        raise SystemExit(f"no *_raw.csv found in {out}")
+    print(f"re-applied {corrections_path} to {n} curves in {out}")
+
+
 def deconvolve_classification_eff(eff_cls, conf, mag_mid, min_sep=0.2,
                                   min_count=200):
     """Invert a surrogate's selection back onto the classifier it approximates.
@@ -1047,6 +1096,15 @@ def main(args):
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     tag = args.tag or args.survey
+
+    if args.reapply_corrections:
+        return reapply_corrections(out, tag, args.band, args.corrections)
+
+    # Required for a real reduction, but not when only re-cleaning curves, so
+    # they are validated here rather than by argparse.
+    for flag, val in (("--catalog", args.catalog), ("--maglim-map", args.maglim_map)):
+        if not val:
+            raise SystemExit(f"{flag} is required (omit only with --reapply-corrections)")
 
     schema = SCHEMAS[args.survey](
         ext_max=args.ext_max,
@@ -1141,6 +1199,8 @@ def main(args):
     # it keeps this to two passes over the catalog.
     print("\npass 2/2: truth anchor + efficiency + photo-error + misclassification")
     anchor = {b: ResidualHist(ANCHOR_BINS) for b in maps}
+    # distinct parent sources per magnitude bin, packed as bin*2**32 + src_id
+    uniq_src = set()
     n_all = np.zeros(MAG_BINS.size - 1, dtype=np.int64)  # all injected true stars
     n_det = np.zeros_like(n_all)
     n_cls = np.zeros_like(n_all)
@@ -1166,6 +1226,15 @@ def main(args):
         star = c["is_star"] & ok
         gal = (~c["is_star"]) & ok
         n_all += np.histogram(tm_ref[star], MAG_BINS)[0]
+        if "src_id" in c:
+            ib = np.digitize(tm_ref[star], MAG_BINS) - 1
+            good_b = (ib >= 0) & (ib < MAG_BINS.size - 1)
+            uniq_src.update(
+                np.unique(
+                    ib[good_b].astype(np.int64) * (1 << 32)
+                    + c["src_id"][star][good_b].astype(np.int64)
+                ).tolist()
+            )
         n_det += np.histogram(tm_ref[star & c["detected"]], MAG_BINS)[0]
         n_cls += np.histogram(tm_ref[star & c["classified"]], MAG_BINS)[0]
         n_gal_det += np.histogram(tm_ref[gal & c["detected"]], MAG_BINS)[0]
@@ -1258,7 +1327,40 @@ def main(args):
             "classification_detection_eff": eff_both,
         }
     )
-    eff = eff[n_all >= MIN_COUNT_EFF].fillna(0.0)
+    enough = n_all >= MIN_COUNT_EFF
+    n_src = None
+    if uniq_src:
+        n_src = np.zeros(MAG_BINS.size - 1, dtype=np.int64)
+        for packed in uniq_src:
+            n_src[packed >> 32] += 1
+        thin = enough & (n_src < MIN_UNIQUE_SRC)
+        if thin.any():
+            # CLAMP, do not drop.  set_completeness inserts efficiency = 0 at
+            # delta_saturation and interpolates LINEARLY up to the first row of
+            # the table, so truncating the bright end would have streamobs ramp
+            # the efficiency from 0 at saturation to whatever the first
+            # surviving bin says -- i.e. assert that bright, well-detected stars
+            # are nearly unrecoverable.  Instead hold classification_eff at the
+            # brightest well-sampled value: DES does not classify a g = 17 star
+            # worse than a g = 18.5 one.  detection_eff is left as measured; it
+            # sits at ~1.0 and does not depend on morphology, so it is not
+            # affected by the corrupt bright-end injection profiles.
+            reliable = np.where(enough & (n_src >= MIN_UNIQUE_SRC))[0]
+            if reliable.size:
+                i0 = int(reliable[0])
+                bright = np.zeros_like(enough)
+                bright[:i0] = enough[:i0]
+                eff_cls = eff_cls.copy()
+                eff_cls[bright] = eff_cls[i0]
+                eff["classification_eff"] = eff_cls
+                eff["classification_detection_eff"] = eff_det * np.nan_to_num(eff_cls)
+                print(f"  clamped classification_eff in {int(bright.sum())} bright "
+                      f"bins (mag_{ref} <= {MAG_MID[i0 - 1]:.2f}) to the brightest "
+                      f"well-sampled value {eff_cls[i0]:.4f}: fewer than "
+                      f"{MIN_UNIQUE_SRC} distinct parent sources there, and the few "
+                      f"bright deep-field stars are saturated in the deep imaging, "
+                      f"so their injected morphology is not representative")
+    eff = eff[enough].fillna(0.0)
     eff = eff[eff["delta_mag"] >= EFF_DELTA_MIN]
     faint = eff["delta_mag"] > DET_EFF_DELTA_MAX
     eff.loc[faint, ["detection_eff", "classification_detection_eff"]] = 0.0
@@ -1369,7 +1471,7 @@ def main(args):
 def build_parser():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--survey", required=True, choices=sorted(SCHEMAS))
-    p.add_argument("--catalog", required=True, help="Balrog HDF5 catalog")
+    p.add_argument("--catalog", default=None, help="Balrog HDF5 catalog")
     p.add_argument(
         "--measured",
         default=None,
@@ -1412,7 +1514,7 @@ def build_parser():
     p.add_argument(
         "--maglim-map",
         nargs="+",
-        required=True,
+        default=None,
         metavar="BAND=PATH[,PATH...]",
         help="depth map(s) per band, e.g. g=/path/maglim_g.hsp. Give several "
         "comma-separated paths to mosaic complementary footprints (DELVE DR3 "
@@ -1458,6 +1560,13 @@ def build_parser():
         "extinction varies tile to tile",
     )
     p.add_argument("--corrections", default=None, help="afterburner YAML")
+    p.add_argument(
+        "--reapply-corrections",
+        action="store_true",
+        help="do NOT re-derive: just re-run the afterburner over the *_raw.csv "
+        "already in --out and rewrite the cleaned curves. Editing a cleanup "
+        "threshold should not cost a multi-hour pass over the catalogue",
+    )
     p.add_argument(
         "--snr-detect",
         type=float,

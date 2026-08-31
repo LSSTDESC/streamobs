@@ -141,8 +141,21 @@ SURVEY_REGISTRY = [
     {
         "survey": "des",
         "release": "yr6",
-        "expected_bands": ["g", "r"],
-        "expected_maglim": ["g", "r"],
+        # griz: Y is dropped because the Y6 Balrog injects griz only, so a
+        # Y depth map cannot be truth-anchored and no Y curve can be derived.
+        "expected_bands": ["g", "r", "i", "z"],
+        "expected_maglim": ["g", "r", "i", "z"],
+        # Same overrides as every other truth-anchored two-curve release: the
+        # maglim map is anchored to the SAMPLE (truth-scatter) curve while
+        # get_photo_error returns the CATALOG (reported) curve, so SNR@maglim > 5.
+        # The DES anchor additionally uses the no-S/N-cut population, because
+        # anchoring on the detected one is unstable across bands (g and r move
+        # 1.03 mag in opposite directions) -- see
+        # docs/source/balrog_selection_functions.md.
+        "skip_sat_photoerr_check": True,
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+        "skip_snr_maglim_check": True,
     },
     # Roman DC2 — reference HLIS depth mock; data files in data/surveys/roman_dc2/
     # Notes on threshold overrides (generic LSST/DES thresholds don't apply):
