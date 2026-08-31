@@ -425,6 +425,35 @@ are cheap relative to the derivation and would tighten confidence in the injecto
    check for LSST DC2's native-scale map is already done — see the Tsiane et al. 2025
    comparison above, an independent external calibration, not a self-derived one.)
 
+## When the classifier cannot be evaluated on the simulation
+
+The recipe above assumes the survey's star classifier can be recomputed on the
+simulated sources. That assumption fails for the DECam surveys: DES Y6 Gold's
+`EXT_XGB` needs three features that are never measured for injected sources, so
+it cannot be run on Balrog at all — and the classifier is precisely what
+`classification_eff` is supposed to describe.
+
+The general remedy, when the *real* catalogue carries the classifier output and
+the *simulation* carries the truth label, is to bridge them through the features
+they share:
+
+1. Train a **surrogate** for the classifier on the real catalogue, restricted to
+   features constructible identically in both places.
+2. Measure the surrogate's per-magnitude confusion against the real classifier,
+   `a(m) = P(S=1 | selected)` and `b(m) = P(S=1 | not selected)`, and
+   **deconvolve** the simulation-measured efficiency,
+   `eff = (eff_S - b) / (a - b)`, so the shipped curve describes the real
+   classifier rather than the surrogate.
+
+Two things decide whether this is trustworthy, and both are cheap to measure
+before committing to it: how much of the missing feature is reconstructible from
+the available ones, and whether the feature distributions actually agree across
+the two catalogues (a feature that is systematically offset between train and
+apply domains must be dropped, however informative it looks).
+
+See :doc:`balrog_selection_functions` for the worked DES/DELVE case, including
+the numbers.
+
 ## Re-deriving for another survey
 
 To re-derive LSST/DES products self-consistently:

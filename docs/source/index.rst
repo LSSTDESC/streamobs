@@ -128,6 +128,7 @@ Documentation Contents
    column_convention
    data
    selection_function_methodology
+   balrog_selection_functions
    roman_dc2
    roman_hlwas
    modules
