@@ -38,6 +38,37 @@ this script itself:
 and the per-magnitude curve is what the Balrog-derived `classification_eff`
 should reproduce once detection is divided out.
 
+Result (2026-08-31, SXDF, 0.5" match, 151,580 SPLASH-classified matches)
+------------------------------------------------------------------------
+**Completeness reproduces the paper**, which is the quantity streamobs ships as
+`classification_eff`:
+
+    selection          range        this work    paper (Table A.3)
+    0 <= EXT_XGB <= 1  17.5-22.5      0.988          0.980
+    0 <= EXT_XGB <= 1  16.5-23.5      0.964          0.943
+    EXT_XGB == 0       17.5-22.5      0.947          0.921
+    EXT_XGB == 0       16.5-23.5      0.811          0.793
+
+**Contamination does not, and should not be trusted from this comparison**
+(0.223 vs 0.040 for EXT_XGB <= 1 over 17.5-22.5).  The cause is a property of
+the truth sample, not of the products.  SPLASH's `STAR_FLAG` is a *pure but
+incomplete* star selector:
+
+  * flag == 1 sits in a tight point-source locus -- median HSC FLUX_RADIUS 3.07
+    (p16-p84 3.00-3.21) at 17.5 < i < 19, versus 6.76 for flag == 0.  So the
+    star sample is clean.
+  * but the DES-selected objects that SPLASH calls "galaxy" have median
+    FLUX_RADIUS 3.351 with p16 = 3.082 -- more than half of them lie ON the
+    stellar locus.  They are stars that failed SPLASH's (multi-band, IRAC-
+    dependent) star criterion, not galaxies DES misclassified.
+
+A pure-but-incomplete star label gives an unbiased P(selected | star) and an
+inflated P(not star | selected).  Completeness is therefore validated and
+contamination is not measurable here; the same limitation means this field
+cannot validate the galaxy-misclassification product either.  Doing so would
+need a *complete* galaxy label -- e.g. the HSC PDR3 concentration
+(i_psfflux_mag - i_cmodel_mag) the DES team used for their own Fig. 3.
+
 Caveats this cannot escape
 --------------------------
 SXDF is one deep field of a few deg^2.  It constrains the *shape* of the

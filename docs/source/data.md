@@ -131,7 +131,8 @@ Current surveys:
 - `lsst_yr3/` - LSST baseline v5.0.0, Year 3 observations (g, r bands)
 - `lsst_yr4/` - LSST baseline v5.0.0, Year 4 observations (g, r bands)
 - `lsst_yr5/` - LSST baseline v5.0.0, Year 5 observations (g, r bands)
-- `des_yr6/` - DES Y6 Gold
+- `des_yr6/` - DES Y6 Gold (griz; products re-derived from the Y6 Balrog
+  injections — see {doc}`surveys/DES` and {doc}`balrog_selection_functions`)
 
 Additional surveys can be added by placing maglim maps in new subdirectories.
 

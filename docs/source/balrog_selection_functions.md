@@ -395,13 +395,34 @@ Copy back only the CSVs, the depth maps and the audit JSON — they total a few 
   17.5 ≤ i ≤ 22.5 and 94.3% / 12.5% for 16.5 ≤ i ≤ 23.5; `EXT_XGB = 0` →
   92.1% / 1.0% and 79.3% / 1.5%. These constrain the *integral* of the curve;
   the paper publishes per-magnitude performance only graphically (their Fig. 3).
-- **Against an external deep truth sample.** DES themselves validated their
-  classifiers in the faint domain against HSC-SSP PDR3 deep/ultra-deep in the
-  SDSX field (α ≈ 35.8°, δ ≈ −4.6°), 0.5″ matched, with truth defined by the HSC
-  concentration `i_psfflux_mag - i_cmodel_mag`. Reproducing that measurement is
-  what constrains the *shape* of the curve, and it is what tests the residual
-  systematic in the deconvolution (that `a` and `b` are measured on a mixed
-  population rather than on true stars).
+- **Against an external deep truth sample — done, and it passes.**
+  `scripts/des/validate_des_xgb_with_splash.py` matches the real Y6 Gold
+  catalogue at 0.5″ against SPLASH-SXDF (Mehta et al. 2018) in the same SXDF
+  field DES used for their own faint-domain validation. On 151,580
+  SPLASH-classified matches the stellar completeness reproduces Table A.3:
+
+  | selection | range | this work | paper |
+  |---|---|---|---|
+  | `EXT_XGB ≤ 1` | 17.5–22.5 | 0.988 | 0.980 |
+  | `EXT_XGB ≤ 1` | 16.5–23.5 | 0.964 | 0.943 |
+  | `EXT_XGB = 0` | 17.5–22.5 | 0.947 | 0.921 |
+  | `EXT_XGB = 0` | 16.5–23.5 | 0.811 | 0.793 |
+
+  This is the external check on the deconvolution's residual assumption, and it
+  is the quantity streamobs actually ships.
+
+  > **Contamination is *not* measurable from this comparison** (0.223 vs the
+  > paper's 0.040) and the discrepancy is a property of the truth sample.
+  > SPLASH's `STAR_FLAG` is pure but incomplete: flag = 1 sits in a tight
+  > point-source locus (median HSC `FLUX_RADIUS` 3.07 vs 6.76 for flag = 0), yet
+  > the DES-selected objects it calls "galaxy" have median `FLUX_RADIUS` 3.351
+  > with p16 = 3.082 — over half of them lie *on* the stellar locus. They are
+  > stars that failed SPLASH's IRAC-dependent star criterion, not DES
+  > misclassifications. A pure-but-incomplete star label yields an unbiased
+  > `P(selected | star)` and an inflated `P(not star | selected)`. The same
+  > limitation means this field cannot validate the galaxy-misclassification
+  > product; that needs a *complete* galaxy label, e.g. the HSC PDR3
+  > concentration `i_psfflux_mag − i_cmodel_mag` DES used for their Fig. 3.
 - **DES against DELVE in `delta_mag` space.** The two footprints overlap over
   only 369 deg² (7.1% of DES) and that overlap is edge-dominated, so a sky-based
   cross-check is weak. Comparing the curves in `delta_mag` needs no sky overlap

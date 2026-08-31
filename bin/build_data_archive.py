@@ -60,6 +60,10 @@ EXCLUDE_FILE_GLOBS = [
     "dc2_object_*",  # LSST DC2 object skims
     "dc2_run2.2i_truth_*",  # LSST DC2 truth skims
     "supreme_*",  # supreme HealSparse depth-map source (LSST DC2 build input)
+    "des_y6_5_sig_*",  # DES Y6 healsparse depth-map source: supplies the spatial
+    # structure that des_yr6_maglim_*_nside1024.fits.gz is
+    # truth-anchored on top of, so it is a build input, not a
+    # runtime product (same role as supreme_* for LSST DC2)
     "*_raw.csv",  # photo-error provenance (raw, pre-afterburner)
     "map_HLWAS-*",  # raw HLWAS exposure-time maps (build inputs)
     "*_rough_maglim*",  # intermediate rough maglim maps
