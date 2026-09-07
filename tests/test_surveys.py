@@ -594,5 +594,5 @@ class TestSurveyProperties:
                 )
                 snr_at_maglim = 1 / error_at_maglim
                 assert np.isclose(
-                    snr_at_maglim, 10.0, atol=2.,
+                    snr_at_maglim, 10.0, atol=0.5,
                 ), f"Photo error at maglim_10 should correspond to be roughly SNR=10 for band '{band}'"
