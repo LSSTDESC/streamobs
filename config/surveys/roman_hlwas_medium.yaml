@@ -49,6 +49,11 @@ survey_files:
     #   sample  = truth-based scatter of (obs - true)  (drives the noise draw)
     log_photo_error_catalog: roman_photoerror_f158_catalog.csv
     log_photo_error_sample: roman_photoerror_f158.csv
+    # Forced-photometry (non-reference band) curves: measured with NO S/N cut, because
+    # Y106/J129/F184 photometry is forced from the F158 detection and so is not
+    # conditioned on detection in those bands. Required for any non-reference band.
+    log_photo_error_catalog_nocut: roman_photoerror_f158_catalog_nocut.csv
+    log_photo_error_sample_nocut: roman_photoerror_f158_nocut.csv
 
 survey_properties:
     # F158 only: F106/F129 maps are not yet constructed for HLWAS; F184 is

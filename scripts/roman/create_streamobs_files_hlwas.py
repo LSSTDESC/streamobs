@@ -1104,59 +1104,71 @@ print(f"reference maglim = measured map median = {MAGLIM_REF:.3f}")
 # error model from TRUE stars passing the star classification: the observationally
 # star-classified sample is galaxy-dominated faintward of ~25.5 and would inflate
 # the faint-end errors (0.33 vs 0.15 mag at 25.5)
-# Conditioned on ``det_ok`` BY DESIGN, same as the LSST DC2 generator: the injector
-# draws detection and noise independently, so the curves must describe the detected
-# population they are applied to.  See docs/source/selection_function_methodology.md,
-# "Why the curves are measured on the *detected* population (validated 2026-07)", and
-# notebooks/detok_photoerr_comparison.ipynb for the per-survey measurement.
-sel = (
+# TWO SELECTIONS, two pairs of curves (mirrors the LSST DC2 generator).
+#
+# det_ok -> the REFERENCE band (F158).  The injector draws the detection flag and the
+#   noise independently, so the reference-band curve must describe the population it is
+#   applied to: the detected one.  See docs/source/selection_function_methodology.md,
+#   "Why the curves are measured on the *detected* population (validated 2026-07)".
+# no cut -> every OTHER band (Y106/J129/F184).  Those are FORCED photometry: an object
+#   detected in F158 is measured in Y106 whatever its Y106 flux, so that population is
+#   not conditioned on detection in its own band and the det_ok curve understates its
+#   errors faintward of delta_mag ~ -0.25.  Evidence, incl. a direct check against the
+#   measured non-reference-band curve: notebooks/detok_photoerr_comparison.ipynb.
+_base_sel = (
     cat.matched
     & (cat.truth_gal_star == 1)
     & cat["env_star"]
     & (cat["flags"] < FLAG_CUT)
-    & det_ok
 )
-pe = cat.loc[
-    sel,
-    [
-        "alphawin_j2000",
-        "deltawin_j2000",
-        f"truth_mag_{BAND}",
-        f"mag_auto_{BAND}",
-        f"magerr_auto_{BAND}",
-    ],
-].dropna()
-pix = hp.ang2pix(NSIDE, pe.alphawin_j2000.values, pe.deltawin_j2000.values, lonlat=True)
-ml_local = mlm[pix]
-good = ml_local != hp.UNSEEN
-delta = pe[f"truth_mag_{BAND}"].values[good] - ml_local[good]
-# the error model is the TRUTH-BASED scatter of (observed - true): the reported
-# SExtractor magerr underestimates it by ~2x (correlated noise in the coadds)
-dm_obs = (pe[f"mag_auto_{BAND}"].values - pe[f"truth_mag_{BAND}"].values)[good]
-logerr_reported = np.log10(pe[f"magerr_auto_{BAND}"].values[good])
 
-dbins = np.arange(np.floor(delta.min() * 10) / 10, 1.5 + 1e-6, 0.12)
-dmid = 0.5 * (dbins[1:] + dbins[:-1])
-log_scatter = np.full(dmid.size, np.nan)
-med_logerr_rep = np.full(dmid.size, np.nan)
-ib = np.digitize(delta, dbins) - 1
-for i in range(dmid.size):
-    v = dm_obs[ib == i]
-    if v.size >= 20:
-        log_scatter[i] = np.log10((np.percentile(v, 84) - np.percentile(v, 16)) / 2)
-        med_logerr_rep[i] = np.median(logerr_reported[ib == i])
-keep = np.isfinite(log_scatter)
 
-# Two error curves for the streamobs two-curve model (Survey.get_photo_error):
-#   - SAMPLE  (roman_photoerror_f158.csv): truth-based scatter of (obs - true).
-#     Drives the NOISE DRAW (the true scatter is ~2x the reported magerr).
-#     Wired in the config as `log_photo_error_sample`.
-#   - CATALOG (roman_photoerror_f158_catalog.csv): median reported SExtractor
-#     magerr. Written as `magerr` and used for the S/N cut. Wired as
-#     `log_photo_error_catalog`.
-photoerr_tab = pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": log_scatter[keep]})
-catalog_tab = pd.DataFrame(
-    {"delta_mag": dmid[keep], "log_mag_err": med_logerr_rep[keep]}
+def _photoerr_tables(mask, label):
+    pe = cat.loc[
+        mask,
+        [
+            "alphawin_j2000",
+            "deltawin_j2000",
+            f"truth_mag_{BAND}",
+            f"mag_auto_{BAND}",
+            f"magerr_auto_{BAND}",
+        ],
+    ].dropna()
+    pix = hp.ang2pix(
+        NSIDE, pe.alphawin_j2000.values, pe.deltawin_j2000.values, lonlat=True
+    )
+    ml_local = mlm[pix]
+    good = ml_local != hp.UNSEEN
+    delta = pe[f"truth_mag_{BAND}"].values[good] - ml_local[good]
+    dm_obs = (pe[f"mag_auto_{BAND}"].values - pe[f"truth_mag_{BAND}"].values)[good]
+    logerr_reported = np.log10(pe[f"magerr_auto_{BAND}"].values[good])
+
+    dbins = np.arange(np.floor(delta.min() * 10) / 10, 1.5 + 1e-6, 0.12)
+    dmid = 0.5 * (dbins[1:] + dbins[:-1])
+    log_scatter = np.full(dmid.size, np.nan)
+    med_logerr_rep = np.full(dmid.size, np.nan)
+    ib = np.digitize(delta, dbins) - 1
+    for i in range(dmid.size):
+        v = dm_obs[ib == i]
+        if v.size >= 20:
+            log_scatter[i] = np.log10(
+                (np.percentile(v, 84) - np.percentile(v, 16)) / 2
+            )
+            med_logerr_rep[i] = np.median(logerr_reported[ib == i])
+    keep = np.isfinite(log_scatter)
+    print(f"  [{label:<34}] n={len(delta):>9,}  rows={int(keep.sum()):>4}")
+    return (
+        pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": log_scatter[keep]}),
+        pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": med_logerr_rep[keep]}),
+    )
+
+
+print("\nPHOTO-ERROR CURVES:")
+photoerr_tab, catalog_tab = _photoerr_tables(
+    _base_sel & det_ok, "det_ok -> reference band"
+)
+photoerr_nc, catalog_nc = _photoerr_tables(
+    _base_sel, "no cut -> forced-photometry bands"
 )
 
 # --- photometric-error afterburner ------------------------------------------
@@ -1291,6 +1303,24 @@ print(
     f"\nwrote {fpe.relative_to(REPO)}  (cleaned sample/true-scatter, {len(photoerr_clean)} rows, "
     f"delta_mag {photoerr_clean.delta_mag.min():.2f} .. {photoerr_clean.delta_mag.max():.2f})"
 )
+
+# --- no-cut pair: the FORCED-PHOTOMETRY (non-reference) bands -----------------
+# Same afterburner rules as their det_ok counterparts (same curve shape, different
+# selection), written to the *_nocut filenames the survey configs point at.
+for _tab, _stem, _rule in [
+    (photoerr_nc, "roman_photoerror_f158_nocut", "F158_sample"),
+    (catalog_nc, "roman_photoerror_f158_catalog_nocut", "F158_catalog"),
+]:
+    np.savetxt(
+        OUT_DIR / f"{_stem}_raw.csv", _tab.values, delimiter=",",
+        header="delta_mag,log_mag_err", fmt="%.6f",
+    )
+    _clean = _apply_photoerr_corrections(_tab, _rule, CORRECTIONS_FILE)
+    np.savetxt(
+        OUT_DIR / f"{_stem}.csv", _clean.values, delimiter=",",
+        header="delta_mag,log_mag_err", fmt="%.6f",
+    )
+    print(f"wrote {_stem}.csv  (+_raw)  {len(_clean)} rows")
 
 fpe_cat = OUT_DIR / "roman_photoerror_f158_catalog.csv"
 np.savetxt(

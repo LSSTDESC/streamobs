@@ -26,6 +26,9 @@ TABLES = [
     "lsst_dc2_galaxy_misclass_cutr.csv",
     "lsst_dc2_photoerror_r.csv",
     "lsst_dc2_photoerror_r_catalog.csv",
+    # forced-photometry (non-reference band) curves -- required by every tier
+    "lsst_dc2_photoerror_r_nocut.csv",
+    "lsst_dc2_photoerror_r_catalog_nocut.csv",
 ]
 YEARS = [1, 2, 3, 4, 5]
 

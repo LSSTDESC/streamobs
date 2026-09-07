@@ -261,92 +261,89 @@ def main(n_tracts=0, refresh=False):
     )
 
     # ---- 4. two-curve photo-error (delta keyed to the per-pixel r map) ---
-    # Conditioned on ``det_ok`` (reported S/N > 5) BY DESIGN: the injector draws the
-    # detection flag and the photometric noise independently, so each curve must
-    # describe the population it is applied to -- the detected one.  See
-    # docs/source/selection_function_methodology.md, "Why the curves are measured on
-    # the *detected* population (validated 2026-07)".  Effect of the cut is <0.01 dex
-    # brightward of delta_mag ~ -0.5 and confined to the faintest half magnitude; on
-    # the native depth scale it puts CATALOG at 0.180 (not 0.217) at delta_mag=0,
-    # because the noisy sources are genuinely absent from an S/N>5 catalog.  The
-    # "pipeline calls 0.2 here" statement is carried by the MAP (median 26.846), not
-    # by the curve value.  Evidence: notebooks/detok_photoerr_comparison.ipynb.
-    pe = cat.loc[
-        star_ptsrc & det_ok,
-        ["ra", "dec", f"truth_mag_{REF_BAND}", f"mag_{REF_BAND}", f"magerr_{REF_BAND}"],
-    ].dropna()
-    pix = hp.ang2pix(NSIDE, pe["ra"].values, pe["dec"].values, lonlat=True)
-    ml_local = mlm_r[pix]
-    good = ml_local != hp.UNSEEN
-    delta = pe[f"truth_mag_{REF_BAND}"].values[good] - ml_local[good]
-    dm_obs = (pe[f"mag_{REF_BAND}"].values - pe[f"truth_mag_{REF_BAND}"].values)[good]
-    logerr_reported = np.log10(pe[f"magerr_{REF_BAND}"].values[good])
+    # TWO SELECTIONS, two pairs of curves.
+    #
+    # det_ok (reported S/N > 5) -> the REFERENCE band.  The injector draws the
+    #   detection flag and the noise independently, so the reference-band curve must
+    #   describe the population it is applied to: the detected one.  See
+    #   docs/source/selection_function_methodology.md, "Why the curves are measured on
+    #   the *detected* population (validated 2026-07)".
+    # no cut -> every OTHER band.  Those bands are FORCED photometry: an object
+    #   detected in r is measured in g whatever its g flux, so the g population is not
+    #   conditioned on g-band detection and the det_ok curve understates its errors by
+    #   up to 2.6x at delta_mag = +1.  Validated against the directly-measured g curve
+    #   on the r-detected sample: the r-derived no-cut curve reproduces it to <=5%
+    #   across the full range (notebooks/detok_photoerr_comparison.ipynb).
+    def _photoerr_tables(mask, label):
+        pe = cat.loc[
+            mask,
+            ["ra", "dec", f"truth_mag_{REF_BAND}", f"mag_{REF_BAND}", f"magerr_{REF_BAND}"],
+        ].dropna()
+        pix = hp.ang2pix(NSIDE, pe["ra"].values, pe["dec"].values, lonlat=True)
+        ml_local = mlm_r[pix]
+        good = ml_local != hp.UNSEEN
+        delta = pe[f"truth_mag_{REF_BAND}"].values[good] - ml_local[good]
+        dm_obs = (
+            pe[f"mag_{REF_BAND}"].values - pe[f"truth_mag_{REF_BAND}"].values
+        )[good]
+        logerr_reported = np.log10(pe[f"magerr_{REF_BAND}"].values[good])
 
-    dbins = np.arange(np.floor(delta.min() * 10) / 10, 1.5 + 1e-6, 0.12)
-    dmid = 0.5 * (dbins[1:] + dbins[:-1])
-    log_scatter = np.full(dmid.size, np.nan)
-    med_logerr_rep = np.full(dmid.size, np.nan)
-    ib = np.digitize(delta, dbins) - 1
-    for i in range(dmid.size):
-        v = dm_obs[ib == i]
-        if v.size >= 20:
-            log_scatter[i] = np.log10((np.percentile(v, 84) - np.percentile(v, 16)) / 2)
-            med_logerr_rep[i] = np.median(logerr_reported[ib == i])
-    keep = np.isfinite(log_scatter)
+        dbins = np.arange(np.floor(delta.min() * 10) / 10, 1.5 + 1e-6, 0.12)
+        dmid = 0.5 * (dbins[1:] + dbins[:-1])
+        log_scatter = np.full(dmid.size, np.nan)
+        med_logerr_rep = np.full(dmid.size, np.nan)
+        ib = np.digitize(delta, dbins) - 1
+        for i in range(dmid.size):
+            v = dm_obs[ib == i]
+            if v.size >= 20:
+                log_scatter[i] = np.log10(
+                    (np.percentile(v, 84) - np.percentile(v, 16)) / 2
+                )
+                med_logerr_rep[i] = np.median(logerr_reported[ib == i])
+        keep = np.isfinite(log_scatter)
+        factor = 10 ** (log_scatter[keep] - med_logerr_rep[keep])
+        near = (dmid[keep] > -3) & (dmid[keep] < 0.5)
+        print(
+            f"  [{label:<34}] n={len(delta):>9,}  rows={int(keep.sum()):>4}  "
+            f"inflation={np.nanmedian(factor[near]):.2f}"
+        )
+        return (
+            pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": log_scatter[keep]}),
+            pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": med_logerr_rep[keep]}),
+        )
 
-    factor = 10 ** (log_scatter[keep] - med_logerr_rep[keep])
-    near = (dmid[keep] > -3) & (dmid[keep] < 0.5)
-    print("\n" + "=" * 64)
-    print("ERROR-INFLATION FACTOR (truth scatter / reported magerr):")
+    print("\n" + "=" * 74)
+    print("PHOTO-ERROR CURVES (inflation = truth scatter / reported magerr)")
+    photoerr_tab, catalog_tab = _photoerr_tables(
+        star_ptsrc & det_ok, "det_ok -> reference band"
+    )
+    photoerr_nc, catalog_nc = _photoerr_tables(
+        star_ptsrc, "no cut -> forced-photometry bands"
+    )
+    print("=" * 74 + "\n")
+
+    def _write_curve(tab, stem, rule):
+        np.savetxt(
+            OUT_DIR / f"{stem}_raw.csv", tab.values, delimiter=",",
+            header="delta_mag,log_mag_err", fmt="%.6f",
+        )
+        clean = _apply_photoerr_corrections(tab, rule, CORRECTIONS_FILE)
+        np.savetxt(
+            OUT_DIR / f"{stem}.csv", clean.values, delimiter=",",
+            header="delta_mag,log_mag_err", fmt="%.6f",
+        )
+        return clean
+
+    photoerr_clean = _write_curve(photoerr_tab, "lsst_dc2_photoerror_r", "r_sample")
+    catalog_clean = _write_curve(
+        catalog_tab, "lsst_dc2_photoerror_r_catalog", "r_catalog"
+    )
+    _write_curve(photoerr_nc, "lsst_dc2_photoerror_r_nocut", "r_sample")
+    _write_curve(catalog_nc, "lsst_dc2_photoerror_r_catalog_nocut", "r_catalog")
     print(
-        f"  median over delta_mag in (-3, 0.5): {np.nanmedian(factor[near]):.2f}  "
-        "(Roman F158 ~1.9-2.0; ~1 = well-calibrated)"
-    )
-    print("=" * 64 + "\n")
-
-    photoerr_tab = pd.DataFrame(
-        {"delta_mag": dmid[keep], "log_mag_err": log_scatter[keep]}
-    )
-    catalog_tab = pd.DataFrame(
-        {"delta_mag": dmid[keep], "log_mag_err": med_logerr_rep[keep]}
-    )
-
-    np.savetxt(
-        OUT_DIR / "lsst_dc2_photoerror_r_raw.csv",
-        photoerr_tab.values,
-        delimiter=",",
-        header="delta_mag,log_mag_err",
-        fmt="%.6f",
-    )
-    np.savetxt(
-        OUT_DIR / "lsst_dc2_photoerror_r_catalog_raw.csv",
-        catalog_tab.values,
-        delimiter=",",
-        header="delta_mag,log_mag_err",
-        fmt="%.6f",
-    )
-    photoerr_clean = _apply_photoerr_corrections(
-        photoerr_tab, "r_sample", CORRECTIONS_FILE
-    )
-    catalog_clean = _apply_photoerr_corrections(
-        catalog_tab, "r_catalog", CORRECTIONS_FILE
-    )
-    np.savetxt(
-        OUT_DIR / "lsst_dc2_photoerror_r.csv",
-        photoerr_clean.values,
-        delimiter=",",
-        header="delta_mag,log_mag_err",
-        fmt="%.6f",
-    )
-    np.savetxt(
-        OUT_DIR / "lsst_dc2_photoerror_r_catalog.csv",
-        catalog_clean.values,
-        delimiter=",",
-        header="delta_mag,log_mag_err",
-        fmt="%.6f",
-    )
-    print(
-        f"wrote photo-error curves (sample {len(photoerr_clean)} rows + catalog + *_raw)"
+        f"wrote 4 photo-error curves + *_raw: sample/catalog (det_ok, reference band) "
+        f"and sample/catalog _nocut (forced-photometry bands); "
+        f"{len(photoerr_clean)} / {len(photoerr_nc)} rows"
     )
 
     # ---- 5. stellar efficiency table ------------------------------------

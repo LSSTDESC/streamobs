@@ -313,6 +313,82 @@ class TestSurveyProperties:
     throughout the pipeline.
     """
 
+    def test_forced_photometry_band_uses_nocut_curve(self, loaded_survey):
+        """Non-reference bands must use the no-S/N-cut photo-error curves.
+
+        Reference-band photometry is conditioned on detection; every other band is
+        FORCED photometry and is not, so the two must resolve to different curves.
+        A survey that ships no ``_nocut`` curve must raise rather than silently
+        applying the detected-population curve to forced photometry.
+        """
+        ref = loaded_survey.completeness_band
+        others = [b for b in loaded_survey.bands if b != ref]
+        if not others:
+            pytest.skip("single-band survey: no forced-photometry bands")
+        if loaded_survey.log_photo_error_catalog is None:
+            pytest.skip("survey has no photo-error model loaded")
+
+        for kind in ("catalog", "sample"):
+            ref_fn = loaded_survey._resolve_log_photo_error(kind, band=ref)
+            assert ref_fn is not None, f"reference band '{ref}' has no '{kind}' curve"
+            # band=None must behave like the reference band (back-compatible default)
+            assert loaded_survey._resolve_log_photo_error(kind) is ref_fn
+
+            nocut = getattr(loaded_survey, f"log_photo_error_{kind}_nocut")
+            for band in others:
+                if nocut is None:
+                    with pytest.raises(ValueError, match="_nocut"):
+                        loaded_survey._resolve_log_photo_error(kind, band=band)
+                else:
+                    fn = loaded_survey._resolve_log_photo_error(kind, band=band)
+                    assert fn is nocut, (
+                        f"band '{band}' is not the reference band '{ref}' and must "
+                        "resolve to the _nocut curve"
+                    )
+                    assert fn is not ref_fn, (
+                        "forced-photometry and reference-band curves must differ"
+                    )
+
+    def test_nocut_curve_exceeds_detected_curve_faintward(self, loaded_survey):
+        """The no-cut curve must sit ABOVE the detected-population curve faintward.
+
+        Conditioning on S/N > 5 truncates the noisy tail, so the detected-population
+        curve is biased low near and past the limit. The two agree brightward (the
+        cut removes almost nothing there) and diverge faintward.
+        """
+        if loaded_survey.log_photo_error_catalog_nocut is None:
+            pytest.skip("survey ships no _nocut curve")
+        det = loaded_survey.log_photo_error_catalog
+        nocut = loaded_survey.log_photo_error_catalog_nocut
+        # brightward: effectively identical (the S/N cut removes ~nothing there)
+        for dm in (-3.0, -2.0, -1.0):
+            assert abs(float(det(dm)) - float(nocut(dm))) < 0.02, (
+                f"curves should agree at delta_mag={dm}"
+            )
+        # Faintward the no-cut curve must be larger. Compare only where BOTH curves
+        # have real data: past its last row an interpolator returns the out-of-range
+        # sentinel (log10 sigma = 1.0, i.e. 10 mag), and the two curves do not end at
+        # the same delta_mag -- Roman's detected-population curve stops at +0.08 while
+        # its no-cut curve reaches +0.92.
+        SENTINEL = 1.0
+        grid = np.arange(-3.0, 1.2, 0.05)
+        real = [
+            x
+            for x in grid
+            if float(det(x)) < SENTINEL - 1e-9 and float(nocut(x)) < SENTINEL - 1e-9
+        ]
+        assert real, "no delta_mag where both curves have data"
+        for x in real:
+            assert float(nocut(x)) >= float(det(x)) - 0.02, (
+                f"no-cut curve falls below the detected-population curve at "
+                f"delta_mag={x:.2f}"
+            )
+        faintest = max(real)
+        assert float(nocut(faintest)) > float(det(faintest)) + np.log10(1.05), (
+            f"no-cut curve should exceed the detected-population curve by >5% at the "
+            f"faintest common delta_mag ({faintest:.2f})"
+        )
+
     def test_expected_bands_present(self, loaded_survey):
         expected = set(loaded_survey._test_entry["expected_bands"])
         assert expected.issubset(

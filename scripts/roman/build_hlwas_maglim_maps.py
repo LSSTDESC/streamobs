@@ -271,6 +271,9 @@ def symlink_dc2_tables(tier: str) -> None:
         "roman_stellar_efficiency_cutf158.csv",
         "roman_photoerror_f158_catalog.csv",
         "roman_photoerror_f158.csv",
+        # forced-photometry (non-reference band) curves -- required by every tier
+        "roman_photoerror_f158_catalog_nocut.csv",
+        "roman_photoerror_f158_nocut.csv",
     ]
     for csv in csv_files:
         src = os.path.join(dc2_dir, csv)
