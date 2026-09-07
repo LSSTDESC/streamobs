@@ -120,6 +120,8 @@ class Survey:
     delta_saturation: Optional[float] = None
     log_photo_error_catalog: Optional[Callable] = None
     log_photo_error_sample: Optional[Callable] = None
+    log_photo_error_catalog_nocut: Optional[Callable] = None
+    log_photo_error_sample_nocut: Optional[Callable] = None
     gal_misclassification: Optional[Callable] = None
     gal_misclassification_detection: Optional[Callable] = None
 
@@ -160,31 +162,75 @@ class Survey:
     def log_photo_error(self, func: Optional[Callable]):
         self.log_photo_error_catalog = func
 
-    def _resolve_log_photo_error(self, kind: str = "catalog") -> Optional[Callable]:
+    def _resolve_log_photo_error(
+        self, kind: str = "catalog", band: Optional[str] = None
+    ) -> Optional[Callable]:
         """
-        Select the log photometric-error interpolator.
+        Select the log photometric-error interpolator for ``kind`` and ``band``.
+
+        Two pairs of curves are carried, and which pair applies depends on whether
+        ``band`` is the band detection was measured in:
+
+        * **reference band** (``band == completeness_band``) -- the curves measured on
+          the S/N>5 *detected* population. The injector draws the detection flag and
+          the noise independently, so the reference-band curve must describe the
+          population it is applied to.
+        * **every other band** -- the ``_nocut`` curves, measured with no S/N
+          selection. Non-reference bands are FORCED photometry: a source detected in
+          the reference band is measured in the others whatever their flux there, so
+          that population is not conditioned on detection in its own band. Using the
+          detected-population curve understates those errors by up to ~2.6x at
+          ``delta_mag = +1``.
+
+        ``band=None`` keeps the reference-band (detected-population) curves, so direct
+        callers that do not care about the distinction are unaffected.
 
         Parameters
         ----------
         kind : str
-            ``"catalog"`` returns the catalog model: the reported error curve,
-            written as ``magerr`` and used for the S/N cut. ``"sample"`` returns
-            the sample model: the true scatter (observed-minus-true) that drives
-            the noise draw, falling back to the catalog model when no sample curve
-            is loaded (which reproduces the previous single-curve behaviour).
+            ``"catalog"`` (reported error, written as ``magerr`` and used for the S/N
+            cut) or ``"sample"`` (true scatter, drives the noise draw).
+        band : str, optional
+            Band the error is being evaluated for.
 
         Returns
         -------
         callable or None
             The selected ``f(delta_mag) -> log10(mag_error)`` interpolator.
+
+        Raises
+        ------
+        ValueError
+            If ``kind`` is not recognised, or a non-reference band is requested and
+            the required ``_nocut`` curve is not loaded.
         """
+        if kind not in ("catalog", "sample"):
+            raise ValueError(f"kind must be 'sample' or 'catalog', got '{kind}'")
+
+        forced = band is not None and band != self.completeness_band
+        if forced:
+            func = (
+                self.log_photo_error_catalog_nocut
+                if kind == "catalog"
+                else self.log_photo_error_sample_nocut
+            )
+            if func is None:
+                raise ValueError(
+                    f"Survey '{self.full_name}' has no '{kind}' _nocut photo-error "
+                    f"curve, which is required for band '{band}': it is not the "
+                    f"reference band ('{self.completeness_band}'), so its photometry "
+                    "is forced and must not use the detected-population curve. Add "
+                    f"'log_photo_error_{'catalog' if kind == 'catalog' else 'sample'}"
+                    "_nocut' to the survey config (regenerate the products to emit "
+                    "the *_nocut.csv curves)."
+                )
+            return func
+
         if kind == "catalog":
             return self.log_photo_error_catalog
-        elif kind == "sample":
-            if self.log_photo_error_sample is not None:
-                return self.log_photo_error_sample
-            return self.log_photo_error_catalog
-        raise ValueError(f"kind must be 'sample' or 'catalog', got '{kind}'")
+        if self.log_photo_error_sample is not None:
+            return self.log_photo_error_sample
+        return self.log_photo_error_catalog
 
     @classmethod
     def load(
@@ -330,7 +376,7 @@ class Survey:
         ValueError
             If the requested photo error model is not loaded.
         """
-        log_photo_error = self._resolve_log_photo_error(kind)
+        log_photo_error = self._resolve_log_photo_error(kind, band=band)
         if log_photo_error is None:
             raise ValueError(f"Photo error model ('{kind}') not loaded")
 
@@ -350,7 +396,7 @@ class Survey:
         )
         mag_err_stat = np.where(
             magnitude < self.saturation[band],
-            10 ** log_photo_error(delta_saturation - 1),
+            np.nan,  # saturation: no valid error
             mag_err_stat,
         )  # saturation at the bright end
 
@@ -1372,6 +1418,39 @@ class SurveyFactory:
                 **kwargs,
             )
 
+        # REQUIRED _nocut curves: the forced-photometry (non-reference) bands.
+        # A multiband survey without them raises at first use of a non-reference
+        # band -- see _resolve_log_photo_error -- rather than silently applying the
+        # detected-population curve to forced photometry.
+        for _key, _desc in [
+            (
+                "log_photo_error_catalog_nocut",
+                "Photometric error model (catalog / reported, no S/N cut)",
+            ),
+            (
+                "log_photo_error_sample_nocut",
+                "Photometric error model (sample / true scatter, no S/N cut)",
+            ),
+        ]:
+            if _key in survey_config:
+                cls._load_file(
+                    survey,
+                    survey_config,
+                    _key,
+                    _desc,
+                    lambda f: cls.set_photo_error(
+                        f, delta_saturation=survey.delta_saturation
+                    ),
+                    data_path_survey,
+                    data_path_others,
+                    **kwargs,
+                )
+            elif verbose and len(survey.bands) > 1:
+                print(
+                    f"  ! no '{_key}' configured: any non-reference band "
+                    f"(reference is '{survey.completeness_band}') will raise on use."
+                )
+
         # Load band-independent maps
         if verbose:
             print("\nLoading band-independent maps...")
@@ -1594,8 +1673,21 @@ class SurveyFactory:
         - Faint stars (beyond data): Returns efficiency = 0.0.
         - The saturation parameter is automatically passed from the survey object.
         """
-        # Load photometric error data
-        data = np.genfromtxt(filename, delimiter=",", names=True)
+        # Load the efficiency table. Product CSVs may carry a multi-line "#"
+        # provenance comment whose LAST line is the column header (np.savetxt
+        # with a multi-line header string); genfromtxt(names=True) only parses
+        # the header correctly when it is the first line seen, so skip the
+        # leading comment lines down to it.
+        with open(filename) as fh:
+            n_comment = 0
+            for line in fh:
+                if line.startswith("#"):
+                    n_comment += 1
+                else:
+                    break
+        data = np.genfromtxt(
+            filename, delimiter=",", names=True, skip_header=max(0, n_comment - 1)
+        )
         delta_mags = data["delta_mag"]
 
         # Select efficiency column based on user choice
@@ -1677,8 +1769,21 @@ class SurveyFactory:
         - Faint stars (beyond data): Returns log10(error) = 1.0 (error = 10 mag).
         - The saturation parameter is automatically passed from the survey object.
         """
-        # Load photometric error data
-        data = np.genfromtxt(filename, delimiter=",", names=True)
+        # Load the efficiency table. Product CSVs may carry a multi-line "#"
+        # provenance comment whose LAST line is the column header (np.savetxt
+        # with a multi-line header string); genfromtxt(names=True) only parses
+        # the header correctly when it is the first line seen, so skip the
+        # leading comment lines down to it.
+        with open(filename) as fh:
+            n_comment = 0
+            for line in fh:
+                if line.startswith("#"):
+                    n_comment += 1
+                else:
+                    break
+        data = np.genfromtxt(
+            filename, delimiter=",", names=True, skip_header=max(0, n_comment - 1)
+        )
         delta_mags = data["delta_mag"]
         log_errors = data["log_mag_err"]
 

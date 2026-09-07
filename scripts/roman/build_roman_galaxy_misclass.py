@@ -76,6 +76,10 @@ FLAG_CUT = 1  # flags == 0 (paper-exact, matches HLWAS products)
 # magnitude binning for the efficiency curve (same convention as the HLWAS script)
 MAG_BINS = np.arange(15.0, 29.01, 0.25)
 MAG_MID = 0.5 * (MAG_BINS[1:] + MAG_BINS[:-1])
+# bright cut: the F158 photo-error scatter curve shows a saturation jump at
+# delta_mag ~ -8.8, so curve rows brighter than this are dropped (matches the
+# LSST bright-cut convention, EFF_DELTA_MIN=-11 there)
+EFF_DELTA_MIN = -8.7
 
 # --------------------------------------------------------------------------- #
 # size source switch (see module docstring)  --  the ONE knob to flip
@@ -500,26 +504,35 @@ def main():
 
     # ----------------------------------------------------------------------- #
     # Stage D: write the misclassification CSV
-    #   columns: delta_mag, mag_F158, classification_eff
-    #   mag_F158 = REF_MAGLIM - delta_mag  =>  delta_mag = REF_MAGLIM - mag_F158
+    #   columns: mag_F158, delta_mag, missclassification_eff
+    #   delta_mag = mag_F158 - REF_MAGLIM  (standard streamobs convention:
+    #   faint = positive, same as the stellar efficiency and LSST misclass
+    #   products; the consumer interpolates on mag - maglim directly)
     # ----------------------------------------------------------------------- #
     tab = pd.DataFrame(
         {
-            "delta_mag": REF_MAGLIM - MAG_MID,
             "mag_F158": MAG_MID,
-            "classification_eff": misclass_eff,
+            "delta_mag": MAG_MID - REF_MAGLIM,
+            "missclassification_eff": misclass_eff,
         }
     )
     tab = tab[n_gal >= 20].copy().fillna(0.0)
+    # bright cut, matching the LSST misclass convention
+    _bright = tab["delta_mag"] < EFF_DELTA_MIN
+    tab = tab[~_bright].copy()
+    print(
+        f"  dropped {int(_bright.sum())} bins with delta_mag < {EFF_DELTA_MIN} (bright cut)"
+    )
 
     header = (
         f"Roman DC2 galaxy MISCLASSIFICATION efficiency curve (D2)\n"
         f'fraction of COMPACT true galaxies (Roman truth gal_star==0, size<{GAL_SIZE_MAX}")\n'
         f"classified as stars by the Roman F158 size-envelope classifier, vs F158 mag.\n"
         f"REF_MAGLIM = {REF_MAGLIM:.4f}  (median of DC2 F158 maglim map "
-        f"{MAGLIM_MAP.name});  mag_F158 = REF_MAGLIM - delta_mag\n"
+        f"{MAGLIM_MAP.name});  delta_mag = mag_F158 - REF_MAGLIM\n"
+        f"bright cut: rows with delta_mag < {EFF_DELTA_MIN} dropped (saturation)\n"
         f"SIZE_SOURCE = {size_source}  ({size_desc})\n"
-        f"delta_mag,mag_F158,classification_eff"
+        f"mag_F158,delta_mag,missclassification_eff"
     )
     np.savetxt(MISCLASS_CSV, tab.values, delimiter=",", header=header, fmt="%.6f")
     print(f"\nwrote {MISCLASS_CSV} ({len(tab)} rows)")
@@ -529,7 +542,7 @@ def main():
     full = pd.DataFrame(
         {
             "mag_F158": MAG_MID,
-            "delta_mag": REF_MAGLIM - MAG_MID,
+            "delta_mag": MAG_MID - REF_MAGLIM,
             "eff": misclass_eff,
             "n_gal": n_gal,
         }

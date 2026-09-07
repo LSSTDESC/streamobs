@@ -28,6 +28,7 @@ dependencies = [
     "healpy",
     "healsparse",
     "gala",
+    "pyarrow", # parquet I/O (streamobs.background.storage)
 ]
 
 # `ugali` (CMD/isochrone sampling) must be installed from GitHub, NOT from PyPI:
@@ -37,11 +38,13 @@ dependencies = [
 # at sampling time. See docs/source/installation.md.
 [project.optional-dependencies]
 isochrones = ["ugali"]
+plotting = ["skyproj"] # sky-map helpers (guarded import in streamobs.plotting)
+dev = ["pytest", "pytest-cov"] # pytest.ini addopts include --cov flags
 # Keep in sync with docs/requirements.txt. `myst-nb` supersedes `myst-parser`
 # (and brings it in as a dependency); `conf.py` loads the `myst_nb` extension,
 # so a `myst-parser`-only install fails the build with an ExtensionError.
 docs = ["sphinx>=8.0", "sphinx-book-theme", "numpydoc", "myst-nb"]
-dev = ["pytest"]
+
 
 [project.urls]
 Homepage = "https://github.com/LSSTDESC/streamobs"

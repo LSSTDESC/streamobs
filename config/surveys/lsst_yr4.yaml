@@ -11,9 +11,25 @@ survey_files:
 
     # Band-independent maps
     ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
-    completeness: lsst_stellar_efficiency_cutr.csv
-    completeness_band: r # the completenesshas been obtained in r-band
-    log_photo_error: lsst_photoerror_r.csv
+    # DC2-derived selection-function tables (symlinked from data/surveys/lsst_dc2/
+    # by scripts/lsst/link_lsst_yr_products.py). Year releases differ only in the
+    # depth maps above -- same convention as the Roman HLWAS tiers.
+    completeness: lsst_dc2_stellar_efficiency_cutr.csv
+    completeness_band: r # the completeness has been obtained in the r band
+    # Galaxy misclassification: compact (cosmoDC2 size_true < 0.3") true galaxies
+    # classified as point sources, delta_mag-keyed like the tables above.
+    gal_misclassification: lsst_dc2_galaxy_misclass_cutr.csv
+
+    # Two-curve photometric error model (streamobs Survey.get_photo_error):
+    #   catalog = median reported magerr -> written as `magerr`, drives the S/N cut
+    #   sample  = truth-based scatter of (obs - true) -> drives the noise draw
+    log_photo_error_catalog: lsst_dc2_photoerror_r_catalog.csv
+    log_photo_error_sample: lsst_dc2_photoerror_r.csv
+    # Forced-photometry (non-reference band) curves: measured with NO S/N cut, because
+    # g photometry is forced from the r detection and so is not conditioned on g-band
+    # detection. Required for any band that is not `completeness_band`.
+    log_photo_error_catalog_nocut: lsst_dc2_photoerror_r_catalog_nocut.csv
+    log_photo_error_sample_nocut: lsst_dc2_photoerror_r_nocut.csv
 
 survey_properties: 
   bands: ['u', 'g', 'r', 'i', 'z', 'y']

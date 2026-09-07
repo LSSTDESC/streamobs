@@ -93,7 +93,7 @@ under-covered by the reported errors by ≈2 (right).*
 The two runtime curves are `roman_photoerror_f158.csv` (sample / truth-based scatter,
 drives the noise draw) and `roman_photoerror_f158_catalog.csv` (median reported
 magerr, drives the S/N cut). The afterburner corrections live in the tracked
-`config/surveys/roman_photoerror_corrections.yaml`:
+`scripts/roman/roman_photoerror_corrections.yaml`:
 
 - **F158_sample** (`clamp_faint`): floor `log_mag_err` to −0.8285 for
   `delta_mag ≥ −0.28` (holds the truth-scatter at its last well-sampled value,

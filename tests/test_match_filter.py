@@ -77,21 +77,50 @@ class TestMatchFilterIntegration:
 
         iso = stream_config_with_distance["isochrone"]
         dm = stream_config_with_distance["distance_modulus"]["center"]["value"]
-        polygon = build_match_filter(
-            distance_modulus=dm, age=iso["age"], metallicity=iso["z"]
-        )
 
+        # Geometry/isochrone check with the constant red cap: the polygon itself
+        # (blue edge, magnitude range, isochrone match) must select most
+        # detected stream stars.
+        polygon = build_match_filter(
+            distance_modulus=dm,
+            age=iso["age"],
+            metallicity=iso["z"],
+            red_cap_mode="constant",
+        )
         mask = is_in_match_filter(
             detected["lsst_yr4_g_obs"],
             detected["lsst_yr4_r_obs"],
             polygon_vertices=polygon,
         )
-
         fraction = mask.sum() / len(detected)
         assert fraction > 0.80, (
             f"Match filter selected only {fraction*100:.1f}% of detected stream "
             f"stars (expected > 80%). This may indicate the filter is too narrow "
             f"or the isochrone parameters do not match."
+        )
+
+        # The default error-shrunk red cap intentionally trades faint-red
+        # completeness for background suppression (~7% better stream S/N on the
+        # DC2 background): the cap tightens as errors grow, cutting faint red
+        # MS stars near/past the maglim. Assert the documented behavior: a
+        # strict subset of the constant-cap selection, but still the majority
+        # of detected stream stars.
+        polygon_default = build_match_filter(
+            distance_modulus=dm, age=iso["age"], metallicity=iso["z"]
+        )
+        mask_default = is_in_match_filter(
+            detected["lsst_yr4_g_obs"],
+            detected["lsst_yr4_r_obs"],
+            polygon_vertices=polygon_default,
+        )
+        assert not np.any(mask_default & ~mask), (
+            "error_shrunk selection should be a subset of the constant-cap " "selection"
+        )
+        fraction_default = mask_default.sum() / len(detected)
+        assert fraction_default > 0.60, (
+            f"Default (error_shrunk) filter selected only "
+            f"{fraction_default*100:.1f}% of detected stream stars (expected "
+            f"> 60%; it trades faint-red completeness for S/N)."
         )
 
     def test_match_filter_rejects_offset_stars(self, stream_config_with_distance):

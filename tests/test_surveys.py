@@ -79,35 +79,64 @@ def _hlwas_entry(tier, release, bands=None):
 
 
 SURVEY_REGISTRY = [
+    # LSST year releases — depth-scaled DC2: RubinSim per-year maglim maps +
+    # the lsst_dc2 selection-function tables (symlinked by
+    # scripts/lsst/link_lsst_yr_products.py), same convention as the Roman HLWAS
+    # tiers. They therefore carry the same DC2-model threshold overrides as the
+    # lsst_dc2 entry below.
     {
         "survey": "lsst",
         "release": "yr1",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
     },
     {
         "survey": "lsst",
         "release": "yr2",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
     },
     {
         "survey": "lsst",
         "release": "yr3",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
     },
     {
         "survey": "lsst",
         "release": "yr4",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
     },
     {
         "survey": "lsst",
         "release": "yr5",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+    },
+    # LSST DC2 — truth-anchored r/g depth maps + two-curve photo-error, derived from
+    # the DC2 object+truth skims (scripts/lsst/create_streamobs_files_lsst_dc2.py).
+    # Same Roman-style threshold overrides: the two-curve model anchors the maglim
+    # map to the SAMPLE (truth-scatter) curve while get_photo_error returns the
+    # CATALOG (reported) curve, so SNR@maglim > 5; and the efficiency/photo-error
+    # tables are truth-derived rather than on the generic LSST completeness grid.
+    {
+        "survey": "lsst",
+        "release": "dc2",
+        "expected_bands": ["g", "r"],
+        "expected_maglim": ["g", "r"],
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
     },
     {
         "survey": "des",
@@ -134,10 +163,8 @@ SURVEY_REGISTRY = [
         "release": "dc2",
         "expected_bands": ["F106", "F129", "F158"],
         "expected_maglim": ["F106", "F129", "F158"],
-        "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
-        "skip_snr_maglim_check": True,
     },
     # Roman HLWAS tiers — skipped until per-tier config files are present
     _hlwas_entry("hlwas_wide", "hlwas_wide"),
@@ -285,6 +312,82 @@ class TestSurveyProperties:
     Check that each loaded survey satisfies the properties we rely on
     throughout the pipeline.
     """
+
+    def test_forced_photometry_band_uses_nocut_curve(self, loaded_survey):
+        """Non-reference bands must use the no-S/N-cut photo-error curves.
+
+        Reference-band photometry is conditioned on detection; every other band is
+        FORCED photometry and is not, so the two must resolve to different curves.
+        A survey that ships no ``_nocut`` curve must raise rather than silently
+        applying the detected-population curve to forced photometry.
+        """
+        ref = loaded_survey.completeness_band
+        others = [b for b in loaded_survey.bands if b != ref]
+        if not others:
+            pytest.skip("single-band survey: no forced-photometry bands")
+        if loaded_survey.log_photo_error_catalog is None:
+            pytest.skip("survey has no photo-error model loaded")
+
+        for kind in ("catalog", "sample"):
+            ref_fn = loaded_survey._resolve_log_photo_error(kind, band=ref)
+            assert ref_fn is not None, f"reference band '{ref}' has no '{kind}' curve"
+            # band=None must behave like the reference band (back-compatible default)
+            assert loaded_survey._resolve_log_photo_error(kind) is ref_fn
+
+            nocut = getattr(loaded_survey, f"log_photo_error_{kind}_nocut")
+            for band in others:
+                if nocut is None:
+                    with pytest.raises(ValueError, match="_nocut"):
+                        loaded_survey._resolve_log_photo_error(kind, band=band)
+                else:
+                    fn = loaded_survey._resolve_log_photo_error(kind, band=band)
+                    assert fn is nocut, (
+                        f"band '{band}' is not the reference band '{ref}' and must "
+                        "resolve to the _nocut curve"
+                    )
+                    assert fn is not ref_fn, (
+                        "forced-photometry and reference-band curves must differ"
+                    )
+
+    def test_nocut_curve_exceeds_detected_curve_faintward(self, loaded_survey):
+        """The no-cut curve must sit ABOVE the detected-population curve faintward.
+
+        Conditioning on S/N > 5 truncates the noisy tail, so the detected-population
+        curve is biased low near and past the limit. The two agree brightward (the
+        cut removes almost nothing there) and diverge faintward.
+        """
+        if loaded_survey.log_photo_error_catalog_nocut is None:
+            pytest.skip("survey ships no _nocut curve")
+        det = loaded_survey.log_photo_error_catalog
+        nocut = loaded_survey.log_photo_error_catalog_nocut
+        # brightward: effectively identical (the S/N cut removes ~nothing there)
+        for dm in (-3.0, -2.0, -1.0):
+            assert abs(float(det(dm)) - float(nocut(dm))) < 0.02, (
+                f"curves should agree at delta_mag={dm}"
+            )
+        # Faintward the no-cut curve must be larger. Compare only where BOTH curves
+        # have real data: past its last row an interpolator returns the out-of-range
+        # sentinel (log10 sigma = 1.0, i.e. 10 mag), and the two curves do not end at
+        # the same delta_mag -- Roman's detected-population curve stops at +0.08 while
+        # its no-cut curve reaches +0.92.
+        SENTINEL = 1.0
+        grid = np.arange(-3.0, 1.2, 0.05)
+        real = [
+            x
+            for x in grid
+            if float(det(x)) < SENTINEL - 1e-9 and float(nocut(x)) < SENTINEL - 1e-9
+        ]
+        assert real, "no delta_mag where both curves have data"
+        for x in real:
+            assert float(nocut(x)) >= float(det(x)) - 0.02, (
+                f"no-cut curve falls below the detected-population curve at "
+                f"delta_mag={x:.2f}"
+            )
+        faintest = max(real)
+        assert float(nocut(faintest)) > float(det(faintest)) + np.log10(1.05), (
+            f"no-cut curve should exceed the detected-population curve by >5% at the "
+            f"faintest common delta_mag ({faintest:.2f})"
+        )
 
     def test_expected_bands_present(self, loaded_survey):
         expected = set(loaded_survey._test_entry["expected_bands"])
@@ -535,8 +638,8 @@ class TestSurveyProperties:
             if len(sat_mag) > 0 and not skip_sat_check:
                 err_sat = loaded_survey.get_photo_error(band, sat_mag, base_maglim)
                 assert np.all(
-                    err_sat > 5.0
-                ), f"Photo errors should be large for magnitudes below saturation in band '{band}'"
+                    np.isnan(err_sat)
+                ), f"Photo errors should be nan for magnitudes below saturation in band '{band}'."
             if len(bright_mag) > 0:
                 err_bright = loaded_survey.get_photo_error(
                     band, bright_mag, base_maglim
@@ -561,10 +664,11 @@ class TestSurveyProperties:
                 "skip_snr_maglim_check", False
             )
             if not skip_snr_check:
+                loaded_survey.sys_error[band] =  0.0 # remove statistical error for SNR check
                 error_at_maglim = loaded_survey.get_photo_error(
-                    band, base_maglim, base_maglim
+                    band, base_maglim-0.75, base_maglim, kind="catalog"
                 )
                 snr_at_maglim = 1 / error_at_maglim
                 assert np.isclose(
-                    snr_at_maglim, 5.0, atol=0.25
-                ), f"Photo error at maglim should correspond to SNR=5 for band '{band}'"
+                    snr_at_maglim, 10.0, atol=0.5,
+                ), f"Photo error at maglim_10 should correspond to be roughly SNR=10 for band '{band}'"

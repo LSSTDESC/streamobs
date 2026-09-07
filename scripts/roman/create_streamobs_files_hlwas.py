@@ -170,8 +170,7 @@ print(
 # cannot drift). We fit it on the matched det->truth catalog and pull the artifacts the
 # products + figures need (the size, the boundaries, the half-width Delta, the stellar locus).
 import roman_star_classifier as rsc
-from roman_star_classifier import \
-    ENV_PURITY  # purity target (figure + class_star-opt)
+from roman_star_classifier import ENV_PURITY  # purity target (figure + class_star-opt)
 from roman_star_classifier import ENV_UP_BRIGHT_VAL  # plot annotations
 from roman_star_classifier import ENV_FREEZE, ENV_UP_BRIGHT, ENV_UP_KNEE
 
@@ -272,6 +271,10 @@ _obs = cat.loc[_cmp, f"mag_auto_{BAND}"].values
 _tru = cat.loc[_cmp, f"truth_mag_{BAND}"].values
 _cs = cat.loc[_cmp, "class_star"].values
 _isstar = cat.loc[_cmp, "truth_gal_star"].values == 1
+
+
+_emid = MAG_MID
+_ebi = lambda x: np.digitize(x, MAG_BINS) - 1  # noqa: E731
 
 
 def _opt_classstar_thr(X=ENV_PURITY, keep=0.02):
@@ -901,12 +904,21 @@ plt.show()
 # 3. per object, extrapolate to the mag where S/N = 5
 #    (`magerr = 2.5/ln(10)/5 ≈ 0.2171`);
 # 4. take the **median per healpix pixel** (nside=1024, ring);
-# 5. **truth-anchor the absolute scale**: the reported errors underestimate the real
-#    scatter ~2× (see the error validation above), so each band's map is shifted so its
-#    median equals the magnitude where the **truth-based scatter** of (obs − true)
-#    reaches S/N=5. The desqr machinery provides the (error-factor-immune) spatial
-#    structure; the truth provides the absolute depth. With this anchoring the
-#    photo-error model evaluates to σ = 0.217 at `delta_mag = 0` by construction.
+# 5. **truth-anchor the absolute scale** (Roman only): the reported errors underestimate
+#    the real scatter ~2×, so each band's map is shifted so its median equals the
+#    magnitude where the **truth-based scatter** of (obs − true) reaches S/N=5. The desqr
+#    machinery provides the (error-factor-immune) spatial structure; the truth provides
+#    the absolute depth. With this anchoring the **SAMPLE** photo-error curve evaluates to
+#    σ = 0.217 at `delta_mag = 0` by construction.
+#
+#    **Why Roman differs from LSST DC2.** LSST DC2 deliberately does *not* truth-anchor:
+#    its reported errors are only ~1.4× optimistic, so the pipeline-native depth (26.85)
+#    reproduces the external reference curve to 0.1%, and keeping it means sims are
+#    treated exactly like real data (where the pipeline's quoted depth is all you get).
+#    Roman DC2's reported magerr is ~2× optimistic, and its native depth lands at 27.83 in
+#    F158 against a published 5σ of ~26.9 — a full magnitude too deep, which would claim
+#    detections Roman cannot deliver. The divergence is a property of the two sims'
+#    error calibration, not of the convention.
 #
 # Following the true-star convention used for all streamobs products, the depth sample
 # is **true stars passing the star classification** (matched, `flags == 0`) — the same
@@ -970,8 +982,12 @@ depth_src = cat[
 
 def truth_anchor_m5(df, b, snr=SNR_DEPTH):
     """Mag where the TRUTH-BASED scatter of (obs - true) reaches the S/N threshold.
-    The reported magerr underestimates the real errors ~2x, so the desqr maps
-    (built from reported errors) are anchored to this truth-validated depth."""
+
+    APPLIED for Roman (unlike LSST DC2, which keeps its pipeline-native scale): the
+    reported magerr underestimates the real errors ~2x, enough that the native
+    reported-error depth overshoots the published Roman 5-sigma depths by ~1 mag.  The
+    desqr maps supply the spatial structure; this supplies the absolute depth.
+    """
     sub = df[[f"truth_mag_{b}", f"mag_auto_{b}"]].dropna()
     mt = sub[f"truth_mag_{b}"].values
     dmv = sub[f"mag_auto_{b}"].values - mt
@@ -996,10 +1012,18 @@ for b in BANDS:
     cov = maglim_maps[b] != hp.UNSEEN
     raw_med = float(np.median(maglim_maps[b][cov]))
     m5 = truth_anchor_m5(depth_src, b)
+    # TRUTH-ANCHOR (Roman only -- LSST DC2 deliberately does NOT do this; see below).
+    # Roman DC2's reported magerr is ~2x optimistic, so the reported-error S/N=5 depth
+    # lands ~0.9-1.2 mag DEEPER than the published Roman 5-sigma depths (27.83 vs 26.9
+    # in F158).  Shipping that would claim detections a magnitude deeper than Roman
+    # delivers.  LSST DC2's reported errors are only ~1.4x optimistic and its native
+    # depth reproduces the external reference to 0.1%, so there the pipeline scale is
+    # kept.  The divergence is a property of the two sims' error calibration.
     maglim_maps[b][cov] += m5 - raw_med  # truth-anchor: median -> true S/N=5 depth
     print(
         f"{b}: slope={slopes[b]:.3f}  covered pixels={cov.sum():,}  "
-        f"reported-error median={raw_med:.2f} -> truth-anchored maglim={m5:.2f}"
+        f"reported-error median={raw_med:.2f} -> truth-anchored maglim={m5:.2f} "
+        f"(shift {m5 - raw_med:+.2f})"
     )
 
 
@@ -1080,61 +1104,80 @@ print(f"reference maglim = measured map median = {MAGLIM_REF:.3f}")
 # error model from TRUE stars passing the star classification: the observationally
 # star-classified sample is galaxy-dominated faintward of ~25.5 and would inflate
 # the faint-end errors (0.33 vs 0.15 mag at 25.5)
-sel = (
+# TWO SELECTIONS, two pairs of curves (mirrors the LSST DC2 generator).
+#
+# det_ok -> the REFERENCE band (F158).  The injector draws the detection flag and the
+#   noise independently, so the reference-band curve must describe the population it is
+#   applied to: the detected one.  See docs/source/selection_function_methodology.md,
+#   "Why the curves are measured on the *detected* population (validated 2026-07)".
+# no cut -> every OTHER band (Y106/J129/F184).  Those are FORCED photometry: an object
+#   detected in F158 is measured in Y106 whatever its Y106 flux, so that population is
+#   not conditioned on detection in its own band and the det_ok curve understates its
+#   errors faintward of delta_mag ~ -0.25.  Evidence, incl. a direct check against the
+#   measured non-reference-band curve: notebooks/detok_photoerr_comparison.ipynb.
+_base_sel = (
     cat.matched
     & (cat.truth_gal_star == 1)
     & cat["env_star"]
     & (cat["flags"] < FLAG_CUT)
-    & det_ok
 )
-pe = cat.loc[
-    sel,
-    [
-        "alphawin_j2000",
-        "deltawin_j2000",
-        f"truth_mag_{BAND}",
-        f"mag_auto_{BAND}",
-        f"magerr_auto_{BAND}",
-    ],
-].dropna()
-pix = hp.ang2pix(NSIDE, pe.alphawin_j2000.values, pe.deltawin_j2000.values, lonlat=True)
-ml_local = mlm[pix]
-good = ml_local != hp.UNSEEN
-delta = pe[f"truth_mag_{BAND}"].values[good] - ml_local[good]
-# the error model is the TRUTH-BASED scatter of (observed - true): the reported
-# SExtractor magerr underestimates it by ~2x (correlated noise in the coadds)
-dm_obs = (pe[f"mag_auto_{BAND}"].values - pe[f"truth_mag_{BAND}"].values)[good]
-logerr_reported = np.log10(pe[f"magerr_auto_{BAND}"].values[good])
 
-dbins = np.arange(np.floor(delta.min() * 10) / 10, 1.5 + 1e-6, 0.12)
-dmid = 0.5 * (dbins[1:] + dbins[:-1])
-log_scatter = np.full(dmid.size, np.nan)
-med_logerr_rep = np.full(dmid.size, np.nan)
-ib = np.digitize(delta, dbins) - 1
-for i in range(dmid.size):
-    v = dm_obs[ib == i]
-    if v.size >= 20:
-        log_scatter[i] = np.log10((np.percentile(v, 84) - np.percentile(v, 16)) / 2)
-        med_logerr_rep[i] = np.median(logerr_reported[ib == i])
-keep = np.isfinite(log_scatter)
 
-# Two error curves for the streamobs two-curve model (Survey.get_photo_error):
-#   - SAMPLE  (roman_photoerror_f158.csv): truth-based scatter of (obs - true).
-#     Drives the NOISE DRAW (the true scatter is ~2x the reported magerr).
-#     Wired in the config as `log_photo_error_sample`.
-#   - CATALOG (roman_photoerror_f158_catalog.csv): median reported SExtractor
-#     magerr. Written as `magerr` and used for the S/N cut. Wired as
-#     `log_photo_error_catalog`.
-photoerr_tab = pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": log_scatter[keep]})
-catalog_tab = pd.DataFrame(
-    {"delta_mag": dmid[keep], "log_mag_err": med_logerr_rep[keep]}
+def _photoerr_tables(mask, label):
+    pe = cat.loc[
+        mask,
+        [
+            "alphawin_j2000",
+            "deltawin_j2000",
+            f"truth_mag_{BAND}",
+            f"mag_auto_{BAND}",
+            f"magerr_auto_{BAND}",
+        ],
+    ].dropna()
+    pix = hp.ang2pix(
+        NSIDE, pe.alphawin_j2000.values, pe.deltawin_j2000.values, lonlat=True
+    )
+    ml_local = mlm[pix]
+    good = ml_local != hp.UNSEEN
+    delta = pe[f"truth_mag_{BAND}"].values[good] - ml_local[good]
+    dm_obs = (pe[f"mag_auto_{BAND}"].values - pe[f"truth_mag_{BAND}"].values)[good]
+    logerr_reported = np.log10(pe[f"magerr_auto_{BAND}"].values[good])
+
+    dbins = np.arange(np.floor(delta.min() * 10) / 10, 1.5 + 1e-6, 0.12)
+    dmid = 0.5 * (dbins[1:] + dbins[:-1])
+    log_scatter = np.full(dmid.size, np.nan)
+    med_logerr_rep = np.full(dmid.size, np.nan)
+    ib = np.digitize(delta, dbins) - 1
+    for i in range(dmid.size):
+        v = dm_obs[ib == i]
+        if v.size >= 20:
+            log_scatter[i] = np.log10(
+                (np.percentile(v, 84) - np.percentile(v, 16)) / 2
+            )
+            med_logerr_rep[i] = np.median(logerr_reported[ib == i])
+    keep = np.isfinite(log_scatter)
+    print(f"  [{label:<34}] n={len(delta):>9,}  rows={int(keep.sum()):>4}")
+    return (
+        pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": log_scatter[keep]}),
+        pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": med_logerr_rep[keep]}),
+    )
+
+
+print("\nPHOTO-ERROR CURVES:")
+photoerr_tab, catalog_tab = _photoerr_tables(
+    _base_sel & det_ok, "det_ok -> reference band"
+)
+photoerr_nc, catalog_nc = _photoerr_tables(
+    _base_sel, "no cut -> forced-photometry bands"
 )
 
 # --- photometric-error afterburner ------------------------------------------
 # Write the UNTOUCHED measured curves as *_raw.csv (provenance), then apply the
-# human-authored corrections from config/surveys/roman_photoerror_corrections.yaml
+# human-authored corrections from scripts/roman/roman_photoerror_corrections.yaml
 # and save the cleaned result to the runtime filenames the config points at.
-CORRECTIONS_FILE = REPO / "config/surveys/roman_photoerror_corrections.yaml"
+CORRECTIONS_FILE = (  # generation-time only; lives beside this script, not in config/
+    _SCRIPT_DIR / "roman_photoerror_corrections.yaml"
+)
 
 fpe_raw = OUT_DIR / "roman_photoerror_f158_raw.csv"
 np.savetxt(
@@ -1202,6 +1245,14 @@ def _apply_photoerr_corrections(tab, curve_id, corrections_path):
                 f"delta_mag>={d_min:.3f} -> log_mag_err=max(raw,{v:.4f})  "
                 f"({n_before} bins affected)"
             )
+        elif rule_name == "cut_bright":
+            d_min = float(params["delta_mag_min"])
+            n_drop = int((out["delta_mag"] < d_min).sum())
+            out = out[out["delta_mag"] >= d_min].copy()
+            print(
+                f"  [afterburner] {curve_id}: cut_bright "
+                f"dropped {n_drop} bins with delta_mag < {d_min:.3f}"
+            )
         else:
             print(
                 f"  [afterburner] WARNING: unknown rule '{rule_name}' for curve '{curve_id}' — skipped"
@@ -1253,6 +1304,24 @@ print(
     f"delta_mag {photoerr_clean.delta_mag.min():.2f} .. {photoerr_clean.delta_mag.max():.2f})"
 )
 
+# --- no-cut pair: the FORCED-PHOTOMETRY (non-reference) bands -----------------
+# Same afterburner rules as their det_ok counterparts (same curve shape, different
+# selection), written to the *_nocut filenames the survey configs point at.
+for _tab, _stem, _rule in [
+    (photoerr_nc, "roman_photoerror_f158_nocut", "F158_sample"),
+    (catalog_nc, "roman_photoerror_f158_catalog_nocut", "F158_catalog"),
+]:
+    np.savetxt(
+        OUT_DIR / f"{_stem}_raw.csv", _tab.values, delimiter=",",
+        header="delta_mag,log_mag_err", fmt="%.6f",
+    )
+    _clean = _apply_photoerr_corrections(_tab, _rule, CORRECTIONS_FILE)
+    np.savetxt(
+        OUT_DIR / f"{_stem}.csv", _clean.values, delimiter=",",
+        header="delta_mag,log_mag_err", fmt="%.6f",
+    )
+    print(f"wrote {_stem}.csv  (+_raw)  {len(_clean)} rows")
+
 fpe_cat = OUT_DIR / "roman_photoerror_f158_catalog.csv"
 np.savetxt(
     fpe_cat,
@@ -1276,6 +1345,18 @@ eff_tab = pd.DataFrame(
     }
 )
 eff_tab = eff_tab[n_all >= 20].fillna(0.0)
+
+# Bright cut: the F158 truth-scatter photo-error curve shows a saturation jump at
+# delta_mag ~ -8.8 (scatter inflated brighter than that), so curve rows brighter
+# than -8.7 are dropped entirely — the injector's saturation handling (efficiency
+# forced to zero at delta_saturation, interpolated up to the first curve point)
+# governs brighter magnitudes. Matches the LSST convention (EFF_DELTA_MIN=-11).
+EFF_DELTA_MIN = -8.7
+_bright = eff_tab["delta_mag"] < EFF_DELTA_MIN
+eff_tab = eff_tab[~_bright]
+print(
+    f"  dropped {int(_bright.sum())} bins with delta_mag < {EFF_DELTA_MIN} (bright cut)"
+)
 
 # Zero the detection efficiency in the faint tail (delta_mag > 1, i.e. more than 1 mag
 # fainter than the maglim). The measured values there are a small, noisy 0.05-0.17 from

@@ -225,7 +225,7 @@ applies a lightweight **afterburner**:
 1. **Raw curves** (`*_raw.csv`) — unmodified binned outputs — are written every run
    as a provenance record.
 2. **Corrections** are loaded from a *tracked* YAML
-   (`config/surveys/roman_photoerror_corrections.yaml`) so every manual edit is
+   (`scripts/roman/roman_photoerror_corrections.yaml`) so every manual edit is
    attributed and reversible. The implemented rule, `clamp_faint`, floors
    `log_mag_err` to a fixed value for all bins at/beyond a chosen `delta_mag_min`
    (e.g. holding the faint-end noise at its last well-sampled value instead of
@@ -247,18 +247,42 @@ the [desqr](https://github.com/kadrlica/desqr/blob/main/desqr/depth.py) recipe:
 3. per object, extrapolate to the magnitude where it would reach the threshold S/N
    (`magerr = 2.5/ln10/snr`);
 4. take the **median per pixel**;
-5. **truth-anchor the absolute scale**: because the desqr extrapolation runs on the
-   reported errors (which can be too small), each band's map is shifted so its median
-   equals the magnitude where the **truth-based scatter** reaches S/N = 5. The desqr
-   machinery supplies the (error-factor-immune) *spatial structure*; the truth
-   supplies the *absolute depth*. With this anchoring the photo-error model evaluates
-   to σ = 0.217 (S/N = 5) at `delta_mag = 0` by construction — "maglim" means S/N = 5
-   in the same truth-based sense everywhere.
+5. **fix the absolute scale — a per-survey choice.** Steps 1–4 already solve for the
+   magnitude where the *reported* `magerr` reaches the threshold S/N; that is the
+   desqr machinery's own **native** output. Whether the map ships on that native
+   scale, or is shifted to a truth-based reference, is decided **per survey** by how
+   optimistic its reported errors are:
+   - **Native (reported-error) scale, no shift** — adopted for **LSST DC2**, whose
+     reported errors are only ≈1.4× optimistic. This matches what a real survey
+     gives you (the pipeline's own quoted depth is all there is), so sims and data
+     are treated identically. The rebuilt native-scale depth reproduces an
+     independent external calibration (Tsiane et al. 2025) to 0.1% with *no* shift
+     (median ratio 1.0011 over `delta_mag ∈ [-5, -0.25]`; it was 1.335 before this
+     map was de-anchored) — the validation that grounds this choice. Under this
+     policy the **CATALOG** curve is the one that evaluates to σ = 0.217 (S/N = 5) at
+     `delta_mag = 0` by construction; the larger true scatter there is carried by the
+     **SAMPLE** curve instead.
+   - **Truth-anchor** — shift the map so its median lands at the magnitude where the
+     **truth-based scatter** of (obs − true) reaches S/N = 5 — adopted for
+     **Roman DC2** (see :doc:`roman_dc2`), whose reported errors are ≈2× optimistic.
+     Left on the native scale, Roman's map would land ≈0.9–1.2 mag deeper across
+     bands than the published Roman 5σ depths (e.g. F158 native 27.83 vs. the ~26.9
+     reference), claiming detections the survey cannot deliver. Under this policy
+     the **SAMPLE** curve is the one that evaluates to σ = 0.217 (S/N = 5) at
+     `delta_mag = 0` by construction (measured 0.2150, ≈1% off target); the
+     **CATALOG** curve reads well below it, reflecting the same optimism.
+
+   The desqr machinery always supplies the (error-factor-immune) *spatial
+   structure*; the two policies differ only in what supplies the *absolute depth*.
+   The divergence is a property of each simulation's own error calibration, not of
+   the convention itself — a survey with LSST-like reported errors keeps the native
+   scale, a survey with Roman-like reported errors gets truth-anchored.
 
 The depth sample is the **same** true-star-passing-classification population as the
 photo-error model, so the maps and the error model describe one population.
 
-> **Anchor-sample footnote (2026-07).** The anchoring in step 5 is conceptually a
+> **Anchor-sample footnote (2026-07, Roman-specific — LSST DC2 no longer anchors, so
+> this does not apply there).** The anchoring in step 5 is conceptually a
 > *no-cut* quantity (the magnitude where the full population's truth scatter
 > reaches S/N = 5), but the current generator's anchor sample includes the
 > detection cut. The measured effect is ≲ 0.01 mag (the no-cut sample curve
@@ -270,30 +294,41 @@ photo-error model, so the maps and the error model describe one population.
 
 When a survey footprint has no full image simulation but does have an
 **exposure-time map** (e.g. the real Roman HLWAS tiers), depth is obtained by scaling
-the truth-anchored reference depth by photon-noise √t S/N:
+the reference depth by photon-noise √t S/N:
 
 ```
 depth(pix) = REF_DEPTH + 1.25 · log10( t(pix) / REF_EXPTIME )
 ```
 
-where `REF_DEPTH` is the median of the truth-anchored reference maglim map and
-`REF_EXPTIME` is the reference simulation's per-pixel exposure time. The 1.25 factor
-is `2.5 × 0.5`, the limiting-magnitude response to √t. This **Option B** anchors all
-tiers to the *same* truth-anchored reference (not to per-tier ETC depths of mixed
-vintage), so the maps land exactly on the depth scale the `delta_mag`-keyed tables
-require, and inter-tier comparisons are self-consistent. It assumes background-limited
-exposures (read-noise makes the shortest exposures slightly shallower than predicted).
+where `REF_DEPTH` is the median of the reference maglim map — for Roman this is the
+**truth-anchored** DC2 F158 map (Roman keeps truth-anchoring; see *Depth maps* above)
+— and `REF_EXPTIME` is the reference simulation's per-pixel exposure time. The 1.25
+factor is `2.5 × 0.5`, the limiting-magnitude response to √t. This **Option B** ties
+all tiers to the *same* reference (not to per-tier ETC depths of mixed vintage), so
+the maps land exactly on the depth scale the `delta_mag`-keyed tables require, and
+inter-tier comparisons are self-consistent. It assumes background-limited exposures
+(read-noise makes the shortest exposures slightly shallower than predicted). A
+survey whose DC2-equivalent calibration sits on the native (non-anchored) scale
+instead — like LSST DC2 — would tie Option B to that native reference in the same
+way; the recipe itself doesn't care which policy set `REF_DEPTH`, only that it's
+applied consistently across tiers.
 
 ## Validation & audits
 
 ### Already validated (this PR)
 
 - **Truth-based photo-error validation.** The reported errors are checked against the
-  scatter of (obs − true) for true stars per band; the constant ≈2 discrepancy in the
-  Roman DC2 mock is *why* the error model and depth maps are truth-anchored rather
-  than taken at face value. Figure: `error_validation.png` on :doc:`roman_dc2`.
+  scatter of (obs − true) for true stars per band. The **sample** photo-error curve is
+  *always* built from this truth-based scatter, for both surveys. Whether the
+  **depth map** is also truth-anchored is the per-survey choice above: the constant
+  ≈2 discrepancy in the Roman DC2 mock is large enough to overshoot Roman's external
+  reference depth on the native scale, which is *why* its depth map is truth-anchored;
+  the ≈1.4× LSST DC2 discrepancy is small enough that its native-scale map reproduces
+  an external calibration (Tsiane et al. 2025) to 0.1%, so its map is *not* anchored.
+  Figure: `error_validation.png` on :doc:`roman_dc2`.
 - **Depth-map validation notebook** (`notebooks/roman_depth_validation.ipynb`,
-  figures under `_static/roman_depth_validation/`). It confirms:
+  figures under `_static/roman_depth_validation/`; Roman-specific — Roman DC2 remains
+  truth-anchored, LSST DC2 does not, see above). It confirms:
   - **DC2 band ordering** matches the expected physics: F129 ≈ F158 (26.375),
     F106 = 26.279 < F158, F184 = 25.347 < F106. ✓
   - **DC2 4-band truth-anchored medians** 26.28 / 26.38 / 26.38 / 25.35
@@ -316,6 +351,25 @@ exposures (read-noise makes the shortest exposures slightly shallower than predi
 
   *DC2 per-band truth-anchored depth histograms (nside=1024); the tight spreads and
   the band ordering F184 < F106 < F129 ≈ F158 match the expected physics.*
+- **LSST DC2 native-scale depth validation (headline result, 2026-09).** With
+  truth-anchoring removed, the LSST DC2 r-band map median moved from 26.517
+  (previously truth-anchored) to **26.846** (native reported-error S/N=5; g-band
+  26.972). On the detected population the curves are applied to (see *Why the curves
+  are measured on the detected population* above), the rebuilt **CATALOG** curve reads
+  σ = 0.1800 at `delta_mag = 0` and the **SAMPLE** curve 0.1625. Note the curve value
+  at `delta_mag = 0` is *not* 0.217 and is not expected to be: "the pipeline calls 0.2
+  here" is a statement about the **map**, while the curve reports the median error of
+  the S/N>5-selected sources that survive there, from which the noisy tail is genuinely
+  absent. Compared against the independent external
+  calibration of [Tsiane et al. (2025)](https://arxiv.org/abs/2504.16203), the
+  rebuilt native-scale CATALOG curve matches to **0.1%** (median ratio 1.0011 over
+  `delta_mag ∈ [-5, -0.25]`) with **no** shift applied — versus a ratio of 1.335
+  under the old truth-anchored convention. This is the evidence that grounds
+  keeping LSST DC2 on the native pipeline scale (contrast with Roman DC2, which
+  remains truth-anchored — see *Depth maps* above). Efficiency vs. *true* magnitude
+  is unaffected (identical detection+classification efficiency at r =
+  24/25/25.5/26/26.5: 0.7177/0.5667/0.5032/0.4428/0.3381) — only the `delta_mag`
+  zero point moved.
 - **Test suite.** `tests/test_roman.py` (26 tests) covers loading each Roman release,
   `{name}_{release}` column namespacing on inject, Vega→AB offsets, the two-curve
   photo-error model, completeness behaviour (bright ≳ plateau, zero below
@@ -365,8 +419,11 @@ are cheap relative to the derivation and would tighten confidence in the injecto
 5. **Convention closure (non-circular).** The depth-validation notebook's
    "convention check" currently re-derives the expected value from the same formula
    used to build the map (circular). A real check would compare the truth-anchored
-   DC2 F158 median against an *independent* depth estimate (e.g. the count-turnover
-   magnitude of the matched catalog) and confirm agreement. *Status: recommended.*
+   DC2 F158 median (Roman DC2 remains truth-anchored — see *Depth maps* above)
+   against an *independent* depth estimate (e.g. the count-turnover magnitude of the
+   matched catalog) and confirm agreement. *Status: recommended.* (The equivalent
+   check for LSST DC2's native-scale map is already done — see the Tsiane et al. 2025
+   comparison above, an independent external calibration, not a self-derived one.)
 
 ## Re-deriving for another survey
 
@@ -376,9 +433,16 @@ To re-derive LSST/DES products self-consistently:
    recipe, that survey's bands).
 2. Re-fit the size envelope (`roman_star_classifier.build_env_classifier`) on the new
    catalog — same purity target and freeze logic.
-3. Re-measure the two photo-error curves and the truth-based depth anchor; clean the
-   curves via the YAML afterburner.
-4. Emit the `delta_mag`-keyed completeness / photo-error CSVs and the truth-anchored
-   maglim maps in the shared convention (use the `classification_eff` column header).
+3. Re-measure the two photo-error curves (the **sample** curve is always built from
+   the truth-based scatter). For the depth map, compare the native (reported-error)
+   S/N=5 median against an independent external reference depth for that survey:
+   keep the **native** scale if they agree, as for LSST DC2 (reported errors only
+   mildly optimistic); **truth-anchor** to the truth-based S/N=5 magnitude if the
+   native scale would overshoot the external reference by a large margin, as for
+   Roman DC2 (reported errors ≈2× optimistic). Clean the curves via the YAML
+   afterburner.
+4. Emit the `delta_mag`-keyed completeness / photo-error CSVs and the maglim maps —
+   truth-anchored or left on the native scale, per the choice made in step 3 — in the
+   shared convention (use the `classification_eff` column header).
 5. Register the release in `config/surveys/` and `SURVEY_REGISTRY`, and add a thin
    per-release data page that references this methodology page for the "how".

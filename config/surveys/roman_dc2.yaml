@@ -28,6 +28,11 @@ survey_files:
     # Band-independent maps
     ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
     completeness: roman_stellar_efficiency_cutf158.csv
+    # Galaxy misclassification: fraction of compact (size_true < 0.3") true
+    # galaxies detected (S/N>5) yet classified as stars by the F158 size
+    # envelope, vs delta_mag = mag_F158 - maglim_F158
+    # (built by scripts/roman/build_roman_galaxy_misclass.py).
+    gal_misclassification: roman_galaxy_misclass_cutf158.csv
     completeness_band: F158 # the completeness has been obtained in the F158 band
 
     # Two-curve photometric error model (streamobs Survey.get_photo_error):
@@ -37,6 +42,11 @@ survey_files:
     #             (the true scatter is ~2x the reported magerr in the DC2 coadds).
     log_photo_error_catalog: roman_photoerror_f158_catalog.csv
     log_photo_error_sample: roman_photoerror_f158.csv
+    # Forced-photometry (non-reference band) curves: measured with NO S/N cut, because
+    # Y106/J129/F184 photometry is forced from the F158 detection and so is not
+    # conditioned on detection in those bands. Required for any non-reference band.
+    log_photo_error_catalog_nocut: roman_photoerror_f158_catalog_nocut.csv
+    log_photo_error_sample_nocut: roman_photoerror_f158_nocut.csv
 
 survey_properties:
   # F184 is excluded: it is deep-tier-only in the community-defined HLWAS and
