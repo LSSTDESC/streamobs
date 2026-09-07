@@ -130,6 +130,7 @@ Documentation Contents
    data
    selection_function_methodology
    balrog_selection_functions
+   product_verification
    roman_dc2
    roman_hlwas
    modules
