@@ -552,7 +552,11 @@ class StreamInjector:
                 continue
             if verbose:
                 print(f"Applying detection cut on {band}-band with SNR >= {SNR_min}")
-            SNR = 1.0 / data[err_col(band, survey_namespace)]
+             # From propagation of errors:
+            # mag = -2.5 * log10(flux)
+            # magerr = -2.5/ln(10) * fluxerr/flux
+            # SNR = (2.5/np.log(10)) / (magerr)
+            SNR = 2.5 / np.log(10) / data[err_col(band, survey_namespace)]
             flag_observed &= SNR >= SNR_min
             if perfect_galstarsep:
                 flag_perfect &= SNR >= SNR_min
@@ -710,7 +714,7 @@ class StreamInjector:
                 rng=rng,
             )
 
-        # Convert (phi1, phi2) -> (ra, dec) using the primary survey footprint.
+    # Convert (phi1, phi2) -> (ra, dec) using the primary survey footprint.
         if not have_radec:
             data = self._ensure_radec(data, rng=rng, seed=seed, **kwargs)
 

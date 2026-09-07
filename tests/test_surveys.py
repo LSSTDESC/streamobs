@@ -63,10 +63,10 @@ def _hlwas_entry(tier, release, bands=None):
         "expected_bands": bands,
         "expected_maglim": bands,
         # Roman-specific threshold relaxations (same rationale as roman_dc2)
-        "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
-        "skip_snr_maglim_check": True,
+        # Tiers symlink the DC2 photo-error curves, so they share its SNR=10 offset.
+        "snr10_delta_mag": -0.42,
     }
     if not os.path.exists(cfg_path):
         return pytest.param(
@@ -165,6 +165,9 @@ SURVEY_REGISTRY = [
         "expected_maglim": ["F106", "F129", "F158"],
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
+        # Roman's catalog curve is shallower (0.313 vs LSST's 0.395 dex/mag) and sits
+        # on the truth-anchored depth scale, so SNR=10 falls at -0.41, not -0.75.
+        "snr10_delta_mag": -0.42,
     },
     # Roman HLWAS tiers — skipped until per-tier config files are present
     _hlwas_entry("hlwas_wide", "hlwas_wide"),
@@ -664,11 +667,25 @@ class TestSurveyProperties:
                 "skip_snr_maglim_check", False
             )
             if not skip_snr_check:
-                loaded_survey.sys_error[band] =  0.0 # remove statistical error for SNR check
-                error_at_maglim = loaded_survey.get_photo_error(
-                    band, base_maglim-0.75, base_maglim, kind="catalog"
+                # delta_mag at which this survey's catalog curve reaches SNR=10.
+                # Survey-dependent: it is set by the slope of the reported-error
+                # curve and by the survey's depth convention, so it is not a
+                # universal constant. LSST DC2 (native depth scale, catalog slope
+                # 0.395 dex/mag) crosses SNR=10 at -0.738, so the -0.75 default is
+                # right for it. Roman DC2 (truth-anchored, shallower 0.313 dex/mag)
+                # crosses at -0.407, and -0.75 there lands at SNR ~ 12.8.
+                snr10_delta_mag = loaded_survey._test_entry.get(
+                    "snr10_delta_mag", -0.75
                 )
-                snr_at_maglim = 1 / error_at_maglim
+                loaded_survey.sys_error[band] = 0.0  # remove statistical error for SNR check
+                error_at_maglim = loaded_survey.get_photo_error(
+                    band, base_maglim + snr10_delta_mag, base_maglim, kind="catalog"
+                )
+
+                snr_at_maglim = 2.5 / np.log(10) / error_at_maglim  # convert to SNR
                 assert np.isclose(
                     snr_at_maglim, 10.0, atol=0.5,
-                ), f"Photo error at maglim_10 should correspond to be roughly SNR=10 for band '{band}'"
+                ), (
+                    f"Photo error at delta_mag={snr10_delta_mag} should correspond to "
+                    f"roughly SNR=10 for band '{band}' (got {float(np.atleast_1d(snr_at_maglim)[0]):.3f})"
+                )
