@@ -26,6 +26,12 @@ survey_files:
     # (built by scripts/lsst/build_lsst_dc2_galaxy_misclass.py).
     gal_misclassification: lsst_dc2_galaxy_misclass_cutr.csv
 
+    # Galaxy DETECTION efficiency: P(detected), NO classification term. Needed
+    # only by a joint selection that takes star/galaxy classification from one
+    # survey (Roman) and uses this survey for depth + photometry only. NOT the
+    # stellar detection curve -- galaxies detect differently (0.619 vs 0.855 at
+    # F158<25.5). Built by scripts/lsst/build_lsst_dc2_galaxy_detection.py.
+    gal_detection: lsst_dc2_galaxy_detection_cutr.csv
     # Two-curve photometric error model (streamobs Survey.get_photo_error):
     #   catalog = median reported magerr    -> written as `magerr`, drives the S/N cut;
     #   sample  = truth-based scatter of (obs - true) -> drives the noise draw

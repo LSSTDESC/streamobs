@@ -215,6 +215,54 @@ default is all injected bands except the reference band). Net effect: a star mus
 have SNR ≥ 5 in every injected band to be flagged observed, with the reference
 band's cut owned entirely by the selection-function curves.
 
+## Coupling the selection draw across surveys
+
+True magnitudes are shared across surveys (above), but the **selection draw** is
+not: each survey is injected with its own child RNG, so by default
+`P(selected in both) = p_1 x p_2`. Whether that independence is physically right
+is a measurable question, not a modelling convention — Roman--Rubin DC2 shares
+one input truth catalog, so the joint rate can be measured directly.
+
+`classification_coupling` (a keyword of
+{meth}`~streamobs.observed.StreamInjector.inject`) exposes the choice:
+
+| value | meaning | `P(selected in both)` |
+| --- | --- | --- |
+| `"independent"` (**default**) | each survey draws its own uniforms | `p_1 * p_2` |
+| `"shared"` | one uniform per object, reused by every survey | `min(p_1, p_2)` |
+| a float `rho` in [-1, 1] | Gaussian copula, `u_k = Phi(rho z_c + sqrt(1-rho^2) z_k)` | interpolates the two |
+| `{source_type: value}` | resolved against this call's `source_type` | per source type |
+
+With a shared uniform, "selected in both" collapses to `u <= min(p_1, p_2)`
+automatically — there is no special joint logic anywhere in the injector.
+
+```python
+out = injector.inject(df, bands=bands, stream_config=cfg, seed=42,
+                      classification_coupling={"stars": 0.26, "galaxies": 0.08})
+```
+
+```{important}
+The default stays `"independent"` so that no existing result changes silently,
+and the default code path is bit-identical to the pre-coupling injector. Set a
+coupling explicitly, in the joint scene config, if you want one.
+```
+
+**What DC2 says.** `scripts/roman/measure_joint_misclassification.py` measures
+the star/galaxy **classification** coupling between LSST and Roman on the matched
+DC2 catalog. For compact true galaxies (the contaminants that matter), the
+measured joint misclassification rate is `1.10x` the independent prediction
+overall and `1.27x` inside the joint channel's `F158 < 25.5` cut, against `0.34x`
+of the comonotonic (`min`) prediction — i.e. **close to independent, with the
+shared limit excluded**, corresponding to a fitted `rho ~ 0.06-0.08`. For true
+stars the ratio is `1.007`. So the default is the right one; the `rho` option
+exists to quantify the residual as a robustness check.
+
+```{note}
+That measurement is conditional on **both** surveys detecting the object, since
+the matched catalog is built from Roman detections matched to LSST objects. The
+detection-side coupling is a separate, truth-centric measurement.
+```
+
 ## See also
 
 - [Output column convention](column_convention.md) — the `<survey>_<band>_…`

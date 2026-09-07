@@ -24,6 +24,7 @@ DC2_DIR = REPO / "data/surveys/lsst_dc2"
 TABLES = [
     "lsst_dc2_stellar_efficiency_cutr.csv",
     "lsst_dc2_galaxy_misclass_cutr.csv",
+    "lsst_dc2_galaxy_detection_cutr.csv",
     "lsst_dc2_photoerror_r.csv",
     "lsst_dc2_photoerror_r_catalog.csv",
 ]

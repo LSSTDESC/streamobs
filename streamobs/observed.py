@@ -9,8 +9,17 @@ import gala.coordinates as gc
 import healpy as hp
 import numpy as np
 import pandas as pd
+from scipy.special import ndtr
 
-from .columns import err_col, flag_col, obs_col, perfect_flag_col, true_col
+from .columns import (
+    coupling_col,
+    detected_flag_col,
+    err_col,
+    flag_col,
+    obs_col,
+    perfect_flag_col,
+    true_col,
+)
 from .model import StreamModel
 from .plotting import plot_stream_in_mask
 from .surveys import Survey
@@ -245,6 +254,27 @@ class StreamInjector:
                 If True, also computes a flag assuming perfect star/galaxy separation
                 (detection efficiency only, no classification losses). Default is False.
                 Only applies when ``source_type='stars'``.
+            classification_coupling : str, float, or dict, optional
+                How the per-object selection draw is coupled ACROSS surveys.
+                Default ``"independent"``: every survey draws its own uniforms
+                from its own child RNG, so ``P(selected in both) = p_1 * p_2``.
+                This is the historical behaviour and the default must stay put so
+                nothing changes silently.
+
+                - ``"shared"`` — one uniform per object, reused by every survey,
+                  so ``P(selected in both) = min(p_1, p_2)`` (the comonotonic
+                  limit) with no special joint logic anywhere.
+                - a float ``rho`` in [-1, 1] — Gaussian-copula coupling,
+                  ``u_k = Phi(rho * z_c + sqrt(1 - rho^2) * z_k)``; ``rho = 0``
+                  reproduces independence, ``rho = 1`` the shared limit.
+                - a ``{source_type: value}`` dict (e.g.
+                  ``{"stars": 0.26, "galaxies": 0.08}``) — resolved against this
+                  call's ``source_type``, for when the two differ.
+
+                Measured in Roman--Rubin DC2 (see
+                ``scripts/roman/measure_joint_misclassification.py``): the
+                classification step is close to independent, ``rho ~ 0.06-0.08``
+                for compact galaxies, with the comonotonic limit excluded.
             source_type : str, optional
                 Type of source being injected. Either ``'stars'`` (default) or
                 ``'galaxies'``. When ``'galaxies'``, the detection flag uses
@@ -280,6 +310,7 @@ class StreamInjector:
         rng = kwargs.pop("rng", None)
         if rng is None:
             rng = np.random.default_rng(seed)
+        coupling = kwargs.pop("classification_coupling", "independent")
 
         # Shared sky placement + shared true-magnitude fill (masses sampled once
         # across all surveys). This is the same completion exposed publicly as
@@ -290,6 +321,14 @@ class StreamInjector:
             stream_config=stream_config,
             rng=rng,
             **kwargs,
+        )
+
+        # Optional cross-survey coupling of the selection draw. Drawn from the
+        # PARENT rng (before the children are spawned) so every survey sees the
+        # same per-object variate; a no-op for the "independent" default, which
+        # leaves the per-survey child RNGs to draw their own.
+        u_cols = self._draw_coupled_uniforms(
+            data, coupling, rng, kwargs.get("source_type", "stars")
         )
 
         # Per-survey observational injection. Independent child RNGs make the
@@ -306,12 +345,80 @@ class StreamInjector:
                 **kwargs,
             )
 
+        # The coupling uniforms are private scratch columns, not output.
+        if u_cols:
+            data = data.drop(columns=[c for c in u_cols if c in data.columns])
+
         # Save if requested
         if kwargs.get("save"):
             self._save_injected_data(data, kwargs.get("folder", None))
 
         # Return data (do NOT store as instance attribute to avoid conflicts between runs)
         return data
+
+    @staticmethod
+    def _resolve_coupling(coupling, source_type):
+        """Resolve ``classification_coupling`` to a copula correlation or None.
+
+        Returns ``None`` for the independent default (no coupling column is
+        written and each survey draws its own uniforms), otherwise a float
+        ``rho`` in [-1, 1] where 1 is the fully shared (comonotonic) limit.
+        """
+        if isinstance(coupling, dict):
+            if source_type not in coupling:
+                raise ValueError(
+                    f"classification_coupling dict has no entry for "
+                    f"source_type={source_type!r}; got keys {sorted(coupling)}."
+                )
+            coupling = coupling[source_type]
+        if coupling is None or coupling == "independent":
+            return None
+        if coupling == "shared":
+            return 1.0
+        if isinstance(coupling, bool) or not isinstance(coupling, (int, float)):
+            raise ValueError(
+                "classification_coupling must be 'independent', 'shared', a float "
+                f"rho in [-1, 1], or a {{source_type: value}} dict; got {coupling!r}."
+            )
+        rho = float(coupling)
+        if not -1.0 <= rho <= 1.0:
+            raise ValueError(
+                f"classification_coupling rho must lie in [-1, 1]; got {rho}."
+            )
+        return rho
+
+    def _draw_coupled_uniforms(self, data, coupling, rng, source_type):
+        """Write one pre-drawn selection uniform per survey; return the columns.
+
+        With ``rho = 1`` ("shared") every survey gets the SAME uniform, so
+        "selected in both" becomes ``u <= min(p_1, p_2)`` automatically — no
+        special joint logic anywhere. For ``0 < rho < 1`` a Gaussian copula is
+        used: one common normal ``z_c`` per object plus a per-survey ``z_k``,
+        with ``u_k = Phi(rho * z_c + sqrt(1 - rho^2) * z_k)``, which reproduces
+        the independent draws at ``rho = 0`` and the shared ones at ``rho = 1``.
+
+        Returns an empty list for the independent default, leaving the random
+        stream (and therefore every existing result) untouched.
+        """
+        rho = self._resolve_coupling(coupling, source_type)
+        if rho is None:
+            return []
+        n = len(data)
+        if rho == 1.0:
+            shared = rng.uniform(size=n)
+            uniforms = {name: shared for name in self.survey_names}
+        else:
+            z_c = rng.standard_normal(n)
+            uniforms = {
+                name: ndtr(rho * z_c + np.sqrt(1.0 - rho**2) * rng.standard_normal(n))
+                for name in self.survey_names
+            }
+        cols = []
+        for name, u in uniforms.items():
+            col = coupling_col(name)
+            data[col] = u
+            cols.append(col)
+        return cols
 
     def _resolve_survey_bands(self, bands):
         """Normalize the ``bands`` argument to a ``{survey_name: [bands]}`` dict.
@@ -383,6 +490,7 @@ class StreamInjector:
 
         verbose = kwargs.get("verbose", True)
         perfect_galstarsep = kwargs.pop("perfect_galstarsep", False)
+        detection_only_flag = kwargs.pop("detection_only_flag", False)
 
         # Get HEALPix pixel indices
         nside = kwargs.pop("nside", 4096)
@@ -391,6 +499,7 @@ class StreamInjector:
         # Initialize detection flags (will be updated per band)
         flag_completeness_band = None
         flag_detection_only_band = None
+        flag_detected_band = None
 
         # Process each band
         for band in bands:
@@ -468,6 +577,24 @@ class StreamInjector:
             # Compute detection flag for completeness-band (reference band)
             if band == survey.completeness_band:
                 source_type = kwargs.get("source_type", "stars")
+                # ONE selection uniform per object for this survey, reused by both
+                # calls below. Two reasons:
+                #   (a) nesting: get_detection_efficiency >= get_completeness
+                #       pointwise, so a shared u makes the realistic selection a
+                #       SUBSET of the perfect-separation one. Two independent draws
+                #       let an object fail the perfect-separation flag while passing
+                #       the (stricter) realistic one, which is unphysical.
+                #   (b) cross-survey coupling: when inject() has pre-drawn a
+                #       coupled uniform for this survey, use it (see
+                #       ``classification_coupling``).
+                # Drawn here, immediately before the first detect_flag call, so the
+                # default (uncoupled) path consumes the child RNG in exactly the
+                # order it did before -- results stay bit-identical.
+                u_col = coupling_col(survey_namespace)
+                if u_col in data.columns:
+                    u_select = data[u_col].to_numpy(dtype=float)
+                else:
+                    u_select = rng.uniform(size=len(apparent_mag_true))
                 flag_completeness_band = self.detect_flag(
                     pix_maglim,
                     survey=survey,
@@ -476,6 +603,7 @@ class StreamInjector:
                     rng=rng,
                     seed=seed,
                     perfect_galstarsep=False,
+                    u_select=u_select,
                     **kwargs,
                 )
                 if perfect_galstarsep and source_type == "stars":
@@ -487,6 +615,23 @@ class StreamInjector:
                         rng=rng,
                         seed=seed,
                         perfect_galstarsep=True,
+                        u_select=u_select,
+                        **kwargs,
+                    )
+                if detection_only_flag:
+                    # P(detected) with no classification term, for either source type.
+                    # Shares u_select, so the classified selection is a strict SUBSET of
+                    # this one -- an object cannot be "classified point-like" without
+                    # having been detected.
+                    flag_detected_band = self.detect_flag(
+                        pix_maglim,
+                        survey=survey,
+                        mag=apparent_mag_true,
+                        band=band,
+                        rng=rng,
+                        seed=seed,
+                        detection_only=True,
+                        u_select=u_select,
                         **kwargs,
                     )
 
@@ -520,6 +665,12 @@ class StreamInjector:
             flag_perfect = (
                 flag_valid_flux & flag_detection_only_band
                 if flag_detection_only_band is not None
+                else flag_valid_flux
+            )
+        if detection_only_flag:
+            flag_detected = (
+                flag_valid_flux & flag_detected_band
+                if flag_detected_band is not None
                 else flag_valid_flux
             )
 
@@ -556,11 +707,15 @@ class StreamInjector:
             flag_observed &= SNR >= SNR_min
             if perfect_galstarsep:
                 flag_perfect &= SNR >= SNR_min
+            if detection_only_flag:
+                flag_detected &= SNR >= SNR_min
 
         # Store flags in DataFrame
         data[flag_col(survey_namespace)] = flag_observed
         if perfect_galstarsep:
             data[perfect_flag_col(survey_namespace)] = flag_perfect
+        if detection_only_flag:
+            data[detected_flag_col(survey_namespace)] = flag_detected
 
         return data
 
@@ -1205,6 +1360,16 @@ class StreamInjector:
                 If True and ``source_type='stars'``, uses detection-only
                 efficiency (no classification losses). Ignored for galaxies.
                 Default is False.
+            u_select : np.ndarray, optional
+                Pre-drawn uniform(0, 1) selection variates, one per object, used
+                instead of drawing fresh ones. Supplying the *same* ``u_select``
+                to two calls makes their outcomes nested rather than independent:
+                because ``get_detection_efficiency >= get_completeness``
+                pointwise, ``u <= completeness`` implies ``u <= detection``, so
+                the realistic selection is a subset of the perfect-separation
+                one. Sharing it across *surveys* is what
+                ``classification_coupling`` in :meth:`inject` does. Must have
+                one entry per object; a length mismatch raises.
 
         Returns
         -------
@@ -1214,7 +1379,8 @@ class StreamInjector:
         Raises
         ------
         ValueError
-            If magnitude values are not provided.
+            If magnitude values are not provided, or if ``u_select`` is given
+            with a length other than ``len(mag)``.
         """
 
         rng = kwargs.pop("rng", None)
@@ -1225,7 +1391,13 @@ class StreamInjector:
         maglim = survey.get_maglim(band, pixel=pix)
 
         source_type = kwargs.get("source_type", "stars")
-        if source_type == "galaxies":
+        if kwargs.get("detection_only", False):
+            # P(detected), no classification term, for either source type.
+            if source_type == "galaxies":
+                compl = survey.get_gal_detection(band, mag, maglim)
+            else:
+                compl = survey.get_detection_efficiency(band, mag, maglim)
+        elif source_type == "galaxies":
             compl = survey.get_gal_misclassification_detection(band, mag, maglim)
         else:
             perfect_galstarsep = kwargs.get("perfect_galstarsep", False)
@@ -1234,7 +1406,17 @@ class StreamInjector:
             else:
                 compl = survey.get_completeness(band, mag, maglim)
 
-        threshold = rng.uniform(size=len(mag)) <= compl
+        u = kwargs.get("u_select")
+        if u is None:
+            u = rng.uniform(size=len(mag))
+        else:
+            u = np.asarray(u, dtype=float)
+            if u.shape != (len(mag),):
+                raise ValueError(
+                    f"u_select has shape {u.shape}, expected ({len(mag)},): one "
+                    "pre-drawn uniform per object."
+                )
+        threshold = u <= compl
 
         return threshold
 

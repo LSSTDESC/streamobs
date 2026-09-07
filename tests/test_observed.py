@@ -400,3 +400,217 @@ class TestCompleteDataAndAPI:
         """`survey` is now a required argument of detect_flag."""
         with pytest.raises(TypeError):
             mock_injector.detect_flag(0, mag=np.array([20.0]), band="r")
+
+
+# ---------------------------------------------------------------------------
+# Selection-draw coupling (classification_coupling) + perfect-separation nesting
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.observed
+class TestSelectionCoupling:
+    """The per-object selection uniform: nesting within a survey, coupling across.
+
+    Two independent properties live here.
+
+    **Nesting (within one survey).** ``get_detection_efficiency`` is >=
+    ``get_completeness`` pointwise — perfect star/galaxy separation can only help
+    — so the realistic selection MUST be a subset of the perfect-separation one.
+    That holds only if both ``detect_flag`` calls share one per-object uniform;
+    with two independent draws an object can fail the easier cut while passing
+    the harder one, which is unphysical.
+
+    **Coupling (across surveys).** ``classification_coupling`` sets
+    ``P(selected in both)``: ``p_1 * p_2`` when independent (the default),
+    ``min(p_1, p_2)`` when shared.
+
+    The coupling tests deliberately use a **homogeneous** catalog — every object
+    at the same sky position and the same true magnitude — so that ``p_k`` is a
+    single number per survey and ``p_1 * p_2`` is the correct independent
+    prediction. On a realistic catalog it is NOT: per-object probabilities vary
+    and are correlated across surveys through the shared true magnitude, so the
+    joint rate exceeds the product of the marginals even under independent draws
+    (the same heterogeneity effect that
+    ``scripts/roman/measure_joint_misclassification.py`` corrects for with 2-D
+    cells). Only the reference band is injected, so no non-reference-band S/N cut
+    can add per-survey failures on top of the selection draw.
+    """
+
+    NS = ("lsst_yr4", "lsst_yr5")
+    BANDS = {"lsst_yr4": ["r"], "lsst_yr5": ["r"]}
+    N = 20000
+
+    @staticmethod
+    def _homogeneous_catalog(injector, n=N, dm_offset=-1.0):
+        """n identical objects on one pixel covered by both surveys.
+
+        ``dm_offset`` is measured from the shallower survey's r-band limit
+        (extinction folded in), so the selection probability sits near 0.5 and
+        the test is sensitive to a mis-specified coupling.
+        """
+        import healpy as hp
+
+        s4, s5 = injector.surveys["lsst_yr4"], injector.surveys["lsst_yr5"]
+        m4, m5 = s4.get_maglim("r"), s5.get_maglim("r")
+        nside = hp.get_nside(m4)
+        ok = (
+            np.isfinite(m4)
+            & (m4 > 0)
+            & (m4 != hp.UNSEEN)
+            & np.isfinite(m5)
+            & (m5 > 0)
+            & (m5 != hp.UNSEEN)
+        )
+        good = np.flatnonzero(ok)
+        pix = int(good[good.size // 2])
+        ra, dec = hp.pix2ang(nside, pix, lonlat=True)
+        ebv_pix = hp.ang2pix(hp.get_nside(s4.ebv_map), ra, dec, lonlat=True)
+        extinction = float(s4.get_extinction("r", pixel=ebv_pix))
+        mag_true = float(m4[pix]) - extinction + dm_offset
+        return pd.DataFrame(
+            {
+                "ra": np.full(n, ra),
+                "dec": np.full(n, dec),
+                "lsst_r_true": np.full(n, mag_true),
+            }
+        )
+
+    def _rates(self, injector, catalog, **kw):
+        out = injector.inject(
+            catalog.copy(), bands=self.BANDS, seed=11, verbose=False, **kw
+        )
+        assert not [
+            c for c in out.columns if c.startswith("_u_select")
+        ], "the private coupling column must be dropped before inject() returns"
+        f4 = out[f"{self.NS[0]}_flag_observed"].to_numpy().astype(bool)
+        f5 = out[f"{self.NS[1]}_flag_observed"].to_numpy().astype(bool)
+        p4, p5 = float(f4.mean()), float(f5.mean())
+        # guard: an all-or-nothing marginal would make every assertion vacuous
+        assert 0.1 < p4 < 0.9 and 0.1 < p5 < 0.9, (
+            f"marginals p4={p4:.3f} p5={p5:.3f} are not intermediate; the survey "
+            "products moved and _homogeneous_catalog's dm_offset needs retuning"
+        )
+        return p4, p5, float((f4 & f5).mean())
+
+    @staticmethod
+    def _mc_tol(p, n, nsigma=5.0):
+        return nsigma * np.sqrt(max(p * (1.0 - p), 1e-12) / n)
+
+    def test_perfect_galstarsep_flag_is_superset(
+        self, mock_injector, stream_catalog, verbose
+    ):
+        """flag_observed must nest inside flag_perfect_galstarsep, with no exceptions."""
+        out = mock_injector.inject(
+            stream_catalog.copy(), perfect_galstarsep=True, verbose=verbose, seed=3
+        )
+        realistic = out["lsst_yr4_flag_observed"].to_numpy().astype(bool)
+        perfect = out["lsst_yr4_flag_perfect_galstarsep"].to_numpy().astype(bool)
+        n_violating = int((realistic & ~perfect).sum())
+        assert n_violating == 0, (
+            f"{n_violating} objects pass the realistic selection but fail the "
+            "perfect star/galaxy-separation one; both detect_flag calls must "
+            "share a single per-object uniform."
+        )
+        # not vacuous: perfect separation has to gain something
+        assert perfect.sum() > realistic.sum()
+
+    def test_default_coupling_is_independent(self, mock_multisurvey_injector):
+        """The default must stay `independent`: joint == p4 * p5 to MC error."""
+        cat = self._homogeneous_catalog(mock_multisurvey_injector)
+        p4, p5, joint = self._rates(mock_multisurvey_injector, cat)
+        assert abs(joint - p4 * p5) < self._mc_tol(p4 * p5, self.N), (
+            f"joint={joint:.4f} is not the independent product {p4 * p5:.4f} "
+            f"(p4={p4:.4f}, p5={p5:.4f})"
+        )
+        assert joint < min(p4, p5) - 0.05, "independent must sit well below min()"
+
+    def test_shared_coupling_gives_min_of_marginals(self, mock_multisurvey_injector):
+        """One shared uniform collapses `selected in both` onto min(p1, p2) exactly."""
+        cat = self._homogeneous_catalog(mock_multisurvey_injector)
+        p4, p5, joint = self._rates(
+            mock_multisurvey_injector, cat, classification_coupling="shared"
+        )
+        # exact, not statistical: identical objects with p4 <= p5 make survey 4's
+        # selection a strict subset of survey 5's under a shared u.
+        assert joint == pytest.approx(min(p4, p5), abs=1e-12), (
+            f"joint={joint:.6f} != min(p4, p5)={min(p4, p5):.6f} under shared coupling"
+        )
+
+    def test_rho_zero_reproduces_independent(self, mock_multisurvey_injector):
+        """The Gaussian copula at rho=0 reproduces the independent joint rate."""
+        cat = self._homogeneous_catalog(mock_multisurvey_injector)
+        p4, p5, joint = self._rates(
+            mock_multisurvey_injector, cat, classification_coupling=0.0
+        )
+        assert abs(joint - p4 * p5) < self._mc_tol(p4 * p5, self.N)
+
+    def test_rho_one_reproduces_shared(self, mock_multisurvey_injector):
+        """rho=1 is the shared (comonotonic) limit."""
+        cat = self._homogeneous_catalog(mock_multisurvey_injector)
+        p4, p5, joint = self._rates(
+            mock_multisurvey_injector, cat, classification_coupling=1.0
+        )
+        assert joint == pytest.approx(min(p4, p5), abs=1e-12)
+
+    def test_intermediate_rho_interpolates(self, mock_multisurvey_injector):
+        """0 < rho < 1 must sit strictly between the independent and shared rates."""
+        cat = self._homogeneous_catalog(mock_multisurvey_injector)
+        _, _, j_ind = self._rates(
+            mock_multisurvey_injector, cat, classification_coupling="independent"
+        )
+        p4, p5, j_rho = self._rates(
+            mock_multisurvey_injector, cat, classification_coupling=0.6
+        )
+        _, _, j_sh = self._rates(
+            mock_multisurvey_injector, cat, classification_coupling="shared"
+        )
+        tol = self._mc_tol(p4 * p5, self.N)
+        assert j_ind - tol < j_rho < j_sh + tol, (
+            f"rho=0.6 joint={j_rho:.4f} is not between independent={j_ind:.4f} "
+            f"and shared={j_sh:.4f}"
+        )
+
+    def test_coupling_dict_resolves_by_source_type(self, mock_multisurvey_injector):
+        """A {source_type: value} dict picks the entry for this call's source_type."""
+        cat = self._homogeneous_catalog(mock_multisurvey_injector)
+        p4, p5, joint = self._rates(
+            mock_multisurvey_injector,
+            cat,
+            source_type="stars",
+            classification_coupling={"stars": "shared", "galaxies": "independent"},
+        )
+        assert joint == pytest.approx(min(p4, p5), abs=1e-12)
+
+    @pytest.mark.parametrize("bad", ["comonotonic", 1.5, -2.0, {"galaxies": "shared"}])
+    def test_bad_coupling_rejected(self, mock_multisurvey_injector, bad):
+        """Unknown strings, out-of-range rho, and a dict missing source_type raise."""
+        cat = self._homogeneous_catalog(mock_multisurvey_injector, n=10)
+        with pytest.raises(ValueError):
+            mock_multisurvey_injector.inject(
+                cat,
+                bands=self.BANDS,
+                seed=11,
+                verbose=False,
+                classification_coupling=bad,
+            )
+
+    def test_u_select_length_is_checked(self, mock_injector, mock_survey):
+        """A mis-sized u_select is a programming error, not silently broadcast."""
+        with pytest.raises(ValueError):
+            mock_injector.detect_flag(
+                0,
+                survey=mock_survey,
+                mag=np.array([22.0, 23.0]),
+                band="r",
+                u_select=np.array([0.5]),
+            )
+
+    def test_u_select_is_used_verbatim(self, mock_injector, mock_survey):
+        """u_select fully determines the outcome: u=0 always selects, u=1 never does."""
+        mag = np.full(20, 22.0)
+        assert mock_injector.detect_flag(
+            0, survey=mock_survey, mag=mag, band="r", u_select=np.zeros(20)
+        ).all()
+        assert not mock_injector.detect_flag(
+            0, survey=mock_survey, mag=mag, band="r", u_select=np.ones(20)
+        ).any()

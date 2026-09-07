@@ -73,3 +73,33 @@ def perfect_flag_col(survey_namespace=None):
         if survey_namespace
         else "flag_perfect_galstarsep"
     )
+
+
+def detected_flag_col(survey_namespace=None):
+    """Column holding the DETECTION-ONLY flag (band-independent).
+
+    ``P(detected)`` with no star/galaxy classification term, for BOTH source types --
+    stars via the stellar detection efficiency, galaxies via the galaxy detection
+    efficiency. Emitted only when ``inject(detection_only_flag=True)``.
+
+    Distinct from :func:`perfect_flag_col`: "perfect star/galaxy separation" means a
+    galaxy is correctly REJECTED, so that flag is stars-only and would be False for every
+    galaxy. This one asks whether the object was detected at all, which is what a joint
+    selection needs from the survey that is not supplying morphology.
+    """
+    return (
+        f"{survey_namespace}_flag_detected" if survey_namespace else "flag_detected"
+    )
+
+
+def coupling_col(survey_namespace=None):
+    """Internal column holding this survey's pre-drawn selection uniform.
+
+    Written by :meth:`~streamobs.observed.StreamInjector.inject` only when
+    ``classification_coupling`` is not ``"independent"``, consumed by
+    ``_inject_one_survey``, and dropped before ``inject`` returns — it is a
+    private scratch column, not part of the output convention.
+    """
+    return (
+        f"_u_select_{survey_namespace}" if survey_namespace else "_u_select"
+    )

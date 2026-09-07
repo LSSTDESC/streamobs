@@ -122,6 +122,7 @@ class Survey:
     log_photo_error_sample: Optional[Callable] = None
     gal_misclassification: Optional[Callable] = None
     gal_misclassification_detection: Optional[Callable] = None
+    gal_detection: Optional[Callable] = None
 
     # Band-independent maps
     ebv_map: Optional[np.ndarray] = None
@@ -532,9 +533,20 @@ class Survey:
         delta_saturation = kwargs.get("delta_saturation", self.delta_saturation)
         delta_mag = magnitude - maglim
 
-        if type in ("missclassified", "detected_missclassified"):
+        if type in ("missclassified", "detected_missclassified", "gal_detected"):
             # Galaxy-related efficiencies: no 1-padding at the bright end.
-            if type == "missclassified":
+            if type == "gal_detected":
+                func = self.gal_detection
+                if func is None:
+                    raise ValueError(
+                        "Efficiency function for type 'gal_detected' not loaded. This is "
+                        "P(galaxy detected) with NO classification term, used by a joint "
+                        "selection that takes morphology from one survey only; add a "
+                        "'gal_detection' key to the survey config (see "
+                        "scripts/lsst/build_lsst_dc2_galaxy_detection.py). It is NOT "
+                        "interchangeable with the stellar detection efficiency."
+                    )
+            elif type == "missclassified":
                 func = self.gal_misclassification
                 if func is None:
                     raise ValueError(
@@ -634,6 +646,43 @@ class Survey:
         return self.get_efficiency(
             band, magnitude, maglim, type="missclassified", **kwargs
         )
+
+    def get_gal_detection(
+        self, band: str, magnitude: float, maglim: float, **kwargs
+    ) -> float:
+        """
+        Get galaxy DETECTION efficiency -- P(detected), no classification term.
+
+        The counterpart to :meth:`get_detection_efficiency` (which is for stars) for use
+        by a joint selection that takes star/galaxy classification from one survey only,
+        so the other survey contributes depth and photometry but not morphology.
+
+        Not interchangeable with the stellar curve: measured on DC2 over the Roman
+        overlap at ``F158 < 25.5``, galaxies are detected by LSST at 0.619 against 0.855
+        for stars.
+
+        Parameters
+        ----------
+        band : str
+            Band identifier (e.g., 'g', 'r').
+        magnitude : float or np.ndarray
+            True apparent magnitude(s) including extinction.
+        maglim : float or np.ndarray
+            Magnitude limit(s) at the source position(s).
+        **kwargs
+            delta_saturation : float, optional
+
+        Returns
+        -------
+        float or np.ndarray
+            Detection probability in [0, 1].
+
+        Raises
+        ------
+        ValueError
+            If :attr:`gal_detection` has not been loaded for this survey.
+        """
+        return self.get_efficiency(band, magnitude, maglim, type="gal_detected", **kwargs)
 
     def get_gal_misclassification_detection(
         self, band: str, magnitude: float, maglim: float, **kwargs
@@ -1277,6 +1326,27 @@ class SurveyFactory:
             except:
                 if verbose:
                     print("No classification efficiency file found, skipping.")
+
+        # Load galaxy DETECTION efficiency (optional; only needed by joint selections
+        # that take classification from one survey only). Read from the 'detection_eff'
+        # column of the file named by the 'gal_detection' config key.
+        _gal_det_file = survey_config.get("gal_detection")
+        if _gal_det_file is not None:
+            cls._load_file(
+                survey,
+                survey_config,
+                "gal_detection",
+                "Galaxy detection efficiency",
+                lambda f: cls.set_completeness(
+                    f,
+                    delta_saturation=survey.delta_saturation,
+                    selection="detected",
+                ),
+                data_path_survey,
+                data_path_others,
+                filename=_gal_det_file,
+                **kwargs,
+            )
 
         # Load galaxy misclassification efficiency (optional).
         # Uses the explicit 'gal_misclassification' config key when present,
