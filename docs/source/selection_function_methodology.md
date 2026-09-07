@@ -225,7 +225,7 @@ applies a lightweight **afterburner**:
 1. **Raw curves** (`*_raw.csv`) — unmodified binned outputs — are written every run
    as a provenance record.
 2. **Corrections** are loaded from a *tracked* YAML
-   (`config/surveys/roman_photoerror_corrections.yaml`) so every manual edit is
+   (`scripts/roman/roman_photoerror_corrections.yaml`) so every manual edit is
    attributed and reversible. The implemented rule, `clamp_faint`, floors
    `log_mag_err` to a fixed value for all bins at/beyond a chosen `delta_mag_min`
    (e.g. holding the faint-end noise at its last well-sampled value instead of
