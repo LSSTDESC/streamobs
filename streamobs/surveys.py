@@ -350,7 +350,7 @@ class Survey:
         )
         mag_err_stat = np.where(
             magnitude < self.saturation[band],
-            10 ** log_photo_error(delta_saturation - 1),
+            np.nan,  # saturation: no valid error
             mag_err_stat,
         )  # saturation at the bright end
 

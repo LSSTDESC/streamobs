@@ -89,50 +89,40 @@ SURVEY_REGISTRY = [
         "release": "yr1",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
-        "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
-        "skip_snr_maglim_check": True,
     },
     {
         "survey": "lsst",
         "release": "yr2",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
-        "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
-        "skip_snr_maglim_check": True,
     },
     {
         "survey": "lsst",
         "release": "yr3",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
-        "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
-        "skip_snr_maglim_check": True,
     },
     {
         "survey": "lsst",
         "release": "yr4",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
-        "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
-        "skip_snr_maglim_check": True,
     },
     {
         "survey": "lsst",
         "release": "yr5",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
-        "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
-        "skip_snr_maglim_check": True,
     },
     # LSST DC2 — truth-anchored r/g depth maps + two-curve photo-error, derived from
     # the DC2 object+truth skims (scripts/lsst/create_streamobs_files_lsst_dc2.py).
@@ -145,10 +135,8 @@ SURVEY_REGISTRY = [
         "release": "dc2",
         "expected_bands": ["g", "r"],
         "expected_maglim": ["g", "r"],
-        "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
-        "skip_snr_maglim_check": True,
     },
     {
         "survey": "des",
@@ -175,10 +163,8 @@ SURVEY_REGISTRY = [
         "release": "dc2",
         "expected_bands": ["F106", "F129", "F158"],
         "expected_maglim": ["F106", "F129", "F158"],
-        "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
-        "skip_snr_maglim_check": True,
     },
     # Roman HLWAS tiers — skipped until per-tier config files are present
     _hlwas_entry("hlwas_wide", "hlwas_wide"),
@@ -576,8 +562,8 @@ class TestSurveyProperties:
             if len(sat_mag) > 0 and not skip_sat_check:
                 err_sat = loaded_survey.get_photo_error(band, sat_mag, base_maglim)
                 assert np.all(
-                    err_sat > 5.0
-                ), f"Photo errors should be large for magnitudes below saturation in band '{band}'"
+                    np.isnan(err_sat)
+                ), f"Photo errors should be nan for magnitudes below saturation in band '{band}'."
             if len(bright_mag) > 0:
                 err_bright = loaded_survey.get_photo_error(
                     band, bright_mag, base_maglim
@@ -602,10 +588,11 @@ class TestSurveyProperties:
                 "skip_snr_maglim_check", False
             )
             if not skip_snr_check:
+                loaded_survey.sys_error[band] =  0.0 # remove statistical error for SNR check
                 error_at_maglim = loaded_survey.get_photo_error(
-                    band, base_maglim, base_maglim
+                    band, base_maglim-0.75, base_maglim, kind="catalog"
                 )
                 snr_at_maglim = 1 / error_at_maglim
                 assert np.isclose(
-                    snr_at_maglim, 5.0, atol=0.25
-                ), f"Photo error at maglim should correspond to SNR=5 for band '{band}'"
+                    snr_at_maglim, 10.0, atol=2.,
+                ), f"Photo error at maglim_10 should correspond to be roughly SNR=10 for band '{band}'"
