@@ -16,22 +16,32 @@
 # columns; each band's errors / detection come from that survey's own maps.
 
 # Surveys to inject. The column namespace is each survey's own {name}_{release}
-# (here just `lsst` / `roman` since these are loaded without a release) — the
-# mapping keys below are NOT used as the namespace; they are containers only.
+# (here `lsst_dc2` / `roman_dc2`) — the mapping keys below are NOT used as the
+# namespace; they are containers only, and are spelled to match for readability.
 # Each value is a survey spec: a survey-name string (loaded via Survey.load), or
 # a {"survey": ..., "release": ...} dict.
+#
+# A release is REQUIRED: there is no release-less `config/surveys/lsst.yaml` or
+# `roman.yaml`, so a bare `lsst:` / `roman:` spec fails with
+# "Configuration file not found for 'lsst'".
 surveys:
-  lsst: lsst
-  roman: roman
+  lsst_dc2:
+    survey: lsst
+    release: dc2
+  roman_dc2:
+    survey: roman
+    release: dc2
 
 # Bands to inject per survey. Each survey's `completeness_band` must appear here.
 # NOTE: a band label is used BOTH as the ugali isochrone field name AND as the
 # key into that survey's maglim/photo-error/extinction maps, so the two must
 # agree. ugali's Roman fields are upper-case (F106, F158, ...); the Roman
 # Survey's maps must therefore be keyed with the same upper-case labels.
+# Keys here MUST be each survey's namespace ({name}_{release}), since the
+# injector resolves bands by namespace.
 survey_bands:
-  lsst: [r, g]
-  roman: [F106, F158]
+  lsst_dc2: [r, g]
+  roman_dc2: [F106, F158]
 
 # Shared stream geometry + a MULTI-SURVEY isochrone. The isochrone draws one set
 # of initial masses (exactly `nstars`) and interpolates them into every survey's
@@ -68,12 +78,17 @@ stream:
     name: Marigo2017
     age: 12.0
     z: 0.0006
+    # Keys are the injecting surveys' namespaces. Note the true-magnitude
+    # columns these produce drop the release (`lsst_g_true`, not
+    # `lsst_dc2_g_true`), so `lsst:` would name the same columns — the
+    # namespace spelling is used here to stay consistent with `survey_bands`
+    # above. The inner `survey:` is the *ugali* filter set (never a release).
     surveys:
-      lsst:
+      lsst_dc2:
         survey: lsst
         band_1: g
         band_2: r
-      roman:
+      roman_dc2:
         survey: roman
         band_1: F106
         band_2: F158

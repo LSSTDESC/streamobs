@@ -3,14 +3,24 @@ Column-name helpers for injected catalogs.
 
 These centralize the naming convention so the injector is not hard-coded to
 specific bands. Injected catalogs are **always** survey-namespaced —
-``<namespace>_<band>_true`` (true / noiseless), ``<namespace>_<band>_obs``
+``<name>_<band>_true`` (true / noiseless), ``<namespace>_<band>_obs``
 (observed / noisy), ``<namespace>_<band>_err`` (reported error), and
 ``<namespace>_flag_observed`` — produced by
 :class:`~streamobs.observed.StreamInjector` whether it serves one survey or
 several. The namespace is the survey's :attr:`~streamobs.surveys.Survey.namespace`
-(``{name}_{release}``), so it includes the release on every column kind
-(e.g. ``lsst_yr5_r_obs``, ``roman_dc2_F158_obs``) and the same survey at two
+(``{name}_{release}``).
+
+**Observed, error, and flag columns carry the full namespace**, release included
+(e.g. ``lsst_yr5_r_obs``, ``roman_dc2_F158_obs``), so the same survey at two
 releases never collides.
+
+**True-magnitude columns are the deliberate exception**: a true (noiseless)
+magnitude does not depend on which survey release observed it, so these are keyed
+on the survey **name only** and the release is dropped (e.g. ``roman_F158_true``,
+shared across ``roman_dc2`` and ``roman_hlwas_*``; ``lsst_r_true``, shared across
+every LSST release). :func:`true_col` therefore takes the leading
+``{name}`` component of whatever namespace it is handed. See
+``docs/source/column_convention.md`` for the full table.
 
 The ``survey`` argument therefore identifies the namespace. ``survey=None`` is
 retained only as a low-level fallback that yields the bare ``<band>_…`` /
@@ -24,7 +34,13 @@ retained only as a low-level fallback that yields the bare ``<band>_…`` /
 
 
 def true_col(band, survey_namespace=None):
-    """Column holding the *true* (noiseless) apparent magnitude for ``band``."""
+    """Column holding the *true* (noiseless) apparent magnitude for ``band``.
+
+    Unlike :func:`obs_col` / :func:`err_col` / :func:`flag_col`, this drops the
+    release and keys on the survey **name** only — a true magnitude is
+    release-independent, so ``lsst_yr1`` and ``lsst_yr5`` both yield
+    ``lsst_<band>_true``.
+    """
 
     # Split survey_namespace "{name}_{release}" into survey and release if needed
     if isinstance(survey_namespace, str):
