@@ -2,7 +2,7 @@
 #
 # Human-authored, tracked corrections applied to the *measured* photo-error curves
 # by scripts/lsst/create_streamobs_files_lsst_dc2.py, after writing the untouched
-# *_raw.csv. Mirrors config/surveys/roman_photoerror_corrections.yaml.
+# *_raw.csv. Mirrors scripts/roman/roman_photoerror_corrections.yaml.
 #
 # Keys are curve ids: `r_sample` (truth-based scatter, drives the noise draw) and
 # `r_catalog` (reported magerr, drives the S/N cut). Supported rule: `clamp_faint`

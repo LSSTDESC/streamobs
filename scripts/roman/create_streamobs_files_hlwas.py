@@ -1135,9 +1135,11 @@ catalog_tab = pd.DataFrame(
 
 # --- photometric-error afterburner ------------------------------------------
 # Write the UNTOUCHED measured curves as *_raw.csv (provenance), then apply the
-# human-authored corrections from config/surveys/roman_photoerror_corrections.yaml
+# human-authored corrections from scripts/roman/roman_photoerror_corrections.yaml
 # and save the cleaned result to the runtime filenames the config points at.
-CORRECTIONS_FILE = REPO / "config/surveys/roman_photoerror_corrections.yaml"
+CORRECTIONS_FILE = (  # generation-time only; lives beside this script, not in config/
+    _SCRIPT_DIR / "roman_photoerror_corrections.yaml"
+)
 
 fpe_raw = OUT_DIR / "roman_photoerror_f158_raw.csv"
 np.savetxt(

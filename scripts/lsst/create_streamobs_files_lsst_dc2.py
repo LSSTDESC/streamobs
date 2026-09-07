@@ -50,7 +50,9 @@ REPO = Path(__file__).resolve().parents[2]
 DATA_DIR = Path("/astro/store/shire/stream_team/stream_finding/data/lsst_dc2")
 OUT_DIR = REPO / "data/surveys/lsst_dc2"
 FIG_DIR = REPO / "lsst_dc2_scratch/figs"
-CORRECTIONS_FILE = REPO / "config/surveys/lsst_photoerror_corrections.yaml"
+CORRECTIONS_FILE = (  # generation-time only; lives beside this script, not in config/
+    Path(__file__).resolve().parent / "lsst_photoerror_corrections.yaml"
+)
 CACHE = OUT_DIR / "_cache_matched_stars.parquet"  # matched true-star object rows
 CACHE_TS = OUT_DIR / "_cache_truth_stars.parquet"  # truth-star denominator
 
