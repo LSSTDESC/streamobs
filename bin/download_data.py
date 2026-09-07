@@ -29,7 +29,7 @@ DATA_ARCHIVE_NAME = "data.zip"
 DATA_ARCHIVE_URL = BASE_DATA_URL + DATA_ARCHIVE_NAME
 
 # Expected size (approximate, for user information)
-ARCHIVE_SIZE_MB = 30  # Mb
+ARCHIVE_SIZE_MB = 48  # Mb
 
 # =============================================================================
 # =============================================================================
