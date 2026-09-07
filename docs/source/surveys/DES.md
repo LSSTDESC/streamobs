@@ -26,7 +26,7 @@ just the per-release summary.
 
 | File | Contents |
 |---|---|
-| `des_yr6_maglim_{g,r,i,z}_nside1024.fits.gz` | truth-anchored S/N = 5 depth maps |
+| `des_yr6_maglim_{g,r,i,z}_nside512.fits.gz` | truth-anchored S/N = 5 depth maps |
 | `des_yr6_stellar_efficiency_cutg.csv` | stellar detection + classification efficiency vs `delta_mag` |
 | `des_yr6_photoerror_g.csv` | **sample** photo-error curve — truth scatter, drives the noise draw |
 | `des_yr6_photoerror_g_catalog.csv` | **catalog** photo-error curve — reported `magerr`, drives the S/N cut |

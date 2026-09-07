@@ -168,7 +168,7 @@ def fig_depth():
     plt.close(fig)
     print(f"  wrote {OUT/'DES_depth.png'}")
 
-    m = hp.read_map(str(DATA / "des_yr6_maglim_g_nside1024.fits.gz"))
+    m = hp.read_map(str(DATA / "des_yr6_maglim_g_nside512.fits.gz"))
     m = np.where(np.isfinite(m) & (m > 0), m, hp.UNSEEN)
     fig = plt.figure(figsize=(7.6, 4.4))
     hp.mollview(m, fig=fig.number, title="DES Y6 truth-anchored g depth "
