@@ -904,12 +904,21 @@ plt.show()
 # 3. per object, extrapolate to the mag where S/N = 5
 #    (`magerr = 2.5/ln(10)/5 ≈ 0.2171`);
 # 4. take the **median per healpix pixel** (nside=1024, ring);
-# 5. **truth-anchor the absolute scale**: the reported errors underestimate the real
-#    scatter ~2× (see the error validation above), so each band's map is shifted so its
-#    median equals the magnitude where the **truth-based scatter** of (obs − true)
-#    reaches S/N=5. The desqr machinery provides the (error-factor-immune) spatial
-#    structure; the truth provides the absolute depth. With this anchoring the
-#    photo-error model evaluates to σ = 0.217 at `delta_mag = 0` by construction.
+# 5. **truth-anchor the absolute scale** (Roman only): the reported errors underestimate
+#    the real scatter ~2×, so each band's map is shifted so its median equals the
+#    magnitude where the **truth-based scatter** of (obs − true) reaches S/N=5. The desqr
+#    machinery provides the (error-factor-immune) spatial structure; the truth provides
+#    the absolute depth. With this anchoring the **SAMPLE** photo-error curve evaluates to
+#    σ = 0.217 at `delta_mag = 0` by construction.
+#
+#    **Why Roman differs from LSST DC2.** LSST DC2 deliberately does *not* truth-anchor:
+#    its reported errors are only ~1.4× optimistic, so the pipeline-native depth (26.85)
+#    reproduces the external reference curve to 0.1%, and keeping it means sims are
+#    treated exactly like real data (where the pipeline's quoted depth is all you get).
+#    Roman DC2's reported magerr is ~2× optimistic, and its native depth lands at 27.83 in
+#    F158 against a published 5σ of ~26.9 — a full magnitude too deep, which would claim
+#    detections Roman cannot deliver. The divergence is a property of the two sims'
+#    error calibration, not of the convention.
 #
 # Following the true-star convention used for all streamobs products, the depth sample
 # is **true stars passing the star classification** (matched, `flags == 0`) — the same
@@ -973,8 +982,12 @@ depth_src = cat[
 
 def truth_anchor_m5(df, b, snr=SNR_DEPTH):
     """Mag where the TRUTH-BASED scatter of (obs - true) reaches the S/N threshold.
-    The reported magerr underestimates the real errors ~2x, so the desqr maps
-    (built from reported errors) are anchored to this truth-validated depth."""
+
+    APPLIED for Roman (unlike LSST DC2, which keeps its pipeline-native scale): the
+    reported magerr underestimates the real errors ~2x, enough that the native
+    reported-error depth overshoots the published Roman 5-sigma depths by ~1 mag.  The
+    desqr maps supply the spatial structure; this supplies the absolute depth.
+    """
     sub = df[[f"truth_mag_{b}", f"mag_auto_{b}"]].dropna()
     mt = sub[f"truth_mag_{b}"].values
     dmv = sub[f"mag_auto_{b}"].values - mt
@@ -999,10 +1012,18 @@ for b in BANDS:
     cov = maglim_maps[b] != hp.UNSEEN
     raw_med = float(np.median(maglim_maps[b][cov]))
     m5 = truth_anchor_m5(depth_src, b)
+    # TRUTH-ANCHOR (Roman only -- LSST DC2 deliberately does NOT do this; see below).
+    # Roman DC2's reported magerr is ~2x optimistic, so the reported-error S/N=5 depth
+    # lands ~0.9-1.2 mag DEEPER than the published Roman 5-sigma depths (27.83 vs 26.9
+    # in F158).  Shipping that would claim detections a magnitude deeper than Roman
+    # delivers.  LSST DC2's reported errors are only ~1.4x optimistic and its native
+    # depth reproduces the external reference to 0.1%, so there the pipeline scale is
+    # kept.  The divergence is a property of the two sims' error calibration.
     maglim_maps[b][cov] += m5 - raw_med  # truth-anchor: median -> true S/N=5 depth
     print(
         f"{b}: slope={slopes[b]:.3f}  covered pixels={cov.sum():,}  "
-        f"reported-error median={raw_med:.2f} -> truth-anchored maglim={m5:.2f}"
+        f"reported-error median={raw_med:.2f} -> truth-anchored maglim={m5:.2f} "
+        f"(shift {m5 - raw_med:+.2f})"
     )
 
 
@@ -1083,6 +1104,11 @@ print(f"reference maglim = measured map median = {MAGLIM_REF:.3f}")
 # error model from TRUE stars passing the star classification: the observationally
 # star-classified sample is galaxy-dominated faintward of ~25.5 and would inflate
 # the faint-end errors (0.33 vs 0.15 mag at 25.5)
+# Conditioned on ``det_ok`` BY DESIGN, same as the LSST DC2 generator: the injector
+# draws detection and noise independently, so the curves must describe the detected
+# population they are applied to.  See docs/source/selection_function_methodology.md,
+# "Why the curves are measured on the *detected* population (validated 2026-07)", and
+# notebooks/detok_photoerr_comparison.ipynb for the per-survey measurement.
 sel = (
     cat.matched
     & (cat.truth_gal_star == 1)

@@ -134,8 +134,12 @@ def build_matched_catalog(n_tracts=0):
 
 def truth_anchor_m5(cat, b, mask):
     """Mag where the TRUTH-BASED scatter of (obs - true) reaches S/N=5.
-    The reported magerr underestimates the real scatter (~1.4x for LSST DC2), so
-    the supreme maps are anchored to this truth-validated depth."""
+
+    DIAGNOSTIC ONLY -- no longer applied to the maps.  The depth scale is the
+    pipeline's native reported-error one (see ``native_maglim_map``); this function
+    quantifies how much more the real scatter is than the reported errors claim
+    (~1.4x for LSST DC2), which the SAMPLE photo-error curve carries instead.
+    """
     sub = cat.loc[mask, [f"truth_mag_{b}", f"mag_{b}"]].dropna()
     mt = sub[f"truth_mag_{b}"].values
     dmv = sub[f"mag_{b}"].values - mt
@@ -151,10 +155,22 @@ def truth_anchor_m5(cat, b, mask):
     return float(np.interp(np.log10(SIG_SN5), np.log10(scat[g]), mid[g]))
 
 
-def anchored_maglim_map(band, m5):
-    """Load the supreme DC2 HealSparse maglim map, degrade to NSIDE, and shift so
-    its median equals the truth-based S/N=5 depth ``m5``.  Returns a dense RING
-    healpix map (hp.UNSEEN off-footprint)."""
+def native_maglim_map(band, m5_truth=None):
+    """Load the supreme DC2 HealSparse maglim map and degrade to NSIDE, UNSHIFTED.
+
+    The map is the pipeline's own reported-error S/N=5 depth, and that is the scale
+    every delta_mag-keyed product uses: ``delta_mag = 0`` is where the *reported*
+    magerr reaches ``SIG_SN5`` = 0.2171.  This matches what is available for a real
+    survey, where the pipeline's quoted depth is all there is -- so sims and data are
+    treated identically.
+
+    The truth-based scatter at that magnitude is LARGER than 0.2171 (reported errors
+    are optimistic).  That excess is real and is carried by the separate SAMPLE
+    photo-error curve, NOT folded into the depth zero point.
+
+    ``m5_truth`` is only reported, as a diagnostic of the reported-vs-truth gap.
+    Returns a dense RING healpix map (hp.UNSEEN off-footprint).
+    """
     import healsparse as hsp
 
     src = OUT_DIR / f"supreme_dc2_dr6d_v3_{band}_maglim_psf_wmean.hs"
@@ -162,11 +178,13 @@ def anchored_maglim_map(band, m5):
     hpmap = m.generate_healpix_map(nest=False)  # RING, hp.UNSEEN off-footprint
     cov = (hpmap != hp.UNSEEN) & np.isfinite(hpmap)
     raw_med = float(np.median(hpmap[cov]))
-    hpmap[cov] += m5 - raw_med  # truth-anchor: median -> m5
-    print(
-        f"  {band}: supreme median={raw_med:.3f} -> truth-anchored {m5:.3f} "
-        f"(shift {m5 - raw_med:+.3f}); {cov.sum():,} pixels @ nside={NSIDE}"
-    )
+    msg = f"  {band}: supreme median={raw_med:.3f} (native reported-error scale, unshifted)"
+    if m5_truth is not None:
+        msg += (
+            f"; truth-based S/N=5 sits at {m5_truth:.3f} "
+            f"({m5_truth - raw_med:+.3f} mag) -- DIAGNOSTIC ONLY, not applied"
+        )
+    print(f"{msg}; {cov.sum():,} pixels @ nside={NSIDE}")
     return hpmap
 
 
@@ -197,10 +215,10 @@ def main(n_tracts=0, refresh=False):
     is_ptsrc = cat["extendedness"] < EXT_CUT
     star_ptsrc = is_ptsrc & clean  # matched true stars are all rows in cat
 
-    # ---- 2. truth-anchored depth maps (r, g) ----------------------------
-    print("\nbuilding truth-anchored maglim maps:")
-    m5 = {b: truth_anchor_m5(cat, b, star_ptsrc) for b in BANDS}
-    maglim_maps = {b: anchored_maglim_map(b, m5[b]) for b in BANDS}
+    # ---- 2. depth maps (r, g): NATIVE pipeline scale, not truth-anchored -
+    print("\nbuilding maglim maps (native reported-error S/N=5 scale):")
+    m5_truth = {b: truth_anchor_m5(cat, b, star_ptsrc) for b in BANDS}  # diagnostic
+    maglim_maps = {b: native_maglim_map(b, m5_truth[b]) for b in BANDS}
     for b in BANDS:
         mlm = maglim_maps[b]
         cov = mlm != hp.UNSEEN
@@ -243,6 +261,16 @@ def main(n_tracts=0, refresh=False):
     )
 
     # ---- 4. two-curve photo-error (delta keyed to the per-pixel r map) ---
+    # Conditioned on ``det_ok`` (reported S/N > 5) BY DESIGN: the injector draws the
+    # detection flag and the photometric noise independently, so each curve must
+    # describe the population it is applied to -- the detected one.  See
+    # docs/source/selection_function_methodology.md, "Why the curves are measured on
+    # the *detected* population (validated 2026-07)".  Effect of the cut is <0.01 dex
+    # brightward of delta_mag ~ -0.5 and confined to the faintest half magnitude; on
+    # the native depth scale it puts CATALOG at 0.180 (not 0.217) at delta_mag=0,
+    # because the noisy sources are genuinely absent from an S/N>5 catalog.  The
+    # "pipeline calls 0.2 here" statement is carried by the MAP (median 26.846), not
+    # by the curve value.  Evidence: notebooks/detok_photoerr_comparison.ipynb.
     pe = cat.loc[
         star_ptsrc & det_ok,
         ["ra", "dec", f"truth_mag_{REF_BAND}", f"mag_{REF_BAND}", f"magerr_{REF_BAND}"],
