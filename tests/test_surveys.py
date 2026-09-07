@@ -157,6 +157,28 @@ SURVEY_REGISTRY = [
         "skip_faint_completeness_check": True,
         "skip_snr_maglim_check": True,
     },
+    # DELVE DR3 Gold — the second DECam Balrog release, derived by the same
+    # reducer as des/yr6 (scripts/des/balrog_selection_function.py) and
+    # classified by the same bdf_extended_class_dr3gold nodes, which is what
+    # makes the two comparable in delta_mag space. Same truth-anchored
+    # two-curve overrides as des/yr6.
+    #
+    # bright_completeness_threshold is set below the DES value because DELVE's
+    # bright-end detection plateau is 0.90, not ~1.0: DELVE applies per-object
+    # quality flags (meas_flags, meas_bdf_flags) in the efficiency numerator,
+    # and its denser injection grid means a non-negligible flagged fraction.
+    # That is the Roman/LSST convention; the DES plateau sits near unity only
+    # because its 20" injection grid leaves almost nothing flagged.
+    {
+        "survey": "delve",
+        "release": "dr3_gold",
+        "expected_bands": ["g", "r", "i", "z"],
+        "expected_maglim": ["g", "r", "i", "z"],
+        "skip_sat_photoerr_check": True,
+        "bright_completeness_threshold": 0.80,
+        "skip_faint_completeness_check": True,
+        "skip_snr_maglim_check": True,
+    },
     # Roman DC2 — reference HLIS depth mock; data files in data/surveys/roman_dc2/
     # Notes on threshold overrides (generic LSST/DES thresholds don't apply):
     # - skip_sat_photoerr_check: the catalog photo-error model's saturation floor

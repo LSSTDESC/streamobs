@@ -355,18 +355,32 @@ DES and DELVE come out classified identically — which is what makes the two
 releases comparable.
 
 ```bash
-D=/path/to/decam/depth/maps
+PY=/path/to/streamobs-env/bin/python   # numpy, h5py, pandas, healpy, healsparse
+D=/path/to/dr3_gold_maglim_maps        # the eight DR3 HealSparse depth maps
+
 $PY scripts/des/balrog_selection_function.py \
     --survey delve --band g \
     --catalog /path/to/BalrogOfTheStars_Catalog_V4.hdf5 \
     --maglim-map g=$D/delve_dr32_g_maglim_wmean.hsp,$D/delve_dr311+dr312_g_maglim_Nov28th.hsp \
                  r=$D/delve_dr32_r_maglim_wmean.hsp,$D/delve_dr311+dr312_r_maglim_Nov28th.hsp \
-    --tile-zp reject --write-maglim --maglim-nside 1024 \
+                 i=$D/delve_dr32_i_maglim_wmean.hsp,$D/delve_dr311+dr312_i_maglim_Nov28th.hsp \
+                 z=$D/delve_dr32_z_maglim_wmean.hsp,$D/delve_dr311+dr312_z_maglim_Nov28th.hsp \
+    --tile-zp reject --write-maglim --maglim-nside 512 \
     --corrections config/surveys/delve_photoerror_corrections.yaml \
     --out ./delve_dr3_gold_products --tag delve_dr3_gold --chunk 4000000
 ```
 
-Roughly 9 minutes and ~38 GB of RAM on the full V4 catalogue.
+Run it from the repository root, or give an absolute path to the script — it
+imports nothing from streamobs, so it does not need to be on `sys.path`.
+
+Roughly 35 minutes and ~48 GB of RAM for all four bands on the full V4
+catalogue, most of it spent reading the eight nside-16384 depth maps. Two bands
+is about 20 minutes and ~38 GB.
+
+`--maglim-nside 512` matches the `des/yr6` depth grid, so the two DECam releases
+are directly comparable pixel for pixel. Note that this argument only ever
+*degrades*: asking for a resolution finer than the input map's own nside is
+silently a no-op, while the output filename still takes the value you asked for.
 
 **Both depth maps are required.** The DR3.2 and DR3.1.1+3.1.2 map sets are
 *exactly disjoint* — measured on a 1M-injection sample spread over the whole

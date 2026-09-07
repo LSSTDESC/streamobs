@@ -1,0 +1,173 @@
+# DELVE
+
+**DELVE** is supported by **StreamObs**.
+
+# Available releases
+
+## DELVE DR3 Gold
+
+In the DES footprint, DELVE DR3 Gold *is* DES Y6 Gold — the two surveys share
+imaging there — so this release is built to be mutually consistent with
+{doc}`DES` on that overlap, and the overlap is the primary cross-check (see
+*Cross-check against DES Y6* below). Load it with:
+
+```python
+delve_dr3_gold = surveys.Survey.load(survey='delve', release='dr3_gold')
+```
+
+### Products
+
+All of the selection-function products are **derived from the DELVE Balrog
+synthetic-source-injection catalogue** (`BalrogOfTheStars_Catalog_V4.hdf5`,
+62,922,015 injected rows) by `scripts/des/balrog_selection_function.py
+--survey delve`. The method, the evidence behind each choice and the runbook
+are in {doc}`../balrog_selection_functions`; this page is just the per-release
+summary. The derivation takes ~35 minutes wall time and ~48 GB peak RAM on the
+full V4 catalogue.
+
+| File | Contents |
+|---|---|
+| `delve_dr3_gold_maglim_{g,r,i,z}_nside512.fits.gz` | truth-anchored S/N = 5 depth maps |
+| `delve_dr3_gold_stellar_efficiency_cutg.csv` | stellar detection + classification efficiency vs `delta_mag` |
+| `delve_dr3_gold_photoerror_g.csv` | **sample** photo-error curve — truth scatter, drives the noise draw |
+| `delve_dr3_gold_photoerror_g_catalog.csv` | **catalog** photo-error curve — reported `magerr`, drives the S/N cut |
+| `delve_dr3_gold_galaxy_misclass_cutg.csv` | fraction of detected true galaxies classified as point sources |
+| `delve_dr3_gold_photoerror_g{,_catalog}_raw.csv` | pre-afterburner provenance |
+| `delve_dr3_gold_audit.json` | counts, anchors and convention flags for the run |
+
+Reference band is **g**. The completeness and photo-error curves are keyed to
+`delta_mag = mag_true − maglim(pixel)` and applied band-independently, so
+colour is carried by the per-band depth maps rather than by separate per-band
+tables.
+
+### Figures
+
+No figures have been generated for this release yet. Once they exist they
+belong in `docs/source/_static/delve_dr3_gold/` and this section should link
+them the way {doc}`DES` links its six. `scripts/des/build_des_survey_doc_figs.py`
+is the template to adapt — swap its `des_yr6` product paths for the
+`delve_dr3_gold` ones above.
+
+### Depth
+
+Truth-anchored medians, and the shift applied to each input map:
+
+| band | input map median | truth-anchored | shift |
+|---|---|---|---|
+| g | 24.178 | **24.373** | +0.196 |
+| r | 23.675 | **23.962** | +0.287 |
+| i | 23.204 | **23.389** | +0.185 |
+| z | 22.560 | **22.951** | +0.391 |
+
+Footprint is ~16,200 deg² at nside 512 — about 3× DES Y6’s 5,216 deg². Each
+band's depth is mosaicked from **two** input map files (DR3.2 and
+DR3.1.1+3.1.2), which are exactly disjoint halves of the footprint (0.00%
+overlap, 99.76% union); passing only one silently drops ~half the injections
+and produces an all-zero efficiency table. See
+{doc}`../balrog_selection_functions` for the mosaicking details.
+
+The shifts are smooth and all the **same sign** — the coherence check that
+validates the anchor, same as DES. Unlike DES, whose shifts are all negative,
+DELVE's are all **positive**: the input maps are slightly optimistic relative
+to what the injections actually recover.
+
+Pixels deviating more than 1.5 mag from their band median are masked when the
+maps are written: g 29,872 (0.60%), r 49,822 (1.02%), i 30,806 (0.63%), z
+25,535 (0.51%).
+
+### Bands: griz only
+
+The V4 Balrog injects *griz* only, matching DES Y6, so no `u` or `Y` product
+is derivable and none is shipped.
+
+### Star/galaxy classification, and the EXT_XGB caveat
+
+`classification_eff` describes the **`bdf_extended_class_dr3gold`, 0 ≤ EXT ≤
+1** selection. Unlike DES this needs **no surrogate, no deconvolution and no
+deep-field truth join**: `bdf_extended_class_dr3gold` needs only `BDF_T` and
+`BDF_S2N`, both of which are measured for injections, and truth labels come
+from `truth_STAR`, which ships per row. The classifier reuses the **DES Y6
+Gold interpolation nodes**, so DES and DELVE are classified identically — that
+is what makes the two releases comparable in `delta_mag` space.
+
+Counts behind the curve: 13,141,646 true stars binned; 8,361,275 detected
+(63.6%); 7,140,687 classified (85.4% of detected). The bright-end detection
+plateau sits at 0.901, and the combined (classification × detection)
+efficiency crosses 50% at `delta_mag = −0.144`. The efficiency table spans
+`delta_mag = −5.0` to `+2.5` (`mag_g` 19.375 to 26.875), 31 rows.
+
+As of 2026-09-04, the V4 catalogue also carries a **persisted**
+`bdf_extended_class_dr3gold` int8 column, computed by the same vendored
+function the reducer uses, with provenance recorded in the dataset attrs.
+Values run 0–4 plus a `−9` sentinel; the distribution is 32.2% point source
+(0–1), 30.3% extended (2–4), 37.5% sentinel — the sentinel fraction is
+dominated by the ~21% undetected injections, whose `meas_bdf_*` fields are all
+`0.0` and so fail the `s2n > 0` test.
+
+> **What this means for you.** `EXT_XGB` — what a real DR3 Gold user would
+> actually cut on — **cannot be evaluated on Balrog**, for the same reason as
+> DES Y6 (App. A.2 of Bechtol et al. 2025): the required features are never
+> measured for injected sources. DELVE ships `bdf_extended_class_dr3gold`
+> instead, which is exactly reproducible from `BDF_T`/`BDF_S2N` but is a
+> *different* selection from an `EXT_XGB` cut. DES handles this gap with a
+> trained surrogate plus deconvolution; **no equivalent surrogate is shipped
+> for DELVE.** See *Known limitations*.
+
+### Photometric errors
+
+Per-tile zero points were measured for 1,499 tiles (reference offset +0.0225,
+spread `(16–84)/2` = 0.1758). 329 tiles deviated by more than 0.05 mag and were
+**rejected, not corrected** — matching DES's own treatment of this class of
+artifact — dropping 8,503,446 of the 62,922,015 injected rows. Rejecting
+rather than correcting improved the error-inflation factor (truth scatter /
+reported error) from 2.00 to 1.50; the shipped value is **1.502**. Because the
+curves are `delta_mag`-keyed and the imaging is homogeneous within the survey,
+they extrapolate to the full footprint — the maglim maps ship **unmasked**.
+
+The bright-end cut removes bins with `delta_mag < −3.25` (23 of 64 raw bins,
+leaving 41). The truth-scatter histogram has 0.005 mag bins, so a binned sigma
+can only take multiples of 0.0025; brightward of `delta_mag ≈ −3.26` the curve
+is pinned to that grid and reports the bin width rather than the scatter. The
+first bin reaching `sigma = 0.020` — the same floor the cleaned DES curve has
+— is `delta_mag = −3.256`. See
+`config/surveys/delve_photoerror_corrections.yaml` for the full rationale.
+
+The cleaned curve floors at 0.020 mag, which makes `sys_error: 0.005` safe
+(3.1% in quadrature) — exactly as for DES.
+
+### Cross-check against DES Y6
+
+Since DELVE DR3 Gold *is* DES Y6 Gold in the DES footprint, comparing the two
+releases in `delta_mag` space is the primary validation for this release — it
+needs no sky overlap, unlike a positional cross-match. Over
+`−4 < delta_mag < 0`:
+
+- the combined efficiency curves agree to a **median absolute difference of
+  0.063** (max 0.292);
+- the photo-error curves agree to **0.020 dex**.
+
+### Known limitations
+
+- **The efficiency table starts shallower on the bright side than DES's.**
+  DELVE's table begins at `delta_mag = −5.0` (`mag_g` = 19.375), 3.4 mag
+  shallower than DES's `−8.4` (`mag_g` = 16.625), because brighter bins fall
+  below the 20-star minimum. Stars brighter than `g ≈ 19.4` are flat-
+  extrapolated from the `−5.0` bin, where `detection_eff = 0.90`.
+  `delta_saturation` is set to `−5.0` to match.
+- **Galaxy misclassification is noise-dominated brightward of `delta_mag ≈
+  −4`.** The true-galaxy counts per bin get small there and the rate swings
+  wildly; it is reliable only faintward of that.
+- **`classification_eff` turns up faintward of `delta_mag ≈ 1.75`** (0.29 →
+  0.42 by 2.5). This is small-N noise, and is harmless because the faint clamp
+  (`DET_EFF_DELTA_MAX = 1.0`) zeroes `detection_eff` and
+  `classification_detection_eff` for `delta_mag > 1` regardless.
+- **There is no external validation of the DELVE star classification**
+  comparable to the SPLASH-SXDF check done for DES. (That check validated
+  completeness but could not measure contamination either — see {doc}`DES`.)
+- **`EXT_XGB` is not computable on Balrog**, for either survey — see *the
+  EXT_XGB caveat* above. DELVE ships `bdf_extended_class_dr3gold`, which is
+  exactly reproducible but is a genuinely different selection from an
+  `EXT_XGB` cut, and unlike DES there is no surrogate shipped to bridge the
+  two.
+
+Questions about these files can be addressed to Peter Ferguson.

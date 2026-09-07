@@ -1,0 +1,93 @@
+# Configuration file for the survey DELVE, release DR3 Gold
+name: delve
+release: dr3_gold
+survey_files:
+    # Path to data files (leave empty for default location)
+    file_path: ''
+
+    # Band-specific magnitude limit maps: truth-anchored S/N=5 point-source depth,
+    # nside=512 (ring), matching des/yr6 so the two DECam releases share a grid.
+    # The DELVE DR3 HealSparse maglim maps (nside 16384) supply
+    # the spatial structure and footprint; the absolute scale is shifted so each
+    # band's median equals the magnitude at which the truth-based scatter of
+    # (obs - true) reaches sigma = 2.5/ln10/5 = 0.2171. Truth-anchored medians:
+    #   g 24.373  r 23.962  i 23.389  z 22.951
+    # (shifts +0.196 / +0.287 / +0.185 / +0.391 from the input maps' 24.178 /
+    # 23.675 / 23.204 / 22.560 -- all the same sign, which is the coherence check
+    # that validates the anchor. Unlike DES the shifts are positive: the DELVE
+    # maps are slightly optimistic relative to what the injections recover.)
+    #
+    # Each band is mosaicked from TWO map files. The DR3.2 and DR3.1.1+3.1.2 sets
+    # are exactly disjoint halves of the footprint (0.00% overlap, 99.76% union);
+    # passing only one silently drops ~half the injections. See
+    # docs/source/balrog_selection_functions.md.
+    #
+    # Footprint ~16,200 deg2 -- about 3x the DES Y6 area.
+    # Derivation: scripts/des/balrog_selection_function.py, --survey delve.
+    maglim_map_g: delve_dr3_gold_maglim_g_nside512.fits.gz
+    maglim_map_r: delve_dr3_gold_maglim_r_nside512.fits.gz
+    maglim_map_i: delve_dr3_gold_maglim_i_nside512.fits.gz
+    maglim_map_z: delve_dr3_gold_maglim_z_nside512.fits.gz
+
+    # Band-independent maps
+    ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
+
+    # Stellar detection + classification efficiency vs delta_mag, from the DELVE
+    # BalrogOfTheStars V4 injections. Unlike DES this needs no surrogate and no
+    # deep-field join: truth_STAR ships per row, and the classifier is
+    # bdf_extended_class_dr3gold (0 <= EXT <= 1), which needs only BDF_T and
+    # BDF_S2N -- both measured for injections. It reuses the DES Y6 Gold
+    # interpolation nodes, so DES and DELVE are classified identically, which is
+    # what makes the two releases comparable in delta_mag space.
+    #
+    # Tiles with a zero-point offset > 0.05 mag were rejected (329 of 1499,
+    # 8.5M of 62.9M rows). The curves are delta_mag-keyed, so they extrapolate to
+    # the full footprint; the maglim maps ship unmasked.
+    completeness: delve_dr3_gold_stellar_efficiency_cutg.csv
+    completeness_band: g
+
+    # Galaxy misclassification: fraction of detected true galaxies (truth_STAR
+    # false) classified as point sources by the same selection, vs delta_mag.
+    # Reliable only faintward of delta_mag ~ -4; brightward the true-galaxy
+    # counts per bin are small and the rate swings wildly.
+    gal_misclassification: delve_dr3_gold_galaxy_misclass_cutg.csv
+
+    # Two-curve photometric error model (streamobs Survey.get_photo_error):
+    #   catalog = median reported magerr    -> written as `magerr`, drives the S/N cut;
+    #   sample  = truth-based scatter of (obs - true) -> drives the noise draw.
+    # The truth scatter runs ~1.50x the reported magerr in the DELVE Balrog.
+    log_photo_error_catalog: delve_dr3_gold_photoerror_g_catalog.csv
+    log_photo_error_sample: delve_dr3_gold_photoerror_g.csv
+
+survey_properties:
+  # griz. The V4 Balrog injects griz only, matching DES Y6.
+  bands: ['g', 'r', 'i', 'z']
+
+  # Extinction coefficients per band (A_band / E(B-V))
+  # from Tab 6 of https://iopscience.iop.org/article/10.1088/0004-637X/737/2/103/pdf
+  # Same instrument as DES, so the same DECam coefficients apply.
+  coeff_extinc_g: 3.186
+  coeff_extinc_r: 2.140
+  coeff_extinc_i: 1.569
+  coeff_extinc_z: 1.196
+
+  # Systematic photometric error (mag), added in quadrature to the model error.
+  # Same value as des_yr6, and safe for the same reason: after the bright-end cut
+  # the sample curve floors at 0.020 mag, so this contributes 3.1% in quadrature.
+  #
+  # This is only true because the afterburner cut moved to -3.25. The truth-
+  # scatter histogram has 0.005 mag bins, so a binned sigma can only take
+  # multiples of 0.0025; brightward of delta_mag ~ -3.26 the DELVE curve is
+  # pinned to that grid and is reporting the bin width, not the scatter. Under
+  # the earlier -5.2 cut the curve floored at 0.00500 -- a quantisation artefact,
+  # never a measurement -- and adding 0.005 there would have been a 41%
+  # inflation. See config/surveys/delve_photoerror_corrections.yaml.
+  sys_error : 0.005
+
+  # Saturation limits per band, or could be specified as saturation_g, etc
+  saturation: 16.0
+  # Smallest delta_mag in the completeness file. NOTE this is 3.4 mag shallower
+  # than the DES value (-8.4): the DELVE efficiency table starts at g = 19.375
+  # because brighter bins fall below the 20-star minimum. Stars brighter than
+  # that are flat-extrapolated from the -5.0 bin, where detection_eff = 0.90.
+  delta_saturation: -5.0

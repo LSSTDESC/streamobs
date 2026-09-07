@@ -100,6 +100,7 @@ Documentation Contents
    :caption: Surveys supported
    
    surveys/DES
+   surveys/DELVE
    surveys/LSST
    surveys/Roman
 

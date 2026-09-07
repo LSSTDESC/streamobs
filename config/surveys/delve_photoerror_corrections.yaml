@@ -1,0 +1,45 @@
+# Afterburner corrections for the DELVE DR3 Gold photo-error curves.
+#
+# Mirrors config/surveys/des_photoerror_corrections.yaml and
+# roman_photoerror_corrections.yaml: the generator writes the unmodified binned
+# measurement to *_raw.csv every run, then applies the rules below to produce the
+# runtime curves.  Every manual cleanup lives here so it is attributed,
+# reversible, and visible in review.
+#
+# Rules implemented by scripts/des/balrog_selection_function.py:
+#   cut_bright  : drop all bins with delta_mag < delta_mag_min
+#   clamp_faint : floor log_mag_err to `value` for bins with delta_mag >= delta_mag_min
+#
+# Apply with:  --corrections config/surveys/delve_photoerror_corrections.yaml
+# Re-apply to an existing product dir with:  --reapply-corrections
+
+g_sample:
+  # Bright-end cut at the point where the measurement stops being quantisation
+  # limited, which is the same criterion used for DES (there, -7.0).
+  #
+  # The truth-scatter histogram has 0.005 mag bins, so a binned sigma can only
+  # take multiples of 0.0025.  Brightward of delta_mag ~ -3.26 the DELVE curve
+  # is pinned to that grid -- it steps 0.005, 0.0075, 0.010, 0.0125, 0.015,
+  # 0.0175 and is flat across several bins at a time, i.e. the measurement is
+  # reporting the bin width rather than the scatter.  The first bin whose sigma
+  # reaches 0.020 (8 quantisation steps, the same floor the cleaned DES curve
+  # has) is delta_mag = -3.256, so that is where the curve becomes meaningful.
+  #
+  # Cutting here also makes sys_error: 0.005 safe in delve_dr3_gold.yaml, exactly
+  # as for DES: against a 0.020 floor it contributes 3.1% in quadrature, whereas
+  # against the old -5.2 cut's 0.005 floor it would have been a 41% inflation of
+  # a number that was never a measurement.
+  #
+  # streamobs extrapolates flat below the first point, so stars brighter than
+  # this get sigma = 0.020 -- the same bright-end treatment as des/yr6.
+  #
+  # Previous value was -5.2, chosen only to remove a non-monotonic wiggle
+  # between -5.7 and -5.2; that left the quantisation-limited region in place.
+  cut_bright:
+    delta_mag_min: -3.25
+
+g_catalog:
+  # Same cut for the reported-error curve, so the two curves stay on a common
+  # delta_mag grid (streamobs interpolates one against the other).
+  cut_bright:
+    delta_mag_min: -3.25
