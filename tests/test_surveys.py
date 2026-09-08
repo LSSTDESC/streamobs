@@ -138,6 +138,20 @@ SURVEY_REGISTRY = [
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
     },
+    # LSST DP2 — real commissioning data: DP2's own measured 5-sigma deep-coadd
+    # depth maps at nside 512, carrying the lsst_dc2 selection-function tables
+    # the same way lsst_yr1-5 do. Same DC2-model threshold overrides, and the
+    # default snr10_delta_mag applies because the catalog photo-error curve is
+    # the DC2 one -- the crossing is a property of that curve, not of the depth
+    # map it is paired with.
+    {
+        "survey": "lsst",
+        "release": "dp2",
+        "expected_bands": ["g", "r"],
+        "expected_maglim": ["g", "r"],
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+    },
     {
         "survey": "des",
         "release": "yr6",

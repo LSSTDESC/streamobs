@@ -89,6 +89,10 @@ Detail and derivation: `docs/source/balrog_selection_functions.md`,
   object and truth skims.
 - `lsst_yr1` … `lsst_yr5` — RubinSim per-year depth maps carrying the `lsst_dc2`
   selection-function tables.
+- `lsst_dp2` — DP2's own measured 5σ deep-coadd g/r depth (nside 512, not
+  truth-anchored) carrying the same `lsst_dc2` tables. Real commissioning data
+  with a simulation-derived selection function; see `docs/source/surveys/LSST.md`
+  for what that assumes.
 
 ### Roman
 

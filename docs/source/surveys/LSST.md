@@ -6,6 +6,57 @@
 Current estimation of LSST performances are done using DC2 simulations (expected
 performances for LSST year 5), and extrapolated for year 1 to 5.
 
+| release | depth maps | selection function |
+|---|---|---|
+| `lsst/dc2` | DC2 truth-derived, nside 1024 | derived from the DC2 object + truth skims |
+| `lsst/yr1` … `yr5` | RubinSim baseline per year, nside 128 | inherited from `lsst/dc2` |
+| `lsst/dp2` | DP2 measured 5σ deep coadd, nside 512 | inherited from `lsst/dc2` |
+
+## LSST DP2
+
+`lsst/dp2` pairs DP2's own measured depth with the DC2 selection function, the
+same construction the year releases use.
+
+### Depth
+
+DP2 `deepCoadd` PSF magnitude limits from the consolidated survey-property
+maps, HealSparse at nside 512:
+
+| band | footprint | median 5σ depth |
+|---|---|---|
+| g | 3,388 deg² | 24.925 |
+| r | 3,759 deg² | 24.544 |
+
+These are **not truth-anchored**. There is no injection catalogue for DP2, so
+there is nothing to anchor against and the maps ship on their own native 5σ
+scale — the same footing as `lsst/dc2`, and unlike {doc}`DES` and {doc}`DELVE`,
+whose absolute scales are set from their injections. The absolute scale is
+therefore inherited from whoever produced the maps rather than measured here.
+
+The two bands have genuinely different footprints, overlapping on 84.2% of the
+larger, so the usable two-band area is the intersection rather than either
+number above. streamobs handles this per band through the individual maglim
+maps.
+
+### Selection function, and what it assumes
+
+The efficiency, misclassification and both photo-error pairs (including the
+`_nocut` curves for forced-photometry bands) are symlinked from `lsst_dc2` by
+`scripts/lsst/link_lsst_yr_products.py`.
+
+**This is a stronger assumption than for the year releases.** Those apply DC2
+curves to RubinSim depth maps — simulation onto simulation. DP2 is real
+commissioning data, so using DC2 curves additionally assumes the simulated
+detection and star/galaxy performance describes the real pipeline. The curves
+are `delta_mag`-keyed, so the depth difference is already accounted for; what is
+assumed is the *shape* of the efficiency and error curves at fixed `delta_mag`.
+
+Treat DP2 completeness as indicative until it can be checked against real DP2
+injections or an external truth catalogue. Deriving a DP2-native selection
+function would need an injection run; the `dp2_star_gmax_27_skim.parquet` skim
+alongside the depth maps cannot substitute, because without a truth table there
+is no detection efficiency and no truth-scatter curve.
+
 ## LSST DC2 Survey Files
 More information about the LSST simulations can be found in Pélissier et. all (2026).
 

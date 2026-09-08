@@ -10,7 +10,7 @@ python scripts/verify_products.py \
     --figdir figs/verification --manifest artifacts/product_manifest.json
 ```
 
-**Result: 88 / 88 checks pass. Test suite: 353 passed, 2 skipped, 0 failed.**
+**Result: 88 / 88 checks pass. Test suite: 370 passed, 2 skipped, 0 failed.**
 
 Derivation and methodology are in {doc}`balrog_selection_functions`; per-release
 summaries in {doc}`surveys/DES` and {doc}`surveys/DELVE`.
@@ -183,8 +183,8 @@ Carried forward into the release, not fixed here.
 
 ## Manifest
 
-`data.zip` — 49,582,444 bytes, 116 files
-sha256 `cd64b018328330bd97d4b1039a506dea95a887b74dcff9e23b7664cffd6e3f91`
+`data.zip` — 53,288,413 bytes, 124 files
+sha256 `a9346ae097cbb914ff8d7b82d3ad38cd7842de2ba63c550e3713ccd8254e0362`
 
 Per-file sizes and sha256 for both releases are in
 `artifacts/product_manifest.json`. The shipped products are:
@@ -227,4 +227,4 @@ band, the error-inflation factor and the classifier used.
 1. Upload `archive/data.zip` to Zenodo as a new version of the record.
 2. Update `BASE_DATA_URL` in `bin/download_data.py` to the new record id
    (currently `18298544`, which still serves the *old* DES products).
-3. `ARCHIVE_SIZE_MB` in the same file is already updated to 48.
+3. `ARCHIVE_SIZE_MB` in the same file is already updated to 51.

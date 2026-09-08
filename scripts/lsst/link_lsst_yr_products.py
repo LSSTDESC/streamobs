@@ -1,11 +1,16 @@
 #!/usr/bin/env python
-"""Symlink the LSST DC2 selection-function tables into the lsst_yr1-5 data dirs.
+"""Symlink the LSST DC2 selection-function tables into the dependent LSST releases.
 
-The extrapolated year releases (lsst_yr1..lsst_yr5) use the DC2-derived
-efficiency / misclassification / photo-error tables and differ only in their
-depth maps (RubinSim baseline maglim maps per year) — the same convention as
-the Roman HLWAS tiers, whose tables are symlinked from roman_dc2 by
+The extrapolated year releases (lsst_yr1..lsst_yr5) and the DP2 release use the
+DC2-derived efficiency / misclassification / photo-error tables and differ only
+in their depth maps — RubinSim baseline maglim maps per year for lsst_yr*, and
+DP2's own measured 5-sigma deep-coadd maps for lsst_dp2. Same convention as the
+Roman HLWAS tiers, whose tables are symlinked from roman_dc2 by
 scripts/roman/build_hlwas_maglim_maps.py.
+
+Note that lsst_dp2 is real commissioning data carrying a simulation-derived
+selection function, which is a weaker assumption than for the year releases --
+see config/surveys/lsst_dp2.yaml.
 
 Symlinks keep a single copy of each table on dev machines;
 bin/build_data_archive.py dereferences them when staging data.zip, so
@@ -30,14 +35,14 @@ TABLES = [
     "lsst_dc2_photoerror_r_nocut.csv",
     "lsst_dc2_photoerror_r_catalog_nocut.csv",
 ]
-YEARS = [1, 2, 3, 4, 5]
+TARGETS = [f"lsst_yr{y}" for y in (1, 2, 3, 4, 5)] + ["lsst_dp2"]
 
 
 def main():
-    for year in YEARS:
-        yr_dir = REPO / f"data/surveys/lsst_yr{year}"
+    for target in TARGETS:
+        yr_dir = REPO / f"data/surveys/{target}"
         yr_dir.mkdir(parents=True, exist_ok=True)
-        print(f"lsst_yr{year}:")
+        print(f"{target}:")
         for csv in TABLES:
             src = DC2_DIR / csv
             dst = yr_dir / csv

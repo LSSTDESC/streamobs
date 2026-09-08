@@ -3,16 +3,14 @@
 Welcome to StreamObs Documentation!
 ======================================
 
-.. warning::
-   This package is under active development. The API and features may change in future releases.
-
 **StreamObs** is a Python package for stellar stream data generation and observation simulation. 
 It provides a complete pipeline to transform theoretical or dynamical stream models into realistic 
 mock observations as they would appear in astronomical surveys.
 It now supports the following surveys (and corresponding data releases):
 - **DES**: Y6
-- **LSST**: simulated properties for Y1, Y2, Y3, Y4, and Y5
-
+- **DELVE**: DR3 Gold
+- **LSST**: DP2 and expected properties for Y1, Y2, Y3, Y4, and Y5 built on the [Baseline_v5.3.0 simulation](https://survey-strategy.lsst.io/baseline/index.html)
+- **ROMAN**: expected properties for HLWAS_all, HLWAS_medium, and HLWAS_wide
 
 What StreamObs Does
 -------------------
