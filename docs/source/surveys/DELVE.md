@@ -44,11 +44,40 @@ tables.
 
 ### Figures
 
-No figures have been generated for this release yet. Once they exist they
-belong in `docs/source/_static/delve_dr3_gold/` and this section should link
-them the way {doc}`DES` links its six. `scripts/des/build_des_survey_doc_figs.py`
-is the template to adapt — swap its `des_yr6` product paths for the
-`delve_dr3_gold` ones above.
+Regenerate with `python scripts/des/build_delve_survey_doc_figs.py`.
+
+![DELVE DR3 Gold stellar efficiency and galaxy misclassification](../_static/delve_dr3_gold/DELVE_efficiencies.png)
+
+*Stellar detection and classification efficiency for the
+`0 ≤ bdf_extended_class_dr3gold ≤ 1` selection, with the galaxy
+misclassification rate on the same axes. The bright-end detection plateau sits
+at 0.901 rather than near unity because the per-object quality flags
+(`meas_flags`, `meas_bdf_flags`) are applied in the efficiency numerator — the
+Roman/LSST convention. The shaded region marks where the misclassification
+curve is noise-dominated; see* Known limitations.
+
+![DELVE DR3 Gold photometric error model](../_static/delve_dr3_gold/DELVE_errors.png)
+
+*All four photo-error curves. Solid is the detected-population pair used for the
+reference band g; dashed is the `_nocut` pair used for the forced-photometry
+bands r, i and z. They agree brightward of the depth and separate only
+faintward, where the S/N cut truncates the detected sample and its measured
+scatter turns over rather than continuing to rise. The lower panel is the
+error-inflation factor, ~1.5 near the limit.*
+
+![DELVE DR3 Gold truth-anchored depth histograms](../_static/delve_dr3_gold/DELVE_depth.png)
+
+![DELVE DR3 Gold g-band depth map](../_static/delve_dr3_gold/DELVE_depth_map.png)
+
+*The four anchor shifts all share a sign, which is the coherence check that
+validates the anchor. Medians quoted on the histograms are of the written map,
+which masks pixels deviating more than 1.5 mag from the band median, so they sit
+~0.02 below the anchor values quoted below. The sky map shows the two disjoint
+DR3 halves that are mosaicked into each band.*
+
+There is deliberately no surrogate-confusion figure and no external-validation
+figure, unlike {doc}`DES`: DELVE needs no `EXT_XGB` surrogate, and no
+SPLASH-equivalent truth catalogue overlaps the footprint.
 
 ### Depth
 

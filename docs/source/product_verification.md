@@ -177,8 +177,9 @@ Carried forward into the release, not fixed here.
    `bdf_extended_class_dr3gold` selection instead, which is a *different*
    selection from an `EXT_XGB` cut on the real catalogue. No DELVE surrogate is
    shipped.
-5. **DELVE has no figures yet.** DES has six; the generator
-   `scripts/des/build_des_survey_doc_figs.py` is the template.
+5. **DELVE has no external validation of its star classification**, unlike the
+   SPLASH-SXDF check done for DES, and no truth catalogue overlapping the
+   footprint can supply one.
 
 ## Manifest
 
