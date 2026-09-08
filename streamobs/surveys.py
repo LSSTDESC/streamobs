@@ -216,7 +216,7 @@ class Survey:
             )
             if func is None:
                 raise ValueError(
-                    f"Survey '{self.full_name}' has no '{kind}' _nocut photo-error "
+                    f"Survey '{self.namespace}' has no '{kind}' _nocut photo-error "
                     f"curve, which is required for band '{band}': it is not the "
                     f"reference band ('{self.completeness_band}'), so its photometry "
                     "is forced and must not use the detected-population curve. Add "
