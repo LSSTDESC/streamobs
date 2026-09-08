@@ -27,7 +27,7 @@ full V4 catalogue.
 
 | File | Contents |
 |---|---|
-| `delve_dr3_gold_maglim_{g,r,i,z}_nside512.fits.gz` | truth-anchored S/N = 5 depth maps |
+| `delve_dr3_gold_maglim_{g,r,i,z}_nside128.fits.gz` | truth-anchored S/N = 5 depth maps |
 | `delve_dr3_gold_stellar_efficiency_cutg.csv` | stellar detection + classification efficiency vs `delta_mag` |
 | `delve_dr3_gold_photoerror_g.csv` | **sample** photo-error curve — truth scatter, drives the noise draw |
 | `delve_dr3_gold_photoerror_g_catalog.csv` | **catalog** photo-error curve — reported `magerr`, drives the S/N cut |
@@ -90,7 +90,7 @@ Truth-anchored medians, and the shift applied to each input map:
 | i | 23.204 | **23.389** | +0.185 |
 | z | 22.560 | **22.951** | +0.391 |
 
-Footprint is ~16,200 deg² at nside 512 — about 3× DES Y6’s 5,216 deg². Each
+Footprint is ~16,300 deg² at nside 128 — about 3× DES Y6’s 5,200 deg². Each
 band's depth is mosaicked from **two** input map files (DR3.2 and
 DR3.1.1+3.1.2), which are exactly disjoint halves of the footprint (0.00%
 overlap, 99.76% union); passing only one silently drops ~half the injections

@@ -7,8 +7,14 @@ survey_files:
 
     # Band-specific magnitude limit maps: DP2's own measured 5-sigma PSF
     # magnitude limits from the deepCoadd consolidated survey-property maps,
-    # HealSparse at nside 512. Medians g 24.925 / r 24.544 over 3,388 / 3,759
-    # deg2.
+    # HealSparse degraded to nside 128 by scripts/lsst/build_dp2_maglim_maps.py
+    # (mean reduction, the same one the Balrog reducer applies). Medians
+    # g 24.903 / r 24.514 over 3,550 / 3,946 deg2.
+    #
+    # The source maps are nside 512, medians g 24.925 / r 24.544. Degrading
+    # moves the medians down 0.02-0.03 mag and grows the footprint ~5%: coarse
+    # pixels that were only partially covered become fully valid, and averaging
+    # pulls in shallower edge pixels. Both are expected.
     #
     # NOT truth-anchored, unlike des/yr6 and delve/dr3_gold. There is no
     # injection catalogue for DP2, so there is nothing to anchor against; the
@@ -18,12 +24,12 @@ survey_files:
     # is that the absolute depth scale is inherited from whoever produced these
     # maps rather than measured here.
     #
-    # The two bands have genuinely different footprints -- g covers 3,388 deg2
-    # and r 3,759 deg2, overlapping on 84.2% of the larger. streamobs handles
+    # The two bands have genuinely different footprints -- g covers 3,550 deg2
+    # and r 3,946 deg2, overlapping on 84.1% of the larger. streamobs handles
     # that per band through these maps, so the usable two-band area is the
-    # intersection.
-    maglim_map_g: dp2_deepCoadd_psf_maglim_consolidated_map_weighted_mean_g_nside_512.hsp
-    maglim_map_r: dp2_deepCoadd_psf_maglim_consolidated_map_weighted_mean_r_nside_512.hsp
+    # intersection rather than either number above.
+    maglim_map_g: dp2_deepCoadd_psf_maglim_consolidated_map_weighted_mean_g_nside_128.hsp
+    maglim_map_r: dp2_deepCoadd_psf_maglim_consolidated_map_weighted_mean_r_nside_128.hsp
 
     # Band-independent maps
     ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits

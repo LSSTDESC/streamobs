@@ -6,8 +6,8 @@ survey_files:
     file_path: ''
 
     # Band-specific magnitude limit maps: truth-anchored S/N=5 point-source depth,
-    # nside=512 (ring) -- the resolution of the des_y6_5_sig_* healsparse inputs,
-    # which the reducer degrades from but never upsamples. Those maps supply the spatial
+    # nside=128 (ring), degraded by the reducer from the nside-512
+    # des_y6_5_sig_* healsparse inputs. Those maps supply the spatial
     # structure and footprint; the absolute scale is shifted so each band's median
     # equals the magnitude at which the truth-based scatter of (obs - true) reaches
     # sigma = 2.5/ln10/5 = 0.2171. Truth-anchored medians:
@@ -19,10 +19,10 @@ survey_files:
     # tables are all keyed to this convention.
     # Derivation: scripts/des/balrog_selection_function.py, see
     # docs/source/balrog_selection_functions.md.
-    maglim_map_g: des_yr6_maglim_g_nside512.fits.gz
-    maglim_map_r: des_yr6_maglim_r_nside512.fits.gz
-    maglim_map_i: des_yr6_maglim_i_nside512.fits.gz
-    maglim_map_z: des_yr6_maglim_z_nside512.fits.gz
+    maglim_map_g: des_yr6_maglim_g_nside128.fits.gz
+    maglim_map_r: des_yr6_maglim_r_nside128.fits.gz
+    maglim_map_i: des_yr6_maglim_i_nside128.fits.gz
+    maglim_map_z: des_yr6_maglim_z_nside128.fits.gz
     # g-derived completeness + photo-error, applied to all bands band-independently
     # (via delta_mag = mag_true - maglim_band), per the streamobs convention.
 

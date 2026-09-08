@@ -6,7 +6,8 @@ survey_files:
     file_path: ''
 
     # Band-specific magnitude limit maps: truth-anchored S/N=5 point-source depth,
-    # nside=512 (ring), matching des/yr6 so the two DECam releases share a grid.
+    # nside=128 (ring), matching des/yr6 and the lsst releases so every survey
+    # shares a depth grid.
     # The DELVE DR3 HealSparse maglim maps (nside 16384) supply
     # the spatial structure and footprint; the absolute scale is shifted so each
     # band's median equals the magnitude at which the truth-based scatter of
@@ -22,12 +23,12 @@ survey_files:
     # passing only one silently drops ~half the injections. See
     # docs/source/balrog_selection_functions.md.
     #
-    # Footprint ~16,200 deg2 -- about 3x the DES Y6 area.
+    # Footprint ~16,300 deg2 -- about 3x the DES Y6 area.
     # Derivation: scripts/des/balrog_selection_function.py, --survey delve.
-    maglim_map_g: delve_dr3_gold_maglim_g_nside512.fits.gz
-    maglim_map_r: delve_dr3_gold_maglim_r_nside512.fits.gz
-    maglim_map_i: delve_dr3_gold_maglim_i_nside512.fits.gz
-    maglim_map_z: delve_dr3_gold_maglim_z_nside512.fits.gz
+    maglim_map_g: delve_dr3_gold_maglim_g_nside128.fits.gz
+    maglim_map_r: delve_dr3_gold_maglim_r_nside128.fits.gz
+    maglim_map_i: delve_dr3_gold_maglim_i_nside128.fits.gz
+    maglim_map_z: delve_dr3_gold_maglim_z_nside128.fits.gz
 
     # Band-independent maps
     ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits

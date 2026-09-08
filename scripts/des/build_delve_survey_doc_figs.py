@@ -169,7 +169,7 @@ def fig_depth():
 
     fig, axes = plt.subplots(2, 2, figsize=(8.2, 5.4))
     for ax, b in zip(axes.ravel(), BANDS):
-        m = hp.read_map(str(DATA / f"delve_dr3_gold_maglim_{b}_nside512.fits.gz"))
+        m = hp.read_map(str(DATA / f"delve_dr3_gold_maglim_{b}_nside128.fits.gz"))
         good = np.isfinite(m) & (m > 0) & (m != hp.UNSEEN)
         v = m[good]
         med = np.median(v)
@@ -181,7 +181,7 @@ def fig_depth():
         ax.set_xlabel("truth-anchored 5$\\sigma$ depth")
         ax.set_yticks([])
         ax.legend(fontsize=7.5, loc="upper left")
-    fig.suptitle("DELVE DR3 Gold truth-anchored depth, nside 512 — all four "
+    fig.suptitle("DELVE DR3 Gold truth-anchored depth, nside 128 — all four "
                  "shifts share a sign\n(medians are of the written map, which is "
                  "masked >1.5 mag from centre, so they sit ~0.02 below the anchor)",
                  fontsize=9)
@@ -190,13 +190,13 @@ def fig_depth():
     plt.close(fig)
     print(f"  wrote {OUT/'DELVE_depth.png'}")
 
-    m = hp.read_map(str(DATA / "delve_dr3_gold_maglim_g_nside512.fits.gz"))
+    m = hp.read_map(str(DATA / "delve_dr3_gold_maglim_g_nside128.fits.gz"))
     m = np.where(np.isfinite(m) & (m > 0), m, hp.UNSEEN)
     v = m[m != hp.UNSEEN]
     lo, hi = np.percentile(v, [2, 98])
     fig = plt.figure(figsize=(7.6, 4.4))
     hp.mollview(m, fig=fig.number,
-                title="DELVE DR3 Gold truth-anchored g depth (nside 512)",
+                title="DELVE DR3 Gold truth-anchored g depth (nside 128)",
                 unit="mag", min=lo, max=hi, cmap="viridis")
     hp.graticule(dpar=30, dmer=60, color="0.7", lw=0.4)
     fig.savefig(OUT / "DELVE_depth_map.png", bbox_inches="tight")

@@ -147,7 +147,7 @@ def fig_depth():
 
     fig, axes = plt.subplots(2, 2, figsize=(8.2, 5.4))
     for ax, b in zip(axes.ravel(), BANDS):
-        f = DATA / f"des_yr6_maglim_{b}_nside512.fits.gz"
+        f = DATA / f"des_yr6_maglim_{b}_nside128.fits.gz"
         m = hp.read_map(str(f), verbose=False) if "verbose" in \
             hp.read_map.__code__.co_varnames else hp.read_map(str(f))
         good = np.isfinite(m) & (m > 0) & (m != hp.UNSEEN)
@@ -161,18 +161,18 @@ def fig_depth():
         ax.set_xlabel("truth-anchored 5$\\sigma$ depth")
         ax.set_yticks([])
         ax.legend(fontsize=7.5, loc="upper left")
-    fig.suptitle("DES Y6 truth-anchored depth, nside 512 "
+    fig.suptitle("DES Y6 truth-anchored depth, nside 128 "
                  "(shifts are smooth and ordered with wavelength)", fontsize=10)
     fig.tight_layout()
     fig.savefig(OUT / "DES_depth.png")
     plt.close(fig)
     print(f"  wrote {OUT/'DES_depth.png'}")
 
-    m = hp.read_map(str(DATA / "des_yr6_maglim_g_nside512.fits.gz"))
+    m = hp.read_map(str(DATA / "des_yr6_maglim_g_nside128.fits.gz"))
     m = np.where(np.isfinite(m) & (m > 0), m, hp.UNSEEN)
     fig = plt.figure(figsize=(7.6, 4.4))
     hp.mollview(m, fig=fig.number, title="DES Y6 truth-anchored g depth "
-                "(nside 512)", unit="mag", min=24.4, max=25.6, cmap="viridis")
+                "(nside 128)", unit="mag", min=24.4, max=25.6, cmap="viridis")
     hp.graticule(dpar=30, dmer=60, color="0.7", lw=0.4)
     fig.savefig(OUT / "DES_depth_map.png", bbox_inches="tight")
     plt.close(fig)

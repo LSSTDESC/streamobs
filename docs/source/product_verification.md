@@ -33,8 +33,8 @@ summaries in {doc}`surveys/DES` and {doc}`surveys/DELVE`.
 | true stars binned | 4,488,693 | 13,141,646 |
 | detected / classified | 86.7% / 83.6% of detected | 63.6% / 85.4% of detected |
 | bands | griz | griz |
-| depth map nside | 512 | 512 |
-| footprint | 5,216 deg² | 16,354 deg² |
+| depth map nside | 128 | 128 |
+| footprint | 5,340 deg² | 17,099 deg² |
 | truth-anchored m5 (g) | 25.025 | 24.373 |
 | error-inflation factor | 1.464 | 1.502 |
 | bright-end detection plateau | 0.999 | 0.901 |
@@ -100,13 +100,14 @@ no-op while the output filename took the requested value regardless.
 
 Nothing was functionally wrong — streamobs reads nside from the map, not the
 name — but the files would have gone to Zenodo misdescribed. They are renamed
-to `_nside512`, and `config/surveys/des_yr6.yaml`, `surveys/DES.md` and
-`scripts/des/build_des_survey_doc_figs.py` updated. The verifier now asserts
-that a map's nside matches its filename.
+so the config, the survey doc and the figure generator were corrected alongside
+it. The verifier now asserts that a map's nside matches its filename.
 
-The DES depth resolution is therefore genuinely nside 512 (≈6.9′ pixels), set by
-its HealSparse inputs. DELVE's maps are degraded to the same nside 512 from
-nside-16384 inputs, so both DECam releases now share a depth grid.
+Both DECam releases ultimately ship at **nside 128** (≈27′ pixels), the same
+grid as every LSST release, so all surveys share a depth resolution. DES degrades
+there from its nside-512 HealSparse inputs and DELVE from nside-16384 inputs;
+neither is upsampled. The mislabelling above is what the check was written for,
+and it would have caught a request for a resolution finer than the input.
 
 ### `_nocut` photo-error curves were missing for both releases
 
@@ -183,25 +184,25 @@ Carried forward into the release, not fixed here.
 
 ## Manifest
 
-`data.zip` — 53,288,413 bytes, 124 files
-sha256 `a9346ae097cbb914ff8d7b82d3ad38cd7842de2ba63c550e3713ccd8254e0362`
+`data.zip` — 30,622,684 bytes, 124 files
+sha256 `297b2807682de7065af3943fe7da9146f10306c6ee69ee282b3b6ec0523bfcfd`
 
 Per-file sizes and sha256 for both releases are in
 `artifacts/product_manifest.json`. The shipped products are:
 
 | `des/yr6` | bytes | `delve/dr3_gold` | bytes |
 |---|---|---|---|
-| `des_yr6_maglim_g_nside512.fits.gz` | 1,240,134 | `delve_dr3_gold_maglim_g_nside512.fits.gz` | 4,000,839 |
-| `des_yr6_maglim_r_nside512.fits.gz` | 1,235,517 | `delve_dr3_gold_maglim_r_nside512.fits.gz` | 3,941,553 |
-| `des_yr6_maglim_i_nside512.fits.gz` | 1,235,153 | `delve_dr3_gold_maglim_i_nside512.fits.gz` | 3,912,308 |
-| `des_yr6_maglim_z_nside512.fits.gz` | 1,239,334 | `delve_dr3_gold_maglim_z_nside512.fits.gz` | 3,981,615 |
+| `des_yr6_maglim_g_nside128.fits.gz` | 82,167 | `delve_dr3_gold_maglim_g_nside128.fits.gz` | 265,039 |
+| `des_yr6_maglim_r_nside128.fits.gz` | 81,811 | `delve_dr3_gold_maglim_r_nside128.fits.gz` | 262,674 |
+| `des_yr6_maglim_i_nside128.fits.gz` | 81,774 | `delve_dr3_gold_maglim_i_nside128.fits.gz` | 259,920 |
+| `des_yr6_maglim_z_nside128.fits.gz` | 81,950 | `delve_dr3_gold_maglim_z_nside128.fits.gz` | 264,399 |
 | `des_yr6_stellar_efficiency_cutg.csv` | 2,412 | `delve_dr3_gold_stellar_efficiency_cutg.csv` | 1,524 |
 | `des_yr6_photoerror_g.csv` | 1,525 | `delve_dr3_gold_photoerror_g.csv` | 828 |
 | `des_yr6_photoerror_g_catalog.csv` | 1,525 | `delve_dr3_gold_photoerror_g_catalog.csv` | 828 |
 | `des_yr6_photoerror_g_nocut.csv` | 1,544 | `delve_dr3_gold_photoerror_g_nocut.csv` | 828 |
 | `des_yr6_photoerror_g_catalog_nocut.csv` | 1,544 | `delve_dr3_gold_photoerror_g_catalog_nocut.csv` | 828 |
 | `des_yr6_galaxy_misclass_cutg.csv` | 1,647 | `delve_dr3_gold_galaxy_misclass_cutg.csv` | 1,392 |
-| `des_yr6_audit.json` | 868 | `delve_dr3_gold_audit.json` | 720 |
+| `des_yr6_audit.json` | 932 | `delve_dr3_gold_audit.json` | 720 |
 
 The `*_raw.csv` photo-error provenance and the `des_y6_5_sig_*.hsp` derivation
 inputs are deliberately excluded from the archive; they are build inputs, not
@@ -227,4 +228,4 @@ band, the error-inflation factor and the classifier used.
 1. Upload `archive/data.zip` to Zenodo as a new version of the record.
 2. Update `BASE_DATA_URL` in `bin/download_data.py` to the new record id
    (currently `18298544`, which still serves the *old* DES products).
-3. `ARCHIVE_SIZE_MB` in the same file is already updated to 51.
+3. `ARCHIVE_SIZE_MB` in the same file is already updated to 29.
