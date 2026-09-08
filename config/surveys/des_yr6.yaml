@@ -49,6 +49,12 @@ survey_files:
     # why the noise draw must not use the reported errors.
     log_photo_error_catalog: des_yr6_photoerror_g_catalog.csv
     log_photo_error_sample: des_yr6_photoerror_g.csv
+    # Forced-photometry (non-reference band) curves: measured with NO
+    # reference-band S/N cut, since r/i/z photometry is forced at the g position
+    # and is not conditioned on g-band detection. Required for any band that is
+    # not `completeness_band`.
+    log_photo_error_catalog_nocut: des_yr6_photoerror_g_catalog_nocut.csv
+    log_photo_error_sample_nocut: des_yr6_photoerror_g_nocut.csv
 
 survey_properties:
   # griz only. Y is deliberately absent: the DES Y6 Balrog injects griz, so a

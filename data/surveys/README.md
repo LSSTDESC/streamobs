@@ -30,6 +30,7 @@ where `maglim` is the **5σ** point-source depth at the source's HEALPix pixel a
 | `*_stellar_efficiency_cut<band>.csv` | `mag_<band>, delta_mag, detection_eff, classification_eff, classification_detection_eff` | detection + star-classification probability |
 | `*_photoerror_<band>.csv` (**sample**) | `delta_mag, log_mag_err` | the magnitude **noise draw** (truth scatter of obs − true) |
 | `*_photoerror_<band>_catalog.csv` (**catalog**) | `delta_mag, log_mag_err` | the reported `magerr`, which drives the S/N cut |
+| `*_photoerror_<band>_nocut.csv`, `*_catalog_nocut.csv` | `delta_mag, log_mag_err` | the same two curves for **forced-photometry** bands |
 | `*_galaxy_misclass_cut<band>.csv` | `mag_<band>, delta_mag, missclassification_eff` | stellar contamination from misclassified galaxies |
 | `*_audit.json` | — | provenance: row counts, anchors, inflation factor |
 
@@ -46,6 +47,14 @@ Conventions that matter if you are reading these tables directly:
   the truth scatter of (observed − true) and is what you add as noise; the
   catalog curve is the median reported error and is what a survey would print.
   The first exceeds the second by the release's error-inflation factor.
+- **Only the reference band's photometry is conditioned on detection.** Every
+  other band is measured at the reference band's position, so it is *forced*
+  photometry and must use the `_nocut` curves, which are measured without the
+  reference-band S/N cut. `Survey.get_photo_error(band=...)` selects the right
+  pair; it raises rather than silently applying the detected-population curve.
+  The two pairs agree brightward of the depth and diverge faintward, where the
+  S/N cut truncates the detected sample and its measured scatter turns over
+  instead of continuing to rise.
 - The misclassification column is spelled `missclassification_eff` (two s's).
   That is the key `SurveyFactory` reads; a differently-spelled column loads
   silently as `None`.

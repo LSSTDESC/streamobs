@@ -55,3 +55,14 @@ g_sample:
 
 g_catalog:
   cut_bright: {delta_mag_min: -7.0}
+
+# Forced-photometry curves (non-reference bands), measured with no
+# reference-band S/N cut. Same bright-end cut as the detected-population pair,
+# so all four curves share a delta_mag grid.
+g_sample_nocut:
+  cut_bright:
+    delta_mag_min: -7.0
+
+g_catalog_nocut:
+  cut_bright:
+    delta_mag_min: -7.0

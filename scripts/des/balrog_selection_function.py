@@ -13,6 +13,8 @@ Products, following ``streamobs/docs/source/selection_function_methodology.md``:
         classification_detection_eff
   <out>/<tag>_photoerror_<band>.csv            SAMPLE  (truth scatter -> noise draw)
   <out>/<tag>_photoerror_<band>_catalog.csv    CATALOG (reported magerr -> S/N cut)
+  <out>/<tag>_photoerror_<band>_nocut.csv          SAMPLE, no S/N cut  (forced bands)
+  <out>/<tag>_photoerror_<band>_catalog_nocut.csv  CATALOG, no S/N cut (forced bands)
   <out>/<tag>_photoerror_<band>{,_catalog}_raw.csv    provenance, pre-afterburner
   <out>/<tag>_galaxy_misclass_cut<band>.csv    derived; not consumed by the injector yet
   <out>/<tag>_maglim_<band>_nside<N>.fits.gz   only with --write-maglim
@@ -1025,7 +1027,10 @@ def reapply_corrections(out_dir, tag, band, corrections_path):
     out = Path(out_dir)
     n = 0
     for name, cid in [(f"{tag}_photoerror_{band}", f"{band}_sample"),
-                      (f"{tag}_photoerror_{band}_catalog", f"{band}_catalog")]:
+                      (f"{tag}_photoerror_{band}_catalog", f"{band}_catalog"),
+                      (f"{tag}_photoerror_{band}_nocut", f"{band}_sample_nocut"),
+                      (f"{tag}_photoerror_{band}_catalog_nocut",
+                       f"{band}_catalog_nocut")]:
         raw = out / f"{name}_raw.csv"
         if not raw.exists():
             print(f"  missing {raw}, skipping")
@@ -1209,6 +1214,12 @@ def main(args):
     n_gal_cls = np.zeros_like(n_all)  # ... misclassified as stars
     pe_sample = ResidualHist(DELTA_BINS)
     pe_catalog = MedianHist(DELTA_BINS)
+    # Forced-photometry counterparts: the same two curves measured on the
+    # population that has NOT had the reference-band S/N cut applied.  Only
+    # the reference band's photometry is conditioned on its own detection;
+    # every other band is forced, so it must not inherit that conditioning.
+    pe_sample_nc = ResidualHist(DELTA_BINS)
+    pe_catalog_nc = MedianHist(DELTA_BINS)
     n_dropped = 0
 
     med_raw = {b: maps[b].median for b in maps}  # offsets are still zero here
@@ -1245,8 +1256,12 @@ def main(args):
         sel = star & c["classified"]
         resid_ref = c["obs_mag"][ref] - corr - tm_ref
         pe_sample.add(delta[sel], resid_ref[sel])
+        sel_nc = star & c["classified_nosnr"]
+        pe_sample_nc.add(delta[sel_nc], resid_ref[sel_nc])
         with np.errstate(all="ignore"):
-            pe_catalog.add(delta[sel], np.log10(c["obs_magerr"][ref][sel]))
+            log_magerr = np.log10(c["obs_magerr"][ref])
+            pe_catalog.add(delta[sel], log_magerr[sel])
+            pe_catalog_nc.add(delta[sel_nc], log_magerr[sel_nc])
         for b in maps:
             # Which population defines "the depth" -- see --anchor-sample.
             cls_key = "classified" if args.anchor_sample == "detected" else "classified_nosnr"
@@ -1394,9 +1409,25 @@ def main(args):
     print(f"\n  ERROR-INFLATION FACTOR (truth scatter / reported): {inflation:.2f}")
     print("  (~1 = reported errors are well calibrated; Roman DC2 was ~2)\n")
 
+    # The forced-photometry pair, built exactly the same way off the no-S/N-cut
+    # population.  streamobs applies these to every band that is not the
+    # reference band; see Survey._resolve_log_photo_error.
+    sc_nc = pe_sample_nc.scatter()
+    cnt_nc = pe_sample_nc.counts()
+    med_rep_nc = pe_catalog_nc.median()
+    keep_nc = np.isfinite(sc_nc) & (sc_nc > 0) & (cnt_nc >= MIN_COUNT_PE)
+    sample_nc_tab = pd.DataFrame(
+        {"delta_mag": delta_mid[keep_nc], "log_mag_err": np.log10(sc_nc[keep_nc])}
+    )
+    catalog_nc_tab = pd.DataFrame(
+        {"delta_mag": delta_mid[keep_nc], "log_mag_err": med_rep_nc[keep_nc]}
+    )
+
     for name, tab, cid in [
         (f"{tag}_photoerror_{ref}", sample_tab, f"{ref}_sample"),
         (f"{tag}_photoerror_{ref}_catalog", catalog_tab, f"{ref}_catalog"),
+        (f"{tag}_photoerror_{ref}_nocut", sample_nc_tab, f"{ref}_sample_nocut"),
+        (f"{tag}_photoerror_{ref}_catalog_nocut", catalog_nc_tab, f"{ref}_catalog_nocut"),
     ]:
         write_csv(out / f"{name}_raw.csv", tab, "delta_mag,log_mag_err")
         write_csv(

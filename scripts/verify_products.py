@@ -69,6 +69,8 @@ def find_products(d: Path, tag: str):
         "efficiency": one(f"{tag}_stellar_efficiency_cut?.csv"),
         "photoerror_sample": one(f"{tag}_photoerror_?.csv"),
         "photoerror_catalog": one(f"{tag}_photoerror_?_catalog.csv"),
+        "photoerror_sample_nocut": one(f"{tag}_photoerror_?_nocut.csv"),
+        "photoerror_catalog_nocut": one(f"{tag}_photoerror_?_catalog_nocut.csv"),
         "misclass": one(f"{tag}_galaxy_misclass_cut?.csv"),
         "audit": one(f"{tag}_audit.json"),
         "maglim": sorted(d.glob(f"{tag}_maglim_*_nside*.fits.gz")),
@@ -115,7 +117,8 @@ def verify_contract(tag, prod):
         check("CONTRACT", f"{tag}: efficiency grid stops at the clamp", True,
               "no rows faintward of the clamp")
 
-    for key in ("photoerror_sample", "photoerror_catalog"):
+    for key in ("photoerror_sample", "photoerror_catalog",
+                "photoerror_sample_nocut", "photoerror_catalog_nocut"):
         pe = pd.read_csv(prod[key])
         check("CONTRACT", f"{tag}: {key} columns exact",
               list(pe.columns) == ["delta_mag", "log_mag_err"], f"{list(pe.columns)}")
@@ -147,6 +150,33 @@ def verify_contract(tag, prod):
     frac = float(np.mean(s[bright] >= c[bright] - 1e-9))
     check("CONTRACT", f"{tag}: truth scatter >= reported error (delta_mag <= 0)",
           frac > 0.99, f"{100*frac:.1f}% of {int(bright.sum())} bins")
+
+    # The forced-photometry pair must exist for a multi-band release: streamobs
+    # raises rather than applying the detected-population curve to a band whose
+    # photometry was forced.
+    nc_s = pd.read_csv(prod["photoerror_sample_nocut"])
+    nc_c = pd.read_csv(prod["photoerror_catalog_nocut"])
+    check("CONTRACT", f"{tag}: _nocut curves share the cut curves' delta_mag grid",
+          len(nc_s) == len(nc_c) and np.allclose(nc_s["delta_mag"], nc_c["delta_mag"]))
+
+    # They must differ from the cut pair, and only faintward: the reference-band
+    # S/N cut cannot change the scatter of objects well above it.
+    both = pd.merge(pd.read_csv(prod["photoerror_sample"]), nc_s,
+                    on="delta_mag", suffixes=("_cut", "_nc"))
+    d = both["log_mag_err_nc"] - both["log_mag_err_cut"]
+    check("CONTRACT", f"{tag}: _nocut differs from the detected-population curve",
+          not np.allclose(d, 0.0), f"max |diff| {np.abs(d).max():.4f} dex")
+    bright = both["delta_mag"] < -0.5
+    check("CONTRACT", f"{tag}: _nocut agrees brightward of the depth",
+          bool(np.allclose(d[bright], 0.0, atol=1e-6)),
+          f"{int(bright.sum())} bins with delta_mag < -0.5")
+    # Faintward the S/N cut truncates the detected sample, so its measured
+    # scatter is the *smaller* of the two.
+    faint = both["delta_mag"] > 0.5
+    if faint.any():
+        check("CONTRACT", f"{tag}: _nocut scatter >= cut scatter faintward",
+              bool((d[faint] >= -1e-6).all()),
+              f"min diff {d[faint].min():+.4f} dex over {int(faint.sum())} bins")
 
     inv = a[(s < c - 1e-9)]
     if inv.size:

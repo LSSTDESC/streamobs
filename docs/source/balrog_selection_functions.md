@@ -399,6 +399,15 @@ Check the audit JSON before shipping: the per-tile ZP spread, the truth-anchored
 m5 per band (within ~0.1 mag of the map median after the shift), the
 error-inflation factor (order 1–2, not 47) and the applied map shift.
 
+Each run emits four photo-error curves, not two: the `sample`/`catalog` pair
+measured on the detected population, and a `_nocut` pair measured without the
+reference-band S/N cut. streamobs applies the first to the reference band and
+the second to every other band, whose photometry is forced at the reference
+band's position and so is not conditioned on its own detection. The pairs are
+identical brightward of the depth and diverge faintward, where the S/N cut
+truncates the detected sample and its measured scatter turns over rather than
+continuing to rise.
+
 Copy back only the CSVs, the depth maps and the audit JSON — they total a few MB.
 
 ## Validation

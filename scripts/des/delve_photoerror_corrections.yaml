@@ -43,3 +43,16 @@ g_catalog:
   # delta_mag grid (streamobs interpolates one against the other).
   cut_bright:
     delta_mag_min: -3.25
+
+# Forced-photometry curves (non-reference bands), measured on the population
+# with no reference-band S/N cut. Same bright-end cut and same reason: the
+# quantisation argument is a property of the 0.005 mag residual histogram, not
+# of which population is binned into it. Keeping the cut identical also keeps
+# all four curves on a common delta_mag grid.
+g_sample_nocut:
+  cut_bright:
+    delta_mag_min: -3.25
+
+g_catalog_nocut:
+  cut_bright:
+    delta_mag_min: -3.25

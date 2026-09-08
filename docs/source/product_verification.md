@@ -10,7 +10,7 @@ python scripts/verify_products.py \
     --figdir figs/verification --manifest artifacts/product_manifest.json
 ```
 
-**Result: 72 / 72 checks pass. Test suite: 331 passed, 0 failed.**
+**Result: 88 / 88 checks pass. Test suite: 353 passed, 2 skipped, 0 failed.**
 
 Derivation and methodology are in {doc}`balrog_selection_functions`; per-release
 summaries in {doc}`surveys/DES` and {doc}`surveys/DELVE`.
@@ -20,7 +20,7 @@ summaries in {doc}`surveys/DES` and {doc}`surveys/DELVE`.
 | Group | Checks | What it establishes |
 |---|---|---|
 | MANIFEST | presence + sha256 of every product | the archive is complete and identified |
-| CONTRACT | column names, ranges, clamp, curve orderings | streamobs will read what it expects |
+| CONTRACT | column names, ranges, clamp, curve orderings, forced-photometry pair | streamobs will read what it expects |
 | DEPTH | each map loads; nside, area, median | the depth maps are what they claim |
 | PHYSICS | anchor, inflation factor, plateau, 50% crossing | the curves are physically sensible |
 | CROSS | DES vs DELVE in `delta_mag` space | the two releases are mutually consistent |
@@ -89,7 +89,7 @@ numerators count, not a disagreement about the surveys.
 
 ## Findings
 
-Two defects were found and fixed while assembling this release.
+Three defects were found and fixed while assembling this release.
 
 ### DES depth maps were mislabelled `nside1024`
 
@@ -107,6 +107,32 @@ that a map's nside matches its filename.
 The DES depth resolution is therefore genuinely nside 512 (≈6.9′ pixels), set by
 its HealSparse inputs. DELVE's maps are degraded to the same nside 512 from
 nside-16384 inputs, so both DECam releases now share a depth grid.
+
+### `_nocut` photo-error curves were missing for both releases
+
+streamobs treats every non-reference band as *forced* photometry — measured at
+the reference band's position, so not conditioned on its own detection — and
+requires a `_nocut` photo-error pair measured without the reference-band S/N
+cut. Neither DECam release shipped one, so any r/i/z photometry raised.
+
+The reducer already computed the no-S/N-cut populations for the depth anchor, so
+it now accumulates the same two histograms against `classified_nosnr` and emits
+`*_photoerror_<band>_nocut.csv` and `*_catalog_nocut.csv` alongside the existing
+pair. Both releases were regenerated; every previously shipped curve, map and
+audit number reproduced byte-for-byte, so the new curves are a strict addition.
+
+The two pairs behave exactly as the convention predicts: identical brightward of
+the depth (54 bins for DES, 22 for DELVE agree to within 1e-6), and diverging
+only faintward, where the S/N cut truncates the detected sample. There the cut
+curve's measured scatter *turns over* and falls while the `_nocut` curve keeps
+rising — up to 0.58 dex apart for DES and 0.38 for DELVE. Applying the cut curve
+to forced photometry would therefore have understated faint-band errors.
+
+Found separately while wiring this up: `Survey._resolve_log_photo_error` formats
+its "no `_nocut` curve" error with `self.full_name`, which does not exist — the
+property is `namespace`. Every release on main ships `_nocut` curves, so the
+branch had never been reached; the first survey without them got an
+`AttributeError` instead of the intended message. Fixed.
 
 ### The DELVE photo-error curve was quantisation-limited
 
@@ -156,8 +182,8 @@ Carried forward into the release, not fixed here.
 
 ## Manifest
 
-`data.zip` — 49,561,196 bytes, 92 files
-sha256 `08c59cab1da451e673ea7599deececc9380ee240865b9c63ae17098b02ab2286`
+`data.zip` — 49,582,444 bytes, 116 files
+sha256 `cd64b018328330bd97d4b1039a506dea95a887b74dcff9e23b7664cffd6e3f91`
 
 Per-file sizes and sha256 for both releases are in
 `artifacts/product_manifest.json`. The shipped products are:
@@ -171,6 +197,8 @@ Per-file sizes and sha256 for both releases are in
 | `des_yr6_stellar_efficiency_cutg.csv` | 2,412 | `delve_dr3_gold_stellar_efficiency_cutg.csv` | 1,524 |
 | `des_yr6_photoerror_g.csv` | 1,525 | `delve_dr3_gold_photoerror_g.csv` | 828 |
 | `des_yr6_photoerror_g_catalog.csv` | 1,525 | `delve_dr3_gold_photoerror_g_catalog.csv` | 828 |
+| `des_yr6_photoerror_g_nocut.csv` | 1,544 | `delve_dr3_gold_photoerror_g_nocut.csv` | 828 |
+| `des_yr6_photoerror_g_catalog_nocut.csv` | 1,544 | `delve_dr3_gold_photoerror_g_catalog_nocut.csv` | 828 |
 | `des_yr6_galaxy_misclass_cutg.csv` | 1,647 | `delve_dr3_gold_galaxy_misclass_cutg.csv` | 1,392 |
 | `des_yr6_audit.json` | 868 | `delve_dr3_gold_audit.json` | 720 |
 
