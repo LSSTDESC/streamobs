@@ -144,7 +144,7 @@ reported errors for the noise draw would therefore understate bright-star scatte
 by well over an order of magnitude.
 
 Brightward of `delta_mag ≈ −7` (g ≈ 18) the sample curve is dropped as
-quantisation noise — see `config/surveys/des_photoerror_corrections.yaml` for the
+quantisation noise — see `scripts/des/des_photoerror_corrections.yaml` for the
 measured evidence.
 
 ![DES Y6 two-curve photometric error model](../_static/des_yr6/DES_errors.png)

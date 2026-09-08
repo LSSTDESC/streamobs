@@ -332,7 +332,7 @@ $PY scripts/des/balrog_selection_function.py \
                  i=data/surveys/des_yr6/des_y6_5_sig_maglim_band_i_nside_512.hsp \
                  z=data/surveys/des_yr6/des_y6_5_sig_maglim_band_z_nside_512.hsp \
     --write-maglim --maglim-nside 1024 \
-    --corrections config/surveys/des_photoerror_corrections.yaml \
+    --corrections scripts/des/des_photoerror_corrections.yaml \
     --out ./des_y6_products --tag des_y6
 ```
 
@@ -366,7 +366,7 @@ $PY scripts/des/balrog_selection_function.py \
                  i=$D/delve_dr32_i_maglim_wmean.hsp,$D/delve_dr311+dr312_i_maglim_Nov28th.hsp \
                  z=$D/delve_dr32_z_maglim_wmean.hsp,$D/delve_dr311+dr312_z_maglim_Nov28th.hsp \
     --tile-zp reject --write-maglim --maglim-nside 512 \
-    --corrections config/surveys/delve_photoerror_corrections.yaml \
+    --corrections scripts/des/delve_photoerror_corrections.yaml \
     --out ./delve_dr3_gold_products --tag delve_dr3_gold --chunk 4000000
 ```
 

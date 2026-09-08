@@ -81,7 +81,7 @@ survey_properties:
   # pinned to that grid and is reporting the bin width, not the scatter. Under
   # the earlier -5.2 cut the curve floored at 0.00500 -- a quantisation artefact,
   # never a measurement -- and adding 0.005 there would have been a 41%
-  # inflation. See config/surveys/delve_photoerror_corrections.yaml.
+  # inflation. See scripts/des/delve_photoerror_corrections.yaml.
   sys_error : 0.005
 
   # Saturation limits per band, or could be specified as saturation_g, etc

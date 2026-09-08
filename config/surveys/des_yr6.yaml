@@ -70,7 +70,7 @@ survey_properties:
   # the curve reached down to the 0.0025 quantisation floor of the residual
   # histogram, where 0.005 would have been a 124% inflation -- an artefact of
   # unresolved bright bins rather than a real systematic. See
-  # config/surveys/des_photoerror_corrections.yaml.)
+  # scripts/des/des_photoerror_corrections.yaml.)
   sys_error : 0.005
 
   # Saturation limits per band, or could be specified as saturation_g, etc

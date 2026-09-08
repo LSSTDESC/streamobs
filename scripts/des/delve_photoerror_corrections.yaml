@@ -1,6 +1,6 @@
 # Afterburner corrections for the DELVE DR3 Gold photo-error curves.
 #
-# Mirrors config/surveys/des_photoerror_corrections.yaml and
+# Mirrors scripts/des/des_photoerror_corrections.yaml and
 # roman_photoerror_corrections.yaml: the generator writes the unmodified binned
 # measurement to *_raw.csv every run, then applies the rules below to produce the
 # runtime curves.  Every manual cleanup lives here so it is attributed,
@@ -10,7 +10,7 @@
 #   cut_bright  : drop all bins with delta_mag < delta_mag_min
 #   clamp_faint : floor log_mag_err to `value` for bins with delta_mag >= delta_mag_min
 #
-# Apply with:  --corrections config/surveys/delve_photoerror_corrections.yaml
+# Apply with:  --corrections scripts/des/delve_photoerror_corrections.yaml
 # Re-apply to an existing product dir with:  --reapply-corrections
 
 g_sample:

@@ -130,7 +130,7 @@ can only take multiples of 0.0025; brightward of `delta_mag ≈ −3.26` the cur
 is pinned to that grid and reports the bin width rather than the scatter. The
 first bin reaching `sigma = 0.020` — the same floor the cleaned DES curve has
 — is `delta_mag = −3.256`. See
-`config/surveys/delve_photoerror_corrections.yaml` for the full rationale.
+`scripts/des/delve_photoerror_corrections.yaml` for the full rationale.
 
 The cleaned curve floors at 0.020 mag, which makes `sys_error: 0.005` safe
 (3.1% in quadrature) — exactly as for DES.
