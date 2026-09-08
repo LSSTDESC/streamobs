@@ -30,8 +30,10 @@ just the per-release summary.
 | `des_yr6_stellar_efficiency_cutg.csv` | stellar detection + classification efficiency vs `delta_mag` |
 | `des_yr6_photoerror_g.csv` | **sample** photo-error curve — truth scatter, drives the noise draw |
 | `des_yr6_photoerror_g_catalog.csv` | **catalog** photo-error curve — reported `magerr`, drives the S/N cut |
+| `des_yr6_photoerror_g_nocut.csv` | **sample**, no S/N cut — the noise draw for forced-photometry bands |
+| `des_yr6_photoerror_g_catalog_nocut.csv` | **catalog**, no S/N cut — reported `magerr` for forced-photometry bands |
 | `des_yr6_galaxy_misclass_cutg.csv` | fraction of detected true galaxies classified as point sources |
-| `des_yr6_photoerror_g{,_catalog}_raw.csv` | pre-afterburner provenance |
+| `des_yr6_photoerror_g{,_catalog}{,_nocut}_raw.csv` | pre-afterburner provenance |
 | `des_yr6_audit.json` | counts, anchors and convention flags for the run |
 
 Reference band is **g**. The completeness and photo-error curves are keyed to
@@ -133,6 +135,21 @@ pure but incomplete, which makes completeness unbiased and contamination
 unmeasurable here.*
 
 ### Photometric errors
+
+Four curves ship, not two. The `sample`/`catalog` pair is measured on the
+detected population and applies to the **reference band** g, whose
+photometry is conditioned on its own detection. The `_nocut` pair is
+measured without the reference-band S/N cut and applies to **r, i and z**,
+which are forced at the g position and so are not conditioned on their own
+detection. `Survey.get_photo_error(band=...)` picks the right pair and
+raises rather than silently applying the wrong one.
+
+The two pairs are identical brightward of the depth (54 bins agree to
+within 1e-6) and diverge only faintward, where the S/N cut truncates the
+detected sample: its measured scatter turns over and falls while the
+`_nocut` curve keeps rising, up to **0.58 dex** apart. Using the detected
+curve for forced photometry would understate faint-band errors.
+
 
 The two-curve model matters here, and the size of the effect is strongly
 magnitude-dependent. Near the survey limit the truth-based scatter runs **~1.46×**

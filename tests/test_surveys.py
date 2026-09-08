@@ -155,7 +155,11 @@ SURVEY_REGISTRY = [
         "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
-        "skip_snr_maglim_check": True,
+        # Catalog curve crosses SNR=10 at delta_mag -0.461 on the truth-anchored
+        # depth scale. Measured, not assumed: the crossing is set by the slope of
+        # the reported-error curve, which is survey-specific. The cut and _nocut
+        # catalog curves agree here to 1e-3, so one value covers every band.
+        "snr10_delta_mag": -0.461,
     },
     # DELVE DR3 Gold — the second DECam Balrog release, derived by the same
     # reducer as des/yr6 (scripts/des/balrog_selection_function.py) and
@@ -177,7 +181,9 @@ SURVEY_REGISTRY = [
         "skip_sat_photoerr_check": True,
         "bright_completeness_threshold": 0.80,
         "skip_faint_completeness_check": True,
-        "skip_snr_maglim_check": True,
+        # Crosses SNR=10 at delta_mag -0.407, slightly brightward of DES's -0.461
+        # because its reported-error curve is marginally steeper.
+        "snr10_delta_mag": -0.407,
     },
     # Roman DC2 — reference HLIS depth mock; data files in data/surveys/roman_dc2/
     # Notes on threshold overrides (generic LSST/DES thresholds don't apply):
