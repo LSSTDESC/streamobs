@@ -1,0 +1,87 @@
+# Configuration file for the survey LSST, release DP2
+name: lsst
+release: dp2
+survey_files:
+    # Path to data files (leave empty for default location)
+    file_path: ''
+
+    # Band-specific magnitude limit maps: DP2's own measured 5-sigma PSF
+    # magnitude limits from the deepCoadd consolidated survey-property maps,
+    # HealSparse degraded to nside 128 by scripts/lsst/build_dp2_maglim_maps.py
+    # (mean reduction, the same one the Balrog reducer applies). Medians
+    # g 24.903 / r 24.514 over 3,550 / 3,946 deg2.
+    #
+    # The source maps are nside 512, medians g 24.925 / r 24.544. Degrading
+    # moves the medians down 0.02-0.03 mag and grows the footprint ~5%: coarse
+    # pixels that were only partially covered become fully valid, and averaging
+    # pulls in shallower edge pixels. Both are expected.
+    #
+    # NOT truth-anchored, unlike des/yr6 and delve/dr3_gold. There is no
+    # injection catalogue for DP2, so there is nothing to anchor against; the
+    # maps ship on their own native 5-sigma scale. That is the same footing as
+    # lsst_dc2, whose native-scale map reproduces an external calibration to
+    # 0.1% (see docs/source/selection_function_methodology.md). The consequence
+    # is that the absolute depth scale is inherited from whoever produced these
+    # maps rather than measured here.
+    #
+    # The two bands have genuinely different footprints -- g covers 3,550 deg2
+    # and r 3,946 deg2, overlapping on 84.1% of the larger. streamobs handles
+    # that per band through these maps, so the usable two-band area is the
+    # intersection rather than either number above.
+    maglim_map_g: dp2_deepCoadd_psf_maglim_consolidated_map_weighted_mean_g_nside_128.hsp
+    maglim_map_r: dp2_deepCoadd_psf_maglim_consolidated_map_weighted_mean_r_nside_128.hsp
+
+    # Band-independent maps
+    ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
+
+    # DC2-derived selection-function tables (symlinked from data/surveys/lsst_dc2/
+    # by scripts/lsst/link_lsst_yr_products.py), exactly as the lsst_yr1-5
+    # releases do.
+    #
+    # CAVEAT, and it is a stronger one here than for the year releases: DP2 is
+    # real commissioning data, while these curves were derived from the DC2
+    # simulation. The year releases apply DC2 curves to RubinSim depth maps --
+    # simulation onto simulation. Applying them to DP2 additionally assumes the
+    # simulated detection and star/galaxy performance describes the real
+    # pipeline. The curves are delta_mag-keyed, so the depth difference is
+    # already accounted for; what is assumed is the *shape* of the efficiency
+    # and error curves at fixed delta_mag. Treat DP2 completeness as indicative
+    # until it can be checked against real DP2 injections or an external truth
+    # catalogue.
+    completeness: lsst_dc2_stellar_efficiency_cutr.csv
+    completeness_band: r # the completeness has been obtained in the r band
+    # Galaxy misclassification: compact (cosmoDC2 size_true < 0.3") true galaxies
+    # classified as point sources, delta_mag-keyed like the tables above.
+    gal_misclassification: lsst_dc2_galaxy_misclass_cutr.csv
+
+    # Two-curve photometric error model (streamobs Survey.get_photo_error):
+    #   catalog = median reported magerr -> written as `magerr`, drives the S/N cut
+    #   sample  = truth-based scatter of (obs - true) -> drives the noise draw
+    log_photo_error_catalog: lsst_dc2_photoerror_r_catalog.csv
+    log_photo_error_sample: lsst_dc2_photoerror_r.csv
+    # Forced-photometry (non-reference band) curves: measured with NO S/N cut, because
+    # g photometry is forced from the r detection and so is not conditioned on g-band
+    # detection. Required for any band that is not `completeness_band`.
+    log_photo_error_catalog_nocut: lsst_dc2_photoerror_r_catalog_nocut.csv
+    log_photo_error_sample_nocut: lsst_dc2_photoerror_r_nocut.csv
+
+survey_properties:
+  bands: ['u', 'g', 'r', 'i', 'z', 'y']
+
+  # Extinction coefficients per band (A_band / E(B-V))
+  # From rubin_sim (verions = 2.6.0, baseline version = 5.0.0)
+  # from rubin_sim.phot_utils import DustValues
+  # dust_values = DustValues()
+  # print(dust_values.r_x)
+  coeff_extinc_u: 4.757217815396922
+  coeff_extinc_g: 3.6605664439892625
+  coeff_extinc_r: 2.70136780871597
+  coeff_extinc_i: 2.0536599130965882
+  coeff_extinc_z: 1.5900964472616756
+  coeff_extinc_y: 1.3077049588254708
+
+  # Systematic photometric errors (mag), or could be specified as sys_error_g, sys_error_r, etc
+  sys_error : 0.005 # Error common to all bands
+
+  # Saturation limits per band, or could be specified as saturation_g, saturation_r, etc
+  saturation: 16.0

@@ -124,8 +124,11 @@ SURVEY_REGISTRY = [
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
     },
-    # LSST DC2 — truth-anchored r/g depth maps + two-curve photo-error, derived from
-    # the DC2 object+truth skims (scripts/lsst/create_streamobs_files_lsst_dc2.py).
+    # LSST DC2 — native-scale r/g depth maps (truth-anchoring was removed in
+    # 2026-09; the ~1.4x DC2 error discrepancy is small enough that the native
+    # scale already matches an external calibration) + two-curve photo-error,
+    # derived from the DC2 object+truth skims
+    # (scripts/lsst/create_streamobs_files_lsst_dc2.py).
     # Same Roman-style threshold overrides: the two-curve model anchors the maglim
     # map to the SAMPLE (truth-scatter) curve while get_photo_error returns the
     # CATALOG (reported) curve, so SNR@maglim > 5; and the efficiency/photo-error
@@ -138,11 +141,66 @@ SURVEY_REGISTRY = [
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
     },
+    # LSST DP2 — real commissioning data: DP2's own measured 5-sigma deep-coadd
+    # depth maps at nside 512, carrying the lsst_dc2 selection-function tables
+    # the same way lsst_yr1-5 do. Same DC2-model threshold overrides, and the
+    # default snr10_delta_mag applies because the catalog photo-error curve is
+    # the DC2 one -- the crossing is a property of that curve, not of the depth
+    # map it is paired with.
+    {
+        "survey": "lsst",
+        "release": "dp2",
+        "expected_bands": ["g", "r"],
+        "expected_maglim": ["g", "r"],
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+    },
     {
         "survey": "des",
         "release": "yr6",
-        "expected_bands": ["g", "r"],
-        "expected_maglim": ["g", "r"],
+        # griz: Y is dropped because the Y6 Balrog injects griz only, so a
+        # Y depth map cannot be truth-anchored and no Y curve can be derived.
+        "expected_bands": ["g", "r", "i", "z"],
+        "expected_maglim": ["g", "r", "i", "z"],
+        # Same overrides as every other truth-anchored two-curve release: the
+        # maglim map is anchored to the SAMPLE (truth-scatter) curve while
+        # get_photo_error returns the CATALOG (reported) curve, so SNR@maglim > 5.
+        # The DES anchor additionally uses the no-S/N-cut population, because
+        # anchoring on the detected one is unstable across bands (g and r move
+        # 1.03 mag in opposite directions) -- see
+        # docs/source/balrog_selection_functions.md.
+        "skip_sat_photoerr_check": True,
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+        # Catalog curve crosses SNR=10 at delta_mag -0.461 on the truth-anchored
+        # depth scale. Measured, not assumed: the crossing is set by the slope of
+        # the reported-error curve, which is survey-specific. The cut and _nocut
+        # catalog curves agree here to 1e-3, so one value covers every band.
+        "snr10_delta_mag": -0.461,
+    },
+    # DELVE DR3 Gold — the second DECam Balrog release, derived by the same
+    # reducer as des/yr6 (scripts/des/balrog_selection_function.py) and
+    # classified by the same bdf_extended_class_dr3gold nodes, which is what
+    # makes the two comparable in delta_mag space. Same truth-anchored
+    # two-curve overrides as des/yr6.
+    #
+    # bright_completeness_threshold is set below the DES value because DELVE's
+    # bright-end detection plateau is 0.90, not ~1.0: DELVE applies per-object
+    # quality flags (meas_flags, meas_bdf_flags) in the efficiency numerator,
+    # and its denser injection grid means a non-negligible flagged fraction.
+    # That is the Roman/LSST convention; the DES plateau sits near unity only
+    # because its 20" injection grid leaves almost nothing flagged.
+    {
+        "survey": "delve",
+        "release": "dr3_gold",
+        "expected_bands": ["g", "r", "i", "z"],
+        "expected_maglim": ["g", "r", "i", "z"],
+        "skip_sat_photoerr_check": True,
+        "bright_completeness_threshold": 0.80,
+        "skip_faint_completeness_check": True,
+        # Crosses SNR=10 at delta_mag -0.407, slightly brightward of DES's -0.461
+        # because its reported-error curve is marginally steeper.
+        "snr10_delta_mag": -0.407,
     },
     # Roman DC2 — reference HLIS depth mock; data files in data/surveys/roman_dc2/
     # Notes on threshold overrides (generic LSST/DES thresholds don't apply):
@@ -348,9 +406,9 @@ class TestSurveyProperties:
                         f"band '{band}' is not the reference band '{ref}' and must "
                         "resolve to the _nocut curve"
                     )
-                    assert fn is not ref_fn, (
-                        "forced-photometry and reference-band curves must differ"
-                    )
+                    assert (
+                        fn is not ref_fn
+                    ), "forced-photometry and reference-band curves must differ"
 
     def test_nocut_curve_exceeds_detected_curve_faintward(self, loaded_survey):
         """The no-cut curve must sit ABOVE the detected-population curve faintward.
@@ -365,9 +423,9 @@ class TestSurveyProperties:
         nocut = loaded_survey.log_photo_error_catalog_nocut
         # brightward: effectively identical (the S/N cut removes ~nothing there)
         for dm in (-3.0, -2.0, -1.0):
-            assert abs(float(det(dm)) - float(nocut(dm))) < 0.02, (
-                f"curves should agree at delta_mag={dm}"
-            )
+            assert (
+                abs(float(det(dm)) - float(nocut(dm))) < 0.02
+            ), f"curves should agree at delta_mag={dm}"
         # Faintward the no-cut curve must be larger. Compare only where BOTH curves
         # have real data: past its last row an interpolator returns the out-of-range
         # sentinel (log10 sigma = 1.0, i.e. 10 mag), and the two curves do not end at
@@ -424,8 +482,13 @@ class TestSurveyProperties:
             loaded_survey.log_photo_error is not None
         ), "Log photo error function is None"
 
-    def test_delta_saturation_loaded(self, loaded_survey):
-        assert loaded_survey.delta_saturation is not None, "delta_saturation is None"
+    def test_delta_bounds_loaded(self, loaded_survey):
+        assert hasattr(
+            loaded_survey.completeness, "delta_bounds"
+        ), "completeness interpolator missing delta_bounds"
+        assert hasattr(
+            loaded_survey.log_photo_error, "delta_bounds"
+        ), "log_photo_error interpolator missing delta_bounds"
         assert loaded_survey.saturation is not None, "Saturation dict is None"
 
     def test_efficiencies_loaded(self, loaded_survey):
@@ -677,14 +740,18 @@ class TestSurveyProperties:
                 snr10_delta_mag = loaded_survey._test_entry.get(
                     "snr10_delta_mag", -0.75
                 )
-                loaded_survey.sys_error[band] = 0.0  # remove statistical error for SNR check
+                loaded_survey.sys_error[band] = (
+                    0.0  # remove statistical error for SNR check
+                )
                 error_at_maglim = loaded_survey.get_photo_error(
                     band, base_maglim + snr10_delta_mag, base_maglim, kind="catalog"
                 )
 
                 snr_at_maglim = 2.5 / np.log(10) / error_at_maglim  # convert to SNR
                 assert np.isclose(
-                    snr_at_maglim, 10.0, atol=0.5,
+                    snr_at_maglim,
+                    10.0,
+                    atol=0.5,
                 ), (
                     f"Photo error at delta_mag={snr10_delta_mag} should correspond to "
                     f"roughly SNR=10 for band '{band}' (got {float(np.atleast_1d(snr_at_maglim)[0]):.3f})"

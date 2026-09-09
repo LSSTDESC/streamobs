@@ -131,8 +131,11 @@ dmypy.json
 # Claude Code settings (local only)
 .claude/
 
-# Surveys files
+# Surveys files — the downloaded data products are not tracked, but the
+# directory placeholder and the README that ships inside data.zip are.
 data/surveys/*
+!data/surveys/.gitkeep
+!data/surveys/README.md
 data/others/*
 
 # Background resources (precomputed CMD grids — built locally, not tracked)
@@ -175,3 +178,6 @@ artifacts/
 /toy2_stream.png
 /pal5_stream.csv
 /pal5_stream.png
+des_delve_instructions.md
+HANDOFF_des_yr6.md
+

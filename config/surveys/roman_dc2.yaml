@@ -18,9 +18,13 @@ survey_files:
     # tables are keyed to this map's median, so any replacement map (e.g. an
     # exposure-time-scaled HLWAS map) must be expressed in the same convention,
     # i.e. scaled relative to the DC2 depth.
-    maglim_map_F106: roman_dc2_maglim_f106_nside1024.fits.gz
-    maglim_map_F129: roman_dc2_maglim_f129_nside1024.fits.gz
-    maglim_map_F158: roman_dc2_maglim_f158_nside1024.fits.gz
+    # Shipped at nside 128 so every release shares one depth grid; degraded
+    # from the nside-1024 product by scripts/degrade_maglim_maps.py (mean over
+    # valid subpixels). Medians move by <0.005 mag; the footprint inflates by
+    # 10-19% because a coarse pixel is kept if any subpixel was covered.
+    maglim_map_F106: roman_dc2_maglim_f106_nside128.fits.gz
+    maglim_map_F129: roman_dc2_maglim_f129_nside128.fits.gz
+    maglim_map_F158: roman_dc2_maglim_f158_nside128.fits.gz
     # NOTE: the completeness + photo-error tables below are F158-derived and applied
     # to ALL bands band-independently (via delta_mag = maglim_band - true_mag), per
     # the streamobs convention (e.g. LSST applies its r-band curves to g as well).
@@ -70,4 +74,3 @@ survey_properties:
   # appear brighter than mag ~17 (Troxel+23 Fig 7); stars brighter than 15
   # are not chromatically rendered.
   saturation: 17.0
-  delta_saturation: -9.0   # = saturation - reference maglim (25.98)

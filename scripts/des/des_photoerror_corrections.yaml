@@ -1,0 +1,78 @@
+# DES Y6 photo-error afterburner corrections.
+#
+# Human-authored, tracked corrections applied to the *measured* photo-error
+# curves by scripts/des/balrog_selection_function.py, after it writes the
+# untouched *_raw.csv provenance files. Mirrors
+# config/surveys/roman_photoerror_corrections.yaml and
+# config/surveys/lsst_photoerror_corrections.yaml.
+#
+# Keys are curve ids: `g_sample` (truth-based scatter of obs-true, drives the
+# noise draw) and `g_catalog` (median reported magerr, drives the S/N cut).
+#
+# Supported rules:
+#   clamp_faint: {delta_mag_min: <float>, value: <log10 sigma floor>}
+#   cut_bright:  {delta_mag_min: <float>}   # drop rows brighter than this
+#
+# To revise these, edit and re-run with --reapply-corrections; that reads the
+# *_raw.csv and rewrites the cleaned curves without re-deriving anything.
+
+# --- Bright-end cut -------------------------------------------------------
+# Brightward of delta_mag ~ -7 (mag_g ~ 18) the SAMPLE curve is quantisation
+# noise, not a measurement. The truth-scatter is accumulated on a residual
+# histogram with 0.005 mag bins, so (p84-p16)/2 can only take multiples of
+# 0.0025 -- and in that regime the measured values are all such multiples,
+# jumping erratically:
+#
+#   delta_mag   mag_g    sigma_sample
+#     -8.403   16.622      0.00250     <- exactly half a bin: unresolved
+#     -8.283   16.742      0.00500
+#     -8.163   16.862      0.00750
+#     -8.043   16.982      0.00500
+#     -7.923   17.102      0.03250     <- 13x the neighbouring bin
+#     -7.803   17.222      0.03250
+#     -7.683   17.342      0.03000
+#     -7.563   17.462      0.02000
+#     -7.443   17.582      0.01750
+#     -7.323   17.702      0.01250
+#     -7.203   17.822      0.01500
+#     -7.083   17.942      0.01750
+#     -6.963   18.062      0.02000     <- stable from here on
+#
+# There are also few enough bright stars per bin for the quantile estimate to
+# be noisy in its own right, and the brightest bins sit at/near DES saturation
+# (config saturation = 16.0). Dropping them leaves the injector to clamp to the
+# first surviving value (0.020) brightward, which is far better behaved than
+# propagating a spurious 0.0025 or a spurious 0.0325.
+#
+# Same rule on both curves so the two stay on a common delta_mag grid, even
+# though the catalog curve is smooth here (it sits flat at ~0.0005).
+#
+# Cf. the equivalent bright cuts on the other releases: LSST drops
+# delta_mag < -11, Roman < -8.7.
+
+g_sample:
+  cut_bright: {delta_mag_min: -7.0}
+
+g_catalog:
+  cut_bright: {delta_mag_min: -7.0}
+
+# Forced-photometry curves (non-reference bands), measured with no
+# reference-band S/N cut. Same bright-end cut as the detected-population pair,
+# so all four curves share a delta_mag grid.
+g_sample_nocut:
+  cut_bright:
+    delta_mag_min: -7.0
+
+g_catalog_nocut:
+  cut_bright:
+    delta_mag_min: -7.0
+
+# Galaxy misclassification: the fraction of detected true galaxies the classifier
+# calls a point source. Brightward of this the true-galaxy counts per bin get
+# small and the rate stops being a measurement -- it swings between zero and tens
+# of percent between neighbouring bins. Applied by
+# scripts/apply_misclass_cuts.py, which preserves the uncut curve as
+# *_galaxy_misclass_cut<band>_raw.csv.
+g_misclass:
+  cut_bright:
+    delta_mag_min: -4.0

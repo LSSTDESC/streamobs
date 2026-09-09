@@ -170,7 +170,8 @@ print(
 # cannot drift). We fit it on the matched det->truth catalog and pull the artifacts the
 # products + figures need (the size, the boundaries, the half-width Delta, the stellar locus).
 import roman_star_classifier as rsc
-from roman_star_classifier import ENV_PURITY  # purity target (figure + class_star-opt)
+from roman_star_classifier import \
+    ENV_PURITY  # purity target (figure + class_star-opt)
 from roman_star_classifier import ENV_UP_BRIGHT_VAL  # plot annotations
 from roman_star_classifier import ENV_FREEZE, ENV_UP_BRIGHT, ENV_UP_KNEE
 
@@ -1151,9 +1152,7 @@ def _photoerr_tables(mask, label):
     for i in range(dmid.size):
         v = dm_obs[ib == i]
         if v.size >= 20:
-            log_scatter[i] = np.log10(
-                (np.percentile(v, 84) - np.percentile(v, 16)) / 2
-            )
+            log_scatter[i] = np.log10((np.percentile(v, 84) - np.percentile(v, 16)) / 2)
             med_logerr_rep[i] = np.median(logerr_reported[ib == i])
     keep = np.isfinite(log_scatter)
     print(f"  [{label:<34}] n={len(delta):>9,}  rows={int(keep.sum()):>4}")
@@ -1312,13 +1311,19 @@ for _tab, _stem, _rule in [
     (catalog_nc, "roman_photoerror_f158_catalog_nocut", "F158_catalog"),
 ]:
     np.savetxt(
-        OUT_DIR / f"{_stem}_raw.csv", _tab.values, delimiter=",",
-        header="delta_mag,log_mag_err", fmt="%.6f",
+        OUT_DIR / f"{_stem}_raw.csv",
+        _tab.values,
+        delimiter=",",
+        header="delta_mag,log_mag_err",
+        fmt="%.6f",
     )
     _clean = _apply_photoerr_corrections(_tab, _rule, CORRECTIONS_FILE)
     np.savetxt(
-        OUT_DIR / f"{_stem}.csv", _clean.values, delimiter=",",
-        header="delta_mag,log_mag_err", fmt="%.6f",
+        OUT_DIR / f"{_stem}.csv",
+        _clean.values,
+        delimiter=",",
+        header="delta_mag,log_mag_err",
+        fmt="%.6f",
     )
     print(f"wrote {_stem}.csv  (+_raw)  {len(_clean)} rows")
 
@@ -1348,9 +1353,9 @@ eff_tab = eff_tab[n_all >= 20].fillna(0.0)
 
 # Bright cut: the F158 truth-scatter photo-error curve shows a saturation jump at
 # delta_mag ~ -8.8 (scatter inflated brighter than that), so curve rows brighter
-# than -8.7 are dropped entirely — the injector's saturation handling (efficiency
-# forced to zero at delta_saturation, interpolated up to the first curve point)
-# governs brighter magnitudes. Matches the LSST convention (EFF_DELTA_MIN=-11).
+# than -8.7 are dropped entirely — the injector's bright-edge hold (flat at the
+# table's first remaining row, below the physical saturation floor) governs
+# brighter magnitudes. Matches the LSST convention (EFF_DELTA_MIN=-11).
 EFF_DELTA_MIN = -8.7
 _bright = eff_tab["delta_mag"] < EFF_DELTA_MIN
 eff_tab = eff_tab[~_bright]
@@ -1452,11 +1457,13 @@ plt.show()
 
 # ## Next steps
 #
-# - Wire these into a `config/surveys/roman_hlwas.yaml` (mirroring `lsst_yr5.yaml`):
+# - Wire these into the per-tier configs `config/surveys/roman_hlwas_{wide,medium,
+#   all}.yaml` (mirroring `lsst_yr5.yaml`). The single `roman_hlwas.yaml`
+#   placeholder this note used to describe was removed once the tiers landed:
 #   `completeness: roman_stellar_efficiency_cutf158.csv`, `completeness_band: F158`,
 #   `log_photo_error_catalog: roman_photoerror_f158_catalog.csv` (reported magerr),
 #   `log_photo_error_sample: roman_photoerror_f158.csv` (truth-based scatter),
-#   `maglim_map_F158: roman_dc2_maglim_f158_nside1024.fits.gz`
+#   `maglim_map_F158: roman_dc2_maglim_f158_nside128.fits.gz`
 #   (or, for the full HLWAS footprint, a maglim map scaled from the exposure-time map —
 #   see `roman_hlwas_exptime_map.ipynb`; the DC2 map above characterizes the mock's depth).
 # - Caveats: the det→truth (detection-centric) match assigns a blended star to a single

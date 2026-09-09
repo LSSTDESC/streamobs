@@ -48,10 +48,15 @@ downstream readers expecting those columns — everything is now namespaced by
 survey, even when only one survey is injected.
 ```
 
-## Two error curves: catalog vs. sample
+## Four error curves: catalog vs. sample, cut vs. no-cut
 
-Each survey carries **two** photometric-error curves, both functions of
-`delta_mag = mag − maglim`:
+Each survey carries **four** photometric-error curves, all functions of
+`delta_mag = mag − maglim`. They split along two independent axes: *which
+quantity* the curve describes (catalog vs. sample), and *which population* it
+was measured on (the detected sample, vs. the same sample without the
+reference-band S/N cut).
+
+The first axis — catalog vs. sample:
 
 - **Catalog error** — the survey's *reported* error (e.g. SExtractor `magerr`).
   This is what is written to `<survey>_<band>_err`, and it drives the S/N
@@ -65,6 +70,28 @@ scatter is ≈ 2× the reported error — so the noise you draw and the error yo
 report are genuinely different. When a survey has no sample curve loaded, the
 sample draw transparently falls back to the catalog curve, so the two are
 identical and outputs match the single-curve behaviour.
+
+The second axis — cut vs. `_nocut`:
+
+- **The cut pair** (`*_photoerror_<band>.csv`, `*_catalog.csv`) is measured on
+  the **detected** population and applies to the **reference band** — the band
+  whose own detection the measurement was conditioned on
+  (`completeness_band` in the survey config).
+- **The `_nocut` pair** (`*_nocut.csv`, `*_catalog_nocut.csv`) is measured
+  **without** the reference-band S/N cut and applies to **every other band**.
+  Photometry in those bands is *forced* at the reference band's position, so it
+  is not conditioned on its own detection and must not inherit that
+  conditioning.
+
+The two pairs agree brightward of the depth and diverge only faintward, where
+the S/N cut truncates the detected sample: its measured scatter turns over and
+falls, while the `_nocut` curve keeps rising. Using the cut curve for forced
+photometry therefore *understates* faint-band errors — by up to 0.58 dex for
+`des/yr6` and 0.38 dex for `delve/dr3_gold`.
+
+`Survey.get_photo_error(band=...)` selects the right pair for you. A release
+that ships no `_nocut` curves **raises** for any non-reference band rather than
+silently applying the detected-population curve.
 
 Select between them via
 {meth}`streamobs.surveys.Survey.get_photo_error` with `kind="catalog"` (default,
