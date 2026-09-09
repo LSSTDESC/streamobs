@@ -183,8 +183,8 @@ Carried forward into the release, not fixed here.
 
 ## Manifest
 
-`data.zip` — 23,720,661 bytes, 124 files
-sha256 `6a383ab5afba90bb8a17109e8f7bda5130c9843bad7178516d6a8e15e4108206`
+`data.zip` — 24,613,885 bytes, 126 files
+sha256 `6dc3578ecfbfcf53af6e43a792b3170f0a09e187d0a63fe8d70b10cbdb8b2e0b`
 
 Per-file sizes and sha256 for both releases are in
 `artifacts/product_manifest.json`. The shipped products are:
@@ -227,4 +227,4 @@ band, the error-inflation factor and the classifier used.
 1. Upload `archive/data.zip` to Zenodo as a new version of the record.
 2. Update `BASE_DATA_URL` in `bin/download_data.py` to the new record id
    (currently `18298544`, which still serves the *old* DES products).
-3. `ARCHIVE_SIZE_MB` in the same file is already updated to 24.
+3. `ARCHIVE_SIZE_MB` in the same file is already updated to 25.

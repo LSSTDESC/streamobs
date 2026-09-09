@@ -70,6 +70,16 @@ EXCLUDE_FILE_GLOBS = [
     "*.README.md",
     ".DS_Store",
 ]
+# Directories (path relative to data/) whose contents are kept even when a file
+# glob above would drop them. The *.parquet glob exists to skip large derivation
+# inputs, but it matches by extension, so it also caught the background CMD
+# products that scripts/dev/create_background_CMD_files.py writes -- those are
+# runtime products, not inputs. The truth-star catalogue they are built from
+# stays excluded: it lives in background/_inputs/ and is ~60 MB.
+FORCE_INCLUDE_DIRS = {
+    "background/lsst",
+}
+
 # Safety net: warn + skip any single file larger than this that slipped past the
 # globs above (all genuine runtime products are < a few MB).
 MAX_FILE_MB = 50.0
@@ -83,7 +93,15 @@ def _excluded_dir(rel: str) -> bool:
     return any(fnmatch.fnmatch(base, g) for g in EXCLUDE_DIR_GLOBS)
 
 
-def _excluded_file(name: str) -> bool:
+def _forced(rel: str) -> bool:
+    """True if this file sits under a FORCE_INCLUDE_DIRS directory."""
+    rel = rel.replace(os.sep, "/")
+    return any(rel.startswith(d + "/") for d in FORCE_INCLUDE_DIRS)
+
+
+def _excluded_file(name: str, rel: str = "") -> bool:
+    if rel and _forced(rel):
+        return False
     return any(fnmatch.fnmatch(name, g) for g in EXCLUDE_FILE_GLOBS)
 
 
@@ -104,7 +122,7 @@ def collect():
                 size = src.stat().st_size  # stat() follows symlinks
             except OSError:
                 continue
-            if _excluded_file(fname):
+            if _excluded_file(fname, rel):
                 skipped.append((rel, size, "pattern"))
             elif size > MAX_FILE_MB * 1024 * 1024:
                 skipped.append((rel, size, f">{MAX_FILE_MB:.0f}MB"))
