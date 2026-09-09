@@ -16,7 +16,8 @@ Products, following ``streamobs/docs/source/selection_function_methodology.md``:
   <out>/<tag>_photoerror_<band>_nocut.csv          SAMPLE, no S/N cut  (forced bands)
   <out>/<tag>_photoerror_<band>_catalog_nocut.csv  CATALOG, no S/N cut (forced bands)
   <out>/<tag>_photoerror_<band>{,_catalog}_raw.csv    provenance, pre-afterburner
-  <out>/<tag>_galaxy_misclass_cut<band>.csv    derived; not consumed by the injector yet
+  <out>/<tag>_galaxy_misclass_cut<band>.csv        stellar contamination
+  <out>/<tag>_galaxy_misclass_cut<band>_raw.csv    provenance, pre-afterburner
   <out>/<tag>_maglim_<band>_nside<N>.fits.gz   only with --write-maglim
   <out>/<tag>_audit.json                       counts + anchors for validation
 
@@ -1025,19 +1026,31 @@ def reapply_corrections(out_dir, tag, band, corrections_path):
     hundreds of GB, and tuning a YAML threshold should not cost that.
     """
     out = Path(out_dir)
+    pe_header = "delta_mag,log_mag_err"
+    mis_header = f"mag_{band},delta_mag,missclassification_eff"
     n = 0
-    for name, cid in [(f"{tag}_photoerror_{band}", f"{band}_sample"),
-                      (f"{tag}_photoerror_{band}_catalog", f"{band}_catalog"),
-                      (f"{tag}_photoerror_{band}_nocut", f"{band}_sample_nocut"),
-                      (f"{tag}_photoerror_{band}_catalog_nocut",
-                       f"{band}_catalog_nocut")]:
+    # each curve carries its own header: the misclassification table has three
+    # columns, not the photo-error pair's two, and writing the wrong one leaves
+    # a file SurveyFactory loads as None through its bare except
+    for name, cid, header in [
+        (f"{tag}_photoerror_{band}", f"{band}_sample", pe_header),
+        (f"{tag}_photoerror_{band}_catalog", f"{band}_catalog", pe_header),
+        (f"{tag}_photoerror_{band}_nocut", f"{band}_sample_nocut", pe_header),
+        (f"{tag}_photoerror_{band}_catalog_nocut", f"{band}_catalog_nocut", pe_header),
+        (f"{tag}_galaxy_misclass_cut{band}", f"{band}_misclass", mis_header),
+    ]:
         raw = out / f"{name}_raw.csv"
         if not raw.exists():
             print(f"  missing {raw}, skipping")
             continue
         tab = pd.read_csv(raw)
+        if list(tab.columns) != header.split(","):
+            raise SystemExit(
+                f"{raw.name}: columns {list(tab.columns)} do not match the "
+                f"expected header {header!r}"
+            )
         cleaned = apply_photoerr_corrections(tab, cid, corrections_path)
-        write_csv(out / f"{name}.csv", cleaned, "delta_mag,log_mag_err")
+        write_csv(out / f"{name}.csv", cleaned, header)
         n += 1
     if not n:
         raise SystemExit(f"no *_raw.csv found in {out}")
@@ -1475,9 +1488,20 @@ def main(args):
         }
     )
     mis = mis[n_gal_det >= MIN_COUNT_EFF].fillna(0.0)
+    # Untouched measurement first, then the tracked bright-end cut: brightward of
+    # it the true-galaxy counts per bin get small and the rate swings between
+    # zero and tens of percent, so it stops being a measurement. Same afterburner
+    # YAML and same cut_bright rule as the photo-error curves; see
+    # scripts/apply_misclass_cuts.py, which applies it to the releases whose
+    # generators are too expensive to re-run.
+    write_csv(
+        out / f"{tag}_galaxy_misclass_cut{ref}_raw.csv",
+        mis,
+        f"mag_{ref},delta_mag,missclassification_eff",
+    )
     write_csv(
         out / f"{tag}_galaxy_misclass_cut{ref}.csv",
-        mis,
+        apply_photoerr_corrections(mis, f"{ref}_misclass", args.corrections),
         f"mag_{ref},delta_mag,missclassification_eff",
     )
 

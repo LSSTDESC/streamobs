@@ -66,3 +66,13 @@ g_sample_nocut:
 g_catalog_nocut:
   cut_bright:
     delta_mag_min: -7.0
+
+# Galaxy misclassification: the fraction of detected true galaxies the classifier
+# calls a point source. Brightward of this the true-galaxy counts per bin get
+# small and the rate stops being a measurement -- it swings between zero and tens
+# of percent between neighbouring bins. Applied by
+# scripts/apply_misclass_cuts.py, which preserves the uncut curve as
+# *_galaxy_misclass_cut<band>_raw.csv.
+g_misclass:
+  cut_bright:
+    delta_mag_min: -4.0
