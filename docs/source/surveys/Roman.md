@@ -99,9 +99,8 @@ if the `_nocut` curve a non-reference band needs is not loaded, rather than
 silently falling back to the reference-band curve.
 
 Photometry is on the AB system. `get_photo_error` returns `NaN` for
-magnitudes brighter than the configured saturation limit (17.0 mag;
-`delta_saturation` ≈ −9.0 to −9.28 depending on release) — the curves do not
-model the saturation regime. See
+magnitudes brighter than the configured saturation limit (17.0 mag) — the
+curves do not model the saturation regime. See
 *Photometric-error derivation* for how the
 curves were built and why the two-curve model is needed at all.
 

@@ -131,9 +131,9 @@ For a forced-photometry band, pass that band to `get_photo_error` (e.g.
 - **The efficiency table starts shallower on the bright side than DES's.**
   DELVE's table begins at `delta_mag = −5.0` (`mag_g` = 19.375), 3.4 mag
   shallower than DES's `−8.4` (`mag_g` = 16.625). Stars brighter than
-  `g ≈ 19.4` are flat-extrapolated from the `−5.0` bin, where
-  `detection_eff = 0.90`. `delta_saturation` is set to `−5.0` to match — treat
-  completeness for very bright stars as indicative rather than measured.
+  `g ≈ 19.4` are held flat at the table's brightest value (`detection_eff =
+  0.90`) by streamobs' bright-edge hold — treat completeness for very bright
+  stars as indicative rather than measured.
 
 ## Creation
 

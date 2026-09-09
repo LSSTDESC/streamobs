@@ -482,8 +482,13 @@ class TestSurveyProperties:
             loaded_survey.log_photo_error is not None
         ), "Log photo error function is None"
 
-    def test_delta_saturation_loaded(self, loaded_survey):
-        assert loaded_survey.delta_saturation is not None, "delta_saturation is None"
+    def test_delta_bounds_loaded(self, loaded_survey):
+        assert hasattr(
+            loaded_survey.completeness, "delta_bounds"
+        ), "completeness interpolator missing delta_bounds"
+        assert hasattr(
+            loaded_survey.log_photo_error, "delta_bounds"
+        ), "log_photo_error interpolator missing delta_bounds"
         assert loaded_survey.saturation is not None, "Saturation dict is None"
 
     def test_efficiencies_loaded(self, loaded_survey):

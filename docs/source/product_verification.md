@@ -41,7 +41,6 @@ summaries in {doc}`surveys/DES` and {doc}`surveys/DELVE`.
 | combined eff crosses 50% at `delta_mag` | +0.210 | −0.144 |
 | star classifier | `EXT_XGB` (surrogate + deconvolution) | `bdf_extended_class_dr3gold` |
 | `sys_error` | 0.005 | 0.005 |
-| `delta_saturation` | −8.4 | −5.0 |
 
 Truth-anchored depths and the shift applied to each input map's median:
 

@@ -77,5 +77,3 @@ survey_properties:
     # Saturation: simulation clips at ~1.1e5 e-; saturation effects appear
     # brighter than mag ~17 (Troxel+23 Fig 7).
     saturation: 17.0
-    # delta_saturation = saturation - map_median = 17.0 - 26.2842 = -9.2842
-    delta_saturation: -9.2842

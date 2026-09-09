@@ -1348,9 +1348,9 @@ eff_tab = eff_tab[n_all >= 20].fillna(0.0)
 
 # Bright cut: the F158 truth-scatter photo-error curve shows a saturation jump at
 # delta_mag ~ -8.8 (scatter inflated brighter than that), so curve rows brighter
-# than -8.7 are dropped entirely — the injector's saturation handling (efficiency
-# forced to zero at delta_saturation, interpolated up to the first curve point)
-# governs brighter magnitudes. Matches the LSST convention (EFF_DELTA_MIN=-11).
+# than -8.7 are dropped entirely — the injector's bright-edge hold (flat at the
+# table's first remaining row, below the physical saturation floor) governs
+# brighter magnitudes. Matches the LSST convention (EFF_DELTA_MIN=-11).
 EFF_DELTA_MIN = -8.7
 _bright = eff_tab["delta_mag"] < EFF_DELTA_MIN
 eff_tab = eff_tab[~_bright]

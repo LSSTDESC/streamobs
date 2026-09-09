@@ -95,15 +95,7 @@ Each tier is a YAML in `config/surveys/`: `roman_hlwas_wide.yaml`,
 `roman_hlwas_medium.yaml`, `roman_hlwas_all.yaml` (releases `hlwas_wide`,
 `hlwas_medium`, `hlwas_all`). All use F158 only (F106/F129 HLWAS maps are not yet
 built; F184 is excluded per the DC2 documentation). Extinction coefficients and the
-saturation threshold are copied from `roman_dc2.yaml` (same instrument). The
-`delta_saturation` (= saturation − map median) is keyed to each tier's measured
-median:
-
-| Release | map_median (AB) | delta_saturation |
-|---|---|---|
-| `hlwas_wide`   | 26.2842 | −9.2842 |
-| `hlwas_medium` | 26.2894 | −9.2894 |
-| `hlwas_all`    | 26.2894 | −9.2894 |
+saturation threshold are copied from `roman_dc2.yaml` (same instrument).
 
 The column namespace per release is `{name}_{release}`: `roman_hlwas_wide`,
 `roman_hlwas_medium`, `roman_hlwas_all`.

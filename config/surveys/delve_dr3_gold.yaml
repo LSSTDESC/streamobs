@@ -96,8 +96,7 @@ survey_properties:
 
   # Saturation limits per band, or could be specified as saturation_g, etc
   saturation: 16.0
-  # Smallest delta_mag in the completeness file. NOTE this is 3.4 mag shallower
-  # than the DES value (-8.4): the DELVE efficiency table starts at g = 19.375
-  # because brighter bins fall below the 20-star minimum. Stars brighter than
-  # that are flat-extrapolated from the -5.0 bin, where detection_eff = 0.90.
-  delta_saturation: -5.0
+  # NOTE: the DELVE efficiency table starts at delta_mag=-5.0 (g = 19.375),
+  # 3.4 mag shallower than the DES table (-8.4), because brighter bins fall
+  # below the 20-star minimum. Stars brighter than that are held flat at
+  # the -5.0 bin's value (detection_eff = 0.90) by streamobs' bright-edge hold.

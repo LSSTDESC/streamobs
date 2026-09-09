@@ -1365,16 +1365,18 @@ def main(args):
             n_src[packed >> 32] += 1
         thin = enough & (n_src < MIN_UNIQUE_SRC)
         if thin.any():
-            # CLAMP, do not drop.  set_completeness inserts efficiency = 0 at
-            # delta_saturation and interpolates LINEARLY up to the first row of
-            # the table, so truncating the bright end would have streamobs ramp
-            # the efficiency from 0 at saturation to whatever the first
-            # surviving bin says -- i.e. assert that bright, well-detected stars
-            # are nearly unrecoverable.  Instead hold classification_eff at the
-            # brightest well-sampled value: DES does not classify a g = 17 star
-            # worse than a g = 18.5 one.  detection_eff is left as measured; it
-            # sits at ~1.0 and does not depend on morphology, so it is not
-            # affected by the corrupt bright-end injection profiles.
+            # CLAMP, do not drop.  streamobs's injector holds the loaded curve
+            # flat at its first (brightest) row for anything brighter than
+            # that -- so whatever value survives here becomes literally the
+            # bright-edge value applied to every brighter magnitude.
+            # Truncating the bright end instead of clamping would let a thin,
+            # noisy bin become that held-flat value, i.e. assert that bright,
+            # well-detected stars are nearly unrecoverable.  Instead hold
+            # classification_eff at the brightest well-sampled value: DES does
+            # not classify a g = 17 star worse than a g = 18.5 one.
+            # detection_eff is left as measured; it sits at ~1.0 and does not
+            # depend on morphology, so it is not affected by the corrupt
+            # bright-end injection profiles.
             reliable = np.where(enough & (n_src >= MIN_UNIQUE_SRC))[0]
             if reliable.size:
                 i0 = int(reliable[0])
@@ -1455,9 +1457,10 @@ def main(args):
     # Same thin-parent-sample hazard as the stellar curve, and just as visible:
     # unguarded, the bright end read 0.63 and 0.45 at mag_g ~ 15.4-15.6, i.e. half
     # of bright galaxies called stars.  Clamp (do not drop) for the same reason --
-    # set_completeness ramps linearly from zero at delta_saturation to the first
-    # surviving row.  Bright galaxies are well resolved, so holding the rate at
-    # the brightest well-sampled value is also the physically sensible shape.
+    # streamobs's injector holds the loaded curve flat at its first surviving
+    # row for anything brighter.  Bright galaxies are well resolved, so holding
+    # the rate at the brightest well-sampled value is also the physically
+    # sensible shape.
     if uniq_src_gal:
         n_src_g = np.zeros(MAG_BINS.size - 1, dtype=np.int64)
         for packed in uniq_src_gal:

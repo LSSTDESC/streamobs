@@ -81,4 +81,3 @@ survey_properties:
 
   # Saturation limits per band, or could be specified as saturation_g, etc
   saturation: 16.0
-  delta_saturation: -8.4 # smallest delta_mag in the completeness file

@@ -51,10 +51,10 @@ class Survey:
     coverage : np.ndarray, optional
         HEALPix map of survey coverage (1=observed, 0=not observed).
     completeness : callable, optional
-        Efficiency function f(magnitude) -> efficiency [0, 1].
-        Same function used for all bands, obtained from r band.
-    delta_saturation : float, optional
-        Magnitude difference for saturation threshold in the initial functions.
+        Efficiency function f(delta_mag) -> efficiency [0, 1]. Carries a
+        ``delta_bounds = (lo, hi)`` attribute (the CSV's observed delta_mag
+        range) used by :meth:`get_efficiency` to decide bright/faint edge
+        fill. Same function used for all bands, obtained from r band.
     completeness_band : str, optional
         Band used to derive completeness function (e.g., 'r').
     log_photo_error_catalog : callable, optional
@@ -63,6 +63,9 @@ class Survey:
         curve (e.g. ``photoerror_r.csv``); it is written as ``magerr`` and drives
         the S/N cut. Loaded from the ``log_photo_error_catalog`` config key, or the
         legacy ``log_photo_error`` key. Always present for a configured survey.
+        Carries a ``delta_bounds = (lo, hi)`` attribute (the CSV's observed
+        delta_mag range) used by :meth:`get_photo_error` to decide bright/faint
+        edge fill.
     log_photo_error_sample : callable, optional
         *Sample* photometric error model f(delta_mag) -> log10(mag_error): the true
         scatter of observed-minus-true magnitudes, used to draw the observed
@@ -117,7 +120,6 @@ class Survey:
     # Band-independent functions (same for all bands)
     completeness: Optional[Callable] = None
     completeness_band: Optional[str] = None
-    delta_saturation: Optional[float] = None
     log_photo_error_catalog: Optional[Callable] = None
     log_photo_error_sample: Optional[Callable] = None
     log_photo_error_catalog_nocut: Optional[Callable] = None
@@ -231,6 +233,70 @@ class Survey:
         if self.log_photo_error_sample is not None:
             return self.log_photo_error_sample
         return self.log_photo_error_catalog
+
+    @staticmethod
+    def _fill_delta_bounds(func: Callable, delta_mag) -> np.ndarray:
+        """
+        Evaluate ``func(delta_mag)`` and fill NaNs outside ``func``'s observed
+        domain, in ``func``'s own native output space.
+
+        ``func`` is one of the interpolators loaded by
+        :meth:`SurveyFactory.set_completeness`/:meth:`SurveyFactory.set_photo_error`
+        (or a composite built by :meth:`_make_composite_efficiency`), tagged
+        with a ``delta_bounds = (lo, hi)`` attribute holding the smallest and
+        largest ``delta_mag`` actually present in its source data. Calling
+        ``func`` outside ``[lo, hi]`` returns NaN (see the loaders); this
+        replaces those NaNs with:
+
+        - ``0.0`` when ``delta_mag > hi`` (fainter than any data point) --
+          e.g. no detection efficiency, or a 1-mag placeholder error
+          (``log10(mag_error) = 0``) for the photo-error curves.
+        - ``func(lo)`` when ``delta_mag < lo`` (brighter than any data
+          point) -- holding flat at the curve's own measured bright-edge
+          value, rather than a hardcoded constant.
+
+        This is applied *before* any downstream transform (e.g. the ``10**``
+        for photo error) and before saturation/coverage masking, both of
+        which callers must apply afterwards.
+
+        Missing the ``delta_bounds`` attribute defaults to ``(-inf, inf)``
+        (a safe no-op) rather than raising.
+        """
+        delta_mag = np.asarray(delta_mag, dtype=float)
+        raw = np.asarray(func(delta_mag), dtype=float)
+
+        lo, hi = getattr(func, "delta_bounds", (-np.inf, np.inf))
+
+        above = delta_mag > hi
+        result = np.where(above, 0.0, raw) if np.any(above) else raw
+
+        below = delta_mag < lo
+        if np.any(below):
+            edge_value = np.asarray(func(lo))
+            result = np.where(below, edge_value, result)
+
+        return result
+
+    @staticmethod
+    def _make_composite_efficiency(f1: Callable, f2: Callable) -> Callable:
+        """
+        Build a product-of-two-efficiencies fallback (e.g. detection ×
+        classification, or misclassification × detection) for use when the
+        combined curve was not directly loaded.
+
+        Each factor is bounds-filled individually (via :meth:`_fill_delta_bounds`,
+        using its own ``delta_bounds``) before multiplying, so the product
+        already contains no NaNs. The returned callable is tagged with
+        ``delta_bounds = (-inf, inf)`` so that an outer
+        ``_fill_delta_bounds(composite, delta_mag)`` call is a guaranteed
+        no-op on it.
+        """
+
+        def _composite(dm):
+            return Survey._fill_delta_bounds(f1, dm) * Survey._fill_delta_bounds(f2, dm)
+
+        _composite.delta_bounds = (-np.inf, np.inf)
+        return _composite
 
     @classmethod
     def load(
@@ -360,11 +426,8 @@ class Survey:
             used to draw the observed magnitudes). ``"sample"`` falls back to the
             catalog model if no sample curve is loaded. Default is ``"catalog"``.
         **kwargs
-            Additional keyword arguments:
-
-            delta_saturation : float, optional
-                Magnitude difference for saturation threshold in the initial error function.
-                Default is -10.4.
+            Unused; accepted so callers can pass extra keyword arguments
+            without raising.
 
         Returns
         -------
@@ -380,20 +443,13 @@ class Survey:
         if log_photo_error is None:
             raise ValueError(f"Photo error model ('{kind}') not loaded")
 
-        delta_saturation = kwargs.get("delta_saturation", self.delta_saturation)
-
         # Calculate delta_mag
         delta_mag = magnitude - maglim
 
-        # Get statistical error (same function for all bands)
-        mag_err_stat = 10 ** (
-            np.where(
-                ((delta_mag) <= delta_saturation)
-                & (magnitude >= self.saturation[band]),
-                log_photo_error(delta_saturation),
-                log_photo_error(delta_mag),
-            )
-        )
+        # Get statistical error (same function for all bands), holding flat
+        # at the curve's bright edge / filling 0 (1-mag placeholder) beyond
+        # its faint edge -- see _fill_delta_bounds.
+        mag_err_stat = 10 ** self._fill_delta_bounds(log_photo_error, delta_mag)
         mag_err_stat = np.where(
             magnitude < self.saturation[band],
             np.nan,  # saturation: no valid error
@@ -531,11 +587,8 @@ class Survey:
             ``"detection_efficiency"``, or ``"classification_efficiency"``.
             Default is ``"completeness"``.
         **kwargs
-            Additional keyword arguments. Currently:
-
-            delta_saturation : float, optional
-                Magnitude difference for saturation threshold in the initial
-                completeness function. Default is -10.4.
+            Unused; accepted so callers can pass extra keyword arguments
+            without raising.
 
         Returns
         -------
@@ -555,7 +608,12 @@ class Survey:
 
         - Source is brighter than saturation limit (``magnitude < saturation``)
         - Survey does not cover the position (``maglim < saturation`` or ``maglim`` is NaN)
-        - Source is too faint for reliable detection
+        - Source is fainter than any delta_mag in the loaded efficiency table
+
+        Brighter than the table's observed domain but still above the
+        physical saturation limit, the efficiency is held flat at the
+        table's own bright-edge value (not forced to 1.0) -- see
+        :meth:`_fill_delta_bounds`.
 
         Examples
         --------
@@ -575,38 +633,28 @@ class Survey:
         get_detection_efficiency : Convenience wrapper for detection-only.
         get_classification_efficiency : Convenience wrapper for classification-only.
         """
-        delta_saturation = kwargs.get("delta_saturation", self.delta_saturation)
         delta_mag = magnitude - maglim
 
-        if type in ("missclassified", "detected_missclassified"):
-            # Galaxy-related efficiencies: no 1-padding at the bright end.
-            if type == "missclassified":
-                func = self.gal_misclassification
-                if func is None:
+        if type == "missclassified":
+            func = self.gal_misclassification
+            if func is None:
+                raise ValueError(
+                    "Efficiency function for type 'missclassified' not loaded."
+                )
+        elif type == "detected_missclassified":
+            func = getattr(self, "gal_misclassification_detection", None)
+            if func is None:
+                # Fallback: missclassification × detection efficiency.
+                mis = self.gal_misclassification
+                det = getattr(self, "efficiency_detection", None)
+                if mis is None or det is None:
                     raise ValueError(
-                        "Efficiency function for type 'missclassified' not loaded."
+                        "Efficiency function for type 'detected_missclassified' not "
+                        "loaded and cannot be derived (need both 'missclassified' and "
+                        "'detection_efficiency')."
                     )
-            else:  # detected_missclassified
-                func = getattr(self, "gal_misclassification_detection", None)
-                if func is None:
-                    # Fallback: missclassification × detection efficiency.
-                    mis = self.gal_misclassification
-                    det = getattr(self, "efficiency_detection", None)
-                    if mis is None or det is None:
-                        raise ValueError(
-                            "Efficiency function for type 'detected_missclassified' not "
-                            "loaded and cannot be derived (need both 'missclassified' and "
-                            "'detection_efficiency')."
-                        )
-                    func = lambda dm: mis(dm) * det(dm)  # noqa: E731
-            compl = func(delta_mag)
-            compl = np.where(magnitude < self.saturation[band], 0.0, compl)
-            compl = np.where(
-                (maglim < self.saturation[band]) | np.isnan(maglim), 0.0, compl
-            )
-            return compl
-
-        if type in ("completeness", "classification_detection"):
+                func = self._make_composite_efficiency(mis, det)
+        elif type in ("completeness", "classification_detection"):
             func = self.completeness
             if func is None:
                 # Fallback: compute classification × detection on the fly.
@@ -617,7 +665,7 @@ class Survey:
                         "Efficiency function for type 'completeness' not loaded and "
                         "cannot be derived (need both detection and classification)."
                     )
-                func = lambda dm: det(dm) * cls_(dm)  # noqa: E731
+                func = self._make_composite_efficiency(det, cls_)
         elif type == "detection_efficiency":
             func = getattr(self, "efficiency_detection", None)
         elif type == "classification_efficiency":
@@ -631,12 +679,7 @@ class Survey:
         if func is None:
             raise ValueError(f"Efficiency function for type '{type}' not loaded.")
 
-        # 1-padding: bright sources (well above saturation) are always detected.
-        compl = np.where(
-            (magnitude > self.saturation[band]) & (delta_mag <= delta_saturation),
-            1.0,
-            func(delta_mag),
-        )
+        compl = self._fill_delta_bounds(func, delta_mag)
         compl = np.where(magnitude < self.saturation[band], 0.0, compl)
         compl = np.where(
             (maglim < self.saturation[band]) | np.isnan(maglim), 0.0, compl
@@ -649,11 +692,10 @@ class Survey:
         """
         Get galaxy misclassification efficiency (probability a galaxy passes stellar selection).
 
-        Mirrors :meth:`get_efficiency` for the ``"completeness"`` type, but
-        **without 1-padding at the bright end**: bright galaxies are not forced
-        to efficiency = 1 when their delta_mag falls below the saturation
-        threshold. This reproduces the behaviour of ``custom_get_completeness``
-        used for galaxies in external background-generation scripts.
+        Mirrors :meth:`get_efficiency` for the ``"missclassified"`` type: like
+        every efficiency curve, bright galaxies beyond the table's observed
+        domain are held flat at the table's own bright-edge value rather than
+        forced to a hardcoded 1.0 -- see :meth:`_fill_delta_bounds`.
 
         Parameters
         ----------
@@ -664,8 +706,8 @@ class Survey:
         maglim : float or np.ndarray
             Magnitude limit(s) at the source position(s).
         **kwargs
-            delta_saturation : float, optional
-                Override the survey's default saturation threshold.
+            Unused; accepted so callers can pass extra keyword arguments
+            without raising.
 
         Returns
         -------
@@ -687,11 +729,11 @@ class Survey:
         """
         Get galaxy misclassification × detection efficiency.
 
-        Mirrors :meth:`get_efficiency` for the ``"detected_missclassified"`` type,
-        but **without 1-padding at the bright end**: bright galaxies are not forced
-        to efficiency = 1 when their delta_mag falls below the saturation
-        threshold. This reproduces the behaviour of ``custom_get_completeness``
-        used for galaxies in external background-generation scripts.
+        Mirrors :meth:`get_efficiency` for the ``"detected_missclassified"``
+        type: like every efficiency curve, bright galaxies beyond the
+        table's observed domain are held flat at the table's own
+        bright-edge value rather than forced to a hardcoded 1.0 -- see
+        :meth:`_fill_delta_bounds`.
 
         Parameters
         ----------
@@ -702,8 +744,8 @@ class Survey:
         maglim : float or np.ndarray
             Magnitude limit(s) at the source position(s).
         **kwargs
-            delta_saturation : float, optional
-                Override the survey's default saturation threshold.
+            Unused; accepted so callers can pass extra keyword arguments
+            without raising.
 
         Returns
         -------
@@ -1260,17 +1302,13 @@ class SurveyFactory:
         survey.completeness_band = survey_config.get(
             "completeness_band", "r"
         )  # default to r band
-        survey.delta_saturation = props.get("delta_saturation", -10.4)
         if "completeness" in survey_config:
-            # Use default saturation if not band-specific
             cls._load_file(
                 survey,
                 survey_config,
                 "completeness",
                 "Completeness/efficiency function",
-                lambda f: cls.set_completeness(
-                    f, delta_saturation=survey.delta_saturation
-                ),
+                lambda f: cls.set_completeness(f),
                 data_path_survey,
                 data_path_others,
                 **kwargs,
@@ -1285,11 +1323,7 @@ class SurveyFactory:
                     survey_config,
                     "efficiency_detection",
                     "Detection efficiency function",
-                    lambda f: cls.set_completeness(
-                        f,
-                        delta_saturation=survey.delta_saturation,
-                        selection="detected",
-                    ),
+                    lambda f: cls.set_completeness(f, selection="detected"),
                     data_path_survey,
                     data_path_others,
                     filename=survey_config.get(
@@ -1308,11 +1342,7 @@ class SurveyFactory:
                     survey_config,
                     "efficiency_classification",
                     "Classification efficiency function",
-                    lambda f: cls.set_completeness(
-                        f,
-                        delta_saturation=survey.delta_saturation,
-                        selection="classified",
-                    ),
+                    lambda f: cls.set_completeness(f, selection="classified"),
                     data_path_survey,
                     data_path_others,
                     filename=survey_config.get(
@@ -1337,11 +1367,7 @@ class SurveyFactory:
                     survey_config,
                     "gal_misclassification",
                     "Galaxy misclassification efficiency",
-                    lambda f: cls.set_completeness(
-                        f,
-                        delta_saturation=survey.delta_saturation,
-                        selection="missclassified",
-                    ),
+                    lambda f: cls.set_completeness(f, selection="missclassified"),
                     data_path_survey,
                     data_path_others,
                     filename=_gal_mis_file,
@@ -1358,9 +1384,7 @@ class SurveyFactory:
                     "gal_misclassification_detection",
                     "Galaxy misclassification × detection efficiency",
                     lambda f: cls.set_completeness(
-                        f,
-                        delta_saturation=survey.delta_saturation,
-                        selection="detected_missclassified",
+                        f, selection="detected_missclassified"
                     ),
                     data_path_survey,
                     data_path_others,
@@ -1393,9 +1417,7 @@ class SurveyFactory:
                 survey_config,
                 "log_photo_error_catalog",
                 "Photometric error model (catalog / reported)",
-                lambda f: cls.set_photo_error(
-                    f, delta_saturation=survey.delta_saturation
-                ),
+                lambda f: cls.set_photo_error(f),
                 data_path_survey,
                 data_path_others,
                 filename=survey_config.get(catalog_key),
@@ -1410,9 +1432,7 @@ class SurveyFactory:
                 survey_config,
                 "log_photo_error_sample",
                 "Photometric error model (sample / true scatter)",
-                lambda f: cls.set_photo_error(
-                    f, delta_saturation=survey.delta_saturation
-                ),
+                lambda f: cls.set_photo_error(f),
                 data_path_survey,
                 data_path_others,
                 **kwargs,
@@ -1438,9 +1458,7 @@ class SurveyFactory:
                     survey_config,
                     _key,
                     _desc,
-                    lambda f: cls.set_photo_error(
-                        f, delta_saturation=survey.delta_saturation
-                    ),
+                    lambda f: cls.set_photo_error(f),
                     data_path_survey,
                     data_path_others,
                     **kwargs,
@@ -1625,7 +1643,7 @@ class SurveyFactory:
         return map_hpx
 
     @staticmethod
-    def set_completeness(filename, delta_saturation=-10.4, selection="both"):
+    def set_completeness(filename, selection="both"):
         """
         Load and interpolate completeness/efficiency function from file.
 
@@ -1642,8 +1660,6 @@ class SurveyFactory:
             - 'missclassification_eff' : Galaxy misclassification efficiency
               (probability a galaxy passes stellar selection)
 
-        delta_saturation : float, optional
-            Magnitude difference threshold for saturation. Default is -10.4.
         selection : str, optional
             Which efficiency to use:
 
@@ -1660,7 +1676,12 @@ class SurveyFactory:
         Returns
         -------
         callable
-            Interpolation function f(delta_mag) -> efficiency [0, 1].
+            Interpolation function f(delta_mag) -> efficiency [0, 1], NaN
+            outside the observed domain. Carries a ``delta_bounds = (lo, hi)``
+            attribute set to the min/max of the file's ``delta_mag`` column;
+            callers (see ``Survey._fill_delta_bounds``) use it to decide how
+            to fill NaNs at call time -- this loader no longer pads the
+            domain itself.
 
         Raises
         ------
@@ -1669,9 +1690,11 @@ class SurveyFactory:
 
         Notes
         -----
-        - Bright stars (delta_mag <= delta_saturation): Efficiency forced to 0.
-        - Faint stars (beyond data): Returns efficiency = 0.0.
-        - The saturation parameter is automatically passed from the survey object.
+        - No artificial rows are inserted: the interpolator's domain is
+          exactly ``[delta_mag.min(), delta_mag.max()]`` as found in the file.
+        - Bright- and faint-edge behavior is handled entirely by the caller
+          (``Survey.get_efficiency``) via the ``delta_bounds`` attribute, not
+          by this loader.
         """
         # Load the efficiency table. Product CSVs may carry a multi-line "#"
         # provenance comment whose LAST line is the column header (np.savetxt
@@ -1712,34 +1735,18 @@ class SurveyFactory:
                 "'both', 'missclassified', or 'detected_missclassified'."
             )
 
-        # Extend efficiency to bright end (force to zero at saturation)
-        if delta_mags.min() > delta_saturation:
-            delta_mags = np.insert(delta_mags, 0, delta_saturation)
-            efficiencies = np.insert(efficiencies, 0, 0.0)
-        elif delta_mags.min() == delta_saturation:
-            # Ensure efficiency is zero at magnitude very near saturation
-            delta_mags = np.insert(delta_mags, 0, delta_saturation - 1e-5)
-            efficiencies = np.insert(efficiencies, 0, 0.0)
-        else:
-            # Ensure efficiency is zero at saturation
-            efficiencies[delta_mags <= delta_saturation] = 0.0
-
-        # Extend efficiency to faint end (force to zero)
-        delta_mags = np.append(delta_mags, delta_mags[-1] + 1)
-        efficiencies = np.append(efficiencies, 0.0)
-
-        # Create interpolation function
         interpolator = scipy.interpolate.interp1d(
             delta_mags,
             efficiencies,
             bounds_error=False,
-            fill_value=0.0,  # Return 0 for very faint/bright stars
+            fill_value=np.nan,
         )
+        interpolator.delta_bounds = (float(delta_mags.min()), float(delta_mags.max()))
 
         return interpolator
 
     @staticmethod
-    def set_photo_error(filename, delta_saturation=-10.4):
+    def set_photo_error(filename):
         """
         Load photometric error model from file.
 
@@ -1754,20 +1761,21 @@ class SurveyFactory:
             - 'delta_mag' : Magnitude difference from limit (mag - maglim)
             - 'log_mag_err' : Logarithm (base 10) of magnitude error
 
-        delta_saturation : float, optional
-            Bright magnitude difference threshold. Used to determine the bright-end
-            extension point. Default is -10.4.
-
         Returns
         -------
         callable
-            Interpolation function f(delta_mag) -> log10(magnitude_error).
+            Interpolation function f(delta_mag) -> log10(magnitude_error), NaN
+            outside the observed domain. Carries a ``delta_bounds = (lo, hi)``
+            attribute (the file's delta_mag min/max).
 
         Notes
         -----
-        - Bright stars (delta_mag < delta_saturation): Extended with constant error.
-        - Faint stars (beyond data): Returns log10(error) = 1.0 (error = 10 mag).
-        - The saturation parameter is automatically passed from the survey object.
+        - No artificial rows are inserted: the interpolator's domain is
+          exactly ``[delta_mag.min(), delta_mag.max()]`` as found in the file.
+        - Bright- and faint-edge behavior (bright: hold flat; faint: filled
+          with log10=0, i.e. a 1-mag placeholder) is applied by the caller
+          (``Survey.get_photo_error``, via ``Survey._fill_delta_bounds``), not
+          by this loader.
         """
         # Load the efficiency table. Product CSVs may carry a multi-line "#"
         # provenance comment whose LAST line is the column header (np.savetxt
@@ -1787,18 +1795,13 @@ class SurveyFactory:
         delta_mags = data["delta_mag"]
         log_errors = data["log_mag_err"]
 
-        # Extend to bright end (keep constant for very bright stars)
-        if delta_mags.min() > delta_saturation:
-            delta_mags = np.insert(delta_mags, 0, delta_saturation)
-            log_errors = np.insert(log_errors, 0, log_errors[0])
-
-        # Create interpolation function
         interpolator = scipy.interpolate.interp1d(
             delta_mags,
             log_errors,
             bounds_error=False,
-            fill_value=1.0,  # Return log10(error)=1 (10 mag error) for very faint stars
+            fill_value=np.nan,
         )
+        interpolator.delta_bounds = (float(delta_mags.min()), float(delta_mags.max()))
 
         return interpolator
 

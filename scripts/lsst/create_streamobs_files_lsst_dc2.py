@@ -357,9 +357,9 @@ def main(n_tracts=0, refresh=False):
         }
     )
     eff_tab = eff_tab[n_all >= 20].fillna(0.0)
-    # bright cut: drop rows entirely so the injector's saturation handling
-    # (efficiency forced to zero at delta_saturation, interpolated up to the
-    # first curve point) governs brighter magnitudes instead of noisy bins
+    # bright cut: drop rows entirely so the injector's bright-edge hold
+    # (flat at the table's first remaining row, below the physical
+    # saturation floor) governs brighter magnitudes instead of noisy bins
     _bright = eff_tab["delta_mag"] < EFF_DELTA_MIN
     eff_tab = eff_tab[~_bright]
     print(

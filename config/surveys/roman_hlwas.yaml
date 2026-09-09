@@ -19,5 +19,4 @@ release: hlwas
 #     log_photo_error: roman_photoerror_f158.csv           # from roman_dc2
 #
 # survey_properties:
-#     (copy from roman_dc2.yaml; delta_saturation must be re-keyed to the
-#      HLWAS map's median maglim)
+#     (copy from roman_dc2.yaml)

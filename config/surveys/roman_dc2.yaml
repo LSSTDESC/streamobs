@@ -74,4 +74,3 @@ survey_properties:
   # appear brighter than mag ~17 (Troxel+23 Fig 7); stars brighter than 15
   # are not chromatically rendered.
   saturation: 17.0
-  delta_saturation: -9.0   # = saturation - reference maglim (25.98)

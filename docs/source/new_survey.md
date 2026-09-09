@@ -105,7 +105,6 @@ survey_properties:
 
   # Saturation limits per band, or could be specified as saturation_g, saturation_r, etc
   saturation: 16.0
-  delta_saturation: -10.4
 ```
 
 where:
@@ -114,7 +113,12 @@ where:
 * `coeff_extinc_<band>` gives the extinction coefficient $A_{\rm band}/E(B-V)$.
 * `sys_error` is the systematic photometric uncertainty (mag). It can also be specified per band (e.g. `sys_error_g`).
 * `saturation` is the magnitude below which observations are considered saturated.
-* `delta_saturation` defines the saturation limit in the completeness and photometric error tables. If saturation is not reached in the input files (ie. the completeness is not very small at small delta), use the smallest available `delta_mag` in your file.
+
+The completeness and photometric error tables need no separate saturation
+threshold: streamobs reads each CSV's own `delta_mag` range as its interpolation
+domain, holds the curve flat at its brightest measured value for anything
+brighter than that, and fills 0 (or a 1-mag error placeholder, for the
+photo-error tables) for anything fainter than the table's last row.
 
 ## 5. Add survey tests
 

@@ -188,8 +188,8 @@ photo_error = survey.get_photo_error(
   it can be checked against real DP2 injections or an external truth
   catalogue.
 * `get_photo_error` returns `NaN` for magnitudes brighter than the configured
-  saturation limit (16.0 mag; `delta_saturation = -10.4`) — the curves do not
-  model the saturation regime.
+  saturation limit (16.0 mag) — the curves do not model the saturation
+  regime.
 
 ## Creation
 
