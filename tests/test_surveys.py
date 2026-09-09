@@ -124,8 +124,11 @@ SURVEY_REGISTRY = [
         "bright_completeness_threshold": 0.85,
         "skip_faint_completeness_check": True,
     },
-    # LSST DC2 — truth-anchored r/g depth maps + two-curve photo-error, derived from
-    # the DC2 object+truth skims (scripts/lsst/create_streamobs_files_lsst_dc2.py).
+    # LSST DC2 — native-scale r/g depth maps (truth-anchoring was removed in
+    # 2026-09; the ~1.4x DC2 error discrepancy is small enough that the native
+    # scale already matches an external calibration) + two-curve photo-error,
+    # derived from the DC2 object+truth skims
+    # (scripts/lsst/create_streamobs_files_lsst_dc2.py).
     # Same Roman-style threshold overrides: the two-curve model anchors the maglim
     # map to the SAMPLE (truth-scatter) curve while get_photo_error returns the
     # CATALOG (reported) curve, so SNR@maglim > 5; and the efficiency/photo-error

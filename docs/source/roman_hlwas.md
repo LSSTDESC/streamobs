@@ -2,10 +2,10 @@
 
 This page is the **data sheet** for the three real-footprint Roman High Latitude Wide
 Area Survey (HLWAS) releases: `hlwas_wide`, `hlwas_medium`, and `hlwas_all`. All three
-reuse the DC2-derived selection-function tables (:doc:`roman_dc2`); the only
+reuse the DC2-derived selection-function tables ({doc}`roman_dc2`); the only
 tier-specific product is the F158 magnitude-limit map, built from the official HLWAS
 exposure-time maps via the exposure-scaled quasi-depth recipe (**Option B**)
-documented in :doc:`selection_function_methodology`. Validation figures are embedded
+documented in {doc}`selection_function_methodology`. Validation figures are embedded
 in that methodology page's *Validation & audits* section.
 
 ## Survey tiers
@@ -38,7 +38,7 @@ single-exposure units.
 ## Quasi-depth maps (Option B)
 
 The maglim maps apply the exposure-scaled quasi-depth recipe (derivation and
-rationale in :doc:`selection_function_methodology`):
+rationale in {doc}`selection_function_methodology`):
 
 ```
 depth(pix) = DC2_REF_DEPTH + 1.25 * log10( t(pix) / DC2_REF_EXPTIME )
@@ -84,7 +84,7 @@ directory so the loader finds them at the default path:
 | `roman_photoerror_f158_catalog.csv` | Median reported magerr vs delta_mag (S/N cut) |
 | `roman_photoerror_f158.csv` | Truth-based scatter of (obs − true) vs delta_mag (noise draw) |
 
-See :doc:`roman_dc2` for these products and :doc:`selection_function_methodology` for
+See {doc}`roman_dc2` for these products and {doc}`selection_function_methodology` for
 how they are derived.
 
 ## Configuration

@@ -77,7 +77,8 @@ python bin/download_data.py --url https://custom-server.edu/data.zip
 #### Problem: Download fails with "404 Not Found"
 
 **Solution**: The data URL may have changed. Check the latest URL at:
-- Zenodo record: https://zenodo.org/records/17939098
+- Zenodo record: the one `BASE_DATA_URL` in `bin/download_data.py` points at
+  (that file is the single source of truth for which record is current)
 - Or update `BASE_DATA_URL` in `bin/download_data.py`
 
 #### Problem: Extraction fails
@@ -105,10 +106,16 @@ python bin/download_data.py --url https://custom-server.edu/data.zip
 
 The data files are hosted on [Zenodo](https://zenodo.org) with a persistent DOI for citation and long-term access.
 
-**DOI**: 10.5281/zenodo.17550956  
-**URL**: https://zenodo.org/records/17939098
+**DOI**: 10.5281/zenodo.17550956
+
+**URL**: whichever record `BASE_DATA_URL` in `bin/download_data.py` names. Do not
+hardcode a record id here — it has drifted from the code before. As of this
+writing the code points at `18298544`, which still serves the *previous* product
+set; the archive described in {doc}`product_verification` has not yet been
+uploaded, and `BASE_DATA_URL` must be bumped when it is.
 **Version**: 1.0  
-**Last Updated**: November 2025
+**Last Updated**: see the record itself; the shipped product set is the one
+manifested in {doc}`product_verification`.
 
 
 ## Data Organization
@@ -119,22 +126,36 @@ The data directory is organized into three main categories:
 
 #### 1. **Survey-Specific Data** (`surveys/`)
 
-Each survey subdirectory contains magnitude limit maps (maglim maps) in HEALPix format:
-- **Purpose**: Define observational depth and survey footprint for different photometric bands
-- **Format**: HEALPix maps (`.hsp` files) with nside=128
-- **Content**: 5σ magnitude limits for point sources in each band
-- **Usage**: Used to determine which stars would be observable in a given survey
+Each survey subdirectory holds that release's magnitude-limit (maglim) maps plus
+its selection-function tables:
+- **Purpose**: define observational depth and footprint per band, and the
+  detection / classification / photometric-error model keyed to `delta_mag`
+- **Format**: HEALPix maps as either HealSparse `.hsp` or gzipped FITS
+  `.fits.gz`, depending on the release; tables as CSV
+- **Content**: 5σ point-source magnitude limits per band, and the product set
+  described in {doc}`selection_function_methodology`
+- **Usage**: determines which stars would be observable, and with what
+  completeness and photometric error
 
-Current surveys:
-- `lsst_yr1/` - LSST baseline v5.0.0, Year 1 observations (g, r bands)
-- `lsst_yr2/` - LSST baseline v5.0.0, Year 2 observations (g, r bands)
-- `lsst_yr3/` - LSST baseline v5.0.0, Year 3 observations (g, r bands)
-- `lsst_yr4/` - LSST baseline v5.0.0, Year 4 observations (g, r bands)
-- `lsst_yr5/` - LSST baseline v5.0.0, Year 5 observations (g, r bands)
-- `des_yr6/` - DES Y6 Gold (griz; products re-derived from the Y6 Balrog
-  injections — see {doc}`surveys/DES` and {doc}`balrog_selection_functions`)
+Current releases, with the resolution and format of their maglim maps:
 
-Additional surveys can be added by placing maglim maps in new subdirectories.
+| directory | release | bands | maglim map |
+|---|---|---|---|
+| `des_yr6/` | DES Y6 Gold | griz | nside 128, `.fits.gz` |
+| `delve_dr3_gold/` | DELVE DR3 Gold | griz | nside 128, `.fits.gz` |
+| `lsst_dc2/` | LSST DC2 | g, r | nside 1024, `.fits.gz` |
+| `lsst_yr1/` … `lsst_yr5/` | LSST baseline v5.0.0, years 1–5 | g, r | nside 128, `.hsp` |
+| `lsst_dp2/` | LSST DP2 | g, r | nside 128, `.hsp` |
+| `roman_dc2/` | Roman DC2 | F106, F129, F158 | nside 1024, `.fits.gz` |
+| `roman_hlwas_wide/`, `_medium/`, `_all/` | Roman HLWAS tiers | F158 (F106 for `_all`) | nside 1024, `.fits.gz` |
+
+The DECam releases (`des_yr6`, `delve_dr3_gold`) are derived from Balrog
+synthetic-source injections — see {doc}`surveys/DES`, {doc}`surveys/DELVE` and
+{doc}`balrog_selection_functions`. The LSST and Roman releases are described in
+{doc}`surveys/LSST` and {doc}`surveys/Roman`.
+
+Additional surveys can be added by placing their products in a new
+subdirectory — see {doc}`new_survey`.
 
 #### 2. **Auxiliary Data** (`others/`)
 

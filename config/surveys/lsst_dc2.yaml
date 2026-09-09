@@ -5,11 +5,18 @@ survey_files:
     # Path to data files (leave empty for default location)
     file_path: ''
 
-    # Band-specific magnitude limit maps: truth-anchored S/N=5 point-source depth.
-    # supreme_dc2 spatial structure + footprint, degraded to nside=1024, with the
-    # absolute scale shifted so each band's median = the truth-based S/N=5 depth
-    # (where the scatter of obs-true reaches S/N=5; r median ~26.5). The delta_mag
-    # axes of the completeness + photo-error tables are keyed to this convention.
+    # Band-specific magnitude limit maps: S/N=5 point-source depth on the NATIVE
+    # reported-error scale, nside 1024. supreme_dc2 supplies the spatial structure
+    # and footprint, degraded to nside=1024.
+    #
+    # NOT truth-anchored. Truth-anchoring was removed here in 2026-09: the DC2
+    # reported errors run only ~1.4x optimistic against the truth scatter, small
+    # enough that the native-scale map reproduces an external calibration (Tsiane
+    # et al. 2025) to 0.1%, so anchoring bought nothing. Roman DC2 keeps its
+    # anchor because its discrepancy is ~2x. See
+    # docs/source/selection_function_methodology.md.
+    # Shipped medians: g 26.972, r 26.846. The delta_mag axes of the completeness
+    # and photo-error tables are keyed to this convention.
     # Derivation: scripts/lsst/create_streamobs_files_lsst_dc2.py.
     maglim_map_r: lsst_dc2_maglim_r_nside1024.fits.gz
     maglim_map_g: lsst_dc2_maglim_g_nside1024.fits.gz

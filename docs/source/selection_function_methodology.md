@@ -264,7 +264,7 @@ the [desqr](https://github.com/kadrlica/desqr/blob/main/desqr/depth.py) recipe:
      **SAMPLE** curve instead.
    - **Truth-anchor** — shift the map so its median lands at the magnitude where the
      **truth-based scatter** of (obs − true) reaches S/N = 5 — adopted for
-     **Roman DC2** (see :doc:`roman_dc2`), whose reported errors are ≈2× optimistic.
+     **Roman DC2** (see {doc}`roman_dc2`), whose reported errors are ≈2× optimistic.
      Left on the native scale, Roman's map would land ≈0.9–1.2 mag deeper across
      bands than the published Roman 5σ depths (e.g. F158 native 27.83 vs. the ~26.9
      reference), claiming detections the survey cannot deliver. Under this policy

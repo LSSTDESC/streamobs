@@ -39,12 +39,31 @@ survey_files:
     maglim_map_g: new_survey_maglim_g_band.hsp
     maglim_map_r: new_survey_maglim_r_band.hsp
 
-    # Band-independent maps. Keep by defaults files for completeness, ebv map, and photometric errors
+    # Band-independent maps
     ebv_map: ebv_sfd98_fullres_nside_4096_ring_equatorial.fits
-    completeness: stellar_efficiency_cutr.csv
-    completeness_band: r 
-    log_photo_error: photoerror_r.csv
+
+    # Stellar detection + classification efficiency, and the galaxy
+    # misclassification rate, both keyed to delta_mag
+    completeness: new_survey_stellar_efficiency_cutr.csv
+    completeness_band: r
+    gal_misclassification: new_survey_galaxy_misclass_cutr.csv
+
+    # Photometric error model. Four curves: see {doc}`column_convention`.
+    #   catalog = the survey's reported magerr -> drives the S/N cut
+    #   sample  = the true scatter of (obs - true) -> drives the noise draw
+    log_photo_error_catalog: new_survey_photoerror_r_catalog.csv
+    log_photo_error_sample: new_survey_photoerror_r.csv
+    # The _nocut pair is measured WITHOUT the reference-band S/N cut and is
+    # REQUIRED for any band that is not `completeness_band`: those bands are
+    # forced photometry at the reference band's position, so they are not
+    # conditioned on their own detection. A survey that ships no _nocut curves
+    # raises for every non-reference band.
+    log_photo_error_catalog_nocut: new_survey_photoerror_r_catalog_nocut.csv
+    log_photo_error_sample_nocut: new_survey_photoerror_r_nocut.csv
 ```
+
+`log_photo_error` (a single curve) is the legacy spelling and still loads, but a
+single-band survey is the only case where it is sufficient.
 
 ### Completeness file
 
