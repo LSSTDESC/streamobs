@@ -331,7 +331,7 @@ $PY scripts/des/balrog_selection_function.py \
                  r=data/surveys/des_yr6/des_y6_5_sig_maglim_band_r_nside_512.hsp \
                  i=data/surveys/des_yr6/des_y6_5_sig_maglim_band_i_nside_512.hsp \
                  z=data/surveys/des_yr6/des_y6_5_sig_maglim_band_z_nside_512.hsp \
-    --write-maglim --maglim-nside 1024 \
+    --write-maglim --maglim-nside 128 \
     --corrections scripts/des/des_photoerror_corrections.yaml \
     --out ./des_y6_products --tag des_y6
 ```

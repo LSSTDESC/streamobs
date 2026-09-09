@@ -103,14 +103,15 @@ magerr, drives the S/N cut). The afterburner corrections live in the tracked
 
 ## Survey depth
 
-Depth maps are per-band, nside=1024 (ring), via the desqr recipe, then
+Depth maps are per-band, built at nside=1024 (ring) via the desqr recipe and
+shipped degraded to nside 128, then
 **truth-anchored** (median shifted to the S/N=5 magnitude of the truth-based
 scatter). The anchored medians are **26.28 / 26.38 / 26.38 / 25.35** in
 F106/F129/F158/F184. These sit ~0.5–0.85 mag brighter than the official expected
 point-source depths (26.9/26.2) because they describe what the catalog's `mag_auto`
 delivers in true-magnitude space, not optimal-PSF photometry.
 
-![Magnitude-limit maps per band at nside=1024](_static/roman_dc2/maglim_maps.png)
+![Magnitude-limit maps per band, shown at their nside=1024 build resolution](_static/roman_dc2/maglim_maps.png)
 
 *Truth-anchored S/N=5 maglim maps over the DC2 footprint (RA 51–56, Dec −42 to −38).*
 

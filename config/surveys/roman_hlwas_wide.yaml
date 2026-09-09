@@ -28,7 +28,11 @@ survey_files:
 
     # Band-specific magnitude-limit map: exposure-time-scaled quasi-depth,
     # truth-anchored S/N=5 convention (same as roman_dc2).
-    maglim_map_F158: roman_hlwas_wide_maglim_f158_nside1024.fits.gz
+    # Shipped at nside 128 so every release shares one depth grid; degraded
+    # from the nside-1024 product by scripts/degrade_maglim_maps.py (mean over
+    # valid subpixels). Medians move by <0.005 mag; the footprint inflates by
+    # 10-19% because a coarse pixel is kept if any subpixel was covered.
+    maglim_map_F158: roman_hlwas_wide_maglim_f158_nside128.fits.gz
 
     # Band-independent maps
     ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits

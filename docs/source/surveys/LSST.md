@@ -9,7 +9,7 @@ simulations can be found in Pélissier et al. (2026).
 
 | release | bands | footprint | reference band | median reference-band depth |
 |---|---|---|---|---|
-| `lsst/dc2` | g, r | ~306 deg² (DESC DC2 Run 2.2i region; g and r footprints agree to 99.7%) | r | 26.846 |
+| `lsst/dc2` | g, r | ~327 deg² (DESC DC2 Run 2.2i region) | r | 26.839 |
 | `lsst/yr1` … `yr5` | g, r | ~27,800–39,900 deg² depending on year and band (see *Depth and bands*) | r | 25.544 (yr1) – 26.408 (yr4); 26.308 (yr5) |
 | `lsst/dp2` | g, r | g 3,550 deg², r 3,946 deg² (84.1% overlap) | r | 24.514 |
 
@@ -32,7 +32,7 @@ implemented.
 ## Depth and bands
 
 **`lsst/dc2`** — `lsst_dc2_maglim_{g,r}_nside1024.fits.gz`, HEALPix at
-**nside 1024**, median depth r = 26.846, g = 26.972 over ~306 deg² (the DESC
+**nside 128**, median depth r = 26.839, g = 26.963 over ~327 deg² (the DESC
 DC2 Run 2.2i footprint).
 
 > **As of 2026-09 this map is *not* truth-anchored.** It ships on its native

@@ -238,7 +238,9 @@ underlying measurement.
 
 ## Depth maps
 
-Per-band magnitude-limit maps are computed on a HEALPix grid (nside=1024, ring) with
+Per-band magnitude-limit maps are computed on a HEALPix grid (ring; nside 1024
+is a common build resolution, though every current release ships degraded to
+nside 128) with
 the [desqr](https://github.com/kadrlica/desqr/blob/main/desqr/depth.py) recipe:
 
 1. cut the bright end and `mag < 30`;

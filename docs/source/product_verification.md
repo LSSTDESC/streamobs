@@ -103,8 +103,8 @@ name — but the files would have gone to Zenodo misdescribed. They are renamed
 so the config, the survey doc and the figure generator were corrected alongside
 it. The verifier now asserts that a map's nside matches its filename.
 
-Both DECam releases ultimately ship at **nside 128** (≈27′ pixels), the same
-grid as every LSST release, so all surveys share a depth resolution. DES degrades
+Every release ships at **nside 128** (≈27′ pixels), so all surveys share one
+depth resolution. DES degrades
 there from its nside-512 HealSparse inputs and DELVE from nside-16384 inputs;
 neither is upsampled. The mislabelling above is what the check was written for,
 and it would have caught a request for a resolution finer than the input.
@@ -184,8 +184,8 @@ Carried forward into the release, not fixed here.
 
 ## Manifest
 
-`data.zip` — 30,622,684 bytes, 124 files
-sha256 `297b2807682de7065af3943fe7da9146f10306c6ee69ee282b3b6ec0523bfcfd`
+`data.zip` — 23,732,450 bytes, 124 files
+sha256 `c71406f2bf4336225efb5d9da421e792441cd14d469bee734eefae518f828ae7`
 
 Per-file sizes and sha256 for both releases are in
 `artifacts/product_manifest.json`. The shipped products are:
@@ -228,4 +228,4 @@ band, the error-inflation factor and the classifier used.
 1. Upload `archive/data.zip` to Zenodo as a new version of the record.
 2. Update `BASE_DATA_URL` in `bin/download_data.py` to the new record id
    (currently `18298544`, which still serves the *old* DES products).
-3. `ARCHIVE_SIZE_MB` in the same file is already updated to 29.
+3. `ARCHIVE_SIZE_MB` in the same file is already updated to 23.

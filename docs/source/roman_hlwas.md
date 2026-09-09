@@ -12,7 +12,7 @@ in that methodology page's *Validation & audits* section.
 
 The HLWAS comprises four nested tiers; streamobs supports three:
 
-| Release | Footprint | F158 measured map median | Valid pixels (nside=1024) | Area |
+| Release | Footprint | F158 measured map median | Valid pixels (nside=128) | Area |
 |---|---|---|---|---|
 | `hlwas_wide`   | Wide tier only | 26.2842 AB | ~1,028,570 | ~3372 deg² |
 | `hlwas_medium` | Medium tier only | 26.2894 AB | ~879,052 | ~2882 deg² |
@@ -45,7 +45,7 @@ depth(pix) = DC2_REF_DEPTH + 1.25 * log10( t(pix) / DC2_REF_EXPTIME )
 ```
 
 - `DC2_REF_DEPTH` ≈ 26.375 AB — median of the DC2 F158 truth-anchored maglim map
-  (`roman_dc2_maglim_f158_nside1024.fits.gz`), read from the file at runtime (not
+  (`roman_dc2_maglim_f158_nside128.fits.gz`), read from the file at runtime (not
   hardcoded).
 - `DC2_REF_EXPTIME` = 770.0 s — the DC2 HLIS reference per-pixel exposure time
   (5.5 dithers × 140 s; Troxel et al. 2023, Sec. 3.1).
@@ -65,7 +65,9 @@ because the typical HLWAS exposure (~645 s) is shorter than the DC2 reference (7
 | `hlwas_medium` | 645.1 | 26.375 | 770.0 | 26.2894 |
 | `hlwas_all`    | 645.1 | 26.375 | 770.0 | 26.2894 |
 
-Maps are written at nside=1024 (RING, float32) to match the DC2 maps, by
+Maps are built at nside=1024 (RING, float32) to match the DC2 maps, then
+degraded to the nside 128 every release ships at by
+`scripts/degrade_maglim_maps.py`, by
 `scripts/roman/build_hlwas_maglim_maps.py`, to `data/surveys/roman_hlwas_<tier>/`
 (gitignored). For reference, the
 [STScI community-defined HLWAS median 5σ point-source depths](https://roman-docs.stsci.edu/roman-community-defined-surveys/high-latitude-wide-area-survey)
@@ -125,7 +127,7 @@ python scripts/roman/build_hlwas_maglim_maps.py
 ```
 
 This reads the healsparse exposure-time maps, reads `DC2_REF_DEPTH` from the DC2 F158
-maglim map at runtime, applies the Option B recipe, writes the three nside=1024 maglim
+maglim map at runtime, applies the Option B recipe, writes the three maglim
 maps, and symlinks the DC2 CSV files into each tier's data directory.
 
 ## Caveats

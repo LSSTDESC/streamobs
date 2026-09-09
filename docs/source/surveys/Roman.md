@@ -22,7 +22,7 @@ for the DC2 reference data sheet.
 
 | File(s) | Contents | Drives |
 |---|---|---|
-| `roman_dc2_maglim_{f106,f129,f158,f184}_nside1024.fits.gz` (`dc2`); `roman_hlwas_wide_maglim_f158_nside1024.fits.gz`; `roman_hlwas_medium_maglim_f158_nside1024.fits.gz`; `roman_hlwas_all_maglim_{f106,f158}_nside1024.fits.gz` | HEALPix 5σ point-source depth map, one file per band | `Survey.get_maglim(band, pixel)` |
+| `roman_dc2_maglim_{f106,f129,f158,f184}_nside 128.fits.gz` (`dc2`); `roman_hlwas_wide_maglim_f158_nside 128.fits.gz`; `roman_hlwas_medium_maglim_f158_nside 128.fits.gz`; `roman_hlwas_all_maglim_{f106,f158}_nside 128.fits.gz` | HEALPix 5σ point-source depth map, one file per band | `Survey.get_maglim(band, pixel)` |
 | `roman_stellar_efficiency_cutf158.csv` | `mag_f158, delta_mag, detection_eff, classification_eff, classification_detection_eff` | `Survey.get_completeness(band, mag, maglim)` — detection + star-classification probability |
 | `roman_photoerror_f158.csv` (**sample**) / `roman_photoerror_f158_catalog.csv` (**catalog**) | `delta_mag, log_mag_err` | reference-band (F158) magnitude noise draw / reported-error S/N cut |
 | `roman_photoerror_f158_nocut.csv` / `roman_photoerror_f158_catalog_nocut.csv` | same columns, no S/N selection applied | every other band (forced photometry) |
@@ -35,7 +35,7 @@ See *Creation* for how that sharing is implemented.
 
 ## Depth and bands
 
-All maps are **nside = 1024** (RING) HEALPix; off-footprint pixels are set to
+All maps are **nside 128** (RING) HEALPix; off-footprint pixels are set to
 `hp.UNSEEN`.
 
 **`roman/dc2`** — per-band maglim maps built via the desqr recipe and
@@ -45,10 +45,10 @@ F184 = 25.347 AB, all over the ~16.4 deg² DC2 footprint. F184 has a map but is
 **not** one of the configured selection-function bands (see Caveats). The DC2
 maps serve as the calibration anchor for all HLWAS tier depth maps.
 
-![Magnitude-limit maps per band at nside=1024](../_static/roman_dc2/maglim_maps.png)
+![Magnitude-limit maps per band at nside 128](../_static/roman_dc2/maglim_maps.png)
 
 *Truth-anchored S/N = 5 maglim maps over the DC2 calibration footprint in
-F106, F129, and F158 (nside = 1024). F184 is excluded from the
+F106, F129, and F158 (nside 128). F184 is excluded from the
 selection-function products (see Caveats).*
 
 **HLWAS tiers** (`hlwas_wide`, `hlwas_medium`, `hlwas_all`) — exposure-time-scaled
@@ -65,7 +65,7 @@ release; its median there is 26.194.
 *All-sky Mollweide view of the HLWAS "all" tier (wide + medium + deep +
 ultra-deep) exposure-time-scaled depth maps in F158 (left, median 26.289 AB)
 and F106 (right, median 26.194 AB), both anchored to the DC2 truth-anchored
-S/N = 5 reference (nside = 1024). Off-footprint pixels are shown in white.*
+S/N = 5 reference (nside 128). Off-footprint pixels are shown in white.*
 
 **Band coverage.** The reference band is **F158** in every release.
 `roman/dc2` additionally supports F106 and F129 (bands configured:

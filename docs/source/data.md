@@ -143,11 +143,11 @@ Current releases, with the resolution and format of their maglim maps:
 |---|---|---|---|
 | `des_yr6/` | DES Y6 Gold | griz | nside 128, `.fits.gz` |
 | `delve_dr3_gold/` | DELVE DR3 Gold | griz | nside 128, `.fits.gz` |
-| `lsst_dc2/` | LSST DC2 | g, r | nside 1024, `.fits.gz` |
+| `lsst_dc2/` | LSST DC2 | g, r | nside 128, `.fits.gz` |
 | `lsst_yr1/` … `lsst_yr5/` | LSST baseline v5.0.0, years 1–5 | g, r | nside 128, `.hsp` |
 | `lsst_dp2/` | LSST DP2 | g, r | nside 128, `.hsp` |
-| `roman_dc2/` | Roman DC2 | F106, F129, F158 | nside 1024, `.fits.gz` |
-| `roman_hlwas_wide/`, `_medium/`, `_all/` | Roman HLWAS tiers | F158 (F106 for `_all`) | nside 1024, `.fits.gz` |
+| `roman_dc2/` | Roman DC2 | F106, F129, F158 | nside 128, `.fits.gz` |
+| `roman_hlwas_wide/`, `_medium/`, `_all/` | Roman HLWAS tiers | F158 (F106 for `_all`) | nside 128, `.fits.gz` |
 
 The DECam releases (`des_yr6`, `delve_dr3_gold`) are derived from Balrog
 synthetic-source injections — see {doc}`surveys/DES`, {doc}`surveys/DELVE` and
