@@ -1452,11 +1452,13 @@ plt.show()
 
 # ## Next steps
 #
-# - Wire these into a `config/surveys/roman_hlwas.yaml` (mirroring `lsst_yr5.yaml`):
+# - Wire these into the per-tier configs `config/surveys/roman_hlwas_{wide,medium,
+#   all}.yaml` (mirroring `lsst_yr5.yaml`). The single `roman_hlwas.yaml`
+#   placeholder this note used to describe was removed once the tiers landed:
 #   `completeness: roman_stellar_efficiency_cutf158.csv`, `completeness_band: F158`,
 #   `log_photo_error_catalog: roman_photoerror_f158_catalog.csv` (reported magerr),
 #   `log_photo_error_sample: roman_photoerror_f158.csv` (truth-based scatter),
-#   `maglim_map_F158: roman_dc2_maglim_f158_nside1024.fits.gz`
+#   `maglim_map_F158: roman_dc2_maglim_f158_nside128.fits.gz`
 #   (or, for the full HLWAS footprint, a maglim map scaled from the exposure-time map —
 #   see `roman_hlwas_exptime_map.ipynb`; the DC2 map above characterizes the mock's depth).
 # - Caveats: the det→truth (detection-centric) match assigns a blended star to a single

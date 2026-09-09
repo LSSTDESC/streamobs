@@ -6,10 +6,10 @@
 
 | release | bands | footprint | reference band | median reference-band depth |
 |---|---|---|---|---|
-| `roman/dc2` | F106, F129, F158 | ~16.4 deg² (Roman–Rubin DC2, RA 51–56, Dec −42 to −38) | F158 | 26.375 AB |
-| `roman/hlwas_wide` | F158 | 3,372 deg² | F158 | 26.284 AB |
-| `roman/hlwas_medium` | F158 | 2,882 deg² | F158 | 26.289 AB |
-| `roman/hlwas_all` | F106, F158 | 5,878 deg² (F158); F106 covers only 2,882 deg² within this footprint (see *Depth and bands*) | F158 | 26.289 AB |
+| `roman/dc2` | F106, F129, F158 | ~21 deg² (Roman–Rubin DC2, RA 51–56, Dec −42 to −38) | F158 | 26.375 AB |
+| `roman/hlwas_wide` | F158 | 3,513 deg² | F158 | 26.284 AB |
+| `roman/hlwas_medium` | F158 | 2,979 deg² | F158 | 26.289 AB |
+| `roman/hlwas_all` | F106, F158 | 6,033 deg² (F158); F106 covers only 2,979 deg² within this footprint (see *Depth and bands*) | F158 | 26.289 AB |
 
 `roman/dc2` is the calibration reference ([Troxel et al. 2023](https://arxiv.org/abs/2209.06829))
 for all completeness and photometric-error products. The HLWAS tier maps
@@ -22,7 +22,7 @@ for the DC2 reference data sheet.
 
 | File(s) | Contents | Drives |
 |---|---|---|
-| `roman_dc2_maglim_{f106,f129,f158,f184}_nside 128.fits.gz` (`dc2`); `roman_hlwas_wide_maglim_f158_nside 128.fits.gz`; `roman_hlwas_medium_maglim_f158_nside 128.fits.gz`; `roman_hlwas_all_maglim_{f106,f158}_nside 128.fits.gz` | HEALPix 5σ point-source depth map, one file per band | `Survey.get_maglim(band, pixel)` |
+| `roman_dc2_maglim_{f106,f129,f158,f184}_nside128.fits.gz` (`dc2`); `roman_hlwas_wide_maglim_f158_nside128.fits.gz`; `roman_hlwas_medium_maglim_f158_nside128.fits.gz`; `roman_hlwas_all_maglim_{f106,f158}_nside128.fits.gz` | HEALPix 5σ point-source depth map, one file per band | `Survey.get_maglim(band, pixel)` |
 | `roman_stellar_efficiency_cutf158.csv` | `mag_f158, delta_mag, detection_eff, classification_eff, classification_detection_eff` | `Survey.get_completeness(band, mag, maglim)` — detection + star-classification probability |
 | `roman_photoerror_f158.csv` (**sample**) / `roman_photoerror_f158_catalog.csv` (**catalog**) | `delta_mag, log_mag_err` | reference-band (F158) magnitude noise draw / reported-error S/N cut |
 | `roman_photoerror_f158_nocut.csv` / `roman_photoerror_f158_catalog_nocut.csv` | same columns, no S/N selection applied | every other band (forced photometry) |
@@ -40,23 +40,25 @@ All maps are **nside 128** (RING) HEALPix; off-footprint pixels are set to
 
 **`roman/dc2`** — per-band maglim maps built via the desqr recipe and
 **truth-anchored** (the median is shifted to the S/N = 5 magnitude of the
-truth-based scatter). Medians: F106 = 26.279, F129 = 26.375, F158 = 26.375,
-F184 = 25.347 AB, all over the ~16.4 deg² DC2 footprint. F184 has a map but is
+truth-based scatter). Medians: F106 = 26.276, F129 = 26.372, F158 = 26.372,
+F184 = 25.343 AB, all over the ~21 deg² DC2 footprint as shipped at nside 128
+(26.279 / 26.375 / 26.375 / 25.347 over 16.4 deg² before degrading). F184 has a map but is
 **not** one of the configured selection-function bands (see Caveats). The DC2
 maps serve as the calibration anchor for all HLWAS tier depth maps.
 
-![Magnitude-limit maps per band at nside 128](../_static/roman_dc2/maglim_maps.png)
+![Magnitude-limit maps per band, shown at their nside-1024 build resolution](../_static/roman_dc2/maglim_maps.png)
 
 *Truth-anchored S/N = 5 maglim maps over the DC2 calibration footprint in
-F106, F129, and F158 (nside 128). F184 is excluded from the
+F106, F129, and F158, shown at the nside-1024 build resolution (the maps
+ship degraded to nside 128). F184 is excluded from the
 selection-function products (see Caveats).*
 
 **HLWAS tiers** (`hlwas_wide`, `hlwas_medium`, `hlwas_all`) — exposure-time-scaled
 quasi-depth maps anchored to the DC2 F158 truth-anchored reference depth, so
 all tiers share the $\Delta m$ convention of the DC2 tables. F158 medians:
-wide 26.284 over 3,372 deg², medium 26.289 over 2,882 deg², all 26.289 over
-5,878 deg². The `hlwas_all` release additionally ships an F106 map, but it
-only covers 2,882 deg² — the medium-tier footprint, not the full 5,878 deg²
+wide 26.289 over 3,513 deg², medium 26.290 over 2,979 deg², all 26.291 over
+6,033 deg². The `hlwas_all` release additionally ships an F106 map, but it
+only covers 2,979 deg² — the medium-tier footprint, not the full 6,033 deg²
 F158 footprint — so F106 must not be queried outside that region for this
 release; its median there is 26.194.
 

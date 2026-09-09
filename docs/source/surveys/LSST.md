@@ -17,7 +17,7 @@ simulations can be found in Pélissier et al. (2026).
 
 | File(s) | Contents | Drives |
 |---|---|---|
-| `lsst_dc2_maglim_{g,r}_nside1024.fits.gz` (`dc2`); `baseline_v5.0.0_year_{N}.0_band_{g,r}_nside_128.hsp` (`yr1`…`yr5`); `dp2_deepCoadd_psf_maglim_consolidated_map_weighted_mean_{g,r}_nside_128.hsp` (`dp2`) | HEALPix 5σ point-source depth map, one file per band | `Survey.get_maglim(band, pixel)` |
+| `lsst_dc2_maglim_{g,r}_nside128.fits.gz` (`dc2`); `baseline_v5.0.0_year_{N}.0_band_{g,r}_nside_128.hsp` (`yr1`…`yr5`); `dp2_deepCoadd_psf_maglim_consolidated_map_weighted_mean_{g,r}_nside_128.hsp` (`dp2`) | HEALPix 5σ point-source depth map, one file per band | `Survey.get_maglim(band, pixel)` |
 | `lsst_dc2_stellar_efficiency_cutr.csv` | `mag_r, delta_mag, detection_eff, classification_eff, classification_detection_eff` | `Survey.get_completeness(band, mag, maglim)` — detection + star-classification probability |
 | `lsst_dc2_photoerror_r.csv` (**sample**) / `lsst_dc2_photoerror_r_catalog.csv` (**catalog**) | `delta_mag, log_mag_err` | reference-band (r) magnitude noise draw / reported-error S/N cut |
 | `lsst_dc2_photoerror_r_nocut.csv` / `lsst_dc2_photoerror_r_catalog_nocut.csv` | same columns, no S/N selection applied | every other configured band (forced photometry) |
@@ -31,7 +31,7 @@ implemented.
 
 ## Depth and bands
 
-**`lsst/dc2`** — `lsst_dc2_maglim_{g,r}_nside1024.fits.gz`, HEALPix at
+**`lsst/dc2`** — `lsst_dc2_maglim_{g,r}_nside128.fits.gz`, HEALPix at
 **nside 128**, median depth r = 26.839, g = 26.963 over ~327 deg² (the DESC
 DC2 Run 2.2i footprint).
 
