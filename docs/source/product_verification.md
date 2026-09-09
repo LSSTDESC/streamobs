@@ -184,8 +184,8 @@ Carried forward into the release, not fixed here.
 
 ## Manifest
 
-`data.zip` — 23,732,450 bytes, 124 files
-sha256 `c71406f2bf4336225efb5d9da421e792441cd14d469bee734eefae518f828ae7`
+`data.zip` — 23,724,638 bytes, 124 files
+sha256 `b8d33eb16e5acf39986a50f77bbf8dd04d9e7bfeb24665dd2056c8edf3dbc7a1`
 
 Per-file sizes and sha256 for both releases are in
 `artifacts/product_manifest.json`. The shipped products are:

@@ -482,6 +482,44 @@ def _apply_photoerr_corrections(tab, curve_id, corrections_path):
     return out
 
 
+def reapply_corrections():
+    """Rewrite the cleaned photo-error CSVs from their *_raw.csv provenance.
+
+    Re-deriving the curves needs the DC2 object and truth skims (~120 GB), which
+    is disproportionate when only the afterburner YAML has changed. The raw
+    files are the untouched measurement, so re-cleaning them reproduces exactly
+    what a full run would write. Mirrors --reapply-corrections in
+    scripts/des/balrog_selection_function.py.
+
+    Note the _nocut curves share the `r_sample` / `r_catalog` rule ids with the
+    reference-band pair, so a rule change applies to all four and they stay on a
+    common delta_mag grid.
+    """
+    n = 0
+    for stem, rule in [
+        ("lsst_dc2_photoerror_r", "r_sample"),
+        ("lsst_dc2_photoerror_r_catalog", "r_catalog"),
+        ("lsst_dc2_photoerror_r_nocut", "r_sample"),
+        ("lsst_dc2_photoerror_r_catalog_nocut", "r_catalog"),
+    ]:
+        raw = OUT_DIR / f"{stem}_raw.csv"
+        if not raw.exists():
+            print(f"  [afterburner] missing {raw.name} — skipped")
+            continue
+        tab = pd.DataFrame(
+            np.genfromtxt(raw, delimiter=",", comments="#"),
+            columns=["delta_mag", "log_mag_err"],
+        )
+        clean = _apply_photoerr_corrections(tab, rule, CORRECTIONS_FILE)
+        np.savetxt(
+            OUT_DIR / f"{stem}.csv", clean.values, delimiter=",",
+            header="delta_mag,log_mag_err", fmt="%.6f",
+        )
+        print(f"  wrote {stem}.csv  ({len(tab)} raw -> {len(clean)} rows)")
+        n += 1
+    print(f"re-applied {CORRECTIONS_FILE.name} to {n} curves in {OUT_DIR}")
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument(
@@ -491,5 +529,14 @@ if __name__ == "__main__":
         help="limit to the first N tracts (0 = all 79; also bypasses the cache)",
     )
     ap.add_argument("--refresh", action="store_true", help="rebuild the match cache")
+    ap.add_argument(
+        "--reapply-corrections",
+        action="store_true",
+        help="only re-clean the photo-error curves from their *_raw.csv files, "
+        "without re-deriving anything (no DC2 skims needed)",
+    )
     args = ap.parse_args()
-    main(n_tracts=args.tracts, refresh=args.refresh)
+    if args.reapply_corrections:
+        reapply_corrections()
+    else:
+        main(n_tracts=args.tracts, refresh=args.refresh)

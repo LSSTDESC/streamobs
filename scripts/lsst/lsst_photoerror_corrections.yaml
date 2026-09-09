@@ -2,14 +2,36 @@
 #
 # Human-authored, tracked corrections applied to the *measured* photo-error curves
 # by scripts/lsst/create_streamobs_files_lsst_dc2.py, after writing the untouched
-# *_raw.csv. Mirrors scripts/roman/roman_photoerror_corrections.yaml.
+# *_raw.csv. Mirrors scripts/roman/roman_photoerror_corrections.yaml and
+# scripts/des/des_photoerror_corrections.yaml.
 #
 # Keys are curve ids: `r_sample` (truth-based scatter, drives the noise draw) and
-# `r_catalog` (reported magerr, drives the S/N cut). Supported rule: `clamp_faint`
+# `r_catalog` (reported magerr, drives the S/N cut). Supported rules:
 #   clamp_faint: {delta_mag_min: <float>, value: <log10 sigma floor>}
+#   cut_bright:  {delta_mag_min: <float>}   drop all bins below this delta_mag
 #
-# No rules yet — populated once the raw curves are inspected (the faint end may not
-# need the Roman-style floor if LSST reported errors are well-calibrated).
+# The _nocut curves reuse these same two ids, so a rule here applies to all four
+# curves and they stay on a common delta_mag grid.
+#
+# Re-apply without re-deriving (no DC2 skims needed):
+#   python scripts/lsst/create_streamobs_files_lsst_dc2.py --reapply-corrections
 
-r_sample: {}
-r_catalog: {}
+r_sample:
+  # The raw curves run to delta_mag = -14.8, roughly 15 mag brighter than the
+  # depth. Brightward of about -10 the measurement is erratic rather than
+  # informative: the truth scatter jumps around by more than a decade between
+  # neighbouring bins, because at r < 17 the DC2 matched-star sample thins out
+  # and a handful of objects sets each bin.
+  #
+  # streamobs extrapolates flat below the first point, so dropping these bins
+  # replaces noise with the brightest well-sampled value rather than losing
+  # coverage. Nothing downstream needs a distinct error at r = 12 and r = 16;
+  # both are far brighter than any stream member.
+  cut_bright:
+    delta_mag_min: -10.0
+
+r_catalog:
+  # Same cut for the reported-error curve, so the two stay on a common
+  # delta_mag grid (streamobs interpolates one against the other).
+  cut_bright:
+    delta_mag_min: -10.0
