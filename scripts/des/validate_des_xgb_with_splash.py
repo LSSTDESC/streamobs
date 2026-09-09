@@ -115,11 +115,16 @@ def load_splash(path: str, radius_pad: float = 0.2):
         need = ["RA", "DEC", "STAR_FLAG"]
         missing = [c for c in need if c not in names]
         if missing:
-            raise SystemExit(f"SPLASH is missing {missing}; columns are {sorted(names)[:40]}")
+            raise SystemExit(
+                f"SPLASH is missing {missing}; columns are {sorted(names)[:40]}"
+            )
+
         # FITS is big-endian; pandas/numpy hashing needs native byte order.
         def native(a):
             a = np.asarray(a)
-            return a.astype(a.dtype.newbyteorder("=")) if a.dtype.byteorder == ">" else a
+            return (
+                a.astype(a.dtype.newbyteorder("=")) if a.dtype.byteorder == ">" else a
+            )
 
         cols = {c: native(tab.data[names[c]]) for c in need}
         for opt in ("ID", "MAG_AUTO_hsc_i", "MAG_AUTO_hsc_g", "CHI_STAR", "ZPHOT"):
@@ -129,7 +134,9 @@ def load_splash(path: str, radius_pad: float = 0.2):
     d = pd.DataFrame(cols)
     print(f"  SPLASH: {len(d):,} rows (header says {n_expected:,})")
     if len(d) != n_expected:
-        raise SystemExit("SPLASH row count disagrees with its header -- truncated file?")
+        raise SystemExit(
+            "SPLASH row count disagrees with its header -- truncated file?"
+        )
     print(f"  STAR_FLAG values: {pd.Series(d['STAR_FLAG']).value_counts().to_dict()}")
     return d
 
@@ -147,15 +154,25 @@ def load_des_in_field(gold_dir: str, ra0, ra1, dec0, dec1):
             md = pf.metadata
             keep = False
             for rg in range(md.num_row_groups):
-                st_ra = md.row_group(rg).column(
-                    pf.schema_arrow.names.index("RA")).statistics
-                st_dec = md.row_group(rg).column(
-                    pf.schema_arrow.names.index("DEC")).statistics
+                st_ra = (
+                    md.row_group(rg)
+                    .column(pf.schema_arrow.names.index("RA"))
+                    .statistics
+                )
+                st_dec = (
+                    md.row_group(rg)
+                    .column(pf.schema_arrow.names.index("DEC"))
+                    .statistics
+                )
                 if st_ra is None or st_dec is None:
                     keep = True
                     break
-                if (st_ra.max >= ra0 and st_ra.min <= ra1
-                        and st_dec.max >= dec0 and st_dec.min <= dec1):
+                if (
+                    st_ra.max >= ra0
+                    and st_ra.min <= ra1
+                    and st_dec.max >= dec0
+                    and st_dec.min <= dec1
+                ):
                     keep = True
                     break
             if not keep:
@@ -176,15 +193,17 @@ def load_des_in_field(gold_dir: str, ra0, ra1, dec0, dec1):
 
 
 def crossmatch(des: pd.DataFrame, splash: pd.DataFrame, radius_arcsec: float):
-    from astropy.coordinates import SkyCoord
     import astropy.units as u
+    from astropy.coordinates import SkyCoord
 
     c_des = SkyCoord(des["RA"].to_numpy() * u.deg, des["DEC"].to_numpy() * u.deg)
     c_sp = SkyCoord(splash["RA"].to_numpy() * u.deg, splash["DEC"].to_numpy() * u.deg)
     idx, sep, _ = c_des.match_to_catalog_sky(c_sp)
     ok = sep.arcsec < radius_arcsec
-    print(f"  matched {ok.sum():,}/{len(des):,} DES objects within "
-          f"{radius_arcsec}\" ({ok.mean():.3f})")
+    print(
+        f"  matched {ok.sum():,}/{len(des):,} DES objects within "
+        f'{radius_arcsec}" ({ok.mean():.3f})'
+    )
     out = des[ok].copy().reset_index(drop=True)
     out["splash_star"] = splash["STAR_FLAG"].to_numpy()[idx[ok]]
     out["sep"] = sep.arcsec[ok]
@@ -201,14 +220,20 @@ def curves(m: pd.DataFrame, ext_max: int, magcol: str, bins: np.ndarray):
         b = (mag >= lo) & (mag < hi)
         n_star = int((b & star).sum())
         n_sel = int((b & sel).sum())
-        rows.append({
-            "mag": 0.5 * (lo + hi),
-            "n": int(b.sum()),
-            "n_star": n_star,
-            "n_selected": n_sel,
-            "completeness": float((b & sel & star).sum() / n_star) if n_star else np.nan,
-            "contamination": float((b & sel & ~star).sum() / n_sel) if n_sel else np.nan,
-        })
+        rows.append(
+            {
+                "mag": 0.5 * (lo + hi),
+                "n": int(b.sum()),
+                "n_star": n_star,
+                "n_selected": n_sel,
+                "completeness": (
+                    float((b & sel & star).sum() / n_star) if n_star else np.nan
+                ),
+                "contamination": (
+                    float((b & sel & ~star).sum() / n_sel) if n_sel else np.nan
+                ),
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -228,14 +253,17 @@ def integrated(m: pd.DataFrame, ext_max: int, magcol: str, lo: float, hi: float)
 
 def main() -> None:
     ap = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     ap.add_argument(
         "--splash",
         default="/astro/store/shire/pferguso/projects/delve/stream_obs_update/"
-                "splash_sxdf/SPLASH_SXDF_Mehta+_v1.6.fits")
+        "splash_sxdf/SPLASH_SXDF_Mehta+_v1.6.fits",
+    )
     ap.add_argument(
         "--gold",
-        default="/astro/store/shire/hats/catalogs/des/des_y6_gold/des_y6_gold/dataset")
+        default="/astro/store/shire/hats/catalogs/des/des_y6_gold/des_y6_gold/dataset",
+    )
     ap.add_argument("--radius", type=float, default=0.5, help="match radius, arcsec")
     ap.add_argument("--magcol", default="MAG_AUTO_I")
     ap.add_argument("--out", default="artifacts/des_y6")
@@ -255,42 +283,58 @@ def main() -> None:
     m = m[np.isfinite(m[args.magcol])]
     n_before = len(m)
     m = m[m["splash_star"].isin([SPLASH_STAR, SPLASH_GALAXY])].reset_index(drop=True)
-    print(f"  dropped {n_before - len(m):,} SPLASH-unclassified (STAR_FLAG=-99) "
-          f"matches; they are neither star nor galaxy truth")
+    print(
+        f"  dropped {n_before - len(m):,} SPLASH-unclassified (STAR_FLAG=-99) "
+        f"matches; they are neither star nor galaxy truth"
+    )
     print(f"  usable with finite {args.magcol}: {len(m):,}")
     print(f"  usable (SPLASH-classified): {len(m):,}")
-    print(f"  SPLASH-truth star fraction: "
-          f"{(m['splash_star'] == SPLASH_STAR).mean():.4f}")
+    print(
+        f"  SPLASH-truth star fraction: "
+        f"{(m['splash_star'] == SPLASH_STAR).mean():.4f}"
+    )
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    result = {"radius_arcsec": args.radius, "magcol": args.magcol,
-              "n_matched": int(len(m))}
+    result = {
+        "radius_arcsec": args.radius,
+        "magcol": args.magcol,
+        "n_matched": int(len(m)),
+    }
 
     for ext_max, label in ((1, "complete"), (0, "pure")):
         bins = np.arange(17.0, 25.0 + 1e-9, 0.5)
         c = curves(m, ext_max, args.magcol, bins)
         c.to_csv(out / f"des_y6_splash_validation_ext{ext_max}.csv", index=False)
         print(f"\n=== 0 <= EXT_XGB <= {ext_max} ({label}) ===")
-        print(c[c["n_star"] > 20].to_string(index=False,
-                                            float_format=lambda v: f"{v:.4f}"))
+        print(
+            c[c["n_star"] > 20].to_string(
+                index=False, float_format=lambda v: f"{v:.4f}"
+            )
+        )
         result[f"ext_le_{ext_max}"] = {
-            "paper_ranges": [integrated(m, ext_max, args.magcol, 17.5, 22.5),
-                             integrated(m, ext_max, args.magcol, 16.5, 23.5)],
+            "paper_ranges": [
+                integrated(m, ext_max, args.magcol, 17.5, 22.5),
+                integrated(m, ext_max, args.magcol, 16.5, 23.5),
+            ],
         }
 
     print("\n=== against Bechtol et al. Table A.3 ===")
     print("  selection        range        this work            paper")
-    ref = {("ext_le_1", "17.5-22.5"): (0.980, 0.040),
-           ("ext_le_1", "16.5-23.5"): (0.943, 0.125),
-           ("ext_le_0", "17.5-22.5"): (0.921, 0.010),
-           ("ext_le_0", "16.5-23.5"): (0.793, 0.015)}
+    ref = {
+        ("ext_le_1", "17.5-22.5"): (0.980, 0.040),
+        ("ext_le_1", "16.5-23.5"): (0.943, 0.125),
+        ("ext_le_0", "17.5-22.5"): (0.921, 0.010),
+        ("ext_le_0", "16.5-23.5"): (0.793, 0.015),
+    }
     for key in ("ext_le_1", "ext_le_0"):
         for got in result[key]["paper_ranges"]:
             exp = ref.get((key, got["range"]))
-            print(f"  {key:10s} {got['range']:>11s}  "
-                  f"eff {got['efficiency']:.3f} cont {got['contamination']:.3f}   "
-                  f"eff {exp[0]:.3f} cont {exp[1]:.3f}")
+            print(
+                f"  {key:10s} {got['range']:>11s}  "
+                f"eff {got['efficiency']:.3f} cont {got['contamination']:.3f}   "
+                f"eff {exp[0]:.3f} cont {exp[1]:.3f}"
+            )
 
     (out / "des_y6_splash_validation.json").write_text(json.dumps(result, indent=2))
     print(f"\nwrote {out}/des_y6_splash_validation*.csv/.json")

@@ -81,16 +81,30 @@ import pyarrow.parquet as pq
 
 GOLD = "/astro/store/shire/hats/catalogs/des/des_y6_gold/des_y6_gold/dataset"
 
-BAD = -9.0e8      # anything below this in a BDF/GAP/PSF column is a sentinel
+BAD = -9.0e8  # anything below this in a BDF/GAP/PSF column is a sentinel
 CONC_BAD = -9990.0
-MAG_CAP = 37.0    # 37.5 is the "capped" magnitude value; 99 is MAG_AUTO's null
+MAG_CAP = 37.0  # 37.5 is the "capped" magnitude value; 99 is MAG_AUTO's null
 
 RAW_COLS = [
-    "BDF_T", "BDF_T_ERR", "BDF_T_RATIO", "BDF_S2N", "PSF_T",
-    "GAP_MAG_I", "GAP_MAG_R", "PSF_MAG_APER_8_I", "PSF_MAG_APER_8_R",
-    "BDF_MAG_I", "BDF_MAG_R", "BDF_MAG_G",
-    "EXT_XGB", "XGB_PRED", "CONC", "CONC_FLAGS", "MAG_AUTO_I",
-    "FLAGS_FOREGROUND", "FLAGS_GOLD",
+    "BDF_T",
+    "BDF_T_ERR",
+    "BDF_T_RATIO",
+    "BDF_S2N",
+    "PSF_T",
+    "GAP_MAG_I",
+    "GAP_MAG_R",
+    "PSF_MAG_APER_8_I",
+    "PSF_MAG_APER_8_R",
+    "BDF_MAG_I",
+    "BDF_MAG_R",
+    "BDF_MAG_G",
+    "EXT_XGB",
+    "XGB_PRED",
+    "CONC",
+    "CONC_FLAGS",
+    "MAG_AUTO_I",
+    "FLAGS_FOREGROUND",
+    "FLAGS_GOLD",
 ]
 
 # Two feature sets.  "full" is everything constructible on both sides; "robust"
@@ -110,14 +124,29 @@ RAW_COLS = [
 # "robust" is the default; --feature-set full is kept so the cost of dropping
 # them stays measurable.
 FEATURES_FULL = [
-    "BDF_T", "BDF_T_ERR", "BDF_T_RATIO", "log_bdf_s2n", "PSF_T", "psf_bdf_T",
-    "conc_gap", "conc_gap_r", "conc_ap8", "conc_ap8_r",
-    "BDF_MAG_I", "BDF_MAG_G",
+    "BDF_T",
+    "BDF_T_ERR",
+    "BDF_T_RATIO",
+    "log_bdf_s2n",
+    "PSF_T",
+    "psf_bdf_T",
+    "conc_gap",
+    "conc_gap_r",
+    "conc_ap8",
+    "conc_ap8_r",
+    "BDF_MAG_I",
+    "BDF_MAG_G",
 ]
 FEATURES_ROBUST = [
-    "BDF_T", "BDF_T_ERR", "BDF_T_RATIO", "log_bdf_s2n",
-    "conc_gap", "conc_ap8", "conc_ap8_r",
-    "BDF_MAG_I", "BDF_MAG_G",
+    "BDF_T",
+    "BDF_T_ERR",
+    "BDF_T_RATIO",
+    "log_bdf_s2n",
+    "conc_gap",
+    "conc_ap8",
+    "conc_ap8_r",
+    "BDF_MAG_I",
+    "BDF_MAG_G",
 ]
 FEATURES = FEATURES_ROBUST  # rebound in main() from --feature-set
 
@@ -129,12 +158,25 @@ MAG_BINS = np.arange(16.0, 27.0 + 1e-9, 0.25)
 def derive(d: pd.DataFrame) -> pd.DataFrame:
     """Mask sentinels and build the derived features."""
     for c in RAW_COLS:
-        if c in ("EXT_XGB", "XGB_PRED", "CONC", "CONC_FLAGS",
-                 "FLAGS_FOREGROUND", "FLAGS_GOLD"):
+        if c in (
+            "EXT_XGB",
+            "XGB_PRED",
+            "CONC",
+            "CONC_FLAGS",
+            "FLAGS_FOREGROUND",
+            "FLAGS_GOLD",
+        ):
             continue
         d.loc[d[c] < BAD, c] = np.nan
-    for c in ("GAP_MAG_I", "GAP_MAG_R", "PSF_MAG_APER_8_I", "PSF_MAG_APER_8_R",
-              "BDF_MAG_I", "BDF_MAG_R", "BDF_MAG_G"):
+    for c in (
+        "GAP_MAG_I",
+        "GAP_MAG_R",
+        "PSF_MAG_APER_8_I",
+        "PSF_MAG_APER_8_R",
+        "BDF_MAG_I",
+        "BDF_MAG_R",
+        "BDF_MAG_G",
+    ):
         d.loc[d[c] > MAG_CAP, c] = np.nan
     d.loc[d["CONC"] < CONC_BAD, "CONC"] = np.nan
     d.loc[d["MAG_AUTO_I"] > 90, "MAG_AUTO_I"] = np.nan
@@ -176,14 +218,26 @@ def precheck(d: pd.DataFrame) -> dict:
     import xgboost as xgb
     from sklearn.model_selection import train_test_split
 
-    ok = usable(d) & np.isfinite(d["CONC"]).to_numpy() & (d["CONC_FLAGS"] == 0).to_numpy()
+    ok = (
+        usable(d)
+        & np.isfinite(d["CONC"]).to_numpy()
+        & (d["CONC_FLAGS"] == 0).to_numpy()
+    )
     dd = d[ok]
     print(f"\nCONC pre-check on {len(dd):,} rows")
     X, y, m = dd[FEATURES].to_numpy(), dd["CONC"].to_numpy(), dd["BDF_MAG_I"].to_numpy()
-    Xtr, Xte, ytr, yte, _, mte = train_test_split(X, y, m, test_size=0.3, random_state=42)
-    reg = xgb.XGBRegressor(n_estimators=400, max_depth=7, learning_rate=0.08,
-                           subsample=0.8, colsample_bytree=0.8,
-                           tree_method="hist", n_jobs=16)
+    Xtr, Xte, ytr, yte, _, mte = train_test_split(
+        X, y, m, test_size=0.3, random_state=42
+    )
+    reg = xgb.XGBRegressor(
+        n_estimators=400,
+        max_depth=7,
+        learning_rate=0.08,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        tree_method="hist",
+        n_jobs=16,
+    )
     reg.fit(Xtr, ytr)
     p = reg.predict(Xte)
     r2 = 1 - np.sum((yte - p) ** 2) / np.sum((yte - yte.mean()) ** 2)
@@ -199,11 +253,14 @@ def precheck(d: pd.DataFrame) -> dict:
             "r2": float(1 - np.sum(r**2) / np.sum((yte[s] - yte[s].mean()) ** 2)),
             "resid": float((np.percentile(r, 84) - np.percentile(r, 16)) / 2),
             "conc_spread": float(
-                (np.percentile(yte[s], 84) - np.percentile(yte[s], 16)) / 2),
+                (np.percentile(yte[s], 84) - np.percentile(yte[s], 16)) / 2
+            ),
         }
         v = per[f"{lo:.0f}-{lo+1:.0f}"]
-        print(f"  i {lo:.0f}-{lo+1:.0f}: n={v['n']:>7d} R2={v['r2']:+.3f} "
-              f"resid={v['resid']:.4f} spread={v['conc_spread']:.4f}")
+        print(
+            f"  i {lo:.0f}-{lo+1:.0f}: n={v['n']:>7d} R2={v['r2']:+.3f} "
+            f"resid={v['resid']:.4f} spread={v['conc_spread']:.4f}"
+        )
     return {"global_r2": float(r2), "per_mag": per}
 
 
@@ -215,15 +272,24 @@ def train(d: pd.DataFrame, ext_max: int, seed: int):
     ok = usable(d)
     dd = d[ok].reset_index(drop=True)
     y = (dd["EXT_XGB"] <= ext_max).to_numpy().astype(int)
-    print(f"\ntraining on {len(dd):,} rows; positives (EXT_XGB<={ext_max}): "
-          f"{y.mean():.4f}")
+    print(
+        f"\ntraining on {len(dd):,} rows; positives (EXT_XGB<={ext_max}): "
+        f"{y.mean():.4f}"
+    )
 
     idx = np.arange(len(dd))
     itr, ite = train_test_split(idx, test_size=0.3, random_state=seed, stratify=y)
     clf = xgb.XGBClassifier(
-        n_estimators=600, max_depth=8, learning_rate=0.06,
-        subsample=0.8, colsample_bytree=0.8, min_child_weight=10,
-        eval_metric="logloss", tree_method="hist", n_jobs=16, random_state=seed,
+        n_estimators=600,
+        max_depth=8,
+        learning_rate=0.06,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        min_child_weight=10,
+        eval_metric="logloss",
+        tree_method="hist",
+        n_jobs=16,
+        random_state=seed,
     )
     clf.fit(dd.loc[itr, FEATURES].to_numpy(), y[itr])
 
@@ -235,15 +301,27 @@ def train(d: pd.DataFrame, ext_max: int, seed: int):
     tp = int(((pred == 1) & (y[ite] == 1)).sum())
     recall = tp / max(int((y[ite] == 1).sum()), 1)
     precision = tp / max(int((pred == 1).sum()), 1)
-    print(f"  AUC={auc:.4f}  agreement={agree:.4f}  "
-          f"recall={recall:.4f}  precision={precision:.4f}")
+    print(
+        f"  AUC={auc:.4f}  agreement={agree:.4f}  "
+        f"recall={recall:.4f}  precision={precision:.4f}"
+    )
 
-    return clf, dd, ite, y, prob, {
-        "auc": float(auc), "agreement": agree,
-        "recall": float(recall), "precision": float(precision),
-        "n_train": int(len(itr)), "n_test": int(len(ite)),
-        "positive_rate": float(y.mean()),
-    }
+    return (
+        clf,
+        dd,
+        ite,
+        y,
+        prob,
+        {
+            "auc": float(auc),
+            "agreement": agree,
+            "recall": float(recall),
+            "precision": float(precision),
+            "n_train": int(len(itr)),
+            "n_test": int(len(ite)),
+            "positive_rate": float(y.mean()),
+        },
+    )
 
 
 def confusion_table(dd, ite, y, prob, thresh: float) -> pd.DataFrame:
@@ -255,13 +333,15 @@ def confusion_table(dd, ite, y, prob, thresh: float) -> pd.DataFrame:
     for lo, hi in zip(MAG_BINS[:-1], MAG_BINS[1:]):
         m = (mag >= lo) & (mag < hi)
         pos, neg = m & (yt == 1), m & (yt == 0)
-        rows.append({
-            "mag_g": 0.5 * (lo + hi),
-            "a": float(s[pos].mean()) if pos.sum() else np.nan,
-            "b": float(s[neg].mean()) if neg.sum() else np.nan,
-            "n_pos": int(pos.sum()),
-            "n_neg": int(neg.sum()),
-        })
+        rows.append(
+            {
+                "mag_g": 0.5 * (lo + hi),
+                "a": float(s[pos].mean()) if pos.sum() else np.nan,
+                "b": float(s[neg].mean()) if neg.sum() else np.nan,
+                "n_pos": int(pos.sum()),
+                "n_neg": int(neg.sum()),
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -279,23 +359,37 @@ def domain_check(dd: pd.DataFrame, balrog: str, n_rows: int) -> dict:
         gap = f["meas_gap_mag"][sl]
         bdf = f["meas_bdf_mag"][sl]
         ap8 = f["meas_psf_mag_aper8"][sl]
-        b = pd.DataFrame({
-            "BDF_T": f["meas_bdf_T"][sl],
-            "BDF_T_ERR": f["meas_bdf_T_err"][sl],
-            "BDF_T_RATIO": f["meas_bdf_T_ratio"][sl],
-            "BDF_S2N": f["meas_bdf_s2n"][sl],
-            "PSF_T": f["meas_psf_T"][sl],
-            "BDF_MAG_G": bdf[:, 0], "BDF_MAG_R": bdf[:, 1], "BDF_MAG_I": bdf[:, 2],
-            "GAP_MAG_R": gap[:, 1], "GAP_MAG_I": gap[:, 2],
-            "PSF_MAG_APER_8_R": ap8[:, 1], "PSF_MAG_APER_8_I": ap8[:, 2],
-            "flags": f["meas_flags"][sl], "bdf_flags": f["meas_bdf_flags"][sl],
-        })
+        b = pd.DataFrame(
+            {
+                "BDF_T": f["meas_bdf_T"][sl],
+                "BDF_T_ERR": f["meas_bdf_T_err"][sl],
+                "BDF_T_RATIO": f["meas_bdf_T_ratio"][sl],
+                "BDF_S2N": f["meas_bdf_s2n"][sl],
+                "PSF_T": f["meas_psf_T"][sl],
+                "BDF_MAG_G": bdf[:, 0],
+                "BDF_MAG_R": bdf[:, 1],
+                "BDF_MAG_I": bdf[:, 2],
+                "GAP_MAG_R": gap[:, 1],
+                "GAP_MAG_I": gap[:, 2],
+                "PSF_MAG_APER_8_R": ap8[:, 1],
+                "PSF_MAG_APER_8_I": ap8[:, 2],
+                "flags": f["meas_flags"][sl],
+                "bdf_flags": f["meas_bdf_flags"][sl],
+            }
+        )
     for c in b.columns:
         if c in ("flags", "bdf_flags"):
             continue
         b.loc[b[c] < BAD, c] = np.nan
-    for c in ("GAP_MAG_I", "GAP_MAG_R", "PSF_MAG_APER_8_I", "PSF_MAG_APER_8_R",
-              "BDF_MAG_I", "BDF_MAG_R", "BDF_MAG_G"):
+    for c in (
+        "GAP_MAG_I",
+        "GAP_MAG_R",
+        "PSF_MAG_APER_8_I",
+        "PSF_MAG_APER_8_R",
+        "BDF_MAG_I",
+        "BDF_MAG_R",
+        "BDF_MAG_G",
+    ):
         b.loc[b[c] > MAG_CAP, c] = np.nan
     with np.errstate(all="ignore"):
         b["log_bdf_s2n"] = np.log10(b["BDF_S2N"].where(b["BDF_S2N"] > 0))
@@ -307,8 +401,10 @@ def domain_check(dd: pd.DataFrame, balrog: str, n_rows: int) -> dict:
     b = b[(b["flags"] == 0) & (b["bdf_flags"] == 0)]
 
     out = {}
-    print(f"  {'feature':16s} {'i-bin':>10s} {'real med':>10s} {'balrog med':>11s} "
-          f"{'d/spread':>9s}")
+    print(
+        f"  {'feature':16s} {'i-bin':>10s} {'real med':>10s} {'balrog med':>11s} "
+        f"{'d/spread':>9s}"
+    )
     for lo in (20.0, 22.0, 23.0, 24.0):
         rs = (dd["BDF_MAG_I"] >= lo) & (dd["BDF_MAG_I"] < lo + 1)
         bs = (b["BDF_MAG_I"] >= lo) & (b["BDF_MAG_I"] < lo + 1)
@@ -326,34 +422,54 @@ def domain_check(dd: pd.DataFrame, balrog: str, n_rows: int) -> dict:
             spread = (np.nanpercentile(r_v, 84) - np.nanpercentile(r_v, 16)) / 2
             norm = abs(b_med - r_med) / spread if spread > 0 else np.nan
             out[f"{f}@{lo:.0f}"] = {
-                "real_median": float(r_med), "balrog_median": float(b_med),
+                "real_median": float(r_med),
+                "balrog_median": float(b_med),
                 "shift_over_spread": float(norm),
             }
             flag = "  <-- SHIFT" if norm > 0.5 else ""
-            print(f"  {f:16s} {lo:5.0f}-{lo+1:.0f} {r_med:10.4f} {b_med:11.4f} "
-                  f"{norm:9.3f}{flag}")
+            print(
+                f"  {f:16s} {lo:5.0f}-{lo+1:.0f} {r_med:10.4f} {b_med:11.4f} "
+                f"{norm:9.3f}{flag}"
+            )
     return out
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     ap.add_argument("--out", default="artifacts/des_y6")
-    ap.add_argument("--n-partitions", type=int, default=40,
-                    help="how many des_y6_gold HATS partitions to sample")
-    ap.add_argument("--ext-max", type=int, default=1,
-                    help="star iff 0 <= EXT_XGB <= this (1 = the 'complete' sample)")
+    ap.add_argument(
+        "--n-partitions",
+        type=int,
+        default=40,
+        help="how many des_y6_gold HATS partitions to sample",
+    )
+    ap.add_argument(
+        "--ext-max",
+        type=int,
+        default=1,
+        help="star iff 0 <= EXT_XGB <= this (1 = the 'complete' sample)",
+    )
     ap.add_argument("--threshold", type=float, default=0.5)
     ap.add_argument("--seed", type=int, default=42)
-    ap.add_argument("--feature-set", choices=["robust", "full"], default="robust",
-                    help="'robust' drops PSF_T/psf_bdf_T (domain-shifted) and "
-                         "conc_gap_r (redundant); see the module comment")
-    ap.add_argument("--precheck", action="store_true",
-                    help="also run the CONC reconstruction pre-check")
+    ap.add_argument(
+        "--feature-set",
+        choices=["robust", "full"],
+        default="robust",
+        help="'robust' drops PSF_T/psf_bdf_T (domain-shifted) and "
+        "conc_gap_r (redundant); see the module comment",
+    )
+    ap.add_argument(
+        "--precheck",
+        action="store_true",
+        help="also run the CONC reconstruction pre-check",
+    )
     ap.add_argument(
         "--balrog",
         default="/astro/store/shire/pferguso/des_y6_balrog/fiducial_matched_measured_sof.hdf5",
-        help="matched Balrog file for the domain-shift check ('' to skip)")
+        help="matched Balrog file for the domain-shift check ('' to skip)",
+    )
     ap.add_argument("--balrog-rows", type=int, default=2_000_000)
     args = ap.parse_args()
 
@@ -367,8 +483,12 @@ def main() -> None:
     print("loading des_y6_gold:")
     d = load_gold(args.n_partitions, args.seed)
 
-    audit: dict = {"ext_max": args.ext_max, "threshold": args.threshold,
-                   "feature_set": args.feature_set, "features": FEATURES}
+    audit: dict = {
+        "ext_max": args.ext_max,
+        "threshold": args.threshold,
+        "feature_set": args.feature_set,
+        "features": FEATURES,
+    }
     if args.precheck:
         audit["conc_precheck"] = precheck(d)
 
@@ -388,8 +508,10 @@ def main() -> None:
         audit["domain_shift"] = domain_check(dd, args.balrog, args.balrog_rows)
 
     (out / "des_y6_xgb_surrogate_audit.json").write_text(json.dumps(audit, indent=2))
-    print(f"\nwrote {out}/des_y6_xgb_surrogate.json, _features.txt, "
-          f"_confusion.csv, _audit.json")
+    print(
+        f"\nwrote {out}/des_y6_xgb_surrogate.json, _features.txt, "
+        f"_confusion.csv, _audit.json"
+    )
 
 
 if __name__ == "__main__":

@@ -44,14 +44,26 @@ DATA = REPO / "data/surveys"
 
 # release -> (misclass filename, corrections YAML, curve id)
 TARGETS = {
-    "des_yr6": ("des_yr6_galaxy_misclass_cutg.csv",
-                "scripts/des/des_photoerror_corrections.yaml", "g_misclass"),
-    "delve_dr3_gold": ("delve_dr3_gold_galaxy_misclass_cutg.csv",
-                       "scripts/des/delve_photoerror_corrections.yaml", "g_misclass"),
-    "lsst_dc2": ("lsst_dc2_galaxy_misclass_cutr.csv",
-                 "scripts/lsst/lsst_photoerror_corrections.yaml", "r_misclass"),
-    "roman_dc2": ("roman_galaxy_misclass_cutf158.csv",
-                  "scripts/roman/roman_photoerror_corrections.yaml", "f158_misclass"),
+    "des_yr6": (
+        "des_yr6_galaxy_misclass_cutg.csv",
+        "scripts/des/des_photoerror_corrections.yaml",
+        "g_misclass",
+    ),
+    "delve_dr3_gold": (
+        "delve_dr3_gold_galaxy_misclass_cutg.csv",
+        "scripts/des/delve_photoerror_corrections.yaml",
+        "g_misclass",
+    ),
+    "lsst_dc2": (
+        "lsst_dc2_galaxy_misclass_cutr.csv",
+        "scripts/lsst/lsst_photoerror_corrections.yaml",
+        "r_misclass",
+    ),
+    "roman_dc2": (
+        "roman_galaxy_misclass_cutf158.csv",
+        "scripts/roman/roman_photoerror_corrections.yaml",
+        "f158_misclass",
+    ),
 }
 
 
@@ -76,8 +88,9 @@ def read_curve(path):
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     ap.add_argument("releases", nargs="*", default=None)
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
@@ -112,14 +125,22 @@ def main():
         df, header, commented = read_curve(src)
         keep = df["delta_mag"] >= cut
         out = df[keep].reset_index(drop=True)
-        print(f"  {rel}: cut delta_mag < {cut} — {len(df)} -> {len(out)} rows "
-              f"(dropped {int((~keep).sum())})")
+        print(
+            f"  {rel}: cut delta_mag < {cut} — {len(df)} -> {len(out)} rows "
+            f"(dropped {int((~keep).sum())})"
+        )
         if args.dry_run:
             continue
         # keep whichever header convention this release already used: DES and
         # DELVE write a plain header row, LSST and Roman a '#'-commented one
-        np.savetxt(path, out.values, delimiter=",", header=header,
-                   comments="# " if commented else "", fmt="%.6f")
+        np.savetxt(
+            path,
+            out.values,
+            delimiter=",",
+            header=header,
+            comments="# " if commented else "",
+            fmt="%.6f",
+        )
 
     if not args.dry_run:
         print("\nRebuild the archive and the survey figures afterwards.")

@@ -406,9 +406,9 @@ class TestSurveyProperties:
                         f"band '{band}' is not the reference band '{ref}' and must "
                         "resolve to the _nocut curve"
                     )
-                    assert fn is not ref_fn, (
-                        "forced-photometry and reference-band curves must differ"
-                    )
+                    assert (
+                        fn is not ref_fn
+                    ), "forced-photometry and reference-band curves must differ"
 
     def test_nocut_curve_exceeds_detected_curve_faintward(self, loaded_survey):
         """The no-cut curve must sit ABOVE the detected-population curve faintward.
@@ -423,9 +423,9 @@ class TestSurveyProperties:
         nocut = loaded_survey.log_photo_error_catalog_nocut
         # brightward: effectively identical (the S/N cut removes ~nothing there)
         for dm in (-3.0, -2.0, -1.0):
-            assert abs(float(det(dm)) - float(nocut(dm))) < 0.02, (
-                f"curves should agree at delta_mag={dm}"
-            )
+            assert (
+                abs(float(det(dm)) - float(nocut(dm))) < 0.02
+            ), f"curves should agree at delta_mag={dm}"
         # Faintward the no-cut curve must be larger. Compare only where BOTH curves
         # have real data: past its last row an interpolator returns the out-of-range
         # sentinel (log10 sigma = 1.0, i.e. 10 mag), and the two curves do not end at
@@ -740,14 +740,18 @@ class TestSurveyProperties:
                 snr10_delta_mag = loaded_survey._test_entry.get(
                     "snr10_delta_mag", -0.75
                 )
-                loaded_survey.sys_error[band] = 0.0  # remove statistical error for SNR check
+                loaded_survey.sys_error[band] = (
+                    0.0  # remove statistical error for SNR check
+                )
                 error_at_maglim = loaded_survey.get_photo_error(
                     band, base_maglim + snr10_delta_mag, base_maglim, kind="catalog"
                 )
 
                 snr_at_maglim = 2.5 / np.log(10) / error_at_maglim  # convert to SNR
                 assert np.isclose(
-                    snr_at_maglim, 10.0, atol=0.5,
+                    snr_at_maglim,
+                    10.0,
+                    atol=0.5,
                 ), (
                     f"Photo error at delta_mag={snr10_delta_mag} should correspond to "
                     f"roughly SNR=10 for band '{band}' (got {float(np.atleast_1d(snr_at_maglim)[0]):.3f})"

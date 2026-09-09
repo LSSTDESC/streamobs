@@ -89,7 +89,7 @@ def degrade_one(path, nside_out, dry_run=False):
     # meaningless.)
     if nside_in != nside_out:
         levels = int(np.log2(nside_in // nside_out))
-        expected = np.unique(smap.valid_pixels // (4 ** levels))
+        expected = np.unique(smap.valid_pixels // (4**levels))
         got = np.unique(out.valid_pixels)
         if not np.array_equal(expected, got):
             raise SystemExit(
@@ -99,15 +99,20 @@ def degrade_one(path, nside_out, dry_run=False):
                 "pixel-ordering bug, not a resolution effect. Refusing to write."
             )
 
-    new_name = re.sub(r"nside_?\d+", lambda mm: mm.group(0).replace(
-        str(claimed), str(nside_out)), name)
+    new_name = re.sub(
+        r"nside_?\d+",
+        lambda mm: mm.group(0).replace(str(claimed), str(nside_out)),
+        name,
+    )
     dst = path.parent / new_name
 
     print(f"    {name}")
-    print(f"      nside {nside_in} -> {nside_out} | median "
-          f"{np.median(v0):.3f} -> {np.median(v1):.3f} "
-          f"({np.median(v1) - np.median(v0):+.3f}) | area "
-          f"{area0:,.0f} -> {area1:,.0f} deg^2")
+    print(
+        f"      nside {nside_in} -> {nside_out} | median "
+        f"{np.median(v0):.3f} -> {np.median(v1):.3f} "
+        f"({np.median(v1) - np.median(v0):+.3f}) | area "
+        f"{area0:,.0f} -> {area1:,.0f} deg^2"
+    )
     if dry_run:
         print(f"      would write {new_name}")
         return
@@ -125,9 +130,12 @@ def degrade_one(path, nside_out, dry_run=False):
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("releases", nargs="+", help="release directory names under data/surveys/")
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    ap.add_argument(
+        "releases", nargs="+", help="release directory names under data/surveys/"
+    )
     ap.add_argument("--nside", type=int, default=128, help="target nside (default 128)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
@@ -136,13 +144,18 @@ def main():
         d = DATA / rel
         if not d.is_dir():
             raise SystemExit(f"no such release directory: {d}")
-        maps = sorted(p for p in d.glob("*maglim*")
-                      if p.suffix in (".gz", ".hsp") and "5_sig" not in p.name)
+        maps = sorted(
+            p
+            for p in d.glob("*maglim*")
+            if p.suffix in (".gz", ".hsp") and "5_sig" not in p.name
+        )
         print(f"  {rel}: {len(maps)} map(s)")
         for p in maps:
             degrade_one(p, args.nside, args.dry_run)
-    print("\nUpdate the maglim_map_* filenames in the matching "
-          "config/surveys/*.yaml, then rebuild the figures and the archive.")
+    print(
+        "\nUpdate the maglim_map_* filenames in the matching "
+        "config/surveys/*.yaml, then rebuild the figures and the archive."
+    )
 
 
 if __name__ == "__main__":

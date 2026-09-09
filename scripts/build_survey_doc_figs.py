@@ -53,10 +53,16 @@ OTHERS = DATA.parent / "others"
 
 SIG_SN5 = 2.5 / np.log(10) / 5.0  # 0.21715
 
-plt.rcParams.update({
-    "figure.dpi": 130, "savefig.dpi": 130, "font.size": 10,
-    "axes.grid": True, "grid.alpha": 0.25, "legend.frameon": False,
-})
+plt.rcParams.update(
+    {
+        "figure.dpi": 130,
+        "savefig.dpi": 130,
+        "font.size": 10,
+        "axes.grid": True,
+        "grid.alpha": 0.25,
+        "legend.frameon": False,
+    }
+)
 
 # Bands shown on the depth figure, per survey. The selection function is
 # derived in one reference band, so the extra band is there to show how the
@@ -86,8 +92,9 @@ def read_curve(path):
                 break
     if header is None:
         return np.genfromtxt(path, delimiter=",", names=True)
-    return np.genfromtxt(path, delimiter=",", names=header.split(","),
-                         skip_header=n_comment)
+    return np.genfromtxt(
+        path, delimiter=",", names=header.split(","), skip_header=n_comment
+    )
 
 
 def load_release(release):
@@ -150,16 +157,33 @@ def fig_efficiency(r):
     ref = r["ref"]
     fig, ax = plt.subplots(figsize=(7.2, 4.4))
 
-    ax.plot(eff["delta_mag"], eff["detection_eff"], lw=2, color=C_DET,
-            label="detection")
-    ax.plot(eff["delta_mag"], eff["classification_eff"], lw=2, color=C_CLS,
-            label=r"classification $|$ detected")
-    ax.plot(eff["delta_mag"], eff["classification_detection_eff"], lw=2.4,
-            color=C_BOTH, label=r"detection $\times$ classification")
+    ax.plot(
+        eff["delta_mag"], eff["detection_eff"], lw=2, color=C_DET, label="detection"
+    )
+    ax.plot(
+        eff["delta_mag"],
+        eff["classification_eff"],
+        lw=2,
+        color=C_CLS,
+        label=r"classification $|$ detected",
+    )
+    ax.plot(
+        eff["delta_mag"],
+        eff["classification_detection_eff"],
+        lw=2.4,
+        color=C_BOTH,
+        label=r"detection $\times$ classification",
+    )
     if r["mis"] is not None:
         mis = read_curve(r["mis"])
-        ax.plot(mis["delta_mag"], mis["missclassification_eff"], lw=1.8,
-                color=C_MIS, ls="--", label="galaxy misclassified as star")
+        ax.plot(
+            mis["delta_mag"],
+            mis["missclassification_eff"],
+            lw=1.8,
+            color=C_MIS,
+            ls="--",
+            label="galaxy misclassified as star",
+        )
 
     # where the combined efficiency crosses 50%
     d, y = eff["delta_mag"], eff["classification_detection_eff"]
@@ -170,10 +194,15 @@ def fig_efficiency(r):
         i = below[0]
         x50 = np.interp(0.5, [y[i], y[i - 1]], [d[i], d[i - 1]])
         ax.plot([x50], [0.5], "o", ms=5, color=C_BOTH, zorder=5)
-        ax.annotate(f"50% at $\\Delta$mag {x50:+.2f}", xy=(x50, 0.5),
-                    xytext=(0.60, 0.72), textcoords=ax.transAxes, fontsize=8,
-                    color="0.3",
-                    arrowprops=dict(arrowstyle="->", color="0.5", lw=0.8))
+        ax.annotate(
+            f"50% at $\\Delta$mag {x50:+.2f}",
+            xy=(x50, 0.5),
+            xytext=(0.60, 0.72),
+            textcoords=ax.transAxes,
+            fontsize=8,
+            color="0.3",
+            arrowprops=dict(arrowstyle="->", color="0.5", lw=0.8),
+        )
 
     ax.axvline(0.0, color="0.5", lw=0.9, ls=":")
     ax.text(0.02, 0.30, "maglim", fontsize=8, color="0.45", rotation=90)
@@ -181,8 +210,10 @@ def fig_efficiency(r):
     ax.set_ylabel("efficiency")
     ax.set_ylim(-0.02, 1.12)
     ax.set_xlim(max(eff["delta_mag"].min(), -8.5), min(eff["delta_mag"].max(), 2.5))
-    ax.set_title(f"{r['release']} — stellar efficiency and galaxy "
-                 f"misclassification ({ref})", fontsize=10)
+    ax.set_title(
+        f"{r['release']} — stellar efficiency and galaxy " f"misclassification ({ref})",
+        fontsize=10,
+    )
     ax.legend(loc="lower left", fontsize=8.5)
     fig.tight_layout()
     out = r["out"] / f"{r['release']}_efficiency.png"
@@ -200,26 +231,59 @@ def fig_photoerror(r):
     has_nc = r["pe_sample_nc"] is not None and r["pe_catalog_nc"] is not None
 
     fig, ax = plt.subplots(figsize=(7.2, 4.6))
-    ax.semilogy(s["delta_mag"], 10 ** s["log_mag_err"], lw=2, color=C_SAMPLE,
-                label=f"sample — truth scatter ({ref}, reference band)")
-    ax.semilogy(c["delta_mag"], 10 ** c["log_mag_err"], lw=2, color=C_CATALOG,
-                label=f"catalog — reported magerr ({ref}, reference band)")
+    ax.semilogy(
+        s["delta_mag"],
+        10 ** s["log_mag_err"],
+        lw=2,
+        color=C_SAMPLE,
+        label=f"sample — truth scatter ({ref}, reference band)",
+    )
+    ax.semilogy(
+        c["delta_mag"],
+        10 ** c["log_mag_err"],
+        lw=2,
+        color=C_CATALOG,
+        label=f"catalog — reported magerr ({ref}, reference band)",
+    )
     if has_nc:
         snc, cnc = read_curve(r["pe_sample_nc"]), read_curve(r["pe_catalog_nc"])
-        ax.semilogy(snc["delta_mag"], 10 ** snc["log_mag_err"], lw=1.5,
-                    color=C_SAMPLE, ls="--", label="sample, no S/N cut — forced bands")
-        ax.semilogy(cnc["delta_mag"], 10 ** cnc["log_mag_err"], lw=1.5,
-                    color=C_CATALOG, ls="--", label="catalog, no S/N cut — forced bands")
+        ax.semilogy(
+            snc["delta_mag"],
+            10 ** snc["log_mag_err"],
+            lw=1.5,
+            color=C_SAMPLE,
+            ls="--",
+            label="sample, no S/N cut — forced bands",
+        )
+        ax.semilogy(
+            cnc["delta_mag"],
+            10 ** cnc["log_mag_err"],
+            lw=1.5,
+            color=C_CATALOG,
+            ls="--",
+            label="catalog, no S/N cut — forced bands",
+        )
 
     ax.axhline(SIG_SN5, color="0.5", lw=0.9, ls=":")
-    ax.text(0.5, 0.94, r"$\sigma = 0.217$ (S/N $= 5$)", transform=ax.transAxes,
-            ha="center", va="top", fontsize=8, color="0.4")
+    ax.text(
+        0.5,
+        0.94,
+        r"$\sigma = 0.217$ (S/N $= 5$)",
+        transform=ax.transAxes,
+        ha="center",
+        va="top",
+        fontsize=8,
+        color="0.4",
+    )
     ax.axvline(0.0, color="0.5", lw=0.9, ls=":")
     ax.set_xlabel(rf"$\Delta$mag = mag$_{ref}^{{\rm true}}$ $-$ maglim$_{ref}$")
     ax.set_ylabel(r"$\sigma_{\rm mag}$")
-    sub = ("solid: reference band, conditioned on detection.  "
-           "dashed: forced-photometry bands" if has_nc else
-           "no _nocut curves shipped for this release")
+    sub = (
+        "solid: reference band, conditioned on detection.  "
+        "dashed: forced-photometry bands"
+        if has_nc
+        else "no _nocut curves shipped for this release"
+    )
     ax.set_title(f"{r['release']} — photometric error model\n{sub}", fontsize=10)
     ax.legend(loc="lower right", fontsize=8)
     fig.tight_layout()
@@ -232,9 +296,11 @@ def fig_photoerror(r):
 def _read_dense(path):
     """Return (dense RING map, nside) for either a .hsp or a .fits.gz map."""
     import healpy as hp
+
     f = str(path)
     if f.endswith(".hsp"):
         import healsparse as hsp
+
         m = hsp.HealSparseMap.read(f)
         return m.generate_healpix_map(nside=m.nside_sparse, nest=False), m.nside_sparse
     dense = hp.read_map(f, dtype=np.float64)
@@ -249,10 +315,11 @@ def _footprint_extent(nside, good_pix):
     centre.
     """
     import healpy as hp
+
     vec = np.array(hp.pix2vec(nside, good_pix))
     mean = vec.mean(axis=1)
     norm = np.linalg.norm(mean)
-    if norm == 0:                      # antipodally symmetric: no useful centre
+    if norm == 0:  # antipodally symmetric: no useful centre
         return None, 180.0
     mean = mean / norm
     cosang = np.clip(vec.T @ mean, -1.0, 1.0)
@@ -290,8 +357,7 @@ def fig_depth(r):
 
     # zoom when the footprint is compact; an all-sky projection wastes the frame
     b0 = bands[0]
-    centre, radius = _footprint_extent(maps[b0]["nside"],
-                                       np.where(maps[b0]["good"])[0])
+    centre, radius = _footprint_extent(maps[b0]["nside"], np.where(maps[b0]["good"])[0])
     zoom = centre is not None and radius < ZOOM_MAX_RADIUS_DEG
 
     n = len(bands)
@@ -305,13 +371,32 @@ def fig_depth(r):
             # gnomview reso is arcmin/pixel, so size the frame to the footprint
             xsize = 480
             reso = max(2.4 * radius * 60.0 / xsize, 0.2)
-            hp.gnomview(d["dense"], fig=fig.number, sub=(2, n, i + 1), rot=centre,
-                        xsize=xsize, reso=reso, min=lo, max=hi, cmap="viridis",
-                        title=title, unit="mag", notext=True)
+            hp.gnomview(
+                d["dense"],
+                fig=fig.number,
+                sub=(2, n, i + 1),
+                rot=centre,
+                xsize=xsize,
+                reso=reso,
+                min=lo,
+                max=hi,
+                cmap="viridis",
+                title=title,
+                unit="mag",
+                notext=True,
+            )
             hp.graticule(dpar=2, dmer=2, color="0.75", lw=0.4, verbose=False)
         else:
-            hp.mollview(d["dense"], fig=fig.number, sub=(2, n, i + 1), min=lo, max=hi,
-                        cmap="viridis", title=title, unit="mag")
+            hp.mollview(
+                d["dense"],
+                fig=fig.number,
+                sub=(2, n, i + 1),
+                min=lo,
+                max=hi,
+                cmap="viridis",
+                title=title,
+                unit="mag",
+            )
             hp.graticule(dpar=30, dmer=60, color="0.7", lw=0.4, verbose=False)
 
     ax = fig.add_subplot(2, 1, 2)
@@ -324,8 +409,11 @@ def fig_depth(r):
     ax.grid(alpha=0.25)
 
     proj = f"zoomed, {radius:.1f}° radius" if zoom else "all-sky"
-    fig.suptitle(f"{r['release']} — depth by band ({proj}, nside "
-                 f"{maps[bands[0]]['nside']})", fontsize=11, y=1.045)
+    fig.suptitle(
+        f"{r['release']} — depth by band ({proj}, nside " f"{maps[bands[0]]['nside']})",
+        fontsize=11,
+        y=1.045,
+    )
     out = r["out"] / f"{r['release']}_depth.png"
     fig.savefig(out, bbox_inches="tight")
     plt.close(fig)
@@ -333,8 +421,9 @@ def fig_depth(r):
 
 
 def main(argv):
-    releases = argv or sorted(p.stem for p in CONFIG.glob("*.yaml")
-                              if "corrections" not in p.stem)
+    releases = argv or sorted(
+        p.stem for p in CONFIG.glob("*.yaml") if "corrections" not in p.stem
+    )
     built, skipped = 0, []
     for rel in releases:
         r = load_release(rel)

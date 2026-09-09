@@ -54,7 +54,9 @@ def main():
             if os.path.islink(dst):
                 print(f"    already linked: {csv}")
             elif dst.exists():
-                raise FileExistsError(f"{dst} exists and is not a symlink — resolve manually")
+                raise FileExistsError(
+                    f"{dst} exists and is not a symlink — resolve manually"
+                )
             else:
                 # relative link: survives moving/renaming the repo checkout
                 os.symlink(os.path.relpath(src, yr_dir), dst)

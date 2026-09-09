@@ -95,8 +95,20 @@ def fetch(data_dir: Path) -> None:
         url = f"{BASE_URL}/{dest.name}"
         print(f"  fetching {dest.name} ...")
         subprocess.run(
-            ["curl", "-L", "--fail", "--retry", "5", "--retry-delay", "10",
-             "-C", "-", "-o", str(dest), url],
+            [
+                "curl",
+                "-L",
+                "--fail",
+                "--retry",
+                "5",
+                "--retry-delay",
+                "10",
+                "-C",
+                "-",
+                "-o",
+                str(dest),
+                url,
+            ],
             check=True,
         )
 
@@ -159,14 +171,18 @@ def audit_join(deep: pd.DataFrame, balrog: Path, n_rows: int) -> None:
         )
 
     classified = np.isin(knn, [KNN_GALAXY, KNN_STAR])
-    print(f"    star fraction among classified: "
-          f"{(knn[classified] == KNN_STAR).mean():.4f}")
+    print(
+        f"    star fraction among classified: "
+        f"{(knn[classified] == KNN_STAR).mean():.4f}"
+    )
 
     # Purity of the morphological proxy this table replaces.
     compact = np.abs(bdf_t) < 0.02
     if compact.any():
-        print(f"    |bdf_T|<0.02 selects {compact.mean():.4f} of injections, "
-              f"purity for true stars = {(knn[compact] == KNN_STAR).mean():.4f}")
+        print(
+            f"    |bdf_T|<0.02 selects {compact.mean():.4f} of injections, "
+            f"purity for true stars = {(knn[compact] == KNN_STAR).mean():.4f}"
+        )
 
 
 def main() -> None:
@@ -179,7 +195,9 @@ def main() -> None:
         help="where the deep-field parquets live (downloaded here if missing)",
     )
     ap.add_argument("--out", default=None, help="output dir (default: --data-dir)")
-    ap.add_argument("--no-fetch", action="store_true", help="fail instead of downloading")
+    ap.add_argument(
+        "--no-fetch", action="store_true", help="fail instead of downloading"
+    )
     ap.add_argument(
         "--audit",
         default="/astro/store/shire/pferguso/des_y6_balrog/fiducial_injected_sof.hdf5",

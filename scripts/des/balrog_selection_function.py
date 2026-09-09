@@ -162,15 +162,66 @@ SENTINEL = -9.999e9  # desqr's sentinel for failed BDF measurements
 #           3 high-confidence galaxy, 4 high-purity galaxy, -9 failure.
 # ---------------------------------------------------------------------------
 _BDF_X = np.array(
-    [-3.0, 0.79891862, 0.90845217, 0.98558583, 1.05791208, 1.13603715,
-     1.22479487, 1.33572223, 1.48983602, 1.74124395, 2.43187589, 6.0]
+    [
+        -3.0,
+        0.79891862,
+        0.90845217,
+        0.98558583,
+        1.05791208,
+        1.13603715,
+        1.22479487,
+        1.33572223,
+        1.48983602,
+        1.74124395,
+        2.43187589,
+        6.0,
+    ]
 )
 _BDF_Y = np.array(
     [
-        [0.028, 0.028, 0.008, 0.0, 0.004, 0.012, 0.012, 0.004, 0.012, 0.024, 0.04, 0.04],
-        [-0.028, -0.028, -0.028, -0.028, -0.028, -0.028, -0.028, -0.012, 0.005, 0.022, 0.04, 0.04],
+        [
+            0.028,
+            0.028,
+            0.008,
+            0.0,
+            0.004,
+            0.012,
+            0.012,
+            0.004,
+            0.012,
+            0.024,
+            0.04,
+            0.04,
+        ],
+        [
+            -0.028,
+            -0.028,
+            -0.028,
+            -0.028,
+            -0.028,
+            -0.028,
+            -0.028,
+            -0.012,
+            0.005,
+            0.022,
+            0.04,
+            0.04,
+        ],
         [-0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.012, 0.008, 0.016, 0.016],
-        [0.252, 0.252, 0.188, 0.14, 0.096, 0.104, 0.052, 0.048, 0.04, 0.052, 0.088, 0.088],
+        [
+            0.252,
+            0.252,
+            0.188,
+            0.14,
+            0.096,
+            0.104,
+            0.052,
+            0.048,
+            0.04,
+            0.052,
+            0.088,
+            0.088,
+        ],
     ]
 )
 
@@ -262,8 +313,15 @@ class DelveBalrog(BalrogSchema):
     # so the reddened truth magnitude is  ZP - 2.5*log10(flux) + A_band.
     EXT_COL = {"g": "Ag_sfd98", "r": "Ar_sfd98", "i": "Ai_sfd98", "z": "Az_sfd98"}
 
-    def __init__(self, ext_max=1, mag_kind=None, badpix_max=None,
-                 ref_band="g", snr_detect=SNR_DEPTH, truth_mag_kind=None):
+    def __init__(
+        self,
+        ext_max=1,
+        mag_kind=None,
+        badpix_max=None,
+        ref_band="g",
+        snr_detect=SNR_DEPTH,
+        truth_mag_kind=None,
+    ):
         self.ext_max = ext_max  # star iff 0 <= EXT <= ext_max
         self.mag_kind = mag_kind or "psf"  # "psf" or "bdf"
         # DELVE's truth_FLUX_* is dereddened and A_band is always added back
@@ -412,8 +470,15 @@ class DesY6Balrog(BalrogSchema):
     BAND_INDEX = {"g": 0, "r": 1, "i": 2, "z": 3}  # verified via ext_mags ordering
     KNN_STAR, KNN_GALAXY, KNN_UNCLASSIFIED = 2, 1, 0
 
-    def __init__(self, ext_max=1, mag_kind=None, badpix_max=None,
-                 ref_band="g", snr_detect=SNR_DEPTH, truth_mag_kind="deredden"):
+    def __init__(
+        self,
+        ext_max=1,
+        mag_kind=None,
+        badpix_max=None,
+        ref_band="g",
+        snr_detect=SNR_DEPTH,
+        truth_mag_kind="deredden",
+    ):
         self.ext_max = ext_max
         # bdf, not psf: the truth side is the deep-field BDF magnitude, so
         # comparing against meas_bdf_mag keeps (obs - true) apples-to-apples.
@@ -455,19 +520,26 @@ class DesY6Balrog(BalrogSchema):
         self._fg_mask = self._build_foreground_mask(args)
 
         truth = pd.read_parquet(args.truth_labels, columns=["ID", "KNN_CLASS"])
-        self._truth = pd.Series(truth["KNN_CLASS"].to_numpy(),
-                                index=truth["ID"].to_numpy())
+        self._truth = pd.Series(
+            truth["KNN_CLASS"].to_numpy(), index=truth["ID"].to_numpy()
+        )
         print(f"  des_y6: truth labels for {len(self._truth):,} deep-field objects")
 
         import xgboost as xgb
 
         self._surrogate = xgb.XGBClassifier()
         self._surrogate.load_model(args.surrogate)
-        self._features = Path(args.surrogate).with_name(
-            "des_y6_xgb_features.txt").read_text().split()
+        self._features = (
+            Path(args.surrogate)
+            .with_name("des_y6_xgb_features.txt")
+            .read_text()
+            .split()
+        )
         self._thresh = args.surrogate_threshold
-        print(f"  des_y6: surrogate with {len(self._features)} features, "
-              f"threshold {self._thresh}")
+        print(
+            f"  des_y6: surrogate with {len(self._features)} features, "
+            f"threshold {self._thresh}"
+        )
         return self
 
     def _build_foreground_mask(self, args):
@@ -517,8 +589,10 @@ class DesY6Balrog(BalrogSchema):
         masked = np.zeros(npix, dtype=bool)
         masked[seen] = (n_flag[seen] / n_tot[seen]) > 0.5
         frac = masked[seen].sum() / max(seen.sum(), 1)
-        print(f"  des_y6: foreground mask nside={nside}, "
-              f"{seen.sum():,} populated pixels, {frac:.4f} masked")
+        print(
+            f"  des_y6: foreground mask nside={nside}, "
+            f"{seen.sum():,} populated pixels, {frac:.4f} masked"
+        )
         self._fg_nside = nside
         return masked
 
@@ -537,7 +611,9 @@ class DesY6Balrog(BalrogSchema):
                 "BDF_T": m["bdf_T"],
                 "BDF_T_ERR": m["bdf_T_err"],
                 "BDF_T_RATIO": m["bdf_T_ratio"],
-                "log_bdf_s2n": np.log10(np.where(m["bdf_s2n"] > 0, m["bdf_s2n"], np.nan)),
+                "log_bdf_s2n": np.log10(
+                    np.where(m["bdf_s2n"] > 0, m["bdf_s2n"], np.nan)
+                ),
                 "PSF_T": m["psf_T"],
                 "psf_bdf_T": m["psf_T"] - m["bdf_T"],
                 "conc_gap": m["gap_mag"][:, 2] - m["bdf_mag"][:, 2],
@@ -594,8 +670,10 @@ class DesY6Balrog(BalrogSchema):
         # removes them from every analysis (Sec. 3.4).
         quality &= scatter(b["meas_BALROG_FLAG_BLEND"][bsl], dtype=float, fill=1.0) == 0
         if self.badpix_max is not None:
-            quality &= scatter(b["meas_badpix_frac"][bsl], dtype=float,
-                               fill=np.inf) < self.badpix_max
+            quality &= (
+                scatter(b["meas_badpix_frac"][bsl], dtype=float, fill=np.inf)
+                < self.badpix_max
+            )
 
         quality_nosnr = quality.copy()
         if self.snr_detect:
@@ -828,7 +906,9 @@ class MaglimMap:
         self._raw_median = float(np.median(vals[good])) if good.any() else np.nan
         # n_valid is counted at MEDIAN_NSIDE for HealSparse inputs, so derive
         # the area from that resolution rather than from nside_sparse
-        nside_stat = min(self.nside, MEDIAN_NSIDE) if self.sparse is not None else self.nside
+        nside_stat = (
+            min(self.nside, MEDIAN_NSIDE) if self.sparse is not None else self.nside
+        )
         self.area_deg2 = self.n_valid * hp.nside2pixarea(nside_stat, degrees=True)
 
     @property
@@ -839,7 +919,9 @@ class MaglimMap:
         """Depth at each position, nan off-footprint or where the value is junk."""
         if self.sparse is not None:
             v = np.asarray(
-                self.sparse.get_values_pos(np.asarray(ra), np.asarray(dec), lonlat=True),
+                self.sparse.get_values_pos(
+                    np.asarray(ra), np.asarray(dec), lonlat=True
+                ),
                 dtype=float,
             )
         else:
@@ -972,9 +1054,9 @@ class MedianHist:
         m = np.isfinite(key) & np.isfinite(value)
         if not m.any():
             return
-        self.h += np.histogram2d(
-            key[m], value[m], bins=[self.key_bins, self.LOG_BINS]
-        )[0].astype(np.int64)
+        self.h += np.histogram2d(key[m], value[m], bins=[self.key_bins, self.LOG_BINS])[
+            0
+        ].astype(np.int64)
 
     def counts(self):
         return self.h.sum(axis=1)
@@ -1057,8 +1139,7 @@ def reapply_corrections(out_dir, tag, band, corrections_path):
     print(f"re-applied {corrections_path} to {n} curves in {out}")
 
 
-def deconvolve_classification_eff(eff_cls, conf, mag_mid, min_sep=0.2,
-                                  min_count=200):
+def deconvolve_classification_eff(eff_cls, conf, mag_mid, min_sep=0.2, min_count=200):
     """Invert a surrogate's selection back onto the classifier it approximates.
 
     The surrogate ``S`` is not the real classifier ``X``, so what the injections
@@ -1079,14 +1160,18 @@ def deconvolve_classification_eff(eff_cls, conf, mag_mid, min_sep=0.2,
         # Nothing well-measured to interpolate between: leave the curve as
         # measured rather than crashing or inventing a correction.
         return np.asarray(eff_cls), {
-            "applied": False, "reason": "too few usable confusion bins",
-            "n_bins_corrected": 0, "median_abs_change": 0.0,
+            "applied": False,
+            "reason": "too few usable confusion bins",
+            "n_bins_corrected": 0,
+            "median_abs_change": 0.0,
             "max_abs_change": 0.0,
         }
-    a_i = np.interp(mag_mid, conf.loc[good, "mag_g"], conf.loc[good, "a"],
-                    left=np.nan, right=np.nan)
-    b_i = np.interp(mag_mid, conf.loc[good, "mag_g"], conf.loc[good, "b"],
-                    left=np.nan, right=np.nan)
+    a_i = np.interp(
+        mag_mid, conf.loc[good, "mag_g"], conf.loc[good, "a"], left=np.nan, right=np.nan
+    )
+    b_i = np.interp(
+        mag_mid, conf.loc[good, "mag_g"], conf.loc[good, "b"], left=np.nan, right=np.nan
+    )
     with np.errstate(invalid="ignore", divide="ignore"):
         sep = a_i - b_i
         corrected = (eff_cls - b_i) / sep
@@ -1122,7 +1207,9 @@ def main(args):
     # they are validated here rather than by argparse.
     for flag, val in (("--catalog", args.catalog), ("--maglim-map", args.maglim_map)):
         if not val:
-            raise SystemExit(f"{flag} is required (omit only with --reapply-corrections)")
+            raise SystemExit(
+                f"{flag} is required (omit only with --reapply-corrections)"
+            )
 
     schema = SCHEMAS[args.survey](
         ext_max=args.ext_max,
@@ -1218,8 +1305,8 @@ def main(args):
     print("\npass 2/2: truth anchor + efficiency + photo-error + misclassification")
     anchor = {b: ResidualHist(ANCHOR_BINS) for b in maps}
     # distinct parent sources per magnitude bin, packed as bin*2**32 + src_id
-    uniq_src = set()       # true stars
-    uniq_src_gal = set()   # true galaxies (the misclassification denominator)
+    uniq_src = set()  # true stars
+    uniq_src_gal = set()  # true galaxies (the misclassification denominator)
     n_all = np.zeros(MAG_BINS.size - 1, dtype=np.int64)  # all injected true stars
     n_det = np.zeros_like(n_all)
     n_cls = np.zeros_like(n_all)
@@ -1277,7 +1364,9 @@ def main(args):
             pe_catalog_nc.add(delta[sel_nc], log_magerr[sel_nc])
         for b in maps:
             # Which population defines "the depth" -- see --anchor-sample.
-            cls_key = "classified" if args.anchor_sample == "detected" else "classified_nosnr"
+            cls_key = (
+                "classified" if args.anchor_sample == "detected" else "classified_nosnr"
+            )
             selb = c["is_star"] & c[cls_key] & keep & c["in_footprint"]
             anchor[b].add(
                 c["true_mag"][b][selb],
@@ -1333,15 +1422,20 @@ def main(args):
     deconv = {"applied": False}
     if args.confusion:
         eff_cls, deconv = deconvolve_classification_eff(
-            eff_cls, pd.read_csv(args.confusion), MAG_MID)
+            eff_cls, pd.read_csv(args.confusion), MAG_MID
+        )
         deconv["confusion"] = str(args.confusion)
-        print(f"\n  deconvolved classification_eff in "
-              f"{deconv['n_bins_corrected']} bins (median |change| "
-              f"{deconv['median_abs_change']:.4f}, "
-              f"max {deconv['max_abs_change']:.4f})")
+        print(
+            f"\n  deconvolved classification_eff in "
+            f"{deconv['n_bins_corrected']} bins (median |change| "
+            f"{deconv['median_abs_change']:.4f}, "
+            f"max {deconv['max_abs_change']:.4f})"
+        )
     elif args.survey == "des_y6":
-        print("\n  WARNING: no --confusion given; classification_eff describes "
-              "the SURROGATE, not EXT_XGB")
+        print(
+            "\n  WARNING: no --confusion given; classification_eff describes "
+            "the SURROGATE, not EXT_XGB"
+        )
 
     with np.errstate(invalid="ignore", divide="ignore"):
         # classification_detection_eff must stay consistent with the (possibly
@@ -1386,17 +1480,21 @@ def main(args):
                 eff_cls[bright] = eff_cls[i0]
                 eff["classification_eff"] = eff_cls
                 eff["classification_detection_eff"] = eff_det * np.nan_to_num(eff_cls)
-                print(f"  clamped classification_eff in {int(bright.sum())} bright "
-                      f"bins (mag_{ref} <= {MAG_MID[i0 - 1]:.2f}) to the brightest "
-                      f"well-sampled value {eff_cls[i0]:.4f}: fewer than "
-                      f"{MIN_UNIQUE_SRC} distinct parent sources there, and the few "
-                      f"bright deep-field stars are saturated in the deep imaging, "
-                      f"so their injected morphology is not representative")
+                print(
+                    f"  clamped classification_eff in {int(bright.sum())} bright "
+                    f"bins (mag_{ref} <= {MAG_MID[i0 - 1]:.2f}) to the brightest "
+                    f"well-sampled value {eff_cls[i0]:.4f}: fewer than "
+                    f"{MIN_UNIQUE_SRC} distinct parent sources there, and the few "
+                    f"bright deep-field stars are saturated in the deep imaging, "
+                    f"so their injected morphology is not representative"
+                )
     eff = eff[enough].fillna(0.0)
     eff = eff[eff["delta_mag"] >= EFF_DELTA_MIN]
     faint = eff["delta_mag"] > DET_EFF_DELTA_MAX
     eff.loc[faint, ["detection_eff", "classification_detection_eff"]] = 0.0
-    print(f"  zeroed detection_eff in {int(faint.sum())} bins (delta_mag > {DET_EFF_DELTA_MAX})")
+    print(
+        f"  zeroed detection_eff in {int(faint.sum())} bins (delta_mag > {DET_EFF_DELTA_MAX})"
+    )
     write_csv(
         out / f"{tag}_stellar_efficiency_cut{ref}.csv",
         eff,
@@ -1418,9 +1516,7 @@ def main(args):
     factor = 10 ** (
         sample_tab["log_mag_err"].values - catalog_tab["log_mag_err"].values
     )
-    inflation = (
-        float(np.nanmedian(factor[near.values])) if near.any() else float("nan")
-    )
+    inflation = float(np.nanmedian(factor[near.values])) if near.any() else float("nan")
     print(f"\n  ERROR-INFLATION FACTOR (truth scatter / reported): {inflation:.2f}")
     print("  (~1 = reported errors are well calibrated; Roman DC2 was ~2)\n")
 
@@ -1442,7 +1538,11 @@ def main(args):
         (f"{tag}_photoerror_{ref}", sample_tab, f"{ref}_sample"),
         (f"{tag}_photoerror_{ref}_catalog", catalog_tab, f"{ref}_catalog"),
         (f"{tag}_photoerror_{ref}_nocut", sample_nc_tab, f"{ref}_sample_nocut"),
-        (f"{tag}_photoerror_{ref}_catalog_nocut", catalog_nc_tab, f"{ref}_catalog_nocut"),
+        (
+            f"{tag}_photoerror_{ref}_catalog_nocut",
+            catalog_nc_tab,
+            f"{ref}_catalog_nocut",
+        ),
     ]:
         write_csv(out / f"{name}_raw.csv", tab, "delta_mag,log_mag_err")
         write_csv(
@@ -1473,10 +1573,12 @@ def main(args):
             if thin_g.any():
                 misclass = misclass.copy()
                 misclass[thin_g] = misclass[j0]
-                print(f"  clamped missclassification_eff in {int(thin_g.sum())} "
-                      f"bright bins (mag_{ref} <= {MAG_MID[j0 - 1]:.2f}) to "
-                      f"{misclass[j0]:.4f}: fewer than {MIN_UNIQUE_SRC} distinct "
-                      f"parent galaxies there")
+                print(
+                    f"  clamped missclassification_eff in {int(thin_g.sum())} "
+                    f"bright bins (mag_{ref} <= {MAG_MID[j0 - 1]:.2f}) to "
+                    f"{misclass[j0]:.4f}: fewer than {MIN_UNIQUE_SRC} distinct "
+                    f"parent galaxies there"
+                )
     mis = pd.DataFrame(
         {
             f"mag_{ref}": MAG_MID,
@@ -1527,9 +1629,11 @@ def main(args):
                     med_b = float(np.median(d[fin]))
                     bad = fin & (np.abs(d - med_b) > args.maglim_clip)
                     if bad.any():
-                        print(f"  {b}: masked {int(bad.sum())} pixels deviating "
-                              f"> {args.maglim_clip} mag from the median "
-                              f"{med_b:.3f} ({100 * bad.sum() / fin.sum():.4f}%)")
+                        print(
+                            f"  {b}: masked {int(bad.sum())} pixels deviating "
+                            f"> {args.maglim_clip} mag from the median "
+                            f"{med_b:.3f} ({100 * bad.sum() / fin.sum():.4f}%)"
+                        )
                         d = np.where(bad, np.nan, d)
             arr = np.where(np.isfinite(d), d, hp.UNSEEN)
             fn = out / f"{tag}_maglim_{b}_nside{nso}.fits.gz"
@@ -1544,7 +1648,8 @@ def main(args):
         "rows_read": int(n),
         "ref_band": ref,
         "classifier": (
-            "ext_xgb_surrogate" if args.survey == "des_y6"
+            "ext_xgb_surrogate"
+            if args.survey == "des_y6"
             else "bdf_extended_class_dr3gold"
         ),
         "deconvolution": deconv,
@@ -1567,7 +1672,9 @@ def main(args):
 
 
 def build_parser():
-    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     p.add_argument("--survey", required=True, choices=sorted(SCHEMAS))
     p.add_argument("--catalog", default=None, help="Balrog HDF5 catalog")
     p.add_argument(
@@ -1608,7 +1715,9 @@ def build_parser():
         "classification_eff describes the SURROGATE, not EXT_XGB",
     )
     p.add_argument("--out", required=True, help="output directory")
-    p.add_argument("--tag", default=None, help="output filename prefix (default: --survey)")
+    p.add_argument(
+        "--tag", default=None, help="output filename prefix (default: --survey)"
+    )
     p.add_argument(
         "--maglim-map",
         nargs="+",
@@ -1628,8 +1737,12 @@ def build_parser():
         "queried sparsely, never densified); 0 writes at native nside",
     )
     p.add_argument("--chunk", type=int, default=2_000_000, help="rows per chunk")
-    p.add_argument("--max-rows", type=int, default=0, help="stop after N rows (testing)")
-    p.add_argument("--row-start", type=int, default=0, help="first row to read (testing)")
+    p.add_argument(
+        "--max-rows", type=int, default=0, help="stop after N rows (testing)"
+    )
+    p.add_argument(
+        "--row-start", type=int, default=0, help="first row to read (testing)"
+    )
     p.add_argument(
         "--ext-max",
         type=int,
@@ -1697,8 +1810,12 @@ def build_parser():
         help="a tile is 'bad' if its median (obs-true) deviates from the "
         "footprint median by more than this (mag)",
     )
-    p.add_argument("--zp-mag-min", type=float, default=19.0, help="bright end of the ZP audit")
-    p.add_argument("--zp-mag-max", type=float, default=22.0, help="faint end of the ZP audit")
+    p.add_argument(
+        "--zp-mag-min", type=float, default=19.0, help="bright end of the ZP audit"
+    )
+    p.add_argument(
+        "--zp-mag-max", type=float, default=22.0, help="faint end of the ZP audit"
+    )
     p.add_argument(
         "--anchor-sample",
         default="nosnr",
@@ -1715,7 +1832,9 @@ def build_parser():
         action="store_true",
         help="trust the input depth map's absolute scale (skip pass 1)",
     )
-    p.add_argument("--write-maglim", action="store_true", help="emit anchored depth maps")
+    p.add_argument(
+        "--write-maglim", action="store_true", help="emit anchored depth maps"
+    )
     p.add_argument(
         "--maglim-clip",
         type=float,

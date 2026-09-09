@@ -36,10 +36,16 @@ OUT = REPO / "docs/source/_static/des_yr6"
 OUT.mkdir(parents=True, exist_ok=True)
 
 
-plt.rcParams.update({
-    "figure.dpi": 130, "savefig.dpi": 130, "font.size": 10,
-    "axes.grid": True, "grid.alpha": 0.25, "legend.frameon": False,
-})
+plt.rcParams.update(
+    {
+        "figure.dpi": 130,
+        "savefig.dpi": 130,
+        "font.size": 10,
+        "axes.grid": True,
+        "grid.alpha": 0.25,
+        "legend.frameon": False,
+    }
+)
 
 
 def read_csv(path):
@@ -54,32 +60,41 @@ def read_csv(path):
                 break
     if header is None:
         return np.genfromtxt(path, delimiter=",", names=True)
-    return np.genfromtxt(path, delimiter=",", names=header.split(","),
-                         skip_header=sum(1 for _ in open(path)
-                                         if _.startswith("#")))
+    return np.genfromtxt(
+        path,
+        delimiter=",",
+        names=header.split(","),
+        skip_header=sum(1 for _ in open(path) if _.startswith("#")),
+    )
 
 
 def fig_validation():
     f1 = ART / "des_y6_splash_validation_ext1.csv"
     f0 = ART / "des_y6_splash_validation_ext0.csv"
     if not (f1.exists() and f0.exists()):
-        print("  (no SPLASH validation CSVs; run "
-              "scripts/des/validate_des_xgb_with_splash.py first)")
+        print(
+            "  (no SPLASH validation CSVs; run "
+            "scripts/des/validate_des_xgb_with_splash.py first)"
+        )
         return
     import pandas as pd
 
     d1, d0 = pd.read_csv(f1), pd.read_csv(f0)
     fig, ax = plt.subplots(figsize=(7.2, 4.4))
-    for d, lab, col in ((d1, r"$0 \leq$ EXT_XGB $\leq 1$ (complete)", "#1f77b4"),
-                        (d0, r"EXT_XGB $=0$ (pure)", "#d62728")):
+    for d, lab, col in (
+        (d1, r"$0 \leq$ EXT_XGB $\leq 1$ (complete)", "#1f77b4"),
+        (d0, r"EXT_XGB $=0$ (pure)", "#d62728"),
+    ):
         g = d[d["n_star"] > 20]
         ax.plot(g["mag"], g["completeness"], "o-", color=col, lw=2, ms=4, label=lab)
 
     # Bechtol et al. Table A.3 integrated benchmarks
-    for lo, hi, val, col in ((17.5, 22.5, 0.980, "#1f77b4"),
-                             (16.5, 23.5, 0.943, "#1f77b4"),
-                             (17.5, 22.5, 0.921, "#d62728"),
-                             (16.5, 23.5, 0.793, "#d62728")):
+    for lo, hi, val, col in (
+        (17.5, 22.5, 0.980, "#1f77b4"),
+        (16.5, 23.5, 0.943, "#1f77b4"),
+        (17.5, 22.5, 0.921, "#d62728"),
+        (16.5, 23.5, 0.793, "#d62728"),
+    ):
         ax.hlines(val, lo, hi, color=col, ls=":", lw=1.6, alpha=0.8)
     ax.plot([], [], ls=":", color="0.4", label="Bechtol et al. Table A.3 (integrated)")
 
@@ -104,19 +119,44 @@ def fig_surrogate():
     c = pd.read_csv(f)
     g = c[(c["n_pos"] > 200) & (c["n_neg"] > 200)]
     fig, ax = plt.subplots(figsize=(7.2, 4.2))
-    ax.plot(g["mag_g"], g["a"], "o-", color="#1f77b4", lw=2, ms=3.5,
-            label=r"$a = P(S{=}1 \,|\, {\rm EXT\_XGB} \leq 1)$")
-    ax.plot(g["mag_g"], g["b"], "o-", color="#d62728", lw=2, ms=3.5,
-            label=r"$b = P(S{=}1 \,|\, {\rm EXT\_XGB} > 1)$")
+    ax.plot(
+        g["mag_g"],
+        g["a"],
+        "o-",
+        color="#1f77b4",
+        lw=2,
+        ms=3.5,
+        label=r"$a = P(S{=}1 \,|\, {\rm EXT\_XGB} \leq 1)$",
+    )
+    ax.plot(
+        g["mag_g"],
+        g["b"],
+        "o-",
+        color="#d62728",
+        lw=2,
+        ms=3.5,
+        label=r"$b = P(S{=}1 \,|\, {\rm EXT\_XGB} > 1)$",
+    )
     ax.set_xlabel(r"BDF_MAG_$g$")
     ax.set_ylabel("probability")
     ax.set_ylim(-0.02, 1.05)
-    ax.set_title("EXT_XGB surrogate confusion, the deconvolution input\n"
-                 r"eff$_X$ = (eff$_S$ $-$ b) / (a $-$ b)", fontsize=10)
+    ax.set_title(
+        "EXT_XGB surrogate confusion, the deconvolution input\n"
+        r"eff$_X$ = (eff$_S$ $-$ b) / (a $-$ b)",
+        fontsize=10,
+    )
     ax.legend(loc="center left", fontsize=9)
-    ax.text(0.97, 0.42, "recall falls faintward: without the deconvolution\n"
-            "classification_eff would read ~17% low by $g\\approx25$",
-            transform=ax.transAxes, ha="right", va="top", fontsize=8, color="0.35")
+    ax.text(
+        0.97,
+        0.42,
+        "recall falls faintward: without the deconvolution\n"
+        "classification_eff would read ~17% low by $g\\approx25$",
+        transform=ax.transAxes,
+        ha="right",
+        va="top",
+        fontsize=8,
+        color="0.35",
+    )
     fig.tight_layout()
     fig.savefig(OUT / "DES_surrogate_confusion.png")
     plt.close(fig)

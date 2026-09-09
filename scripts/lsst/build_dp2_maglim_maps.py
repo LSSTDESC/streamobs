@@ -37,14 +37,21 @@ BANDS = ("g", "r")
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__,
-                                 formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--nside", type=int, default=128,
-                    help="nside to ship at (default 128)")
-    ap.add_argument("--src", default=str(DEFAULT_SRC),
-                    help="directory holding the source .hsp maps")
-    ap.add_argument("--src-nside", type=int, default=512,
-                    help="nside of the source filenames (default 512)")
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    ap.add_argument(
+        "--nside", type=int, default=128, help="nside to ship at (default 128)"
+    )
+    ap.add_argument(
+        "--src", default=str(DEFAULT_SRC), help="directory holding the source .hsp maps"
+    )
+    ap.add_argument(
+        "--src-nside",
+        type=int,
+        default=512,
+        help="nside of the source filenames (default 512)",
+    )
     args = ap.parse_args()
 
     src = pathlib.Path(args.src)
@@ -66,8 +73,11 @@ def main():
         v0 = v0[np.isfinite(v0)]
         area0 = m.valid_pixels.size * hp.nside2pixarea(m.nside_sparse, degrees=True)
 
-        out = m if m.nside_sparse == args.nside else m.degrade(args.nside,
-                                                               reduction="mean")
+        out = (
+            m
+            if m.nside_sparse == args.nside
+            else m.degrade(args.nside, reduction="mean")
+        )
         v1 = out[out.valid_pixels]
         v1 = v1[np.isfinite(v1)]
         area1 = out.valid_pixels.size * hp.nside2pixarea(out.nside_sparse, degrees=True)
@@ -76,8 +86,10 @@ def main():
         out.write(str(dst), clobber=True)
 
         print(f"  {b}: nside {m.nside_sparse} -> {out.nside_sparse}")
-        print(f"     median {np.median(v0):.3f} -> {np.median(v1):.3f} "
-              f"({np.median(v1) - np.median(v0):+.3f})")
+        print(
+            f"     median {np.median(v0):.3f} -> {np.median(v1):.3f} "
+            f"({np.median(v1) - np.median(v0):+.3f})"
+        )
         print(f"     area   {area0:.0f} -> {area1:.0f} deg^2")
         print(f"     wrote  {dst.name}  ({dst.stat().st_size / 1024:.0f} KB)")
 
@@ -87,8 +99,10 @@ def main():
             old.unlink()
             print(f"  removed stale {old.name}")
 
-    print(f"\ndone -> {OUT}\nUpdate maglim_map_g / maglim_map_r in "
-          "config/surveys/lsst_dp2.yaml to match.")
+    print(
+        f"\ndone -> {OUT}\nUpdate maglim_map_g / maglim_map_r in "
+        "config/surveys/lsst_dp2.yaml to match."
+    )
 
 
 if __name__ == "__main__":

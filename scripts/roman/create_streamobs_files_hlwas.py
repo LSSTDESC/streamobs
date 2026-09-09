@@ -170,7 +170,8 @@ print(
 # cannot drift). We fit it on the matched det->truth catalog and pull the artifacts the
 # products + figures need (the size, the boundaries, the half-width Delta, the stellar locus).
 import roman_star_classifier as rsc
-from roman_star_classifier import ENV_PURITY  # purity target (figure + class_star-opt)
+from roman_star_classifier import \
+    ENV_PURITY  # purity target (figure + class_star-opt)
 from roman_star_classifier import ENV_UP_BRIGHT_VAL  # plot annotations
 from roman_star_classifier import ENV_FREEZE, ENV_UP_BRIGHT, ENV_UP_KNEE
 
@@ -1151,9 +1152,7 @@ def _photoerr_tables(mask, label):
     for i in range(dmid.size):
         v = dm_obs[ib == i]
         if v.size >= 20:
-            log_scatter[i] = np.log10(
-                (np.percentile(v, 84) - np.percentile(v, 16)) / 2
-            )
+            log_scatter[i] = np.log10((np.percentile(v, 84) - np.percentile(v, 16)) / 2)
             med_logerr_rep[i] = np.median(logerr_reported[ib == i])
     keep = np.isfinite(log_scatter)
     print(f"  [{label:<34}] n={len(delta):>9,}  rows={int(keep.sum()):>4}")
@@ -1312,13 +1311,19 @@ for _tab, _stem, _rule in [
     (catalog_nc, "roman_photoerror_f158_catalog_nocut", "F158_catalog"),
 ]:
     np.savetxt(
-        OUT_DIR / f"{_stem}_raw.csv", _tab.values, delimiter=",",
-        header="delta_mag,log_mag_err", fmt="%.6f",
+        OUT_DIR / f"{_stem}_raw.csv",
+        _tab.values,
+        delimiter=",",
+        header="delta_mag,log_mag_err",
+        fmt="%.6f",
     )
     _clean = _apply_photoerr_corrections(_tab, _rule, CORRECTIONS_FILE)
     np.savetxt(
-        OUT_DIR / f"{_stem}.csv", _clean.values, delimiter=",",
-        header="delta_mag,log_mag_err", fmt="%.6f",
+        OUT_DIR / f"{_stem}.csv",
+        _clean.values,
+        delimiter=",",
+        header="delta_mag,log_mag_err",
+        fmt="%.6f",
     )
     print(f"wrote {_stem}.csv  (+_raw)  {len(_clean)} rows")
 

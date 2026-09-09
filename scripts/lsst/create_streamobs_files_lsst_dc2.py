@@ -277,15 +277,21 @@ def main(n_tracts=0, refresh=False):
     def _photoerr_tables(mask, label):
         pe = cat.loc[
             mask,
-            ["ra", "dec", f"truth_mag_{REF_BAND}", f"mag_{REF_BAND}", f"magerr_{REF_BAND}"],
+            [
+                "ra",
+                "dec",
+                f"truth_mag_{REF_BAND}",
+                f"mag_{REF_BAND}",
+                f"magerr_{REF_BAND}",
+            ],
         ].dropna()
         pix = hp.ang2pix(NSIDE, pe["ra"].values, pe["dec"].values, lonlat=True)
         ml_local = mlm_r[pix]
         good = ml_local != hp.UNSEEN
         delta = pe[f"truth_mag_{REF_BAND}"].values[good] - ml_local[good]
-        dm_obs = (
-            pe[f"mag_{REF_BAND}"].values - pe[f"truth_mag_{REF_BAND}"].values
-        )[good]
+        dm_obs = (pe[f"mag_{REF_BAND}"].values - pe[f"truth_mag_{REF_BAND}"].values)[
+            good
+        ]
         logerr_reported = np.log10(pe[f"magerr_{REF_BAND}"].values[good])
 
         dbins = np.arange(np.floor(delta.min() * 10) / 10, 1.5 + 1e-6, 0.12)
@@ -309,7 +315,9 @@ def main(n_tracts=0, refresh=False):
         )
         return (
             pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": log_scatter[keep]}),
-            pd.DataFrame({"delta_mag": dmid[keep], "log_mag_err": med_logerr_rep[keep]}),
+            pd.DataFrame(
+                {"delta_mag": dmid[keep], "log_mag_err": med_logerr_rep[keep]}
+            ),
         )
 
     print("\n" + "=" * 74)
@@ -324,13 +332,19 @@ def main(n_tracts=0, refresh=False):
 
     def _write_curve(tab, stem, rule):
         np.savetxt(
-            OUT_DIR / f"{stem}_raw.csv", tab.values, delimiter=",",
-            header="delta_mag,log_mag_err", fmt="%.6f",
+            OUT_DIR / f"{stem}_raw.csv",
+            tab.values,
+            delimiter=",",
+            header="delta_mag,log_mag_err",
+            fmt="%.6f",
         )
         clean = _apply_photoerr_corrections(tab, rule, CORRECTIONS_FILE)
         np.savetxt(
-            OUT_DIR / f"{stem}.csv", clean.values, delimiter=",",
-            header="delta_mag,log_mag_err", fmt="%.6f",
+            OUT_DIR / f"{stem}.csv",
+            clean.values,
+            delimiter=",",
+            header="delta_mag,log_mag_err",
+            fmt="%.6f",
         )
         return clean
 
@@ -512,8 +526,11 @@ def reapply_corrections():
         )
         clean = _apply_photoerr_corrections(tab, rule, CORRECTIONS_FILE)
         np.savetxt(
-            OUT_DIR / f"{stem}.csv", clean.values, delimiter=",",
-            header="delta_mag,log_mag_err", fmt="%.6f",
+            OUT_DIR / f"{stem}.csv",
+            clean.values,
+            delimiter=",",
+            header="delta_mag,log_mag_err",
+            fmt="%.6f",
         )
         print(f"  wrote {stem}.csv  ({len(tab)} raw -> {len(clean)} rows)")
         n += 1
