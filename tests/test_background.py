@@ -102,8 +102,9 @@ class TestSurveyGalMisclassification:
         """get_gal_misclassification must NOT return 1 at the bright end (no 1-padding).
 
         Verify by checking that the method returns 0 for very bright objects
-        (below saturation) and does not saturate to 1.0 for delta_mag far below
-        delta_saturation.
+        (below the physical saturation limit) and, brighter than the table's
+        observed delta_mag domain (delta_bounds), holds flat at the table's
+        own edge value rather than saturating to 1.0.
         """
         ...
 

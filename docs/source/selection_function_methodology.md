@@ -7,7 +7,7 @@ photometric-error model, and the magnitude-limit (depth) maps, together with the
 conventions that tie them together.
 
 It is written **survey-agnostically**. The products it describes were first derived
-for Roman from the Roman–Rubin DC2 mock (see :doc:`roman_dc2`), and the same recipe
+for Roman from the Roman–Rubin DC2 mock (see {doc}`roman_dc2`), and the same recipe
 is intended to be re-applied to re-derive the LSST and DES products
 self-consistently. Per-survey numbers (depths, bands, extinction coefficients,
 saturation) live on the per-release data pages; the method lives here.
@@ -238,7 +238,9 @@ underlying measurement.
 
 ## Depth maps
 
-Per-band magnitude-limit maps are computed on a HEALPix grid (nside=1024, ring) with
+Per-band magnitude-limit maps are computed on a HEALPix grid (ring; nside 1024
+is a common build resolution, though every current release ships degraded to
+nside 128) with
 the [desqr](https://github.com/kadrlica/desqr/blob/main/desqr/depth.py) recipe:
 
 1. cut the bright end and `mag < 30`;
@@ -264,7 +266,7 @@ the [desqr](https://github.com/kadrlica/desqr/blob/main/desqr/depth.py) recipe:
      **SAMPLE** curve instead.
    - **Truth-anchor** — shift the map so its median lands at the magnitude where the
      **truth-based scatter** of (obs − true) reaches S/N = 5 — adopted for
-     **Roman DC2** (see :doc:`roman_dc2`), whose reported errors are ≈2× optimistic.
+     **Roman DC2** (see {doc}`roman_dc2`), whose reported errors are ≈2× optimistic.
      Left on the native scale, Roman's map would land ≈0.9–1.2 mag deeper across
      bands than the published Roman 5σ depths (e.g. F158 native 27.83 vs. the ~26.9
      reference), claiming detections the survey cannot deliver. Under this policy
@@ -325,7 +327,7 @@ applied consistently across tiers.
   reference depth on the native scale, which is *why* its depth map is truth-anchored;
   the ≈1.4× LSST DC2 discrepancy is small enough that its native-scale map reproduces
   an external calibration (Tsiane et al. 2025) to 0.1%, so its map is *not* anchored.
-  Figure: `error_validation.png` on :doc:`roman_dc2`.
+  Figure: `error_validation.png` on {doc}`roman_dc2`.
 - **Depth-map validation notebook** (`notebooks/roman_depth_validation.ipynb`,
   figures under `_static/roman_depth_validation/`; Roman-specific — Roman DC2 remains
   truth-anchored, LSST DC2 does not, see above). It confirms:
@@ -424,6 +426,35 @@ are cheap relative to the derivation and would tighten confidence in the injecto
    matched catalog) and confirm agreement. *Status: recommended.* (The equivalent
    check for LSST DC2's native-scale map is already done — see the Tsiane et al. 2025
    comparison above, an independent external calibration, not a self-derived one.)
+
+## When the classifier cannot be evaluated on the simulation
+
+The recipe above assumes the survey's star classifier can be recomputed on the
+simulated sources. That assumption fails for the DECam surveys: DES Y6 Gold's
+`EXT_XGB` needs three features that are never measured for injected sources, so
+it cannot be run on Balrog at all — and the classifier is precisely what
+`classification_eff` is supposed to describe.
+
+The general remedy, when the *real* catalogue carries the classifier output and
+the *simulation* carries the truth label, is to bridge them through the features
+they share:
+
+1. Train a **surrogate** for the classifier on the real catalogue, restricted to
+   features constructible identically in both places.
+2. Measure the surrogate's per-magnitude confusion against the real classifier,
+   `a(m) = P(S=1 | selected)` and `b(m) = P(S=1 | not selected)`, and
+   **deconvolve** the simulation-measured efficiency,
+   `eff = (eff_S - b) / (a - b)`, so the shipped curve describes the real
+   classifier rather than the surrogate.
+
+Two things decide whether this is trustworthy, and both are cheap to measure
+before committing to it: how much of the missing feature is reconstructible from
+the available ones, and whether the feature distributions actually agree across
+the two catalogues (a feature that is systematically offset between train and
+apply domains must be dropped, however informative it looks).
+
+See {doc}`balrog_selection_functions` for the worked DES/DELVE case, including
+the numbers.
 
 ## Re-deriving for another survey
 

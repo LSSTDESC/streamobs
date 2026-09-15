@@ -20,7 +20,7 @@ from pathlib import Path
 # =============================================================================
 
 # Base URL where data archive is hosted
-BASE_DATA_URL = "https://zenodo.org/records/18298544/files/"
+BASE_DATA_URL = "https://zenodo.org/records/22764339/files/"
 
 # Name of the data archive file (should be a zip file)
 DATA_ARCHIVE_NAME = "data.zip"
@@ -29,7 +29,7 @@ DATA_ARCHIVE_NAME = "data.zip"
 DATA_ARCHIVE_URL = BASE_DATA_URL + DATA_ARCHIVE_NAME
 
 # Expected size (approximate, for user information)
-ARCHIVE_SIZE_MB = 30  # Mb
+ARCHIVE_SIZE_MB = 25  # Mb
 
 # =============================================================================
 # =============================================================================

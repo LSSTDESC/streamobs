@@ -39,12 +39,31 @@ survey_files:
     maglim_map_g: new_survey_maglim_g_band.hsp
     maglim_map_r: new_survey_maglim_r_band.hsp
 
-    # Band-independent maps. Keep by defaults files for completeness, ebv map, and photometric errors
+    # Band-independent maps
     ebv_map: ebv_sfd98_fullres_nside_4096_ring_equatorial.fits
-    completeness: stellar_efficiency_cutr.csv
-    completeness_band: r 
-    log_photo_error: photoerror_r.csv
+
+    # Stellar detection + classification efficiency, and the galaxy
+    # misclassification rate, both keyed to delta_mag
+    completeness: new_survey_stellar_efficiency_cutr.csv
+    completeness_band: r
+    gal_misclassification: new_survey_galaxy_misclass_cutr.csv
+
+    # Photometric error model. Four curves: see {doc}`column_convention`.
+    #   catalog = the survey's reported magerr -> drives the S/N cut
+    #   sample  = the true scatter of (obs - true) -> drives the noise draw
+    log_photo_error_catalog: new_survey_photoerror_r_catalog.csv
+    log_photo_error_sample: new_survey_photoerror_r.csv
+    # The _nocut pair is measured WITHOUT the reference-band S/N cut and is
+    # REQUIRED for any band that is not `completeness_band`: those bands are
+    # forced photometry at the reference band's position, so they are not
+    # conditioned on their own detection. A survey that ships no _nocut curves
+    # raises for every non-reference band.
+    log_photo_error_catalog_nocut: new_survey_photoerror_r_catalog_nocut.csv
+    log_photo_error_sample_nocut: new_survey_photoerror_r_nocut.csv
 ```
+
+`log_photo_error` (a single curve) is the legacy spelling and still loads, but a
+single-band survey is the only case where it is sufficient.
 
 ### Completeness file
 
@@ -86,7 +105,6 @@ survey_properties:
 
   # Saturation limits per band, or could be specified as saturation_g, saturation_r, etc
   saturation: 16.0
-  delta_saturation: -10.4
 ```
 
 where:
@@ -95,7 +113,12 @@ where:
 * `coeff_extinc_<band>` gives the extinction coefficient $A_{\rm band}/E(B-V)$.
 * `sys_error` is the systematic photometric uncertainty (mag). It can also be specified per band (e.g. `sys_error_g`).
 * `saturation` is the magnitude below which observations are considered saturated.
-* `delta_saturation` defines the saturation limit in the completeness and photometric error tables. If saturation is not reached in the input files (ie. the completeness is not very small at small delta), use the smallest available `delta_mag` in your file.
+
+The completeness and photometric error tables need no separate saturation
+threshold: streamobs reads each CSV's own `delta_mag` range as its interpolation
+domain, holds the curve flat at its brightest measured value for anything
+brighter than that, and fills 0 (or a 1-mag error placeholder, for the
+photo-error tables) for anything fainter than the table's last row.
 
 ## 5. Add survey tests
 

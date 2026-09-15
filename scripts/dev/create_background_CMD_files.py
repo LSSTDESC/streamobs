@@ -51,15 +51,15 @@ builder = BackgroundResourceBuilder(surveys=survey_lsst)
 builder.build(
     catalog_stars=df_stars,
     bands=("g", "r"),
-    maglim_min=23.5,       # lower end of the magnitude limit grid
-    maglim_max=27.5,       # upper end
-    maglim_step=0.25,      # step size between grid points
-    max_delta=1.0,         # discard pairs with |maglim_b2 - maglim_b1| >= max_delta
+    maglim_min=23.5,  # lower end of the magnitude limit grid
+    maglim_max=27.5,  # upper end
+    maglim_step=0.25,  # step size between grid points
+    max_delta=1.0,  # discard pairs with |maglim_b2 - maglim_b1| >= max_delta
     n_bins_color=125,
     n_bins_mag=125,
     color_range=(-0.5, 2.0),
     mag_range=(16.0, 28.0),
-    area_ref_deg2=np.pi * 4**2,   # sky area of the truth catalog in deg²
+    area_ref_deg2=np.pi * 4**2,  # sky area of the truth catalog in deg²
     source_type="stars",
 )
 
@@ -75,7 +75,7 @@ builder.build(
     n_bins_mag=80,
     color_range=(-1.0, 2.0),
     mag_range=(20.0, 29.0),
-    area_ref_deg2=np.pi * 1**2,   # sky area of the galaxy truth catalog
+    area_ref_deg2=np.pi * 1**2,  # sky area of the galaxy truth catalog
     source_type="galaxies",
 )
 

@@ -1,38 +1,83 @@
 # Configuration file for the survey DES
 name: des
 release: yr6
-survey_files: 
+survey_files:
     # Path to data files (leave empty for default location)
-    # hardcoded some paths here open to suggestions on how to improve
     file_path: ''
-    
-    # Band-specific magnitude limit maps
-    maglim_map_g: des_y6_5_sig_maglim_band_g_nside_512.hsp # median g-band depth is 24.56
-    maglim_map_r: des_y6_5_sig_maglim_band_r_nside_512.hsp # 
-    # Band-independent maps
-    # because of hard coded file_path_others I had to create a symlink for the ebv_map
-    ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits 
-    completeness: des_y6_stellar_efficiency_beta.csv # currently we are using mag_g (that I renamed to mag_r)
-    completeness_band: g # the completenesshas been obtained in g-band
-    log_photo_error: des_y6_photoerror_r.csv # dont know the band for this one, assuming r for now
 
-survey_properties: 
-  bands: ['g', 'r', 'i', 'z', 'Y']
- 
-  # Extinction coefficients per band (A_band / E(B-V)) 
+    # Band-specific magnitude limit maps: truth-anchored S/N=5 point-source depth,
+    # nside=128 (ring), degraded by the reducer from the nside-512
+    # des_y6_5_sig_* healsparse inputs. Those maps supply the spatial
+    # structure and footprint; the absolute scale is shifted so each band's median
+    # equals the magnitude at which the truth-based scatter of (obs - true) reaches
+    # sigma = 2.5/ln10/5 = 0.2171. Truth-anchored medians:
+    #   g 25.025  r 24.850  i 24.402  z 23.754
+    # (shifts -0.297 / -0.280 / -0.180 / -0.124 from the input maps' 25.321 /
+    # 25.130 / 24.582 / 23.878 -- smooth, same-sign and ordered with wavelength,
+    # which is the coherence check that validates the anchor).
+    # The delta_mag axes of the completeness, misclassification and photo-error
+    # tables are all keyed to this convention.
+    # Derivation: scripts/des/balrog_selection_function.py, see
+    # docs/source/balrog_selection_functions.md.
+    maglim_map_g: des_yr6_maglim_g_nside128.fits.gz
+    maglim_map_r: des_yr6_maglim_r_nside128.fits.gz
+    maglim_map_i: des_yr6_maglim_i_nside128.fits.gz
+    maglim_map_z: des_yr6_maglim_z_nside128.fits.gz
+    # g-derived completeness + photo-error, applied to all bands band-independently
+    # (via delta_mag = mag_true - maglim_band), per the streamobs convention.
+
+    # Band-independent maps
+    ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
+
+    # Stellar detection + classification efficiency vs delta_mag, from the DES Y6
+    # Balrog injections. Truth stars are the deep-field colour classifier
+    # (KNN_CLASS == 2) joined on the injected id; the star selection described is
+    # 0 <= EXT_XGB <= 1, reached via a Balrog-computable surrogate plus a
+    # per-magnitude deconvolution (EXT_XGB itself cannot be evaluated on
+    # injections -- see the technote).
+    completeness: des_yr6_stellar_efficiency_cutg.csv
+    completeness_band: g
+
+    # Galaxy misclassification: fraction of detected true galaxies (KNN_CLASS == 1)
+    # classified as point sources by the same selection, vs delta_mag.
+    gal_misclassification: des_yr6_galaxy_misclass_cutg.csv
+
+    # Two-curve photometric error model (streamobs Survey.get_photo_error):
+    #   catalog = median reported magerr    -> written as `magerr`, drives the S/N cut;
+    #   sample  = truth-based scatter of (obs - true) -> drives the noise draw.
+    # The truth scatter runs ~1.46x the reported magerr in the Y6 Balrog, which is
+    # why the noise draw must not use the reported errors.
+    log_photo_error_catalog: des_yr6_photoerror_g_catalog.csv
+    log_photo_error_sample: des_yr6_photoerror_g.csv
+    # Forced-photometry (non-reference band) curves: measured with NO
+    # reference-band S/N cut, since r/i/z photometry is forced at the g position
+    # and is not conditioned on g-band detection. Required for any band that is
+    # not `completeness_band`.
+    log_photo_error_catalog_nocut: des_yr6_photoerror_g_catalog_nocut.csv
+    log_photo_error_sample_nocut: des_yr6_photoerror_g_nocut.csv
+
+survey_properties:
+  # griz only. Y is deliberately absent: the DES Y6 Balrog injects griz, so a
+  # Y-band depth map cannot be truth-anchored on the same footing as the others
+  # and a Y curve cannot be derived at all. The legacy Y-band 10-sigma-era
+  # healsparse map was removed rather than shipped unanchored.
+  bands: ['g', 'r', 'i', 'z']
+
+  # Extinction coefficients per band (A_band / E(B-V))
   # from Tab 6 of https://iopscience.iop.org/article/10.1088/0004-637X/737/2/103/pdf
   coeff_extinc_g: 3.186
   coeff_extinc_r: 2.140
   coeff_extinc_i: 1.569
   coeff_extinc_z: 1.196
-  coeff_extinc_y: 1.048
-  coeff_extinc_Y: 1.048
 
-  # Systematic photometric errors (mag), or could be specified as sys_error_g, sys_error_r, etc
-  sys_error : 0.005 # Error common to all bands
-  # sys_error_i: 0.01  # Example to Override for i-band
+  # Systematic photometric error (mag), added in quadrature to the model error.
+  # Safe alongside the derived curves: after the bright-end cut the sample curve
+  # floors at 0.020 mag, so this contributes 3.1% in quadrature. (Before that cut
+  # the curve reached down to the 0.0025 quantisation floor of the residual
+  # histogram, where 0.005 would have been a 124% inflation -- an artefact of
+  # unresolved bright bins rather than a real systematic. See
+  # scripts/des/des_photoerror_corrections.yaml.)
+  sys_error : 0.005
 
-
-  # Saturation limits per band, or could be specified as saturation_g, saturation_r, etc
+  # Saturation limits per band, or could be specified as saturation_g, etc
   saturation: 16.0
-  delta_saturation: -5.23 # Smallest delta_saturation in completeness file
