@@ -16,34 +16,31 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
@@ -51,7 +48,6 @@
     <link rel="next" title="About StreamObs" href="about.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -67,8 +63,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -76,6 +83,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -83,8 +91,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -102,8 +110,7 @@
       
         
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -133,11 +140,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -161,7 +172,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="surveys/DELVE.html">DELVE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
@@ -171,20 +182,10 @@
 <li class="toctree-l1"><a class="reference internal" href="background_light.html">Light method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background_injection.html">Injection method</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
-</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roman_hlwas.html">Roman HLWAS Survey Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
@@ -199,6 +200,21 @@
 </ul>
 </details></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
+</ul>
 
     </div>
 </nav></div>
@@ -206,14 +222,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -296,7 +307,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -310,17 +321,25 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
 </div></div>
@@ -368,16 +387,14 @@
                   
   <section id="welcome-to-streamobs-documentation">
 <h1>Welcome to StreamObs Documentation!<a class="headerlink" href="#welcome-to-streamobs-documentation" title="Link to this heading">#</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This package is under active development. The API and features may change in future releases.</p>
-</div>
 <p><strong>StreamObs</strong> is a Python package for stellar stream data generation and observation simulation.
 It provides a complete pipeline to transform theoretical or dynamical stream models into realistic
 mock observations as they would appear in astronomical surveys.
 It now supports the following surveys (and corresponding data releases):
 - <strong>DES</strong>: Y6
-- <strong>LSST</strong>: simulated properties for Y1, Y2, Y3, Y4, and Y5</p>
+- <strong>DELVE</strong>: DR3 Gold
+- <strong>LSST</strong>: DC2, DP2, and expected properties for Y1, Y2, Y3, Y4, and Y5 built on the [Baseline_v5.0.0 simulation](<a class="reference external" href="https://survey-strategy.lsst.io/baseline/index.html">https://survey-strategy.lsst.io/baseline/index.html</a>)
+- <strong>ROMAN</strong>: DC2, and expected properties for HLWAS_all, HLWAS_medium, and HLWAS_wide</p>
 <section id="what-streamobs-does">
 <h2>What StreamObs Does<a class="headerlink" href="#what-streamobs-does" title="Link to this heading">#</a></h2>
 <p>StreamObs enables you to:</p>
@@ -504,17 +521,48 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
 <div class="toctree-wrapper compound">
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
-<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html#available-releases">Available releases</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="surveys/DES.html#des-y6-gold">DES Y6 Gold</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DES.html#available-releases">Available releases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DES.html#products">Products</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DES.html#depth-and-bands">Depth and bands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DES.html#photometric-errors">Photometric errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DES.html#using-it-in-streamobs">Using it in streamobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DES.html#caveats">Caveats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DES.html#creation">Creation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DELVE.html">DELVE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DELVE.html#available-releases">Available releases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DELVE.html#products">Products</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DELVE.html#depth-and-bands">Depth and bands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DELVE.html#photometric-errors">Photometric errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DELVE.html#using-it-in-streamobs">Using it in streamobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DELVE.html#caveats">Caveats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/DELVE.html#creation">Creation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="surveys/LSST.html#available-releases">Available releases</a></li>
-<li class="toctree-l2"><a class="reference internal" href="surveys/LSST.html#lsst-dc2-survey-files">LSST DC2 Survey Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/LSST.html#products">Products</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/LSST.html#depth-and-bands">Depth and bands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/LSST.html#photometric-errors">Photometric errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/LSST.html#extinction-coefficients">Extinction coefficients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/LSST.html#using-it-in-streamobs">Using it in streamobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/LSST.html#caveats">Caveats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/LSST.html#creation">Creation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="surveys/Roman.html#available-releases">Available releases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/Roman.html#products">Products</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/Roman.html#depth-and-bands">Depth and bands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/Roman.html#photometric-errors">Photometric errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/Roman.html#extinction-coefficients">Extinction coefficients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/Roman.html#using-it-in-streamobs">Using it in streamobs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/Roman.html#caveats">Caveats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="surveys/Roman.html#creation">Creation</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -526,13 +574,30 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modifying_streamobs.html#github-workflow">GitHub workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="modifying_streamobs.html#testing">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="column_convention.html#the-scheme">The scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="column_convention.html#four-error-curves-catalog-vs-sample-cut-vs-no-cut">Four error curves: catalog vs. sample, cut vs. no-cut</a></li>
+<li class="toctree-l2"><a class="reference internal" href="column_convention.html#see-also">See also</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="data.html#downloading-data">Downloading Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#data-storage-and-doi">Data Storage and DOI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#data-organization">Data Organization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html#for-developers">For Developers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Content</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="streamobs.html">streamobs package</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="new_survey.html#create-the-survey-data-directory">1. Create the survey data directory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="new_survey.html#add-survey-data-files">2. Add survey data files</a></li>
@@ -544,35 +609,6 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
 <li class="toctree-l2"><a class="reference internal" href="new_survey.html#update-the-documentation">8. Update the documentation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#storage-path-convention">Storage path convention</a></li>
-<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#what-you-need">What you need</a></li>
-<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#cmd-histogram-format">CMD histogram format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#building-the-grid-single-survey">Building the grid — single survey</a></li>
-<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#building-the-grid-multi-survey">Building the grid — multi-survey</a></li>
-<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#grid-size-guidance">Grid size guidance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#note-on-resources">Note on resources</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="column_convention.html#the-scheme">The scheme</a></li>
-<li class="toctree-l2"><a class="reference internal" href="column_convention.html#two-error-curves-catalog-vs-sample">Two error curves: catalog vs. sample</a></li>
-<li class="toctree-l2"><a class="reference internal" href="column_convention.html#see-also">See also</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="data.html#downloading-data">Downloading Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data.html#data-storage-and-doi">Data Storage and DOI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data.html#data-organization">Data Organization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data.html#for-developers">For Developers</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="selection_function_methodology.html#what-streamobs-needs">What streamobs needs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="selection_function_methodology.html#the-matched-detectiontruth-catalog">The matched detection→truth catalog</a></li>
@@ -580,7 +616,18 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
 <li class="toctree-l2"><a class="reference internal" href="selection_function_methodology.html#photometric-errors">Photometric errors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="selection_function_methodology.html#depth-maps">Depth maps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="selection_function_methodology.html#validation-audits">Validation &amp; audits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="selection_function_methodology.html#when-the-classifier-cannot-be-evaluated-on-the-simulation">When the classifier cannot be evaluated on the simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="selection_function_methodology.html#re-deriving-for-another-survey">Re-deriving for another survey</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="balrog_selection_functions.html#why-balrog-needs-special-handling">Why Balrog needs special handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="balrog_selection_functions.html#the-ext-xgb-problem">The EXT_XGB problem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="balrog_selection_functions.html#the-truth-star-galaxy-label">The truth star/galaxy label</a></li>
+<li class="toctree-l2"><a class="reference internal" href="balrog_selection_functions.html#which-population-defines-the-depth">Which population defines the depth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="balrog_selection_functions.html#balrog-gotchas-that-cost-real-time">Balrog gotchas that cost real time</a></li>
+<li class="toctree-l2"><a class="reference internal" href="balrog_selection_functions.html#running-it">Running it</a></li>
+<li class="toctree-l2"><a class="reference internal" href="balrog_selection_functions.html#validation">Validation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a><ul>
@@ -604,8 +651,36 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
 <li class="toctree-l2"><a class="reference internal" href="roman_hlwas.html#caveats">Caveats</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">Content</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="streamobs.html">streamobs package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="product_verification.html#what-was-verified">What was verified</a></li>
+<li class="toctree-l2"><a class="reference internal" href="product_verification.html#headline-numbers">Headline numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="product_verification.html#the-cross-check">The cross-check</a></li>
+<li class="toctree-l2"><a class="reference internal" href="product_verification.html#findings">Findings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="product_verification.html#known-limitations">Known limitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="product_verification.html#manifest">Manifest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="product_verification.html#provenance">Provenance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="product_verification.html#uploading">Uploading</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modifying_streamobs.html#github-workflow">GitHub workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modifying_streamobs.html#testing">Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#storage-path-convention">Storage path convention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#what-you-need">What you need</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#cmd-histogram-format">CMD histogram format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#building-the-grid-single-survey">Building the grid — single survey</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#building-the-grid-multi-survey">Building the grid — multi-survey</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#grid-size-guidance">Grid size guidance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="build_background_resources.html#note-on-resources">Note on resources</a></li>
 </ul>
 </li>
 </ul>
@@ -648,16 +723,14 @@ It is <strong>not</strong> designed for N-body simulations or dynamical modeling
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-  <div class="sidebar-secondary-item"><div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
   </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+  <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Welcome to StreamObs Documentation!</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-streamobs-does">What StreamObs Does</a></li>
@@ -719,8 +792,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

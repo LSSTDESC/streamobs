@@ -16,43 +16,39 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'data';</script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Selection-Function Derivation Methodology" href="selection_function_methodology.html" />
+    <link rel="next" title="Content" href="modules.html" />
     <link rel="prev" title="Output column convention" href="column_convention.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -68,8 +64,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -77,6 +84,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -84,8 +92,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -101,8 +109,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -132,11 +139,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -160,7 +171,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="surveys/DELVE.html">DELVE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
@@ -170,20 +181,10 @@
 <li class="toctree-l1"><a class="reference internal" href="background_light.html">Light method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background_injection.html">Injection method</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
-</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">StreamObs Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roman_hlwas.html">Roman HLWAS Survey Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
@@ -198,6 +199,21 @@
 </ul>
 </details></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
+</ul>
 
     </div>
 </nav></div>
@@ -205,14 +221,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -295,7 +306,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -309,17 +320,25 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
 </div></div>
@@ -459,7 +478,8 @@
 <h4>Problem: Download fails with “404 Not Found”<a class="headerlink" href="#problem-download-fails-with-404-not-found" title="Link to this heading">#</a></h4>
 <p><strong>Solution</strong>: The data URL may have changed. Check the latest URL at:</p>
 <ul class="simple">
-<li><p>Zenodo record: https://zenodo.org/records/17939098</p></li>
+<li><p>Zenodo record: the one <code class="docutils literal notranslate"><span class="pre">BASE_DATA_URL</span></code> in <code class="docutils literal notranslate"><span class="pre">bin/download_data.py</span></code> points at
+(that file is the single source of truth for which record is current)</p></li>
 <li><p>Or update <code class="docutils literal notranslate"><span class="pre">BASE_DATA_URL</span></code> in <code class="docutils literal notranslate"><span class="pre">bin/download_data.py</span></code></p></li>
 </ul>
 </section>
@@ -495,10 +515,15 @@
 <section id="data-storage-and-doi">
 <h2>Data Storage and DOI<a class="headerlink" href="#data-storage-and-doi" title="Link to this heading">#</a></h2>
 <p>The data files are hosted on <a class="reference external" href="https://zenodo.org">Zenodo</a> with a persistent DOI for citation and long-term access.</p>
-<p><strong>DOI</strong>: 10.5281/zenodo.17550956<br />
-<strong>URL</strong>: https://zenodo.org/records/17939098
+<p><strong>DOI</strong>: 10.5281/zenodo.22764339</p>
+<p><strong>URL</strong>: whichever record <code class="docutils literal notranslate"><span class="pre">BASE_DATA_URL</span></code> in <code class="docutils literal notranslate"><span class="pre">bin/download_data.py</span></code> names. Do not
+hardcode a record id here — it has drifted from the code before. As of this
+writing the code points at <code class="docutils literal notranslate"><span class="pre">18298544</span></code>, which still serves the <em>previous</em> product
+set; the archive described in <a class="reference internal" href="product_verification.html"><span class="doc">Product verification — des/yr6 and delve/dr3_gold</span></a> has not yet been
+uploaded, and <code class="docutils literal notranslate"><span class="pre">BASE_DATA_URL</span></code> must be bumped when it is.
 <strong>Version</strong>: 1.0<br />
-<strong>Last Updated</strong>: November 2025</p>
+<strong>Last Updated</strong>: see the record itself; the shipped product set is the one
+manifested in <a class="reference internal" href="product_verification.html"><span class="doc">Product verification — des/yr6 and delve/dr3_gold</span></a>.</p>
 </section>
 <section id="data-organization">
 <h2>Data Organization<a class="headerlink" href="#data-organization" title="Link to this heading">#</a></h2>
@@ -507,23 +532,72 @@
 <p>The data directory is organized into three main categories:</p>
 <section id="survey-specific-data-surveys">
 <h4>1. <strong>Survey-Specific Data</strong> (<code class="docutils literal notranslate"><span class="pre">surveys/</span></code>)<a class="headerlink" href="#survey-specific-data-surveys" title="Link to this heading">#</a></h4>
-<p>Each survey subdirectory contains magnitude limit maps (maglim maps) in HEALPix format:</p>
+<p>Each survey subdirectory holds that release’s magnitude-limit (maglim) maps plus
+its selection-function tables:</p>
 <ul class="simple">
-<li><p><strong>Purpose</strong>: Define observational depth and survey footprint for different photometric bands</p></li>
-<li><p><strong>Format</strong>: HEALPix maps (<code class="docutils literal notranslate"><span class="pre">.hsp</span></code> files) with nside=128</p></li>
-<li><p><strong>Content</strong>: 5σ magnitude limits for point sources in each band</p></li>
-<li><p><strong>Usage</strong>: Used to determine which stars would be observable in a given survey</p></li>
+<li><p><strong>Purpose</strong>: define observational depth and footprint per band, and the
+detection / classification / photometric-error model keyed to <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code></p></li>
+<li><p><strong>Format</strong>: HEALPix maps as either HealSparse <code class="docutils literal notranslate"><span class="pre">.hsp</span></code> or gzipped FITS
+<code class="docutils literal notranslate"><span class="pre">.fits.gz</span></code>, depending on the release; tables as CSV</p></li>
+<li><p><strong>Content</strong>: 5σ point-source magnitude limits per band, and the product set
+described in <a class="reference internal" href="selection_function_methodology.html"><span class="doc">Selection-Function Derivation Methodology</span></a></p></li>
+<li><p><strong>Usage</strong>: determines which stars would be observable, and with what
+completeness and photometric error</p></li>
 </ul>
-<p>Current surveys:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">lsst_yr1/</span></code> - LSST baseline v5.0.0, Year 1 observations (g, r bands)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">lsst_yr2/</span></code> - LSST baseline v5.0.0, Year 2 observations (g, r bands)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">lsst_yr3/</span></code> - LSST baseline v5.0.0, Year 3 observations (g, r bands)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">lsst_yr4/</span></code> - LSST baseline v5.0.0, Year 4 observations (g, r bands)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">lsst_yr5/</span></code> - LSST baseline v5.0.0, Year 5 observations (g, r bands)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">des_yr6/</span></code> - DES Y6 Gold</p></li>
-</ul>
-<p>Additional surveys can be added by placing maglim maps in new subdirectories.</p>
+<p>Current releases, with the resolution and format of their maglim maps:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>directory</p></th>
+<th class="head"><p>release</p></th>
+<th class="head"><p>bands</p></th>
+<th class="head"><p>maglim map</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">des_yr6/</span></code></p></td>
+<td><p>DES Y6 Gold</p></td>
+<td><p>griz</p></td>
+<td><p>nside 128, <code class="docutils literal notranslate"><span class="pre">.fits.gz</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">delve_dr3_gold/</span></code></p></td>
+<td><p>DELVE DR3 Gold</p></td>
+<td><p>griz</p></td>
+<td><p>nside 128, <code class="docutils literal notranslate"><span class="pre">.fits.gz</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lsst_dc2/</span></code></p></td>
+<td><p>LSST DC2</p></td>
+<td><p>g, r</p></td>
+<td><p>nside 128, <code class="docutils literal notranslate"><span class="pre">.fits.gz</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lsst_yr1/</span></code> … <code class="docutils literal notranslate"><span class="pre">lsst_yr5/</span></code></p></td>
+<td><p>LSST baseline v5.0.0, years 1–5</p></td>
+<td><p>g, r</p></td>
+<td><p>nside 128, <code class="docutils literal notranslate"><span class="pre">.hsp</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lsst_dp2/</span></code></p></td>
+<td><p>LSST DP2</p></td>
+<td><p>g, r</p></td>
+<td><p>nside 128, <code class="docutils literal notranslate"><span class="pre">.hsp</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">roman_dc2/</span></code></p></td>
+<td><p>Roman DC2</p></td>
+<td><p>F106, F129, F158</p></td>
+<td><p>nside 128, <code class="docutils literal notranslate"><span class="pre">.fits.gz</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">roman_hlwas_wide/</span></code>, <code class="docutils literal notranslate"><span class="pre">_medium/</span></code>, <code class="docutils literal notranslate"><span class="pre">_all/</span></code></p></td>
+<td><p>Roman HLWAS tiers</p></td>
+<td><p>F158 (F106 for <code class="docutils literal notranslate"><span class="pre">_all</span></code>)</p></td>
+<td><p>nside 128, <code class="docutils literal notranslate"><span class="pre">.fits.gz</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The DECam releases (<code class="docutils literal notranslate"><span class="pre">des_yr6</span></code>, <code class="docutils literal notranslate"><span class="pre">delve_dr3_gold</span></code>) are derived from Balrog
+synthetic-source injections — see <a class="reference internal" href="surveys/DES.html"><span class="doc">DES</span></a>, <a class="reference internal" href="surveys/DELVE.html"><span class="doc">DELVE</span></a> and
+<a class="reference internal" href="balrog_selection_functions.html"><span class="doc">Selection functions from Balrog (DECam surveys)</span></a>. The LSST and Roman releases are described in
+<a class="reference internal" href="surveys/LSST.html"><span class="doc">LSST</span></a> and <a class="reference internal" href="surveys/Roman.html"><span class="doc">Roman</span></a>.</p>
+<p>Additional surveys can be added by placing their products in a new
+subdirectory — see <a class="reference internal" href="new_survey.html"><span class="doc">Adding a New Photometric Survey</span></a>.</p>
 </section>
 <section id="auxiliary-data-others">
 <h4>2. <strong>Auxiliary Data</strong> (<code class="docutils literal notranslate"><span class="pre">others/</span></code>)<a class="headerlink" href="#auxiliary-data-others" title="Link to this heading">#</a></h4>
@@ -589,11 +663,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="selection_function_methodology.html"
+       href="modules.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Selection-Function Derivation Methodology</p>
+        <p class="prev-next-title">Content</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -604,16 +678,14 @@
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-  <div class="sidebar-secondary-item"><div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
   </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+  <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#downloading-data">Downloading Data</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a></li>
@@ -693,8 +765,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -1,0 +1,841 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>DELVE &#8212; streamobs  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'surveys/DELVE';</script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LSST" href="LSST.html" />
+    <link rel="prev" title="DES" href="DES.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">streamobs  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation &amp; Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multisurvey.html">Injecting one or many surveys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../examples/tutorial_quickstart.html">Quickstart: complete stellar stream analysis pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/multisurvey_cmd.html">Multi-survey CMDs: LSST + Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">DELVE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background generation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../background.html">Background generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../background_light.html">Light method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../background_injection.html">Injection method</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../column_convention.html">Output column convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../streamobs.utils.html">streamobs.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../build_background_resources.html">Building background resources</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/surveys/DELVE.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>DELVE</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-releases">Available releases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#products">Products</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#depth-and-bands">Depth and bands</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#photometric-errors">Photometric errors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-it-in-streamobs">Using it in streamobs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#caveats">Caveats</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creation">Creation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-the-injections-work">How the injections work</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#depth-map-derivation">Depth-map derivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#star-galaxy-classification">Star/galaxy classification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#photometric-error-derivation">Photometric-error derivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validation">Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#derivation-level-limitations">Derivation-level limitations</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="delve">
+<h1>DELVE<a class="headerlink" href="#delve" title="Link to this heading">#</a></h1>
+<p><strong>DELVE</strong> is supported by <strong>StreamObs</strong>.</p>
+<section id="available-releases">
+<h2>Available releases<a class="headerlink" href="#available-releases" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Release</p></th>
+<th class="head"><p>Bands</p></th>
+<th class="head"><p>Footprint</p></th>
+<th class="head"><p>Reference band</p></th>
+<th class="head"><p>Median reference-band depth</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dr3_gold</span></code> (DELVE DR3 Gold)</p></td>
+<td><p>griz</p></td>
+<td><p>17,099 deg² (shipped maglim map)</p></td>
+<td><p>g</p></td>
+<td><p>24.373</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>In the DES footprint, DELVE DR3 Gold <em>is</em> DES Y6 Gold — the two surveys share
+imaging there — so this release is built to be mutually consistent with
+<a class="reference internal" href="DES.html"><span class="doc">DES</span></a> on that overlap, and the overlap is the primary cross-check (see
+<em>Validation</em> under <em>Creation</em> below).</p>
+</section>
+<section id="products">
+<h2>Products<a class="headerlink" href="#products" title="Link to this heading">#</a></h2>
+<p>All of the selection-function products are <strong>derived from the DELVE Balrog
+synthetic-source-injection catalogue</strong> (<code class="docutils literal notranslate"><span class="pre">BalrogOfTheStars_Catalog_V4.hdf5</span></code>,
+62,922,015 injected rows) by <code class="docutils literal notranslate"><span class="pre">scripts/des/balrog_selection_function.py</span> <span class="pre">--survey</span> <span class="pre">delve</span></code>. The method, the evidence behind each choice and the runbook
+are in <a class="reference internal" href="../balrog_selection_functions.html"><span class="doc">Selection functions from Balrog (DECam surveys)</span></a>; see <em>Creation</em> below for the
+per-release summary. The derivation takes ~35 minutes wall time and ~48 GB
+peak RAM on the full V4 catalogue.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Contents</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">delve_dr3_gold_maglim_{g,r,i,z}_nside128.fits.gz</span></code></p></td>
+<td><p>truth-anchored S/N = 5 depth maps</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">delve_dr3_gold_stellar_efficiency_cutg.csv</span></code></p></td>
+<td><p>stellar detection + classification efficiency vs <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">delve_dr3_gold_photoerror_g.csv</span></code></p></td>
+<td><p><strong>sample</strong> photo-error curve — truth scatter, drives the noise draw (reference band)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">delve_dr3_gold_photoerror_g_catalog.csv</span></code></p></td>
+<td><p><strong>catalog</strong> photo-error curve — reported <code class="docutils literal notranslate"><span class="pre">magerr</span></code>, drives the S/N cut (reference band)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">delve_dr3_gold_photoerror_g_nocut.csv</span></code></p></td>
+<td><p><strong>sample</strong>, no S/N cut — the noise draw for forced-photometry bands</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">delve_dr3_gold_photoerror_g_catalog_nocut.csv</span></code></p></td>
+<td><p><strong>catalog</strong>, no S/N cut — reported <code class="docutils literal notranslate"><span class="pre">magerr</span></code> for forced-photometry bands</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">delve_dr3_gold_galaxy_misclass_cutg.csv</span></code></p></td>
+<td><p>fraction of detected true galaxies classified as point sources</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">delve_dr3_gold_photoerror_g{,_catalog}{,_nocut}_raw.csv</span></code></p></td>
+<td><p>pre-afterburner provenance</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">delve_dr3_gold_audit.json</span></code></p></td>
+<td><p>counts, anchors and convention flags for the run</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Reference band is <strong>g</strong>. The completeness and photo-error curves are keyed to
+<code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">mag_true</span> <span class="pre">−</span> <span class="pre">maglim(pixel)</span></code> and applied band-independently, so
+colour is carried by the per-band depth maps rather than by separate per-band
+tables.</p>
+</section>
+<section id="depth-and-bands">
+<h2>Depth and bands<a class="headerlink" href="#depth-and-bands" title="Link to this heading">#</a></h2>
+<p>Truth-anchored medians:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>band</p></th>
+<th class="head"><p>truth-anchored depth</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>g</p></td>
+<td><p><strong>24.373</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>r</p></td>
+<td><p><strong>23.962</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>i</p></td>
+<td><p><strong>23.389</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>z</p></td>
+<td><p><strong>22.951</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Footprint of the shipped maglim map is <strong>17,099 deg²</strong>, at <strong>nside 128</strong>
+(<code class="docutils literal notranslate"><span class="pre">delve_dr3_gold_maglim_{g,r,i,z}_nside128.fits.gz</span></code>). Each band’s depth is
+mosaicked from <strong>two</strong> input map files (DR3.2 and DR3.1.1+3.1.2), which are
+exactly disjoint halves of the footprint (0.00% overlap, 99.76% union); this
+is handled internally by the reducer and is transparent to a product user.</p>
+<p>The V4 Balrog injects <em>griz</em> only, matching DES Y6, so no <code class="docutils literal notranslate"><span class="pre">u</span></code> or <code class="docutils literal notranslate"><span class="pre">Y</span></code> product
+is derivable and none is shipped.</p>
+<p><img alt="DELVE DR3 Gold truth-anchored depth histograms" src="../_images/delve_dr3_gold_depth.png" /></p>
+<p><em>The four anchor shifts all share a sign, which is the coherence check that
+validates the anchor. Medians quoted on the histograms are of the written map,
+which masks pixels deviating more than 1.5 mag from the band median, so they sit
+~0.02 below the anchor values quoted below. The sky map shows the two disjoint
+DR3 halves that are mosaicked into each band.</em></p>
+</section>
+<section id="photometric-errors">
+<h2>Photometric errors<a class="headerlink" href="#photometric-errors" title="Link to this heading">#</a></h2>
+<p>Four curves ship, not two. The <strong>reference band</strong> g uses the <code class="docutils literal notranslate"><span class="pre">sample</span></code>/<code class="docutils literal notranslate"><span class="pre">catalog</span></code>
+pair, which is measured on the detected population, since g’s own photometry
+is conditioned on its own detection. Every <strong>other band</strong> (r, i, z) is forced
+photometry — measured at the g position, not conditioned on its own detection
+— and uses the <code class="docutils literal notranslate"><span class="pre">_nocut</span></code> pair instead.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Survey.get_photo_error(band=...)</span></code> picks the matching pair automatically and
+<strong>raises rather than guessing</strong> if the required curve for a non-reference band
+is not loaded, instead of silently applying the detected-population curve to
+forced photometry.</p>
+</section>
+<section id="using-it-in-streamobs">
+<h2>Using it in streamobs<a class="headerlink" href="#using-it-in-streamobs" title="Link to this heading">#</a></h2>
+<p>Configured by <code class="docutils literal notranslate"><span class="pre">config/surveys/delve_dr3_gold.yaml</span></code>, data in
+<code class="docutils literal notranslate"><span class="pre">data/surveys/delve_dr3_gold/</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.surveys</span><span class="w"> </span><span class="kn">import</span> <span class="n">SurveyFactory</span>
+
+<span class="n">survey</span> <span class="o">=</span> <span class="n">SurveyFactory</span><span class="o">.</span><span class="n">create_survey</span><span class="p">(</span>
+    <span class="s2">&quot;delve&quot;</span><span class="p">,</span>
+    <span class="n">release</span><span class="o">=</span><span class="s2">&quot;dr3_gold&quot;</span>
+<span class="p">)</span>
+
+<span class="n">maglim</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_maglim</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="n">pixel</span><span class="o">=</span><span class="n">pix</span><span class="p">)</span>
+
+<span class="n">completeness</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_completeness</span><span class="p">(</span>
+    <span class="s2">&quot;g&quot;</span><span class="p">,</span>
+    <span class="n">mag</span><span class="p">,</span>
+    <span class="n">maglim</span>
+<span class="p">)</span>
+
+<span class="n">photo_error</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">get_photo_error</span><span class="p">(</span>
+    <span class="s2">&quot;g&quot;</span><span class="p">,</span>
+    <span class="n">mag</span><span class="p">,</span>
+    <span class="n">maglim</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>For a forced-photometry band, pass that band to <code class="docutils literal notranslate"><span class="pre">get_photo_error</span></code> (e.g.
+<code class="docutils literal notranslate"><span class="pre">survey.get_photo_error(&quot;r&quot;,</span> <span class="pre">mag,</span> <span class="pre">maglim)</span></code>) — it automatically resolves to the
+<code class="docutils literal notranslate"><span class="pre">_nocut</span></code> curve rather than the reference-band curve.</p>
+</section>
+<section id="caveats">
+<h2>Caveats<a class="headerlink" href="#caveats" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">EXT_XGB</span></code> — what a real DR3 Gold user would actually cut on — cannot be
+evaluated on Balrog</strong>, for the same reason as DES Y6 (App. A.2 of Bechtol et
+al. 2025): the required features are never measured for injected sources.
+DELVE ships <code class="docutils literal notranslate"><span class="pre">bdf_extended_class_dr3gold</span></code> instead, which is exactly
+reproducible from <code class="docutils literal notranslate"><span class="pre">BDF_T</span></code>/<code class="docutils literal notranslate"><span class="pre">BDF_S2N</span></code> but is a <em>different</em> selection from an
+<code class="docutils literal notranslate"><span class="pre">EXT_XGB</span></code> cut. DES handles this gap with a trained surrogate plus
+deconvolution; <strong>no equivalent surrogate is shipped for DELVE.</strong></p></li>
+<li><p><strong>There is no external validation of the DELVE star classification</strong>
+comparable to the SPLASH-SXDF check done for DES. (That check validated
+completeness but could not measure contamination either — see <a class="reference internal" href="DES.html"><span class="doc">DES</span></a>.)</p></li>
+<li><p><strong>Galaxy misclassification is noise-dominated brightward of <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">≈</span> <span class="pre">−4</span></code>.</strong> The true-galaxy counts per bin get small there and the rate swings
+wildly; treat the curve as reliable only faintward of that.</p></li>
+<li><p><strong>The efficiency table starts shallower on the bright side than DES’s.</strong>
+DELVE’s table begins at <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">−5.0</span></code> (<code class="docutils literal notranslate"><span class="pre">mag_g</span></code> = 19.375), 3.4 mag
+shallower than DES’s <code class="docutils literal notranslate"><span class="pre">−8.4</span></code> (<code class="docutils literal notranslate"><span class="pre">mag_g</span></code> = 16.625). Stars brighter than
+<code class="docutils literal notranslate"><span class="pre">g</span> <span class="pre">≈</span> <span class="pre">19.4</span></code> are held flat at the table’s brightest value (<code class="docutils literal notranslate"><span class="pre">detection_eff</span> <span class="pre">=</span> <span class="pre">0.90</span></code>) by streamobs’ bright-edge hold — treat completeness for very bright
+stars as indicative rather than measured.</p></li>
+</ul>
+</section>
+<section id="creation">
+<h2>Creation<a class="headerlink" href="#creation" title="Link to this heading">#</a></h2>
+<section id="how-the-injections-work">
+<h3>How the injections work<a class="headerlink" href="#how-the-injections-work" title="Link to this heading">#</a></h3>
+<p>The selection-function products are derived from the DELVE Balrog
+synthetic-source-injection catalogue (<code class="docutils literal notranslate"><span class="pre">BalrogOfTheStars_Catalog_V4.hdf5</span></code>,
+62,922,015 injected rows) by <code class="docutils literal notranslate"><span class="pre">scripts/des/balrog_selection_function.py</span> <span class="pre">--survey</span> <span class="pre">delve</span></code>. The method, the evidence behind each choice and the full
+runbook are in <a class="reference internal" href="../balrog_selection_functions.html"><span class="doc">Selection functions from Balrog (DECam surveys)</span></a>; this page carries only
+the per-release summary. The derivation takes ~35 minutes wall time and ~48 GB
+peak RAM on the full V4 catalogue.</p>
+<p>Regenerate the figures on this page with
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/des/build_delve_survey_doc_figs.py</span></code>. There is deliberately no
+surrogate-confusion figure and no external-validation figure, unlike
+<a class="reference internal" href="DES.html"><span class="doc">DES</span></a>: DELVE needs no <code class="docutils literal notranslate"><span class="pre">EXT_XGB</span></code> surrogate, and no SPLASH-equivalent truth
+catalogue overlaps the footprint.</p>
+</section>
+<section id="depth-map-derivation">
+<h3>Depth-map derivation<a class="headerlink" href="#depth-map-derivation" title="Link to this heading">#</a></h3>
+<p>The shift applied to each input map:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>band</p></th>
+<th class="head"><p>input map median</p></th>
+<th class="head"><p>truth-anchored</p></th>
+<th class="head"><p>shift</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>g</p></td>
+<td><p>24.178</p></td>
+<td><p><strong>24.373</strong></p></td>
+<td><p>+0.196</p></td>
+</tr>
+<tr class="row-odd"><td><p>r</p></td>
+<td><p>23.675</p></td>
+<td><p><strong>23.962</strong></p></td>
+<td><p>+0.287</p></td>
+</tr>
+<tr class="row-even"><td><p>i</p></td>
+<td><p>23.204</p></td>
+<td><p><strong>23.389</strong></p></td>
+<td><p>+0.185</p></td>
+</tr>
+<tr class="row-odd"><td><p>z</p></td>
+<td><p>22.560</p></td>
+<td><p><strong>22.951</strong></p></td>
+<td><p>+0.391</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Each band’s depth is mosaicked from <strong>two</strong> input map files (DR3.2 and
+DR3.1.1+3.1.2), which are exactly disjoint halves of the footprint (0.00%
+overlap, 99.76% union); passing only one silently drops ~half the injections
+and produces an all-zero efficiency table. See
+<a class="reference internal" href="../balrog_selection_functions.html"><span class="doc">Selection functions from Balrog (DECam surveys)</span></a> for the mosaicking details.</p>
+<p>The shifts are smooth and all the <strong>same sign</strong> — the coherence check that
+validates the anchor, same as DES. Unlike DES, whose shifts are all negative,
+DELVE’s are all <strong>positive</strong>: the input maps are slightly optimistic relative
+to what the injections actually recover.</p>
+<p>Pixels deviating more than 1.5 mag from their band median are masked when the
+maps are written: g 29,872 (0.60%), r 49,822 (1.02%), i 30,806 (0.63%), z
+25,535 (0.51%).</p>
+</section>
+<section id="star-galaxy-classification">
+<h3>Star/galaxy classification<a class="headerlink" href="#star-galaxy-classification" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">classification_eff</span></code> describes the <strong><code class="docutils literal notranslate"><span class="pre">bdf_extended_class_dr3gold</span></code>, 0 ≤ EXT ≤
+1</strong> selection. Unlike DES this needs <strong>no surrogate, no deconvolution and no
+deep-field truth join</strong>: <code class="docutils literal notranslate"><span class="pre">bdf_extended_class_dr3gold</span></code> needs only <code class="docutils literal notranslate"><span class="pre">BDF_T</span></code> and
+<code class="docutils literal notranslate"><span class="pre">BDF_S2N</span></code>, both of which are measured for injections, and truth labels come
+from <code class="docutils literal notranslate"><span class="pre">truth_STAR</span></code>, which ships per row. The classifier reuses the <strong>DES Y6
+Gold interpolation nodes</strong>, so DES and DELVE are classified identically — that
+is what makes the two releases comparable in <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code> space.</p>
+<p>Counts behind the curve: 13,141,646 true stars binned; 8,361,275 detected
+(63.6%); 7,140,687 classified (85.4% of detected). The bright-end detection
+plateau sits at 0.901, and the combined (classification × detection)
+efficiency crosses 50% at <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">−0.144</span></code>. The efficiency table spans
+<code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">−5.0</span></code> to <code class="docutils literal notranslate"><span class="pre">+2.5</span></code> (<code class="docutils literal notranslate"><span class="pre">mag_g</span></code> 19.375 to 26.875), 31 rows.</p>
+<p>As of 2026-09-04, the V4 catalogue also carries a <strong>persisted</strong>
+<code class="docutils literal notranslate"><span class="pre">bdf_extended_class_dr3gold</span></code> int8 column, computed by the same vendored
+function the reducer uses, with provenance recorded in the dataset attrs.
+Values run 0–4 plus a <code class="docutils literal notranslate"><span class="pre">−9</span></code> sentinel; the distribution is 32.2% point source
+(0–1), 30.3% extended (2–4), 37.5% sentinel — the sentinel fraction is
+dominated by the ~21% undetected injections, whose <code class="docutils literal notranslate"><span class="pre">meas_bdf_*</span></code> fields are all
+<code class="docutils literal notranslate"><span class="pre">0.0</span></code> and so fail the <code class="docutils literal notranslate"><span class="pre">s2n</span> <span class="pre">&gt;</span> <span class="pre">0</span></code> test.</p>
+<p><img alt="DELVE DR3 Gold stellar efficiency and galaxy misclassification" src="../_images/delve_dr3_gold_efficiency.png" /></p>
+<p><em>Stellar detection and classification efficiency for the
+<code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">≤</span> <span class="pre">bdf_extended_class_dr3gold</span> <span class="pre">≤</span> <span class="pre">1</span></code> selection, with the galaxy
+misclassification rate on the same axes. The bright-end detection plateau sits
+at 0.901 rather than near unity because the per-object quality flags
+(<code class="docutils literal notranslate"><span class="pre">meas_flags</span></code>, <code class="docutils literal notranslate"><span class="pre">meas_bdf_flags</span></code>) are applied in the efficiency numerator — the
+Roman/LSST convention. The shaded region marks where the misclassification
+curve is noise-dominated; see <em>Caveats</em>.</em></p>
+</section>
+<section id="photometric-error-derivation">
+<h3>Photometric-error derivation<a class="headerlink" href="#photometric-error-derivation" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">sample</span></code>/<code class="docutils literal notranslate"><span class="pre">catalog</span></code> pair is measured on the detected population and applies
+to the reference band g. The <code class="docutils literal notranslate"><span class="pre">_nocut</span></code> pair is measured without the
+reference-band S/N cut and applies to r, i and z, which are forced at the g
+position and so are not conditioned on their own detection.</p>
+<p>The two pairs are identical brightward of the depth (22 bins agree to
+within 1e-6) and diverge only faintward, where the S/N cut truncates the
+detected sample: its measured scatter turns over and falls while the
+<code class="docutils literal notranslate"><span class="pre">_nocut</span></code> curve keeps rising, up to <strong>0.38 dex</strong> apart. Using the detected
+curve for forced photometry would understate faint-band errors.</p>
+<p>Per-tile zero points were measured for 1,499 tiles (reference offset +0.0225,
+spread <code class="docutils literal notranslate"><span class="pre">(16–84)/2</span></code> = 0.1758). 329 tiles deviated by more than 0.05 mag and were
+<strong>rejected, not corrected</strong> — matching DES’s own treatment of this class of
+artifact — dropping 8,503,446 of the 62,922,015 injected rows. Rejecting
+rather than correcting improved the error-inflation factor (truth scatter /
+reported error) from 2.00 to 1.50; the shipped value is <strong>1.502</strong>. Because the
+curves are <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code>-keyed and the imaging is homogeneous within the survey,
+they extrapolate to the full footprint — the maglim maps ship <strong>unmasked</strong>.</p>
+<p>The bright-end cut removes bins with <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">&lt;</span> <span class="pre">−3.25</span></code> (23 of 64 raw bins,
+leaving 41). The truth-scatter histogram has 0.005 mag bins, so a binned sigma
+can only take multiples of 0.0025; brightward of <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">≈</span> <span class="pre">−3.26</span></code> the curve
+is pinned to that grid and reports the bin width rather than the scatter. The
+first bin reaching <code class="docutils literal notranslate"><span class="pre">sigma</span> <span class="pre">=</span> <span class="pre">0.020</span></code> — the same floor the cleaned DES curve has
+— is <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">−3.256</span></code>. See
+<code class="docutils literal notranslate"><span class="pre">scripts/des/delve_photoerror_corrections.yaml</span></code> for the full rationale.</p>
+<p>The cleaned curve floors at 0.020 mag, which makes <code class="docutils literal notranslate"><span class="pre">sys_error:</span> <span class="pre">0.005</span></code> safe
+(3.1% in quadrature) — exactly as for DES.</p>
+<p><img alt="DELVE DR3 Gold photometric error model" src="../_images/delve_dr3_gold_photoerror.png" /></p>
+<p><em>All four photo-error curves. Solid is the detected-population pair used for the
+reference band g; dashed is the <code class="docutils literal notranslate"><span class="pre">_nocut</span></code> pair used for the forced-photometry
+bands r, i and z. They agree brightward of the depth and separate only
+faintward, where the S/N cut truncates the detected sample and its measured
+scatter turns over rather than continuing to rise. The lower panel is the
+error-inflation factor, ~1.5 near the limit.</em></p>
+</section>
+<section id="validation">
+<h3>Validation<a class="headerlink" href="#validation" title="Link to this heading">#</a></h3>
+<p>Since DELVE DR3 Gold <em>is</em> DES Y6 Gold in the DES footprint, comparing the two
+releases in <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code> space is the primary validation for this release — it
+needs no sky overlap, unlike a positional cross-match. Over
+<code class="docutils literal notranslate"><span class="pre">−4</span> <span class="pre">&lt;</span> <span class="pre">delta_mag</span> <span class="pre">&lt;</span> <span class="pre">0</span></code>:</p>
+<ul class="simple">
+<li><p>the combined efficiency curves agree to a <strong>median absolute difference of
+0.063</strong> (max 0.292);</p></li>
+<li><p>the photo-error curves agree to <strong>0.020 dex</strong>.</p></li>
+</ul>
+</section>
+<section id="derivation-level-limitations">
+<h3>Derivation-level limitations<a class="headerlink" href="#derivation-level-limitations" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">classification_eff</span></code> turns up faintward of <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">≈</span> <span class="pre">1.75</span></code></strong> (0.29 →
+0.42 by 2.5). This is small-N noise, and is harmless because the faint clamp
+(<code class="docutils literal notranslate"><span class="pre">DET_EFF_DELTA_MAX</span> <span class="pre">=</span> <span class="pre">1.0</span></code>) zeroes <code class="docutils literal notranslate"><span class="pre">detection_eff</span></code> and
+<code class="docutils literal notranslate"><span class="pre">classification_detection_eff</span></code> for <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> regardless.</p></li>
+</ul>
+<p>Questions about these files can be addressed to Peter Ferguson.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="DES.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">DES</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="LSST.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">LSST</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-releases">Available releases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#products">Products</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#depth-and-bands">Depth and bands</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#photometric-errors">Photometric errors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-it-in-streamobs">Using it in streamobs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#caveats">Caveats</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creation">Creation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-the-injections-work">How the injections work</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#depth-map-derivation">Depth-map derivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#star-galaxy-classification">Star/galaxy classification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#photometric-error-derivation">Photometric-error derivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validation">Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#derivation-level-limitations">Derivation-level limitations</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By DESC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, DESC.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -15,41 +15,37 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/streamobs/surveys';</script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -65,8 +61,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../../search.html"
       method="get">
@@ -74,6 +81,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -81,8 +89,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -100,8 +108,7 @@
       
         
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -131,11 +138,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -159,7 +170,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../surveys/DES.html">DES</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/DELVE.html">DELVE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../surveys/LSST.html">LSST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../surveys/Roman.html">Roman</a></li>
 </ul>
@@ -169,20 +180,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../background_light.html">Light method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../background_injection.html">Injection method</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../../modifying_streamobs.html">Contributing to StreamObs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../new_survey.html">Adding a New Photometric Survey</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../update_data.html">Update StreamObs data base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../build_background_resources.html">Building background resources</a></li>
-</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../roman_dc2.html">Roman DC2 Survey Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../streamobs.functions.html">streamobs.functions module</a></li>
@@ -197,6 +198,21 @@
 </ul>
 </details></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../build_background_resources.html">Building background resources</a></li>
+</ul>
 
     </div>
 </nav></div>
@@ -204,14 +220,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -246,7 +257,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -260,16 +271,24 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
+  </button>
+`);
+</script>
 
 </div></div>
       
@@ -351,10 +370,10 @@
 <span class="sd">    coverage : np.ndarray, optional</span>
 <span class="sd">        HEALPix map of survey coverage (1=observed, 0=not observed).</span>
 <span class="sd">    completeness : callable, optional</span>
-<span class="sd">        Efficiency function f(magnitude) -&gt; efficiency [0, 1].</span>
-<span class="sd">        Same function used for all bands, obtained from r band.</span>
-<span class="sd">    delta_saturation : float, optional</span>
-<span class="sd">        Magnitude difference for saturation threshold in the initial functions.</span>
+<span class="sd">        Efficiency function f(delta_mag) -&gt; efficiency [0, 1]. Carries a</span>
+<span class="sd">        ``delta_bounds = (lo, hi)`` attribute (the CSV&#39;s observed delta_mag</span>
+<span class="sd">        range) used by :meth:`get_efficiency` to decide bright/faint edge</span>
+<span class="sd">        fill. Same function used for all bands, obtained from r band.</span>
 <span class="sd">    completeness_band : str, optional</span>
 <span class="sd">        Band used to derive completeness function (e.g., &#39;r&#39;).</span>
 <span class="sd">    log_photo_error_catalog : callable, optional</span>
@@ -363,6 +382,9 @@
 <span class="sd">        curve (e.g. ``photoerror_r.csv``); it is written as ``magerr`` and drives</span>
 <span class="sd">        the S/N cut. Loaded from the ``log_photo_error_catalog`` config key, or the</span>
 <span class="sd">        legacy ``log_photo_error`` key. Always present for a configured survey.</span>
+<span class="sd">        Carries a ``delta_bounds = (lo, hi)`` attribute (the CSV&#39;s observed</span>
+<span class="sd">        delta_mag range) used by :meth:`get_photo_error` to decide bright/faint</span>
+<span class="sd">        edge fill.</span>
 <span class="sd">    log_photo_error_sample : callable, optional</span>
 <span class="sd">        *Sample* photometric error model f(delta_mag) -&gt; log10(mag_error): the true</span>
 <span class="sd">        scatter of observed-minus-true magnitudes, used to draw the observed</span>
@@ -417,9 +439,10 @@
     <span class="c1"># Band-independent functions (same for all bands)</span>
     <span class="n">completeness</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">completeness_band</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">delta_saturation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">log_photo_error_catalog</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">log_photo_error_sample</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">log_photo_error_catalog_nocut</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">log_photo_error_sample_nocut</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">gal_misclassification</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">gal_misclassification_detection</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -460,31 +483,139 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">log_photo_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_catalog</span> <span class="o">=</span> <span class="n">func</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_log_photo_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;catalog&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_log_photo_error</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;catalog&quot;</span><span class="p">,</span> <span class="n">band</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Select the log photometric-error interpolator.</span>
+<span class="sd">        Select the log photometric-error interpolator for ``kind`` and ``band``.</span>
+
+<span class="sd">        Two pairs of curves are carried, and which pair applies depends on whether</span>
+<span class="sd">        ``band`` is the band detection was measured in:</span>
+
+<span class="sd">        * **reference band** (``band == completeness_band``) -- the curves measured on</span>
+<span class="sd">          the S/N&gt;5 *detected* population. The injector draws the detection flag and</span>
+<span class="sd">          the noise independently, so the reference-band curve must describe the</span>
+<span class="sd">          population it is applied to.</span>
+<span class="sd">        * **every other band** -- the ``_nocut`` curves, measured with no S/N</span>
+<span class="sd">          selection. Non-reference bands are FORCED photometry: a source detected in</span>
+<span class="sd">          the reference band is measured in the others whatever their flux there, so</span>
+<span class="sd">          that population is not conditioned on detection in its own band. Using the</span>
+<span class="sd">          detected-population curve understates those errors by up to ~2.6x at</span>
+<span class="sd">          ``delta_mag = +1``.</span>
+
+<span class="sd">        ``band=None`` keeps the reference-band (detected-population) curves, so direct</span>
+<span class="sd">        callers that do not care about the distinction are unaffected.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        kind : str</span>
-<span class="sd">            ``&quot;catalog&quot;`` returns the catalog model: the reported error curve,</span>
-<span class="sd">            written as ``magerr`` and used for the S/N cut. ``&quot;sample&quot;`` returns</span>
-<span class="sd">            the sample model: the true scatter (observed-minus-true) that drives</span>
-<span class="sd">            the noise draw, falling back to the catalog model when no sample curve</span>
-<span class="sd">            is loaded (which reproduces the previous single-curve behaviour).</span>
+<span class="sd">            ``&quot;catalog&quot;`` (reported error, written as ``magerr`` and used for the S/N</span>
+<span class="sd">            cut) or ``&quot;sample&quot;`` (true scatter, drives the noise draw).</span>
+<span class="sd">        band : str, optional</span>
+<span class="sd">            Band the error is being evaluated for.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        callable or None</span>
 <span class="sd">            The selected ``f(delta_mag) -&gt; log10(mag_error)`` interpolator.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``kind`` is not recognised, or a non-reference band is requested and</span>
+<span class="sd">            the required ``_nocut`` curve is not loaded.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;catalog&quot;</span><span class="p">,</span> <span class="s2">&quot;sample&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;kind must be &#39;sample&#39; or &#39;catalog&#39;, got &#39;</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+        <span class="n">forced</span> <span class="o">=</span> <span class="n">band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">band</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completeness_band</span>
+        <span class="k">if</span> <span class="n">forced</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_catalog_nocut</span>
+                <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;catalog&quot;</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_sample_nocut</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Survey &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">namespace</span><span class="si">}</span><span class="s2">&#39; has no &#39;</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2">&#39; _nocut photo-error &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;curve, which is required for band &#39;</span><span class="si">{</span><span class="n">band</span><span class="si">}</span><span class="s2">&#39;: it is not the &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;reference band (&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2">&#39;), so its photometry &quot;</span>
+                    <span class="s2">&quot;is forced and must not use the detected-population curve. Add &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;&#39;log_photo_error_</span><span class="si">{</span><span class="s1">&#39;catalog&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;catalog&#39;</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;sample&#39;</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;_nocut&#39; to the survey config (regenerate the products to emit &quot;</span>
+                    <span class="s2">&quot;the *_nocut.csv curves).&quot;</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">func</span>
+
         <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;catalog&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_catalog</span>
-        <span class="k">elif</span> <span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;sample&quot;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_sample</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_catalog</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;kind must be &#39;sample&#39; or &#39;catalog&#39;, got &#39;</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_sample</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_sample</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_photo_error_catalog</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_fill_delta_bounds</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">delta_mag</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluate ``func(delta_mag)`` and fill NaNs outside ``func``&#39;s observed</span>
+<span class="sd">        domain, in ``func``&#39;s own native output space.</span>
+
+<span class="sd">        ``func`` is one of the interpolators loaded by</span>
+<span class="sd">        :meth:`SurveyFactory.set_completeness`/:meth:`SurveyFactory.set_photo_error`</span>
+<span class="sd">        (or a composite built by :meth:`_make_composite_efficiency`), tagged</span>
+<span class="sd">        with a ``delta_bounds = (lo, hi)`` attribute holding the smallest and</span>
+<span class="sd">        largest ``delta_mag`` actually present in its source data. Calling</span>
+<span class="sd">        ``func`` outside ``[lo, hi]`` returns NaN (see the loaders); this</span>
+<span class="sd">        replaces those NaNs with:</span>
+
+<span class="sd">        - ``0.0`` when ``delta_mag &gt; hi`` (fainter than any data point) --</span>
+<span class="sd">          e.g. no detection efficiency, or a 1-mag placeholder error</span>
+<span class="sd">          (``log10(mag_error) = 0``) for the photo-error curves.</span>
+<span class="sd">        - ``func(lo)`` when ``delta_mag &lt; lo`` (brighter than any data</span>
+<span class="sd">          point) -- holding flat at the curve&#39;s own measured bright-edge</span>
+<span class="sd">          value, rather than a hardcoded constant.</span>
+
+<span class="sd">        This is applied *before* any downstream transform (e.g. the ``10**``</span>
+<span class="sd">        for photo error) and before saturation/coverage masking, both of</span>
+<span class="sd">        which callers must apply afterwards.</span>
+
+<span class="sd">        Missing the ``delta_bounds`` attribute defaults to ``(-inf, inf)``</span>
+<span class="sd">        (a safe no-op) rather than raising.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">delta_mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">delta_mag</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">delta_mag</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="s2">&quot;delta_bounds&quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">))</span>
+
+        <span class="n">above</span> <span class="o">=</span> <span class="n">delta_mag</span> <span class="o">&gt;</span> <span class="n">hi</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">above</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">raw</span><span class="p">)</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">above</span><span class="p">)</span> <span class="k">else</span> <span class="n">raw</span>
+
+        <span class="n">below</span> <span class="o">=</span> <span class="n">delta_mag</span> <span class="o">&lt;</span> <span class="n">lo</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">below</span><span class="p">):</span>
+            <span class="n">edge_value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">lo</span><span class="p">))</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">below</span><span class="p">,</span> <span class="n">edge_value</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_composite_efficiency</span><span class="p">(</span><span class="n">f1</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">f2</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build a product-of-two-efficiencies fallback (e.g. detection ×</span>
+<span class="sd">        classification, or misclassification × detection) for use when the</span>
+<span class="sd">        combined curve was not directly loaded.</span>
+
+<span class="sd">        Each factor is bounds-filled individually (via :meth:`_fill_delta_bounds`,</span>
+<span class="sd">        using its own ``delta_bounds``) before multiplying, so the product</span>
+<span class="sd">        already contains no NaNs. The returned callable is tagged with</span>
+<span class="sd">        ``delta_bounds = (-inf, inf)`` so that an outer</span>
+<span class="sd">        ``_fill_delta_bounds(composite, delta_mag)`` call is a guaranteed</span>
+<span class="sd">        no-op on it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_composite</span><span class="p">(</span><span class="n">dm</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Survey</span><span class="o">.</span><span class="n">_fill_delta_bounds</span><span class="p">(</span><span class="n">f1</span><span class="p">,</span> <span class="n">dm</span><span class="p">)</span> <span class="o">*</span> <span class="n">Survey</span><span class="o">.</span><span class="n">_fill_delta_bounds</span><span class="p">(</span><span class="n">f2</span><span class="p">,</span> <span class="n">dm</span><span class="p">)</span>
+
+        <span class="n">_composite</span><span class="o">.</span><span class="n">delta_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_composite</span>
 
 <div class="viewcode-block" id="Survey.load">
 <a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.Survey.load">[docs]</a>
@@ -625,11 +756,8 @@
 <span class="sd">            used to draw the observed magnitudes). ``&quot;sample&quot;`` falls back to the</span>
 <span class="sd">            catalog model if no sample curve is loaded. Default is ``&quot;catalog&quot;``.</span>
 <span class="sd">        **kwargs</span>
-<span class="sd">            Additional keyword arguments:</span>
-
-<span class="sd">            delta_saturation : float, optional</span>
-<span class="sd">                Magnitude difference for saturation threshold in the initial error function.</span>
-<span class="sd">                Default is -10.4.</span>
+<span class="sd">            Unused; accepted so callers can pass extra keyword arguments</span>
+<span class="sd">            without raising.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -641,27 +769,20 @@
 <span class="sd">        ValueError</span>
 <span class="sd">            If the requested photo error model is not loaded.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">log_photo_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_log_photo_error</span><span class="p">(</span><span class="n">kind</span><span class="p">)</span>
+        <span class="n">log_photo_error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_log_photo_error</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="n">band</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">log_photo_error</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Photo error model (&#39;</span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2">&#39;) not loaded&quot;</span><span class="p">)</span>
-
-        <span class="n">delta_saturation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delta_saturation&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">)</span>
 
         <span class="c1"># Calculate delta_mag</span>
         <span class="n">delta_mag</span> <span class="o">=</span> <span class="n">magnitude</span> <span class="o">-</span> <span class="n">maglim</span>
 
-        <span class="c1"># Get statistical error (same function for all bands)</span>
-        <span class="n">mag_err_stat</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                <span class="p">((</span><span class="n">delta_mag</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">delta_saturation</span><span class="p">)</span>
-                <span class="o">&amp;</span> <span class="p">(</span><span class="n">magnitude</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">]),</span>
-                <span class="n">log_photo_error</span><span class="p">(</span><span class="n">delta_saturation</span><span class="p">),</span>
-                <span class="n">log_photo_error</span><span class="p">(</span><span class="n">delta_mag</span><span class="p">),</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
+        <span class="c1"># Get statistical error (same function for all bands), holding flat</span>
+        <span class="c1"># at the curve&#39;s bright edge / filling 0 (1-mag placeholder) beyond</span>
+        <span class="c1"># its faint edge -- see _fill_delta_bounds.</span>
+        <span class="n">mag_err_stat</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_delta_bounds</span><span class="p">(</span><span class="n">log_photo_error</span><span class="p">,</span> <span class="n">delta_mag</span><span class="p">)</span>
         <span class="n">mag_err_stat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
             <span class="n">magnitude</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">],</span>
-            <span class="mi">10</span> <span class="o">**</span> <span class="n">log_photo_error</span><span class="p">(</span><span class="n">delta_saturation</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>  <span class="c1"># saturation: no valid error</span>
             <span class="n">mag_err_stat</span><span class="p">,</span>
         <span class="p">)</span>  <span class="c1"># saturation at the bright end</span>
 
@@ -808,11 +929,8 @@
 <span class="sd">            ``&quot;detection_efficiency&quot;``, or ``&quot;classification_efficiency&quot;``.</span>
 <span class="sd">            Default is ``&quot;completeness&quot;``.</span>
 <span class="sd">        **kwargs</span>
-<span class="sd">            Additional keyword arguments. Currently:</span>
-
-<span class="sd">            delta_saturation : float, optional</span>
-<span class="sd">                Magnitude difference for saturation threshold in the initial</span>
-<span class="sd">                completeness function. Default is -10.4.</span>
+<span class="sd">            Unused; accepted so callers can pass extra keyword arguments</span>
+<span class="sd">            without raising.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -832,7 +950,12 @@
 
 <span class="sd">        - Source is brighter than saturation limit (``magnitude &lt; saturation``)</span>
 <span class="sd">        - Survey does not cover the position (``maglim &lt; saturation`` or ``maglim`` is NaN)</span>
-<span class="sd">        - Source is too faint for reliable detection</span>
+<span class="sd">        - Source is fainter than any delta_mag in the loaded efficiency table</span>
+
+<span class="sd">        Brighter than the table&#39;s observed domain but still above the</span>
+<span class="sd">        physical saturation limit, the efficiency is held flat at the</span>
+<span class="sd">        table&#39;s own bright-edge value (not forced to 1.0) -- see</span>
+<span class="sd">        :meth:`_fill_delta_bounds`.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -852,38 +975,28 @@
 <span class="sd">        get_detection_efficiency : Convenience wrapper for detection-only.</span>
 <span class="sd">        get_classification_efficiency : Convenience wrapper for classification-only.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">delta_saturation</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delta_saturation&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">)</span>
         <span class="n">delta_mag</span> <span class="o">=</span> <span class="n">magnitude</span> <span class="o">-</span> <span class="n">maglim</span>
 
-        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;missclassified&quot;</span><span class="p">,</span> <span class="s2">&quot;detected_missclassified&quot;</span><span class="p">):</span>
-            <span class="c1"># Galaxy-related efficiencies: no 1-padding at the bright end.</span>
-            <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;missclassified&quot;</span><span class="p">:</span>
-                <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gal_misclassification</span>
-                <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;missclassified&quot;</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gal_misclassification</span>
+            <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Efficiency function for type &#39;missclassified&#39; not loaded.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;detected_missclassified&quot;</span><span class="p">:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;gal_misclassification_detection&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Fallback: missclassification × detection efficiency.</span>
+                <span class="n">mis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gal_misclassification</span>
+                <span class="n">det</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;efficiency_detection&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">mis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">det</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                        <span class="s2">&quot;Efficiency function for type &#39;missclassified&#39; not loaded.&quot;</span>
+                        <span class="s2">&quot;Efficiency function for type &#39;detected_missclassified&#39; not &quot;</span>
+                        <span class="s2">&quot;loaded and cannot be derived (need both &#39;missclassified&#39; and &quot;</span>
+                        <span class="s2">&quot;&#39;detection_efficiency&#39;).&quot;</span>
                     <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>  <span class="c1"># detected_missclassified</span>
-                <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;gal_misclassification_detection&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># Fallback: missclassification × detection efficiency.</span>
-                    <span class="n">mis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gal_misclassification</span>
-                    <span class="n">det</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;efficiency_detection&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">mis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">det</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="s2">&quot;Efficiency function for type &#39;detected_missclassified&#39; not &quot;</span>
-                            <span class="s2">&quot;loaded and cannot be derived (need both &#39;missclassified&#39; and &quot;</span>
-                            <span class="s2">&quot;&#39;detection_efficiency&#39;).&quot;</span>
-                        <span class="p">)</span>
-                    <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">dm</span><span class="p">:</span> <span class="n">mis</span><span class="p">(</span><span class="n">dm</span><span class="p">)</span> <span class="o">*</span> <span class="n">det</span><span class="p">(</span><span class="n">dm</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
-            <span class="n">compl</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">delta_mag</span><span class="p">)</span>
-            <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">magnitude</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">compl</span><span class="p">)</span>
-            <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">maglim</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">])</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">maglim</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">compl</span>
-            <span class="p">)</span>
-            <span class="k">return</span> <span class="n">compl</span>
-
-        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;completeness&quot;</span><span class="p">,</span> <span class="s2">&quot;classification_detection&quot;</span><span class="p">):</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_composite_efficiency</span><span class="p">(</span><span class="n">mis</span><span class="p">,</span> <span class="n">det</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;completeness&quot;</span><span class="p">,</span> <span class="s2">&quot;classification_detection&quot;</span><span class="p">):</span>
             <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">completeness</span>
             <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># Fallback: compute classification × detection on the fly.</span>
@@ -894,7 +1007,7 @@
                         <span class="s2">&quot;Efficiency function for type &#39;completeness&#39; not loaded and &quot;</span>
                         <span class="s2">&quot;cannot be derived (need both detection and classification).&quot;</span>
                     <span class="p">)</span>
-                <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">dm</span><span class="p">:</span> <span class="n">det</span><span class="p">(</span><span class="n">dm</span><span class="p">)</span> <span class="o">*</span> <span class="n">cls_</span><span class="p">(</span><span class="n">dm</span><span class="p">)</span>  <span class="c1"># noqa: E731</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_composite_efficiency</span><span class="p">(</span><span class="n">det</span><span class="p">,</span> <span class="n">cls_</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;detection_efficiency&quot;</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;efficiency_detection&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;classification_efficiency&quot;</span><span class="p">:</span>
@@ -908,12 +1021,7 @@
         <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Efficiency function for type &#39;</span><span class="si">{</span><span class="nb">type</span><span class="si">}</span><span class="s2">&#39; not loaded.&quot;</span><span class="p">)</span>
 
-        <span class="c1"># 1-padding: bright sources (well above saturation) are always detected.</span>
-        <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">magnitude</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">])</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">delta_mag</span> <span class="o">&lt;=</span> <span class="n">delta_saturation</span><span class="p">),</span>
-            <span class="mf">1.0</span><span class="p">,</span>
-            <span class="n">func</span><span class="p">(</span><span class="n">delta_mag</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="n">compl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_delta_bounds</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">delta_mag</span><span class="p">)</span>
         <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">magnitude</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">compl</span><span class="p">)</span>
         <span class="n">compl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
             <span class="p">(</span><span class="n">maglim</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">saturation</span><span class="p">[</span><span class="n">band</span><span class="p">])</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">maglim</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">compl</span>
@@ -929,11 +1037,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get galaxy misclassification efficiency (probability a galaxy passes stellar selection).</span>
 
-<span class="sd">        Mirrors :meth:`get_efficiency` for the ``&quot;completeness&quot;`` type, but</span>
-<span class="sd">        **without 1-padding at the bright end**: bright galaxies are not forced</span>
-<span class="sd">        to efficiency = 1 when their delta_mag falls below the saturation</span>
-<span class="sd">        threshold. This reproduces the behaviour of ``custom_get_completeness``</span>
-<span class="sd">        used for galaxies in external background-generation scripts.</span>
+<span class="sd">        Mirrors :meth:`get_efficiency` for the ``&quot;missclassified&quot;`` type: like</span>
+<span class="sd">        every efficiency curve, bright galaxies beyond the table&#39;s observed</span>
+<span class="sd">        domain are held flat at the table&#39;s own bright-edge value rather than</span>
+<span class="sd">        forced to a hardcoded 1.0 -- see :meth:`_fill_delta_bounds`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -944,8 +1051,8 @@
 <span class="sd">        maglim : float or np.ndarray</span>
 <span class="sd">            Magnitude limit(s) at the source position(s).</span>
 <span class="sd">        **kwargs</span>
-<span class="sd">            delta_saturation : float, optional</span>
-<span class="sd">                Override the survey&#39;s default saturation threshold.</span>
+<span class="sd">            Unused; accepted so callers can pass extra keyword arguments</span>
+<span class="sd">            without raising.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -970,11 +1077,11 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get galaxy misclassification × detection efficiency.</span>
 
-<span class="sd">        Mirrors :meth:`get_efficiency` for the ``&quot;detected_missclassified&quot;`` type,</span>
-<span class="sd">        but **without 1-padding at the bright end**: bright galaxies are not forced</span>
-<span class="sd">        to efficiency = 1 when their delta_mag falls below the saturation</span>
-<span class="sd">        threshold. This reproduces the behaviour of ``custom_get_completeness``</span>
-<span class="sd">        used for galaxies in external background-generation scripts.</span>
+<span class="sd">        Mirrors :meth:`get_efficiency` for the ``&quot;detected_missclassified&quot;``</span>
+<span class="sd">        type: like every efficiency curve, bright galaxies beyond the</span>
+<span class="sd">        table&#39;s observed domain are held flat at the table&#39;s own</span>
+<span class="sd">        bright-edge value rather than forced to a hardcoded 1.0 -- see</span>
+<span class="sd">        :meth:`_fill_delta_bounds`.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -985,8 +1092,8 @@
 <span class="sd">        maglim : float or np.ndarray</span>
 <span class="sd">            Magnitude limit(s) at the source position(s).</span>
 <span class="sd">        **kwargs</span>
-<span class="sd">            delta_saturation : float, optional</span>
-<span class="sd">                Override the survey&#39;s default saturation threshold.</span>
+<span class="sd">            Unused; accepted so callers can pass extra keyword arguments</span>
+<span class="sd">            without raising.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1556,17 +1663,13 @@
         <span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span> <span class="o">=</span> <span class="n">survey_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="s2">&quot;completeness_band&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span>
         <span class="p">)</span>  <span class="c1"># default to r band</span>
-        <span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span> <span class="o">=</span> <span class="n">props</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;delta_saturation&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.4</span><span class="p">)</span>
         <span class="k">if</span> <span class="s2">&quot;completeness&quot;</span> <span class="ow">in</span> <span class="n">survey_config</span><span class="p">:</span>
-            <span class="c1"># Use default saturation if not band-specific</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span>
                 <span class="n">survey</span><span class="p">,</span>
                 <span class="n">survey_config</span><span class="p">,</span>
                 <span class="s2">&quot;completeness&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;Completeness/efficiency function&quot;</span><span class="p">,</span>
-                <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span>
-                    <span class="n">f</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span>
-                <span class="p">),</span>
+                <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
                 <span class="n">data_path_survey</span><span class="p">,</span>
                 <span class="n">data_path_others</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
@@ -1581,11 +1684,7 @@
                     <span class="n">survey_config</span><span class="p">,</span>
                     <span class="s2">&quot;efficiency_detection&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;Detection efficiency function&quot;</span><span class="p">,</span>
-                    <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span>
-                        <span class="n">f</span><span class="p">,</span>
-                        <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">,</span>
-                        <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;detected&quot;</span><span class="p">,</span>
-                    <span class="p">),</span>
+                    <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;detected&quot;</span><span class="p">),</span>
                     <span class="n">data_path_survey</span><span class="p">,</span>
                     <span class="n">data_path_others</span><span class="p">,</span>
                     <span class="n">filename</span><span class="o">=</span><span class="n">survey_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -1604,11 +1703,7 @@
                     <span class="n">survey_config</span><span class="p">,</span>
                     <span class="s2">&quot;efficiency_classification&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;Classification efficiency function&quot;</span><span class="p">,</span>
-                    <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span>
-                        <span class="n">f</span><span class="p">,</span>
-                        <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">,</span>
-                        <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;classified&quot;</span><span class="p">,</span>
-                    <span class="p">),</span>
+                    <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;classified&quot;</span><span class="p">),</span>
                     <span class="n">data_path_survey</span><span class="p">,</span>
                     <span class="n">data_path_others</span><span class="p">,</span>
                     <span class="n">filename</span><span class="o">=</span><span class="n">survey_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
@@ -1633,11 +1728,7 @@
                     <span class="n">survey_config</span><span class="p">,</span>
                     <span class="s2">&quot;gal_misclassification&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;Galaxy misclassification efficiency&quot;</span><span class="p">,</span>
-                    <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span>
-                        <span class="n">f</span><span class="p">,</span>
-                        <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">,</span>
-                        <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;missclassified&quot;</span><span class="p">,</span>
-                    <span class="p">),</span>
+                    <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;missclassified&quot;</span><span class="p">),</span>
                     <span class="n">data_path_survey</span><span class="p">,</span>
                     <span class="n">data_path_others</span><span class="p">,</span>
                     <span class="n">filename</span><span class="o">=</span><span class="n">_gal_mis_file</span><span class="p">,</span>
@@ -1654,9 +1745,7 @@
                     <span class="s2">&quot;gal_misclassification_detection&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;Galaxy misclassification × detection efficiency&quot;</span><span class="p">,</span>
                     <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_completeness</span><span class="p">(</span>
-                        <span class="n">f</span><span class="p">,</span>
-                        <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span><span class="p">,</span>
-                        <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;detected_missclassified&quot;</span><span class="p">,</span>
+                        <span class="n">f</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;detected_missclassified&quot;</span>
                     <span class="p">),</span>
                     <span class="n">data_path_survey</span><span class="p">,</span>
                     <span class="n">data_path_others</span><span class="p">,</span>
@@ -1689,9 +1778,7 @@
                 <span class="n">survey_config</span><span class="p">,</span>
                 <span class="s2">&quot;log_photo_error_catalog&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;Photometric error model (catalog / reported)&quot;</span><span class="p">,</span>
-                <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_photo_error</span><span class="p">(</span>
-                    <span class="n">f</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span>
-                <span class="p">),</span>
+                <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_photo_error</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
                 <span class="n">data_path_survey</span><span class="p">,</span>
                 <span class="n">data_path_others</span><span class="p">,</span>
                 <span class="n">filename</span><span class="o">=</span><span class="n">survey_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">catalog_key</span><span class="p">),</span>
@@ -1706,13 +1793,42 @@
                 <span class="n">survey_config</span><span class="p">,</span>
                 <span class="s2">&quot;log_photo_error_sample&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;Photometric error model (sample / true scatter)&quot;</span><span class="p">,</span>
-                <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_photo_error</span><span class="p">(</span>
-                    <span class="n">f</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="o">=</span><span class="n">survey</span><span class="o">.</span><span class="n">delta_saturation</span>
-                <span class="p">),</span>
+                <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_photo_error</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
                 <span class="n">data_path_survey</span><span class="p">,</span>
                 <span class="n">data_path_others</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
+
+        <span class="c1"># REQUIRED _nocut curves: the forced-photometry (non-reference) bands.</span>
+        <span class="c1"># A multiband survey without them raises at first use of a non-reference</span>
+        <span class="c1"># band -- see _resolve_log_photo_error -- rather than silently applying the</span>
+        <span class="c1"># detected-population curve to forced photometry.</span>
+        <span class="k">for</span> <span class="n">_key</span><span class="p">,</span> <span class="n">_desc</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;log_photo_error_catalog_nocut&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Photometric error model (catalog / reported, no S/N cut)&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;log_photo_error_sample_nocut&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Photometric error model (sample / true scatter, no S/N cut)&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">]:</span>
+            <span class="k">if</span> <span class="n">_key</span> <span class="ow">in</span> <span class="n">survey_config</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">_load_file</span><span class="p">(</span>
+                    <span class="n">survey</span><span class="p">,</span>
+                    <span class="n">survey_config</span><span class="p">,</span>
+                    <span class="n">_key</span><span class="p">,</span>
+                    <span class="n">_desc</span><span class="p">,</span>
+                    <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">set_photo_error</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
+                    <span class="n">data_path_survey</span><span class="p">,</span>
+                    <span class="n">data_path_others</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">verbose</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">survey</span><span class="o">.</span><span class="n">bands</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;  ! no &#39;</span><span class="si">{</span><span class="n">_key</span><span class="si">}</span><span class="s2">&#39; configured: any non-reference band &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;(reference is &#39;</span><span class="si">{</span><span class="n">survey</span><span class="o">.</span><span class="n">completeness_band</span><span class="si">}</span><span class="s2">&#39;) will raise on use.&quot;</span>
+                <span class="p">)</span>
 
         <span class="c1"># Load band-independent maps</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
@@ -1893,7 +2009,7 @@
 <div class="viewcode-block" id="SurveyFactory.set_completeness">
 <a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.SurveyFactory.set_completeness">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_completeness</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="o">=-</span><span class="mf">10.4</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_completeness</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load and interpolate completeness/efficiency function from file.</span>
 
@@ -1910,8 +2026,6 @@
 <span class="sd">            - &#39;missclassification_eff&#39; : Galaxy misclassification efficiency</span>
 <span class="sd">              (probability a galaxy passes stellar selection)</span>
 
-<span class="sd">        delta_saturation : float, optional</span>
-<span class="sd">            Magnitude difference threshold for saturation. Default is -10.4.</span>
 <span class="sd">        selection : str, optional</span>
 <span class="sd">            Which efficiency to use:</span>
 
@@ -1928,7 +2042,12 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        callable</span>
-<span class="sd">            Interpolation function f(delta_mag) -&gt; efficiency [0, 1].</span>
+<span class="sd">            Interpolation function f(delta_mag) -&gt; efficiency [0, 1], NaN</span>
+<span class="sd">            outside the observed domain. Carries a ``delta_bounds = (lo, hi)``</span>
+<span class="sd">            attribute set to the min/max of the file&#39;s ``delta_mag`` column;</span>
+<span class="sd">            callers (see ``Survey._fill_delta_bounds``) use it to decide how</span>
+<span class="sd">            to fill NaNs at call time -- this loader no longer pads the</span>
+<span class="sd">            domain itself.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -1937,12 +2056,27 @@
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        - Bright stars (delta_mag &lt;= delta_saturation): Efficiency forced to 0.</span>
-<span class="sd">        - Faint stars (beyond data): Returns efficiency = 0.0.</span>
-<span class="sd">        - The saturation parameter is automatically passed from the survey object.</span>
+<span class="sd">        - No artificial rows are inserted: the interpolator&#39;s domain is</span>
+<span class="sd">          exactly ``[delta_mag.min(), delta_mag.max()]`` as found in the file.</span>
+<span class="sd">        - Bright- and faint-edge behavior is handled entirely by the caller</span>
+<span class="sd">          (``Survey.get_efficiency``) via the ``delta_bounds`` attribute, not</span>
+<span class="sd">          by this loader.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Load photometric error data</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Load the efficiency table. Product CSVs may carry a multi-line &quot;#&quot;</span>
+        <span class="c1"># provenance comment whose LAST line is the column header (np.savetxt</span>
+        <span class="c1"># with a multi-line header string); genfromtxt(names=True) only parses</span>
+        <span class="c1"># the header correctly when it is the first line seen, so skip the</span>
+        <span class="c1"># leading comment lines down to it.</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">n_comment</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                    <span class="n">n_comment</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span>
+            <span class="n">filename</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skip_header</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_comment</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">delta_mags</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;delta_mag&quot;</span><span class="p">]</span>
 
         <span class="c1"># Select efficiency column based on user choice</span>
@@ -1967,29 +2101,13 @@
                 <span class="s2">&quot;&#39;both&#39;, &#39;missclassified&#39;, or &#39;detected_missclassified&#39;.&quot;</span>
             <span class="p">)</span>
 
-        <span class="c1"># Extend efficiency to bright end (force to zero at saturation)</span>
-        <span class="k">if</span> <span class="n">delta_mags</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">delta_saturation</span><span class="p">:</span>
-            <span class="n">delta_mags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">delta_mags</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="p">)</span>
-            <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">efficiencies</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">delta_mags</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">==</span> <span class="n">delta_saturation</span><span class="p">:</span>
-            <span class="c1"># Ensure efficiency is zero at magnitude very near saturation</span>
-            <span class="n">delta_mags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">delta_mags</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">delta_saturation</span> <span class="o">-</span> <span class="mf">1e-5</span><span class="p">)</span>
-            <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">efficiencies</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Ensure efficiency is zero at saturation</span>
-            <span class="n">efficiencies</span><span class="p">[</span><span class="n">delta_mags</span> <span class="o">&lt;=</span> <span class="n">delta_saturation</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-
-        <span class="c1"># Extend efficiency to faint end (force to zero)</span>
-        <span class="n">delta_mags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">delta_mags</span><span class="p">,</span> <span class="n">delta_mags</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">efficiencies</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">efficiencies</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-
-        <span class="c1"># Create interpolation function</span>
         <span class="n">interpolator</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span>
             <span class="n">delta_mags</span><span class="p">,</span>
             <span class="n">efficiencies</span><span class="p">,</span>
             <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># Return 0 for very faint/bright stars</span>
+            <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="n">interpolator</span><span class="o">.</span><span class="n">delta_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">delta_mags</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span> <span class="nb">float</span><span class="p">(</span><span class="n">delta_mags</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
 
         <span class="k">return</span> <span class="n">interpolator</span></div>
 
@@ -1997,7 +2115,7 @@
 <div class="viewcode-block" id="SurveyFactory.set_photo_error">
 <a class="viewcode-back" href="../../streamobs.surveys.html#streamobs.surveys.SurveyFactory.set_photo_error">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_photo_error</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="o">=-</span><span class="mf">10.4</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_photo_error</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load photometric error model from file.</span>
 
@@ -2012,38 +2130,47 @@
 <span class="sd">            - &#39;delta_mag&#39; : Magnitude difference from limit (mag - maglim)</span>
 <span class="sd">            - &#39;log_mag_err&#39; : Logarithm (base 10) of magnitude error</span>
 
-<span class="sd">        delta_saturation : float, optional</span>
-<span class="sd">            Bright magnitude difference threshold. Used to determine the bright-end</span>
-<span class="sd">            extension point. Default is -10.4.</span>
-
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        callable</span>
-<span class="sd">            Interpolation function f(delta_mag) -&gt; log10(magnitude_error).</span>
+<span class="sd">            Interpolation function f(delta_mag) -&gt; log10(magnitude_error), NaN</span>
+<span class="sd">            outside the observed domain. Carries a ``delta_bounds = (lo, hi)``</span>
+<span class="sd">            attribute (the file&#39;s delta_mag min/max).</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        - Bright stars (delta_mag &lt; delta_saturation): Extended with constant error.</span>
-<span class="sd">        - Faint stars (beyond data): Returns log10(error) = 1.0 (error = 10 mag).</span>
-<span class="sd">        - The saturation parameter is automatically passed from the survey object.</span>
+<span class="sd">        - No artificial rows are inserted: the interpolator&#39;s domain is</span>
+<span class="sd">          exactly ``[delta_mag.min(), delta_mag.max()]`` as found in the file.</span>
+<span class="sd">        - Bright- and faint-edge behavior (bright: hold flat; faint: filled</span>
+<span class="sd">          with log10=0, i.e. a 1-mag placeholder) is applied by the caller</span>
+<span class="sd">          (``Survey.get_photo_error``, via ``Survey._fill_delta_bounds``), not</span>
+<span class="sd">          by this loader.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Load photometric error data</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Load the efficiency table. Product CSVs may carry a multi-line &quot;#&quot;</span>
+        <span class="c1"># provenance comment whose LAST line is the column header (np.savetxt</span>
+        <span class="c1"># with a multi-line header string); genfromtxt(names=True) only parses</span>
+        <span class="c1"># the header correctly when it is the first line seen, so skip the</span>
+        <span class="c1"># leading comment lines down to it.</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">n_comment</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+                    <span class="n">n_comment</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span>
+            <span class="n">filename</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skip_header</span><span class="o">=</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_comment</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">delta_mags</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;delta_mag&quot;</span><span class="p">]</span>
         <span class="n">log_errors</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;log_mag_err&quot;</span><span class="p">]</span>
 
-        <span class="c1"># Extend to bright end (keep constant for very bright stars)</span>
-        <span class="k">if</span> <span class="n">delta_mags</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">delta_saturation</span><span class="p">:</span>
-            <span class="n">delta_mags</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">delta_mags</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">delta_saturation</span><span class="p">)</span>
-            <span class="n">log_errors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">log_errors</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">log_errors</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-        <span class="c1"># Create interpolation function</span>
         <span class="n">interpolator</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span>
             <span class="n">delta_mags</span><span class="p">,</span>
             <span class="n">log_errors</span><span class="p">,</span>
             <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">fill_value</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>  <span class="c1"># Return log10(error)=1 (10 mag error) for very faint stars</span>
+            <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="n">interpolator</span><span class="o">.</span><span class="n">delta_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">delta_mags</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span> <span class="nb">float</span><span class="p">(</span><span class="n">delta_mags</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
 
         <span class="k">return</span> <span class="n">interpolator</span></div>
 
@@ -2181,8 +2308,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

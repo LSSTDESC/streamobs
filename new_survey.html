@@ -16,45 +16,41 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'new_survey';</script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Update StreamObs data base" href="update_data.html" />
-    <link rel="prev" title="Contributing to StreamObs" href="modifying_streamobs.html" />
+    <link rel="next" title="Selection-Function Derivation Methodology" href="selection_function_methodology.html" />
+    <link rel="prev" title="streamobs.utils module" href="streamobs.utils.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -70,8 +66,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -79,6 +86,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -86,8 +94,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -103,8 +111,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -134,11 +141,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -162,7 +173,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="surveys/DELVE.html">DELVE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
@@ -172,20 +183,10 @@
 <li class="toctree-l1"><a class="reference internal" href="background_light.html">Light method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background_injection.html">Injection method</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
-<ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Adding a New Photometric Survey</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
-</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roman_hlwas.html">Roman HLWAS Survey Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
@@ -200,6 +201,21 @@
 </ul>
 </details></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
+</ul>
 
     </div>
 </nav></div>
@@ -207,14 +223,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -297,7 +308,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -311,17 +322,25 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
 </div></div>
@@ -406,13 +425,31 @@ healpixel arrays.</p></li>
 <span class="w">    </span><span class="nt">maglim_map_g</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_survey_maglim_g_band.hsp</span>
 <span class="w">    </span><span class="nt">maglim_map_r</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_survey_maglim_r_band.hsp</span>
 
-<span class="w">    </span><span class="c1"># Band-independent maps. Keep by defaults files for completeness, ebv map, and photometric errors</span>
+<span class="w">    </span><span class="c1"># Band-independent maps</span>
 <span class="w">    </span><span class="nt">ebv_map</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ebv_sfd98_fullres_nside_4096_ring_equatorial.fits</span>
-<span class="w">    </span><span class="nt">completeness</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">stellar_efficiency_cutr.csv</span>
-<span class="w">    </span><span class="nt">completeness_band</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">r</span><span class="w"> </span>
-<span class="w">    </span><span class="nt">log_photo_error</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">photoerror_r.csv</span>
+
+<span class="w">    </span><span class="c1"># Stellar detection + classification efficiency, and the galaxy</span>
+<span class="w">    </span><span class="c1"># misclassification rate, both keyed to delta_mag</span>
+<span class="w">    </span><span class="nt">completeness</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_survey_stellar_efficiency_cutr.csv</span>
+<span class="w">    </span><span class="nt">completeness_band</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">r</span>
+<span class="w">    </span><span class="nt">gal_misclassification</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_survey_galaxy_misclass_cutr.csv</span>
+
+<span class="w">    </span><span class="c1"># Photometric error model. Four curves: see {doc}`column_convention`.</span>
+<span class="w">    </span><span class="c1">#   catalog = the survey&#39;s reported magerr -&gt; drives the S/N cut</span>
+<span class="w">    </span><span class="c1">#   sample  = the true scatter of (obs - true) -&gt; drives the noise draw</span>
+<span class="w">    </span><span class="nt">log_photo_error_catalog</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_survey_photoerror_r_catalog.csv</span>
+<span class="w">    </span><span class="nt">log_photo_error_sample</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_survey_photoerror_r.csv</span>
+<span class="w">    </span><span class="c1"># The _nocut pair is measured WITHOUT the reference-band S/N cut and is</span>
+<span class="w">    </span><span class="c1"># REQUIRED for any band that is not `completeness_band`: those bands are</span>
+<span class="w">    </span><span class="c1"># forced photometry at the reference band&#39;s position, so they are not</span>
+<span class="w">    </span><span class="c1"># conditioned on their own detection. A survey that ships no _nocut curves</span>
+<span class="w">    </span><span class="c1"># raises for every non-reference band.</span>
+<span class="w">    </span><span class="nt">log_photo_error_catalog_nocut</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_survey_photoerror_r_catalog_nocut.csv</span>
+<span class="w">    </span><span class="nt">log_photo_error_sample_nocut</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">new_survey_photoerror_r_nocut.csv</span>
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">log_photo_error</span></code> (a single curve) is the legacy spelling and still loads, but a
+single-band survey is the only case where it is sufficient.</p>
 <section id="completeness-file">
 <h3>Completeness file<a class="headerlink" href="#completeness-file" title="Link to this heading">#</a></h3>
 <p>Required columns:</p>
@@ -455,7 +492,6 @@ healpixel arrays.</p></li>
 
 <span class="w">  </span><span class="c1"># Saturation limits per band, or could be specified as saturation_g, saturation_r, etc</span>
 <span class="w">  </span><span class="nt">saturation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16.0</span>
-<span class="w">  </span><span class="nt">delta_saturation</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-10.4</span>
 </pre></div>
 </div>
 <p>where:</p>
@@ -464,8 +500,12 @@ healpixel arrays.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">coeff_extinc_&lt;band&gt;</span></code> gives the extinction coefficient <span class="math notranslate nohighlight">\(A_{\rm band}/E(B-V)\)</span>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">sys_error</span></code> is the systematic photometric uncertainty (mag). It can also be specified per band (e.g. <code class="docutils literal notranslate"><span class="pre">sys_error_g</span></code>).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">saturation</span></code> is the magnitude below which observations are considered saturated.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">delta_saturation</span></code> defines the saturation limit in the completeness and photometric error tables. If saturation is not reached in the input files (ie. the completeness is not very small at small delta), use the smallest available <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code> in your file.</p></li>
 </ul>
+<p>The completeness and photometric error tables need no separate saturation
+threshold: streamobs reads each CSV’s own <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code> range as its interpolation
+domain, holds the curve flat at its brightest measured value for anything
+brighter than that, and fills 0 (or a 1-mag error placeholder, for the
+photo-error tables) for anything fainter than the table’s last row.</p>
 </section>
 <section id="add-survey-tests">
 <h2>5. Add survey tests<a class="headerlink" href="#add-survey-tests" title="Link to this heading">#</a></h2>
@@ -508,20 +548,20 @@ healpixel arrays.</p></li>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="modifying_streamobs.html"
+       href="streamobs.utils.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Contributing to StreamObs</p>
+        <p class="prev-next-title">streamobs.utils module</p>
       </div>
     </a>
     <a class="right-next"
-       href="update_data.html"
+       href="selection_function_methodology.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Update StreamObs data base</p>
+        <p class="prev-next-title">Selection-Function Derivation Methodology</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -532,16 +572,14 @@ healpixel arrays.</p></li>
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-  <div class="sidebar-secondary-item"><div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
   </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+  <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-the-survey-data-directory">1. Create the survey data directory</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-survey-data-files">2. Add survey data files</a></li>
@@ -604,8 +642,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

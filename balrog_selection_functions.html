@@ -1,0 +1,1068 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Selection functions from Balrog (DECam surveys) &#8212; streamobs  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'balrog_selection_functions';</script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Roman DC2 Survey Files" href="roman_dc2.html" />
+    <link rel="prev" title="Selection-Function Derivation Methodology" href="selection_function_methodology.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">streamobs  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_quickstart.html">Quickstart: complete stellar stream analysis pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/multisurvey_cmd.html">Multi-survey CMDs: LSST + Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DELVE.html">DELVE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background generation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background_light.html">Light method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background_injection.html">Injection method</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.utils.html">streamobs.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/balrog_selection_functions.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Selection functions from Balrog (DECam surveys)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-balrog-needs-special-handling">Why Balrog needs special handling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-ext-xgb-problem">The EXT_XGB problem</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-we-do-instead-surrogate-deconvolution">What we do instead: surrogate + deconvolution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-good-is-it-and-where-does-it-break">How good is it, and where does it break</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-truth-star-galaxy-label">The truth star/galaxy label</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#which-population-defines-the-depth">Which population defines the depth</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#balrog-gotchas-that-cost-real-time">Balrog gotchas that cost real time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-it">Running it</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#des-y6">DES Y6</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#delve-dr3-gold-runbook-for-the-machine-holding-the-injections">DELVE DR3 Gold — runbook for the machine holding the injections</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validation">Validation</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="selection-functions-from-balrog-decam-surveys">
+<h1>Selection functions from Balrog (DECam surveys)<a class="headerlink" href="#selection-functions-from-balrog-decam-surveys" title="Link to this heading">#</a></h1>
+<p>This technote covers how the streamobs selection-function products are derived
+for the DECam surveys — <strong>DES Y6 Gold</strong> and <strong>DELVE DR3 Gold</strong> — from
+Balrog synthetic-source-injection (SSI) catalogues, and how to re-run the
+derivation on a machine that holds the injections.</p>
+<p>It is the DECam counterpart to <a class="reference internal" href="selection_function_methodology.html"><span class="doc">Selection-Function Derivation Methodology</span></a>, which
+defines the products, the <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code> convention and the truth-anchoring recipe
+survey-agnostically. <strong>Read that page first</strong>; this one only covers what is
+specific to Balrog, and the one problem that is unique to DES/DELVE: the star
+classifier cannot be evaluated on injected sources.</p>
+<p>Everything here is driven by a single script,
+<code class="docutils literal notranslate"><span class="pre">scripts/des/balrog_selection_function.py</span></code>, which carries a schema adapter per
+survey (<code class="docutils literal notranslate"><span class="pre">--survey</span> <span class="pre">delve</span></code>, <code class="docutils literal notranslate"><span class="pre">--survey</span> <span class="pre">des_y6</span></code>). It streams the HDF5 in chunks,
+imports nothing from streamobs, and depends only on numpy / h5py / pandas /
+healpy (plus healsparse for <code class="docutils literal notranslate"><span class="pre">.hsp</span></code> depth maps and xgboost for the DES
+surrogate) — so it runs unmodified on the machine that holds the catalogues and
+emits only ~10 KB of CSVs plus optional depth maps.</p>
+<section id="why-balrog-needs-special-handling">
+<h2>Why Balrog needs special handling<a class="headerlink" href="#why-balrog-needs-special-handling" title="Link to this heading">#</a></h2>
+<p>A Balrog catalogue is an <em>injection</em> catalogue: known sources are painted into
+real survey images, the images are re-reduced, and the recovered measurements
+are matched back to what went in. That gives exactly what a selection function
+needs — a truth table and a measured table for the same objects, in the real
+survey’s own noise, masking and crowding.</p>
+<p>Two things make it awkward in practice:</p>
+<ol class="arabic simple">
+<li><p><strong>The star/galaxy classifier the survey actually publishes cannot be
+recomputed on the injections.</strong> See <em>The EXT_XGB problem</em> below.</p></li>
+<li><p><strong>The truth star/galaxy label is not in the injection files.</strong> For DES it has
+to be joined in from the parent deep-field catalogue.</p></li>
+</ol>
+<p>Both are solved, and both cost accuracy in ways that are quantified rather than
+hidden.</p>
+</section>
+<section id="the-ext-xgb-problem">
+<h2>The EXT_XGB problem<a class="headerlink" href="#the-ext-xgb-problem" title="Link to this heading">#</a></h2>
+<p>DES Y6 Gold’s best star/galaxy classifier is <code class="docutils literal notranslate"><span class="pre">EXT_XGB</span></code>, an XGBoost model over
+six features (Bechtol et al. 2025, <a class="reference external" href="https://arxiv.org/abs/2501.05739">arXiv:2501.05739</a>,
+Table A.2): <code class="docutils literal notranslate"><span class="pre">CONC</span></code>, <code class="docutils literal notranslate"><span class="pre">BDF_T</span></code>, <code class="docutils literal notranslate"><span class="pre">BDF_T_ERR</span></code>, <code class="docutils literal notranslate"><span class="pre">log10(BDF_S2N)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">WAVG_SPREAD_MODEL_I</span></code>, <code class="docutils literal notranslate"><span class="pre">WAVG_SPREADERR_MODEL_I</span></code>. Its integer classes come from
+thresholding the continuous output (their Eq. A5):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EXT_XGB</span> <span class="o">=</span> <span class="p">(</span><span class="n">XGB_PRED</span> <span class="o">&lt;</span> <span class="mf">0.865</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">XGB_PRED</span> <span class="o">&lt;</span> <span class="mf">0.110</span><span class="p">)</span>
+        <span class="o">+</span> <span class="p">(</span><span class="n">XGB_PRED</span> <span class="o">&lt;</span> <span class="mf">0.045</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">XGB_PRED</span> <span class="o">&lt;</span> <span class="mf">0.015</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>so <code class="docutils literal notranslate"><span class="pre">EXT_XGB</span> <span class="pre">=</span> <span class="pre">0</span></code> is the purest stellar class and <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">EXT_XGB</span> <span class="pre">&lt;=</span> <span class="pre">1</span></code> is the
+“complete” stellar selection. <code class="docutils literal notranslate"><span class="pre">EXT_XGB</span> <span class="pre">=</span> <span class="pre">-9</span></code> means no classification.</p>
+<p><strong>It cannot be evaluated on injections.</strong> Three of the six features are never
+measured for injected sources. The Gold paper says so directly (App. A.2):</p>
+<blockquote>
+<div><p>the XGBoost classification has not been implemented on
+simulation–injection–recovery tests due to the fact that the CONC parameter
+was not measured for the simulated object samples</p>
+</div></blockquote>
+<p>and the Balrog paper (Anbajagane et al. 2025,
+<a class="reference external" href="https://arxiv.org/abs/2501.05683">arXiv:2501.05683</a>, Sec. 4.4) reaffirms it and
+falls back to <code class="docutils literal notranslate"><span class="pre">EXT_MASH</span></code> — which that same paper shows carries <strong>&gt;10% galaxy
+contamination</strong> when used to select stars. Verified directly against both
+released Balrog files: no <code class="docutils literal notranslate"><span class="pre">EXT_XGB</span></code>, no <code class="docutils literal notranslate"><span class="pre">XGB_PRED</span></code>, no <code class="docutils literal notranslate"><span class="pre">SPREAD_MODEL</span></code>, no
+<code class="docutils literal notranslate"><span class="pre">CONC</span></code>.</p>
+<p>Neither paper offers a workaround. streamobs needs one, because the quantity the
+injector consumes is</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">classification_eff</span><span class="p">(</span><span class="n">delta_mag</span><span class="p">)</span> <span class="o">=</span> <span class="n">P</span><span class="p">(</span><span class="n">EXT_XGB</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">|</span> <span class="n">true</span> <span class="n">star</span><span class="p">,</span> <span class="n">detected</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>for the cut that will actually be applied to the real catalogue.</p>
+<section id="what-we-do-instead-surrogate-deconvolution">
+<h3>What we do instead: surrogate + deconvolution<a class="headerlink" href="#what-we-do-instead-surrogate-deconvolution" title="Link to this heading">#</a></h3>
+<p>The key observation is that Balrog has the truth label but not <code class="docutils literal notranslate"><span class="pre">EXT_XGB</span></code>, while
+the real Y6 Gold catalogue has <code class="docutils literal notranslate"><span class="pre">EXT_XGB</span></code> but no truth label — and the two
+overlap in <em>feature</em> space.</p>
+<p><strong>Step 1 — train a surrogate on the real catalogue.</strong>
+<code class="docutils literal notranslate"><span class="pre">scripts/des/build_des_xgb_surrogate.py</span></code> trains a classifier <code class="docutils literal notranslate"><span class="pre">S</span></code> on real
+<code class="docutils literal notranslate"><span class="pre">des_y6_gold</span></code> rows against the label <code class="docutils literal notranslate"><span class="pre">EXT_XGB</span> <span class="pre">&lt;=</span> <span class="pre">1</span></code>, using only features that
+can be constructed <em>identically</em> on both sides. All are fitvd/SOF quantities,
+and the Balrog files are the <code class="docutils literal notranslate"><span class="pre">_sof</span></code> products, so there is no cross-pipeline
+mismatch:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>feature</p></th>
+<th class="head"><p>real Y6 Gold</p></th>
+<th class="head"><p>Balrog matched file</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BDF_T</span></code>, <code class="docutils literal notranslate"><span class="pre">BDF_T_ERR</span></code>, <code class="docutils literal notranslate"><span class="pre">BDF_T_RATIO</span></code></p></td>
+<td><p>as named</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">meas_bdf_T</span></code>, <code class="docutils literal notranslate"><span class="pre">_err</span></code>, <code class="docutils literal notranslate"><span class="pre">_ratio</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">log_bdf_s2n</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log10(BDF_S2N)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log10(meas_bdf_s2n)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">conc_gap</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GAP_MAG_I</span> <span class="pre">-</span> <span class="pre">BDF_MAG_I</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">meas_gap_mag[:,2]</span> <span class="pre">-</span> <span class="pre">meas_bdf_mag[:,2]</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">conc_ap8</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">PSF_MAG_APER_8_I</span> <span class="pre">-</span> <span class="pre">BDF_MAG_I</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">meas_psf_mag_aper8[:,2]</span> <span class="pre">-</span> <span class="pre">meas_bdf_mag[:,2]</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">conc_ap8_r</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">PSF_MAG_APER_8_R</span> <span class="pre">-</span> <span class="pre">BDF_MAG_R</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">meas_psf_mag_aper8[:,1]</span> <span class="pre">-</span> <span class="pre">meas_bdf_mag[:,1]</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">BDF_MAG_I</span></code>, <code class="docutils literal notranslate"><span class="pre">BDF_MAG_G</span></code></p></td>
+<td><p>as named</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">meas_bdf_mag[:,2]</span></code>, <code class="docutils literal notranslate"><span class="pre">[:,0]</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Balrog’s <code class="docutils literal notranslate"><span class="pre">(N,4)</span></code> arrays are ordered g,r,i,z.</p>
+<p>The <strong>GAp</strong> (Gaussian-aperture) concentration matters and is not
+interchangeable with the aperture one: the paper’s <code class="docutils literal notranslate"><span class="pre">CONC</span></code> is a Gaussian-weighted
+flux <em>dilation</em> ratio (their Sec. III.4 — flux through a PSF-sized Gaussian
+versus one 5% wider, calibrated on the PSF model), not an aperture-magnitude
+difference, and the paper explicitly flags GAp fluxes as the Balrog-appropriate
+tool. Measured feature importance bears this out: <code class="docutils literal notranslate"><span class="pre">conc_gap</span></code> is the single most
+important feature.</p>
+<p><strong>Step 2 — deconvolve.</strong> <code class="docutils literal notranslate"><span class="pre">S</span></code> is not <code class="docutils literal notranslate"><span class="pre">EXT_XGB</span></code>, so applying it to Balrog measures
+<code class="docutils literal notranslate"><span class="pre">eff_S</span> <span class="pre">=</span> <span class="pre">P(S=1</span> <span class="pre">|</span> <span class="pre">star)</span></code>, not <code class="docutils literal notranslate"><span class="pre">eff_X</span></code>. The confusion between them is measurable
+on the real catalogue, per magnitude bin:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">=</span> <span class="n">P</span><span class="p">(</span><span class="n">S</span><span class="o">=</span><span class="mi">1</span> <span class="o">|</span> <span class="n">EXT_XGB</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>        <span class="n">b</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">=</span> <span class="n">P</span><span class="p">(</span><span class="n">S</span><span class="o">=</span><span class="mi">1</span> <span class="o">|</span> <span class="n">EXT_XGB</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">eff_S</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">eff_X</span> <span class="o">+</span> <span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eff_X</span><span class="p">)</span>   <span class="o">-&gt;</span>   <span class="n">eff_X</span> <span class="o">=</span> <span class="p">(</span><span class="n">eff_S</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The reducer applies this inversion with <code class="docutils literal notranslate"><span class="pre">--confusion</span></code>, only where the classes
+are well separated (<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-</span> <span class="pre">b</span> <span class="pre">&gt;</span> <span class="pre">0.2</span></code>; as <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">b</span></code> the inversion amplifies noise
+without bound). This removes the <em>first-order bias</em> rather than quoting the
+surrogate’s disagreement rate as an irreducible systematic.</p>
+<blockquote>
+<div><p><strong>Without the deconvolution <code class="docutils literal notranslate"><span class="pre">classification_eff</span></code> describes the surrogate, not
+<code class="docutils literal notranslate"><span class="pre">EXT_XGB</span></code>.</strong> The reducer warns if <code class="docutils literal notranslate"><span class="pre">--confusion</span></code> is omitted.</p>
+</div></blockquote>
+</section>
+<section id="how-good-is-it-and-where-does-it-break">
+<h3>How good is it, and where does it break<a class="headerlink" href="#how-good-is-it-and-where-does-it-break" title="Link to this heading">#</a></h3>
+<p>Two checks establish this, both run before anything downstream was built.</p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">CONC</span></code> reconstruction</strong> (<code class="docutils literal notranslate"><span class="pre">--precheck</span></code>). The real catalogue carries <code class="docutils literal notranslate"><span class="pre">CONC</span></code>
+itself, so the headroom is directly measurable — regress <code class="docutils literal notranslate"><span class="pre">CONC</span></code> on the
+Balrog-available features and see what is recoverable:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>i-band</p></th>
+<th class="head"><p>R²</p></th>
+<th class="head"><p>residual scatter</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">CONC</span></code> intrinsic spread</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>18–19</p></td>
+<td><p>0.851</p></td>
+<td><p>0.0003</p></td>
+<td><p>0.0060</p></td>
+</tr>
+<tr class="row-odd"><td><p>20–21</p></td>
+<td><p>0.912</p></td>
+<td><p>0.0006</p></td>
+<td><p>0.0063</p></td>
+</tr>
+<tr class="row-even"><td><p>22–23</p></td>
+<td><p>0.878</p></td>
+<td><p>0.0011</p></td>
+<td><p>0.0045</p></td>
+</tr>
+<tr class="row-odd"><td><p>23–24</p></td>
+<td><p>0.689</p></td>
+<td><p>0.0020</p></td>
+<td><p>0.0043</p></td>
+</tr>
+<tr class="row-even"><td><p>24–25</p></td>
+<td><p>0.393</p></td>
+<td><p>0.0034</p></td>
+<td><p>0.0049</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">CONC</span></code> is essentially recoverable brightward of i ≈ 23 (residual ~20× below its
+own spread) and degrades faintward, which is where the deconvolution does its
+work.</p>
+<p><strong>Domain shift.</strong> A surrogate trained on one catalogue and applied to another is
+only valid if the feature distributions agree. Comparing real versus Balrog at
+matched magnitude flagged one feature hard: <strong><code class="docutils literal notranslate"><span class="pre">PSF_T</span></code> is offset by ~1.4σ at
+every magnitude</strong> (real median 1.035–1.045, Balrog 0.882–0.886). A constant
+offset independent of magnitude is a pipeline difference, not a population one
+(cf. the PSFEx/Piff mismatch noted in the Balrog paper, Sec. 3.4). <code class="docutils literal notranslate"><span class="pre">PSF_T</span></code> and
+the derived <code class="docutils literal notranslate"><span class="pre">psf_bdf_T</span></code> are therefore <strong>excluded</strong> from the feature set, along
+with <code class="docutils literal notranslate"><span class="pre">conc_gap_r</span></code>, which is redundant — fitvd fits one shape jointly across
+bands with per-band fluxes, so <code class="docutils literal notranslate"><span class="pre">GAP</span> <span class="pre">-</span> <span class="pre">BDF</span></code> is band-independent by construction.</p>
+<p>Dropping all three changes AUC, agreement and recall by less than 1e-4, so they
+carried no unique information. Final performance on 16.8M real rows:</p>
+<ul class="simple">
+<li><p><strong>AUC 0.9946</strong>, selection agreement <strong>0.9802</strong>, recall 0.8813, precision 0.9491</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">a(m)</span></code> falls from 1.000 at g ≈ 17 to 0.642 at g ≈ 27, while <code class="docutils literal notranslate"><span class="pre">b(m)</span></code> stays at
+0.002–0.011 — the surrogate is very pure but loses recall faintward, which is
+exactly what the deconvolution corrects. Left uncorrected,
+<code class="docutils literal notranslate"><span class="pre">classification_eff</span></code> would be <strong>~17% low by g ≈ 25</strong>.</p></li>
+</ul>
+<p><strong>The residual systematic</strong> is that <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> are measured on the real
+catalogue’s mixed star+galaxy population, while what is needed is the same
+quantity conditioned on true stars. That dependence is second-order, and it is
+checked externally rather than assumed away (see <em>Validation</em> below).</p>
+</section>
+</section>
+<section id="the-truth-star-galaxy-label">
+<h2>The truth star/galaxy label<a class="headerlink" href="#the-truth-star-galaxy-label" title="Link to this heading">#</a></h2>
+<p><strong>DES Y6 Balrog has no truth label column.</strong> It does inject real stars — the
+Balrog paper is explicit that 1/3 of injections (<code class="docutils literal notranslate"><span class="pre">weight_scheme</span> <span class="pre">==</span> <span class="pre">Y3_weight</span></code>,
+confirmed at 33.3% in the file) apply no star/galaxy selection at all, and that
+Y6 uses <em>real</em> deep-field stars rather than Y3’s simulated ones. But the paper’s
+own star definition is the <strong>colour-based</strong> classifier of the parent Y3
+deep-field catalogue (Hartley &amp; Choi et al. 2021), explicitly “classified as
+stars using photometric colors (and not morphology)”.</p>
+<p>That label is recoverable because the injected <code class="docutils literal notranslate"><span class="pre">id</span></code> <strong>is</strong> the deep-field
+<code class="docutils literal notranslate"><span class="pre">COADD_OBJECT_ID</span></code> — verified to match 100% of a 5M-injection sample.
+<code class="docutils literal notranslate"><span class="pre">scripts/des/build_des_truth_labels.py</span></code> downloads the four deep-field parquets
+and builds the lookup. The <code class="docutils literal notranslate"><span class="pre">KNN_CLASS</span></code> encoding is not documented in the
+released JSON sidecars (Oracle type info only), so it was established
+empirically on bright deep-field objects where morphology is unambiguous:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p><code class="docutils literal notranslate"><span class="pre">KNN_CLASS</span></code></p></th>
+<th class="head"><p>meaning</p></th>
+<th class="head"><p>median <code class="docutils literal notranslate"><span class="pre">BDF_T</span></code></p></th>
+<th class="head"><p>frac point-like</p></th>
+<th class="head"><p>median <code class="docutils literal notranslate"><span class="pre">J-Ks</span></code></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2</p></td>
+<td><p><strong>star</strong></p></td>
+<td><p>−0.004</p></td>
+<td><p>0.924</p></td>
+<td><p>−0.21</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p>galaxy</p></td>
+<td><p>0.891</p></td>
+<td><p>0.015</p></td>
+<td><p>+0.50</p></td>
+</tr>
+<tr class="row-even"><td><p>0</p></td>
+<td><p><strong>unclassified</strong></p></td>
+<td><p>1.324</p></td>
+<td><p>0.149</p></td>
+<td><p>+0.15</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">KNN_CLASS</span> <span class="pre">=</span> <span class="pre">0</span></code> is <em>not</em> “galaxy” — only 21% of those objects have any NIR
+photometry, i.e. the colour classifier had nothing to run on. They are 22.5% of
+injections (every injection has <code class="docutils literal notranslate"><span class="pre">in_VHS_footprint</span> <span class="pre">==</span> <span class="pre">1</span></code>, so this means “too
+faint for usable NIR”, not “outside NIR coverage”), and the reducer drops them
+from the numerator <strong>and</strong> the denominator of every curve: they are neither
+known stars nor known galaxies, so they cannot inform either.</p>
+<blockquote>
+<div><p><strong>Do not substitute a morphological proxy.</strong> A <code class="docutils literal notranslate"><span class="pre">|bdf_T|</span> <span class="pre">&lt;</span> <span class="pre">0.02</span></code> cut on the
+injected deep-field morphology selects 7.64% of injections but is only
+<strong>36.8% pure</strong> — per 5M injections it picks up ~141k true stars against ~140k
+galaxies and ~102k unclassified. That is the difference between a stellar
+selection function and a mostly-galaxy one.</p>
+</div></blockquote>
+<p>DELVE’s Balrog-of-the-Stars, by contrast, ships an explicit <code class="docutils literal notranslate"><span class="pre">truth_STAR</span></code> boolean
+at roughly 50/50, so none of this applies there.</p>
+</section>
+<section id="which-population-defines-the-depth">
+<h2>Which population defines the depth<a class="headerlink" href="#which-population-defines-the-depth" title="Link to this heading">#</a></h2>
+<p>The truth anchor asks “at what magnitude does the truth-based scatter of
+(obs − true) reach σ = 0.2171?” — but <em>whose</em> scatter? The reducer’s
+<code class="docutils literal notranslate"><span class="pre">--anchor-sample</span></code> selects between the population that has passed the
+reference-band S/N cut and the one that has not, and for DES the two answers are
+a magnitude apart. Measured on the full catalogue:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>band</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">nosnr</span></code> shift</p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">detected</span></code> shift</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>g</p></td>
+<td><p>−0.297</p></td>
+<td><p><strong>+0.395</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>r</p></td>
+<td><p>−0.280</p></td>
+<td><p><strong>−0.637</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>i</p></td>
+<td><p>−0.180</p></td>
+<td><p>−0.207</p></td>
+</tr>
+<tr class="row-odd"><td><p>z</p></td>
+<td><p>−0.124</p></td>
+<td><p>−0.116</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">detected</span></code> moves g deeper by 0.40 while moving r shallower by 0.64 — a 1.03 mag
+swing between adjacent bands, which cannot be real depth. The cause is
+structural: the S/N cut is applied in the <strong>reference band only</strong>, so the g
+anchor is truncated by its own cut (self-referential — asking where the scatter
+of objects selected for having small scatter reaches a threshold that selection
+enforces), while the r/i/z anchor samples are selected on <em>g</em> S/N, distorting
+each differently. <code class="docutils literal notranslate"><span class="pre">nosnr</span></code> gives smooth, same-sign shifts ordered correctly with
+wavelength, and is the default.</p>
+<p>The trade-off is that the sample photo-error curve then reaches σ = 0.2171
+somewhat faintward of <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">0</span></code> rather than exactly at it. That is already
+true of every truth-anchored streamobs release for a related reason — the maglim
+is anchored to the <em>sample</em> curve while <code class="docutils literal notranslate"><span class="pre">get_photo_error</span></code> returns the <em>catalog</em>
+curve — which is why they all carry <code class="docutils literal notranslate"><span class="pre">skip_snr_maglim_check</span></code> in the test registry.</p>
+<p>Roman’s anchor sample does formally include the detection cut, but its own
+methodology footnote records the difference there as ≲ 0.01 mag, i.e. Roman’s
+anchor is numerically indistinguishable from the no-cut one. DES diverges only
+because its S/N cut truncates much harder relative to its error inflation
+(1.46 versus Roman’s ~2), leaving far less headroom between “reported error
+passes S/N &gt; 5” and “truth scatter reaches 0.217”. So <code class="docutils literal notranslate"><span class="pre">nosnr</span></code> is the choice that
+matches Roman’s <em>effective</em> convention, even though <code class="docutils literal notranslate"><span class="pre">detected</span></code> matches its code.</p>
+<blockquote>
+<div><p>Sanity check to keep: <strong>the per-band anchor shifts must be smooth and
+same-sign.</strong> A band whose shift departs sharply from its neighbours is
+signalling a photometry, selection or sentinel-masking problem in that band,
+not a real depth feature. That check is what caught this.</p>
+</div></blockquote>
+</section>
+<section id="balrog-gotchas-that-cost-real-time">
+<h2>Balrog gotchas that cost real time<a class="headerlink" href="#balrog-gotchas-that-cost-real-time" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>DES ships two files, DELVE one.</strong> <code class="docutils literal notranslate"><span class="pre">fiducial_matched_measured_sof.hdf5</span></code>
+(119,667,013 rows) is exactly <code class="docutils literal notranslate"><span class="pre">fiducial_injected_sof.hdf5</span></code> (145,724,947)
+masked by <code class="docutils literal notranslate"><span class="pre">detected_0.5arcsec_match_radius</span></code>, <strong>in the same row order</strong> — a
+lockstep walk, no hash join. The reducer precomputes the cumulative detected
+count so its chunk reader is idempotent, because the catalogue is traversed
+twice (zero-point audit, then products).</p></li>
+<li><p><strong>Use <code class="docutils literal notranslate"><span class="pre">wide_tilename</span></code>, not <code class="docutils literal notranslate"><span class="pre">tilename</span></code>,</strong> for anything per-tile in DES.
+<code class="docutils literal notranslate"><span class="pre">tilename</span></code> is the <em>deep-field source</em> tile — only 181 values (<code class="docutils literal notranslate"><span class="pre">COSMOS_C*</span></code>,
+<code class="docutils literal notranslate"><span class="pre">SN-*_C*</span></code>). DELVE has only <code class="docutils literal notranslate"><span class="pre">tilename</span></code> and it <em>is</em> the wide tile.</p></li>
+<li><p><strong>Undetected rows are 0.0, not NaN and not the sentinel,</strong> so they pass every
+<code class="docutils literal notranslate"><span class="pre">==</span> <span class="pre">0</span></code> flag test. The detection gate is what keeps them out.</p></li>
+<li><p><strong>Failed measurements use <code class="docutils literal notranslate"><span class="pre">-9.999e9</span></code>,</strong> coincident with <code class="docutils literal notranslate"><span class="pre">meas_bdf_flags</span> <span class="pre">!=</span> <span class="pre">0</span></code>.
+Real-catalogue sentinels are heterogeneous and are <em>not</em> nulls: <code class="docutils literal notranslate"><span class="pre">-9999</span></code>
+(<code class="docutils literal notranslate"><span class="pre">CONC</span></code>), <code class="docutils literal notranslate"><span class="pre">-99</span></code> (<code class="docutils literal notranslate"><span class="pre">WAVG_SPREAD_MODEL</span></code>), <code class="docutils literal notranslate"><span class="pre">+99</span></code>/<code class="docutils literal notranslate"><span class="pre">+37.5</span></code> (<code class="docutils literal notranslate"><span class="pre">MAG_AUTO</span></code>/capped mags),
+<code class="docutils literal notranslate"><span class="pre">EXT_XGB</span> <span class="pre">=</span> <span class="pre">-9</span></code>. Value-based masking is mandatory; <code class="docutils literal notranslate"><span class="pre">isna</span></code> silently misses them.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">meas_bdf_deblend_flags</span></code> is a broken constant</strong> in both surveys; AND-ing it
+zeroes the catalogue. <code class="docutils literal notranslate"><span class="pre">meas_mask_flags</span></code> is identically 0. Use neither.</p></li>
+<li><p><strong>Foreground masking is a property of the sky, not the object.</strong> In DES the
+flag exists only in the measured file, so 7.5% of detected rows carry it while
+undetected rows have no value at all. Cutting on it directly would drop masked
+objects from the numerator but keep them in the denominator. The reducer
+instead rebuilds it as a positional HEALPix mask (nside 4096; a pixel is
+masked if &gt;50% of its detections are flagged, masking 8.9% of populated
+pixels) and applies it to detected and undetected rows alike. In DELVE
+<code class="docutils literal notranslate"><span class="pre">FLAGS_FOREGROUND</span></code> ships for every row — and putting it in the numerator alone
+there drags the bright-end plateau from ~0.95 down to ~0.46.</p></li>
+<li><p><strong>Blends:</strong> the Balrog paper flags injections within 1.5″ of a real object
+(&lt;0.2% of the catalogue) and removes them from every analysis. The reducer
+does the same via <code class="docutils literal notranslate"><span class="pre">meas_BALROG_FLAG_BLEND</span></code>.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">flags_bad_zp</span></code> does not mean what its name suggests</strong> in DES. It is set on
+11.1% of rows but shows no correlation with per-tile photometric offset
+(Pearson r = −0.002 on an 8% sample), and neither paper defines it. Do not use
+it as a QA cut.</p></li>
+<li><p><strong>Extinction.</strong> DELVE’s <code class="docutils literal notranslate"><span class="pre">truth_FLUX_*</span></code> is <em>dereddened</em> and needs <code class="docutils literal notranslate"><span class="pre">A_band</span></code>
+added back. DES needs <code class="docutils literal notranslate"><span class="pre">bdf_mag_deredden</span> <span class="pre">+</span> <span class="pre">ext_mags</span></code> — de-redden at the deep
+field, re-redden at the injection position. The deciding diagnostic is the
+per-tile <strong>spread</strong> of (obs − true), not its median: raw <code class="docutils literal notranslate"><span class="pre">bdf_mag</span></code> has the
+<em>smallest</em> median offset yet a 12× wider spread (0.0300 vs 0.0025), because
+extinction varies tile to tile. With the correct choice, 0 of 538 DES tiles
+deviate by more than 0.05 mag.</p></li>
+<li><p><strong>Per-tile zero points differ wildly between the two surveys.</strong> DES is clean;
+DELVE V4 has ~22% of tiles off by &gt;0.05 mag, some by −0.72 (close to
+2.5·log₁₀2, suggesting a factor-of-two flux convention issue on the truth side
+for those tiles). Left uncorrected the DELVE truth anchor returns g ≈ 19.8
+instead of ≈24.5. <code class="docutils literal notranslate"><span class="pre">--tile-zp</span> <span class="pre">reject</span></code> is the default and is the treatment DES
+itself applies to this class of artifact.</p></li>
+<li><p><strong>Rejected tiles are a sample cut, not a footprint cut.</strong> The curves are
+<code class="docutils literal notranslate"><span class="pre">delta_mag</span></code>-keyed and the imaging is homogeneous within a survey, so a curve
+measured on good-ZP tiles applies to the whole footprint. Ship the maglim map
+unmasked. Do <em>not</em> extrapolate this across surveys.</p></li>
+</ul>
+</section>
+<section id="running-it">
+<h2>Running it<a class="headerlink" href="#running-it" title="Link to this heading">#</a></h2>
+<section id="des-y6">
+<h3>DES Y6<a class="headerlink" href="#des-y6" title="Link to this heading">#</a></h3>
+<p>Three steps; the first two are one-offs.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PY</span><span class="o">=</span>/astro/store/shiren/conda-envs/stream_team/envs/streamobs/bin/python
+
+<span class="c1"># 1. truth labels (downloads ~5.3 GB of deep-field parquet, emits ~36 MB)</span>
+<span class="nv">$PY</span><span class="w"> </span>scripts/des/build_des_truth_labels.py<span class="w"> </span>--data-dir<span class="w"> </span>/path/to/y3_deep_fields
+
+<span class="c1"># 2. EXT_XGB surrogate + confusion table (reads the real des_y6_gold catalogue)</span>
+<span class="nv">$PY</span><span class="w"> </span>scripts/des/build_des_xgb_surrogate.py<span class="w"> </span>--out<span class="w"> </span>artifacts/des_y6<span class="w"> </span>--precheck
+
+<span class="c1"># 3. the reduction itself</span>
+<span class="nv">$PY</span><span class="w"> </span>scripts/des/balrog_selection_function.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--survey<span class="w"> </span>des_y6<span class="w"> </span>--band<span class="w"> </span>g<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--catalog<span class="w">       </span>/path/to/fiducial_injected_sof.hdf5<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--measured<span class="w">      </span>/path/to/fiducial_matched_measured_sof.hdf5<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--truth-labels<span class="w">  </span>/path/to/des_y6_deepfield_truth.parquet<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--surrogate<span class="w">     </span>artifacts/des_y6/des_y6_xgb_surrogate.json<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--confusion<span class="w">     </span>artifacts/des_y6/des_y6_xgb_confusion.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--maglim-map<span class="w"> </span><span class="nv">g</span><span class="o">=</span>data/surveys/des_yr6/des_y6_5_sig_maglim_band_g_nside_512.hsp<span class="w"> </span><span class="se">\</span>
+<span class="w">                 </span><span class="nv">r</span><span class="o">=</span>data/surveys/des_yr6/des_y6_5_sig_maglim_band_r_nside_512.hsp<span class="w"> </span><span class="se">\</span>
+<span class="w">                 </span><span class="nv">i</span><span class="o">=</span>data/surveys/des_yr6/des_y6_5_sig_maglim_band_i_nside_512.hsp<span class="w"> </span><span class="se">\</span>
+<span class="w">                 </span><span class="nv">z</span><span class="o">=</span>data/surveys/des_yr6/des_y6_5_sig_maglim_band_z_nside_512.hsp<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--write-maglim<span class="w"> </span>--maglim-nside<span class="w"> </span><span class="m">128</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--corrections<span class="w"> </span>scripts/des/des_photoerror_corrections.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--out<span class="w"> </span>./des_y6_products<span class="w"> </span>--tag<span class="w"> </span>des_y6
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">des_y6_5_sig_*</span></code> maps supply the <em>spatial structure</em> only; their absolute
+scale is truth-anchored from the injections, so a map delivered on any S/N
+convention is corrected automatically rather than by assuming a
++2.5·log₁₀2 = 0.753 mag shift. (Those maps are genuinely 5σ — medians g 25.32 /
+r 25.13 / i 24.58 / z 23.88 — despite a long-stale comment in the config that
+quoted the 10σ number.)</p>
+</section>
+<section id="delve-dr3-gold-runbook-for-the-machine-holding-the-injections">
+<h3>DELVE DR3 Gold — runbook for the machine holding the injections<a class="headerlink" href="#delve-dr3-gold-runbook-for-the-machine-holding-the-injections" title="Link to this heading">#</a></h3>
+<p>DELVE’s products are <strong>not shipped with streamobs</strong>; derive them where the
+catalogue lives. The DELVE schema needs no surrogate and no truth-label join —
+<code class="docutils literal notranslate"><span class="pre">truth_STAR</span></code> and <code class="docutils literal notranslate"><span class="pre">FLAGS_FOREGROUND</span></code> ship for every row, and the classifier is
+<code class="docutils literal notranslate"><span class="pre">bdf_extended_class_dr3gold</span></code>, vendored into the reducer and verified
+bit-identical to desqr on 1.5M rows. It needs only <code class="docutils literal notranslate"><span class="pre">BDF_T</span></code> and <code class="docutils literal notranslate"><span class="pre">BDF_S2N</span></code>, both
+of which Balrog measures, and it reuses the DES Y6 Gold interpolation nodes, so
+DES and DELVE come out classified identically — which is what makes the two
+releases comparable.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PY</span><span class="o">=</span>/path/to/streamobs-env/bin/python<span class="w">   </span><span class="c1"># numpy, h5py, pandas, healpy, healsparse</span>
+<span class="nv">D</span><span class="o">=</span>/path/to/dr3_gold_maglim_maps<span class="w">        </span><span class="c1"># the eight DR3 HealSparse depth maps</span>
+
+<span class="nv">$PY</span><span class="w"> </span>scripts/des/balrog_selection_function.py<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--survey<span class="w"> </span>delve<span class="w"> </span>--band<span class="w"> </span>g<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--catalog<span class="w"> </span>/path/to/BalrogOfTheStars_Catalog_V4.hdf5<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--maglim-map<span class="w"> </span><span class="nv">g</span><span class="o">=</span><span class="nv">$D</span>/delve_dr32_g_maglim_wmean.hsp,<span class="nv">$D</span>/delve_dr311+dr312_g_maglim_Nov28th.hsp<span class="w"> </span><span class="se">\</span>
+<span class="w">                 </span><span class="nv">r</span><span class="o">=</span><span class="nv">$D</span>/delve_dr32_r_maglim_wmean.hsp,<span class="nv">$D</span>/delve_dr311+dr312_r_maglim_Nov28th.hsp<span class="w"> </span><span class="se">\</span>
+<span class="w">                 </span><span class="nv">i</span><span class="o">=</span><span class="nv">$D</span>/delve_dr32_i_maglim_wmean.hsp,<span class="nv">$D</span>/delve_dr311+dr312_i_maglim_Nov28th.hsp<span class="w"> </span><span class="se">\</span>
+<span class="w">                 </span><span class="nv">z</span><span class="o">=</span><span class="nv">$D</span>/delve_dr32_z_maglim_wmean.hsp,<span class="nv">$D</span>/delve_dr311+dr312_z_maglim_Nov28th.hsp<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--tile-zp<span class="w"> </span>reject<span class="w"> </span>--write-maglim<span class="w"> </span>--maglim-nside<span class="w"> </span><span class="m">512</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--corrections<span class="w"> </span>scripts/des/delve_photoerror_corrections.yaml<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--out<span class="w"> </span>./delve_dr3_gold_products<span class="w"> </span>--tag<span class="w"> </span>delve_dr3_gold<span class="w"> </span>--chunk<span class="w"> </span><span class="m">4000000</span>
+</pre></div>
+</div>
+<p>Run it from the repository root, or give an absolute path to the script — it
+imports nothing from streamobs, so it does not need to be on <code class="docutils literal notranslate"><span class="pre">sys.path</span></code>.</p>
+<p>Roughly 35 minutes and ~48 GB of RAM for all four bands on the full V4
+catalogue, most of it spent reading the eight nside-16384 depth maps. Two bands
+is about 20 minutes and ~38 GB.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--maglim-nside</span> <span class="pre">512</span></code> matches the <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> depth grid, so the two DECam releases
+are directly comparable pixel for pixel. Note that this argument only ever
+<em>degrades</em>: asking for a resolution finer than the input map’s own nside is
+silently a no-op, while the output filename still takes the value you asked for.</p>
+<p><strong>Both depth maps are required.</strong> The DR3.2 and DR3.1.1+3.1.2 map sets are
+<em>exactly disjoint</em> — measured on a 1M-injection sample spread over the whole
+catalogue, DR3.2 covers 42.2% and DR3.1.1+3.1.2 covers 57.6%, with <strong>0.00%</strong>
+overlap and a 99.76% union. They are complementary halves of the footprint, not
+competing vintages. Passing only one silently drops ~half the injections, which
+in testing produced an all-zero efficiency table. Comma-separate them; first
+listed wins on overlap. They are HealSparse at nside 16384 and are queried
+sparsely, never densified — <code class="docutils literal notranslate"><span class="pre">--maglim-nside</span></code> only sets the resolution of maps
+<em>written out</em>.</p>
+<p>Reference band is <strong>g</strong> for both releases; colour is carried by the per-band
+depth maps, not by separate per-band efficiency tables.</p>
+<p>Check the audit JSON before shipping: the per-tile ZP spread, the truth-anchored
+m5 per band (within ~0.1 mag of the map median after the shift), the
+error-inflation factor (order 1–2, not 47) and the applied map shift.</p>
+<p>Each run emits four photo-error curves, not two: the <code class="docutils literal notranslate"><span class="pre">sample</span></code>/<code class="docutils literal notranslate"><span class="pre">catalog</span></code> pair
+measured on the detected population, and a <code class="docutils literal notranslate"><span class="pre">_nocut</span></code> pair measured without the
+reference-band S/N cut. streamobs applies the first to the reference band and
+the second to every other band, whose photometry is forced at the reference
+band’s position and so is not conditioned on its own detection. The pairs are
+identical brightward of the depth and diverge faintward, where the S/N cut
+truncates the detected sample and its measured scatter turns over rather than
+continuing to rise.</p>
+<p>Copy back only the CSVs, the depth maps and the audit JSON — they total a few MB.</p>
+</section>
+</section>
+<section id="validation">
+<h2>Validation<a class="headerlink" href="#validation" title="Link to this heading">#</a></h2>
+<ul>
+<li><p><strong>Against the published integrated numbers.</strong> Bechtol et al. Table A.3 gives
+stellar efficiency/contamination over two magnitude ranges, which the derived
+curves must reproduce: <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">EXT_XGB</span> <span class="pre">&lt;=</span> <span class="pre">1</span></code> → 98.0% / 4.0% for
+17.5 ≤ i ≤ 22.5 and 94.3% / 12.5% for 16.5 ≤ i ≤ 23.5; <code class="docutils literal notranslate"><span class="pre">EXT_XGB</span> <span class="pre">=</span> <span class="pre">0</span></code> →
+92.1% / 1.0% and 79.3% / 1.5%. These constrain the <em>integral</em> of the curve;
+the paper publishes per-magnitude performance only graphically (their Fig. 3).</p></li>
+<li><p><strong>Against an external deep truth sample — done, and it passes.</strong>
+<code class="docutils literal notranslate"><span class="pre">scripts/des/validate_des_xgb_with_splash.py</span></code> matches the real Y6 Gold
+catalogue at 0.5″ against SPLASH-SXDF (Mehta et al. 2018) in the same SXDF
+field DES used for their own faint-domain validation. On 151,580
+SPLASH-classified matches the stellar completeness reproduces Table A.3:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>selection</p></th>
+<th class="head"><p>range</p></th>
+<th class="head"><p>this work</p></th>
+<th class="head"><p>paper</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EXT_XGB</span> <span class="pre">≤</span> <span class="pre">1</span></code></p></td>
+<td><p>17.5–22.5</p></td>
+<td><p>0.988</p></td>
+<td><p>0.980</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">EXT_XGB</span> <span class="pre">≤</span> <span class="pre">1</span></code></p></td>
+<td><p>16.5–23.5</p></td>
+<td><p>0.964</p></td>
+<td><p>0.943</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">EXT_XGB</span> <span class="pre">=</span> <span class="pre">0</span></code></p></td>
+<td><p>17.5–22.5</p></td>
+<td><p>0.947</p></td>
+<td><p>0.921</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">EXT_XGB</span> <span class="pre">=</span> <span class="pre">0</span></code></p></td>
+<td><p>16.5–23.5</p></td>
+<td><p>0.811</p></td>
+<td><p>0.793</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This is the external check on the deconvolution’s residual assumption, and it
+is the quantity streamobs actually ships.</p>
+<blockquote>
+<div><p><strong>Contamination is <em>not</em> measurable from this comparison</strong> (0.223 vs the
+paper’s 0.040) and the discrepancy is a property of the truth sample.
+SPLASH’s <code class="docutils literal notranslate"><span class="pre">STAR_FLAG</span></code> is pure but incomplete: flag = 1 sits in a tight
+point-source locus (median HSC <code class="docutils literal notranslate"><span class="pre">FLUX_RADIUS</span></code> 3.07 vs 6.76 for flag = 0), yet
+the DES-selected objects it calls “galaxy” have median <code class="docutils literal notranslate"><span class="pre">FLUX_RADIUS</span></code> 3.351
+with p16 = 3.082 — over half of them lie <em>on</em> the stellar locus. They are
+stars that failed SPLASH’s IRAC-dependent star criterion, not DES
+misclassifications. A pure-but-incomplete star label yields an unbiased
+<code class="docutils literal notranslate"><span class="pre">P(selected</span> <span class="pre">|</span> <span class="pre">star)</span></code> and an inflated <code class="docutils literal notranslate"><span class="pre">P(not</span> <span class="pre">star</span> <span class="pre">|</span> <span class="pre">selected)</span></code>. The same
+limitation means this field cannot validate the galaxy-misclassification
+product; that needs a <em>complete</em> galaxy label, e.g. the HSC PDR3
+concentration <code class="docutils literal notranslate"><span class="pre">i_psfflux_mag</span> <span class="pre">−</span> <span class="pre">i_cmodel_mag</span></code> DES used for their Fig. 3.</p>
+</div></blockquote>
+</li>
+<li><p><strong>DES against DELVE in <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code> space.</strong> The two footprints overlap over
+only 369 deg² (7.1% of DES) and that overlap is edge-dominated, so a sky-based
+cross-check is weak. Comparing the curves in <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code> needs no sky overlap
+at all, and is precisely what the <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code> keying is for.</p></li>
+</ul>
+<blockquote>
+<div><p><strong>Bright-end plateau.</strong> In the Roman and LSST products the per-object flag cut
+sits in the numerator and pulls the bright-end plateau down to ~0.91 — a
+property of the adopted cut, not the instrument. <strong>DES Y6 Balrog does not
+behave that way</strong>: its flagged fraction is tiny (0.056% for
+<code class="docutils literal notranslate"><span class="pre">meas_flags</span></code>/<code class="docutils literal notranslate"><span class="pre">meas_bdf_flags</span></code>, plus 0.2% blend-flagged), because injections are
+placed on a sparse 20″ hexagonal grid specifically to avoid injection-injection
+blending. So <code class="docutils literal notranslate"><span class="pre">detection_eff</span></code> plateaus at ~1.0, and that is expected rather than
+a missing cut. Do not “fix” it by reaching for a harsher flag selection, and do
+not read the agreement with the legacy DES product’s 1.00 plateau as
+validation — that product reached it for a different reason.</p>
+</div></blockquote>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="selection_function_methodology.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Selection-Function Derivation Methodology</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="roman_dc2.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Roman DC2 Survey Files</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#why-balrog-needs-special-handling">Why Balrog needs special handling</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-ext-xgb-problem">The EXT_XGB problem</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-we-do-instead-surrogate-deconvolution">What we do instead: surrogate + deconvolution</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-good-is-it-and-where-does-it-break">How good is it, and where does it break</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-truth-star-galaxy-label">The truth star/galaxy label</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#which-population-defines-the-depth">Which population defines the depth</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#balrog-gotchas-that-cost-real-time">Balrog gotchas that cost real time</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#running-it">Running it</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#des-y6">DES Y6</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#delve-dr3-gold-runbook-for-the-machine-holding-the-injections">DELVE DR3 Gold — runbook for the machine holding the injections</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#validation">Validation</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By DESC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, DESC.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

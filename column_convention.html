@@ -16,43 +16,39 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'column_convention';</script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="StreamObs Data Files" href="data.html" />
-    <link rel="prev" title="Building background resources" href="build_background_resources.html" />
+    <link rel="prev" title="Injection method" href="background_injection.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -68,8 +64,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -77,6 +84,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -84,8 +92,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -101,8 +109,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -132,11 +139,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -160,7 +171,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="surveys/DELVE.html">DELVE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
@@ -170,20 +181,10 @@
 <li class="toctree-l1"><a class="reference internal" href="background_light.html">Light method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background_injection.html">Injection method</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
-</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roman_hlwas.html">Roman HLWAS Survey Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
@@ -198,6 +199,21 @@
 </ul>
 </details></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
+</ul>
 
     </div>
 </nav></div>
@@ -205,14 +221,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -295,7 +306,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -309,17 +320,25 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
 </div></div>
@@ -343,7 +362,7 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-scheme">The scheme</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-error-curves-catalog-vs-sample">Two error curves: catalog vs. sample</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#four-error-curves-catalog-vs-sample-cut-vs-no-cut">Four error curves: catalog vs. sample, cut vs. no-cut</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See also</a></li>
 </ul>
             </nav>
@@ -418,10 +437,14 @@ downstream readers expecting those columns — everything is now namespaced by
 survey, even when only one survey is injected.</p>
 </div>
 </section>
-<section id="two-error-curves-catalog-vs-sample">
-<h2>Two error curves: catalog vs. sample<a class="headerlink" href="#two-error-curves-catalog-vs-sample" title="Link to this heading">#</a></h2>
-<p>Each survey carries <strong>two</strong> photometric-error curves, both functions of
-<code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">mag</span> <span class="pre">−</span> <span class="pre">maglim</span></code>:</p>
+<section id="four-error-curves-catalog-vs-sample-cut-vs-no-cut">
+<h2>Four error curves: catalog vs. sample, cut vs. no-cut<a class="headerlink" href="#four-error-curves-catalog-vs-sample-cut-vs-no-cut" title="Link to this heading">#</a></h2>
+<p>Each survey carries <strong>four</strong> photometric-error curves, all functions of
+<code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">mag</span> <span class="pre">−</span> <span class="pre">maglim</span></code>. They split along two independent axes: <em>which
+quantity</em> the curve describes (catalog vs. sample), and <em>which population</em> it
+was measured on (the detected sample, vs. the same sample without the
+reference-band S/N cut).</p>
+<p>The first axis — catalog vs. sample:</p>
 <ul class="simple">
 <li><p><strong>Catalog error</strong> — the survey’s <em>reported</em> error (e.g. SExtractor <code class="docutils literal notranslate"><span class="pre">magerr</span></code>).
 This is what is written to <code class="docutils literal notranslate"><span class="pre">&lt;survey&gt;_&lt;band&gt;_err</span></code>, and it drives the S/N
@@ -435,6 +458,26 @@ scatter is ≈ 2× the reported error — so the noise you draw and the error yo
 report are genuinely different. When a survey has no sample curve loaded, the
 sample draw transparently falls back to the catalog curve, so the two are
 identical and outputs match the single-curve behaviour.</p>
+<p>The second axis — cut vs. <code class="docutils literal notranslate"><span class="pre">_nocut</span></code>:</p>
+<ul class="simple">
+<li><p><strong>The cut pair</strong> (<code class="docutils literal notranslate"><span class="pre">*_photoerror_&lt;band&gt;.csv</span></code>, <code class="docutils literal notranslate"><span class="pre">*_catalog.csv</span></code>) is measured on
+the <strong>detected</strong> population and applies to the <strong>reference band</strong> — the band
+whose own detection the measurement was conditioned on
+(<code class="docutils literal notranslate"><span class="pre">completeness_band</span></code> in the survey config).</p></li>
+<li><p><strong>The <code class="docutils literal notranslate"><span class="pre">_nocut</span></code> pair</strong> (<code class="docutils literal notranslate"><span class="pre">*_nocut.csv</span></code>, <code class="docutils literal notranslate"><span class="pre">*_catalog_nocut.csv</span></code>) is measured
+<strong>without</strong> the reference-band S/N cut and applies to <strong>every other band</strong>.
+Photometry in those bands is <em>forced</em> at the reference band’s position, so it
+is not conditioned on its own detection and must not inherit that
+conditioning.</p></li>
+</ul>
+<p>The two pairs agree brightward of the depth and diverge only faintward, where
+the S/N cut truncates the detected sample: its measured scatter turns over and
+falls, while the <code class="docutils literal notranslate"><span class="pre">_nocut</span></code> curve keeps rising. Using the cut curve for forced
+photometry therefore <em>understates</em> faint-band errors — by up to 0.58 dex for
+<code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and 0.38 dex for <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Survey.get_photo_error(band=...)</span></code> selects the right pair for you. A release
+that ships no <code class="docutils literal notranslate"><span class="pre">_nocut</span></code> curves <strong>raises</strong> for any non-reference band rather than
+silently applying the detected-population curve.</p>
 <p>Select between them via
 <a class="reference internal" href="streamobs.surveys.html#streamobs.surveys.Survey.get_photo_error" title="streamobs.surveys.Survey.get_photo_error"><code class="xref py py-meth docutils literal notranslate"><span class="pre">streamobs.surveys.Survey.get_photo_error()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">kind=&quot;catalog&quot;</span></code> (default,
 reproduces the reported error) or <code class="docutils literal notranslate"><span class="pre">kind=&quot;sample&quot;</span></code> (true scatter).</p>
@@ -462,12 +505,12 @@ produced and the multi-survey “same physical star” guarantee.</p></li>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="build_background_resources.html"
+       href="background_injection.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Building background resources</p>
+        <p class="prev-next-title">Injection method</p>
       </div>
     </a>
     <a class="right-next"
@@ -486,19 +529,17 @@ produced and the multi-survey “same physical star” guarantee.</p></li>
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-  <div class="sidebar-secondary-item"><div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
   </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+  <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-scheme">The scheme</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-error-curves-catalog-vs-sample">Two error curves: catalog vs. sample</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#four-error-curves-catalog-vs-sample-cut-vs-no-cut">Four error curves: catalog vs. sample, cut vs. no-cut</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See also</a></li>
 </ul>
   </nav></div>
@@ -548,8 +589,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

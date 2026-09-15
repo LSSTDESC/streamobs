@@ -16,43 +16,39 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'selection_function_methodology';</script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Roman DC2 Survey Files" href="roman_dc2.html" />
-    <link rel="prev" title="StreamObs Data Files" href="data.html" />
+    <link rel="next" title="Selection functions from Balrog (DECam surveys)" href="balrog_selection_functions.html" />
+    <link rel="prev" title="Adding a New Photometric Survey" href="new_survey.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -68,8 +64,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -77,6 +84,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -84,8 +92,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -101,8 +109,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -132,11 +139,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -160,7 +171,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="surveys/DELVE.html">DELVE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
@@ -170,20 +181,10 @@
 <li class="toctree-l1"><a class="reference internal" href="background_light.html">Light method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background_injection.html">Injection method</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
-</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Selection-Function Derivation Methodology</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roman_hlwas.html">Roman HLWAS Survey Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
@@ -198,6 +199,21 @@
 </ul>
 </details></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
+</ul>
 
     </div>
 </nav></div>
@@ -205,14 +221,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -295,7 +306,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -309,17 +320,25 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
 </div></div>
@@ -366,6 +385,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recommended-quantitative-audits-future">Recommended quantitative audits (future)</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-the-classifier-cannot-be-evaluated-on-the-simulation">When the classifier cannot be evaluated on the simulation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#re-deriving-for-another-survey">Re-deriving for another survey</a></li>
 </ul>
             </nav>
@@ -386,7 +406,7 @@ detection-and-classification completeness, the galaxy misclassification rate, th
 photometric-error model, and the magnitude-limit (depth) maps, together with the
 conventions that tie them together.</p>
 <p>It is written <strong>survey-agnostically</strong>. The products it describes were first derived
-for Roman from the Roman–Rubin DC2 mock (see :doc:<code class="docutils literal notranslate"><span class="pre">roman_dc2</span></code>), and the same recipe
+for Roman from the Roman–Rubin DC2 mock (see <a class="reference internal" href="roman_dc2.html"><span class="doc">Roman DC2 Survey Files</span></a>), and the same recipe
 is intended to be re-applied to re-derive the LSST and DES products
 self-consistently. Per-survey numbers (depths, bands, extinction coefficients,
 saturation) live on the per-release data pages; the method lives here.</p>
@@ -618,7 +638,7 @@ applies a lightweight <strong>afterburner</strong>:</p>
 <li><p><strong>Raw curves</strong> (<code class="docutils literal notranslate"><span class="pre">*_raw.csv</span></code>) — unmodified binned outputs — are written every run
 as a provenance record.</p></li>
 <li><p><strong>Corrections</strong> are loaded from a <em>tracked</em> YAML
-(<code class="docutils literal notranslate"><span class="pre">config/surveys/roman_photoerror_corrections.yaml</span></code>) so every manual edit is
+(<code class="docutils literal notranslate"><span class="pre">scripts/roman/roman_photoerror_corrections.yaml</span></code>) so every manual edit is
 attributed and reversible. The implemented rule, <code class="docutils literal notranslate"><span class="pre">clamp_faint</span></code>, floors
 <code class="docutils literal notranslate"><span class="pre">log_mag_err</span></code> to a fixed value for all bins at/beyond a chosen <code class="docutils literal notranslate"><span class="pre">delta_mag_min</span></code>
 (e.g. holding the faint-end noise at its last well-sampled value instead of
@@ -632,27 +652,55 @@ underlying measurement.</p>
 </section>
 <section id="depth-maps">
 <h2>Depth maps<a class="headerlink" href="#depth-maps" title="Link to this heading">#</a></h2>
-<p>Per-band magnitude-limit maps are computed on a HEALPix grid (nside=1024, ring) with
+<p>Per-band magnitude-limit maps are computed on a HEALPix grid (ring; nside 1024
+is a common build resolution, though every current release ships degraded to
+nside 128) with
 the <a class="reference external" href="https://github.com/kadrlica/desqr/blob/main/desqr/depth.py">desqr</a> recipe:</p>
-<ol class="arabic simple">
+<ol class="arabic">
 <li><p>cut the bright end and <code class="docutils literal notranslate"><span class="pre">mag</span> <span class="pre">&lt;</span> <span class="pre">30</span></code>;</p></li>
 <li><p>estimate the global slope of <code class="docutils literal notranslate"><span class="pre">log10(magerr)</span></code> vs mag from nearest-neighbour pairs
 (KDE peak of the pairwise ratio);</p></li>
 <li><p>per object, extrapolate to the magnitude where it would reach the threshold S/N
 (<code class="docutils literal notranslate"><span class="pre">magerr</span> <span class="pre">=</span> <span class="pre">2.5/ln10/snr</span></code>);</p></li>
 <li><p>take the <strong>median per pixel</strong>;</p></li>
-<li><p><strong>truth-anchor the absolute scale</strong>: because the desqr extrapolation runs on the
-reported errors (which can be too small), each band’s map is shifted so its median
-equals the magnitude where the <strong>truth-based scatter</strong> reaches S/N = 5. The desqr
-machinery supplies the (error-factor-immune) <em>spatial structure</em>; the truth
-supplies the <em>absolute depth</em>. With this anchoring the photo-error model evaluates
-to σ = 0.217 (S/N = 5) at <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">0</span></code> by construction — “maglim” means S/N = 5
-in the same truth-based sense everywhere.</p></li>
+<li><p><strong>fix the absolute scale — a per-survey choice.</strong> Steps 1–4 already solve for the
+magnitude where the <em>reported</em> <code class="docutils literal notranslate"><span class="pre">magerr</span></code> reaches the threshold S/N; that is the
+desqr machinery’s own <strong>native</strong> output. Whether the map ships on that native
+scale, or is shifted to a truth-based reference, is decided <strong>per survey</strong> by how
+optimistic its reported errors are:</p>
+<ul class="simple">
+<li><p><strong>Native (reported-error) scale, no shift</strong> — adopted for <strong>LSST DC2</strong>, whose
+reported errors are only ≈1.4× optimistic. This matches what a real survey
+gives you (the pipeline’s own quoted depth is all there is), so sims and data
+are treated identically. The rebuilt native-scale depth reproduces an
+independent external calibration (Tsiane et al. 2025) to 0.1% with <em>no</em> shift
+(median ratio 1.0011 over <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">∈</span> <span class="pre">[-5,</span> <span class="pre">-0.25]</span></code>; it was 1.335 before this
+map was de-anchored) — the validation that grounds this choice. Under this
+policy the <strong>CATALOG</strong> curve is the one that evaluates to σ = 0.217 (S/N = 5) at
+<code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">0</span></code> by construction; the larger true scatter there is carried by the
+<strong>SAMPLE</strong> curve instead.</p></li>
+<li><p><strong>Truth-anchor</strong> — shift the map so its median lands at the magnitude where the
+<strong>truth-based scatter</strong> of (obs − true) reaches S/N = 5 — adopted for
+<strong>Roman DC2</strong> (see <a class="reference internal" href="roman_dc2.html"><span class="doc">Roman DC2 Survey Files</span></a>), whose reported errors are ≈2× optimistic.
+Left on the native scale, Roman’s map would land ≈0.9–1.2 mag deeper across
+bands than the published Roman 5σ depths (e.g. F158 native 27.83 vs. the ~26.9
+reference), claiming detections the survey cannot deliver. Under this policy
+the <strong>SAMPLE</strong> curve is the one that evaluates to σ = 0.217 (S/N = 5) at
+<code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">0</span></code> by construction (measured 0.2150, ≈1% off target); the
+<strong>CATALOG</strong> curve reads well below it, reflecting the same optimism.</p></li>
+</ul>
+<p>The desqr machinery always supplies the (error-factor-immune) <em>spatial
+structure</em>; the two policies differ only in what supplies the <em>absolute depth</em>.
+The divergence is a property of each simulation’s own error calibration, not of
+the convention itself — a survey with LSST-like reported errors keeps the native
+scale, a survey with Roman-like reported errors gets truth-anchored.</p>
+</li>
 </ol>
 <p>The depth sample is the <strong>same</strong> true-star-passing-classification population as the
 photo-error model, so the maps and the error model describe one population.</p>
 <blockquote>
-<div><p><strong>Anchor-sample footnote (2026-07).</strong> The anchoring in step 5 is conceptually a
+<div><p><strong>Anchor-sample footnote (2026-07, Roman-specific — LSST DC2 no longer anchors, so
+this does not apply there).</strong> The anchoring in step 5 is conceptually a
 <em>no-cut</em> quantity (the magnitude where the full population’s truth scatter
 reaches S/N = 5), but the current generator’s anchor sample includes the
 detection cut. The measured effect is ≲ 0.01 mag (the no-cut sample curve
@@ -664,17 +712,22 @@ is deferred to the next product regeneration rather than regenerating for it.</p
 <h3>Exposure-scaled quasi-depth (Option B)<a class="headerlink" href="#exposure-scaled-quasi-depth-option-b" title="Link to this heading">#</a></h3>
 <p>When a survey footprint has no full image simulation but does have an
 <strong>exposure-time map</strong> (e.g. the real Roman HLWAS tiers), depth is obtained by scaling
-the truth-anchored reference depth by photon-noise √t S/N:</p>
+the reference depth by photon-noise √t S/N:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>depth(pix) = REF_DEPTH + 1.25 · log10( t(pix) / REF_EXPTIME )
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">REF_DEPTH</span></code> is the median of the truth-anchored reference maglim map and
-<code class="docutils literal notranslate"><span class="pre">REF_EXPTIME</span></code> is the reference simulation’s per-pixel exposure time. The 1.25 factor
-is <code class="docutils literal notranslate"><span class="pre">2.5</span> <span class="pre">×</span> <span class="pre">0.5</span></code>, the limiting-magnitude response to √t. This <strong>Option B</strong> anchors all
-tiers to the <em>same</em> truth-anchored reference (not to per-tier ETC depths of mixed
-vintage), so the maps land exactly on the depth scale the <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code>-keyed tables
-require, and inter-tier comparisons are self-consistent. It assumes background-limited
-exposures (read-noise makes the shortest exposures slightly shallower than predicted).</p>
+<p>where <code class="docutils literal notranslate"><span class="pre">REF_DEPTH</span></code> is the median of the reference maglim map — for Roman this is the
+<strong>truth-anchored</strong> DC2 F158 map (Roman keeps truth-anchoring; see <em>Depth maps</em> above)
+— and <code class="docutils literal notranslate"><span class="pre">REF_EXPTIME</span></code> is the reference simulation’s per-pixel exposure time. The 1.25
+factor is <code class="docutils literal notranslate"><span class="pre">2.5</span> <span class="pre">×</span> <span class="pre">0.5</span></code>, the limiting-magnitude response to √t. This <strong>Option B</strong> ties
+all tiers to the <em>same</em> reference (not to per-tier ETC depths of mixed vintage), so
+the maps land exactly on the depth scale the <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code>-keyed tables require, and
+inter-tier comparisons are self-consistent. It assumes background-limited exposures
+(read-noise makes the shortest exposures slightly shallower than predicted). A
+survey whose DC2-equivalent calibration sits on the native (non-anchored) scale
+instead — like LSST DC2 — would tie Option B to that native reference in the same
+way; the recipe itself doesn’t care which policy set <code class="docutils literal notranslate"><span class="pre">REF_DEPTH</span></code>, only that it’s
+applied consistently across tiers.</p>
 </section>
 </section>
 <section id="validation-audits">
@@ -683,11 +736,17 @@ exposures (read-noise makes the shortest exposures slightly shallower than predi
 <h3>Already validated (this PR)<a class="headerlink" href="#already-validated-this-pr" title="Link to this heading">#</a></h3>
 <ul>
 <li><p><strong>Truth-based photo-error validation.</strong> The reported errors are checked against the
-scatter of (obs − true) for true stars per band; the constant ≈2 discrepancy in the
-Roman DC2 mock is <em>why</em> the error model and depth maps are truth-anchored rather
-than taken at face value. Figure: <code class="docutils literal notranslate"><span class="pre">error_validation.png</span></code> on :doc:<code class="docutils literal notranslate"><span class="pre">roman_dc2</span></code>.</p></li>
+scatter of (obs − true) for true stars per band. The <strong>sample</strong> photo-error curve is
+<em>always</em> built from this truth-based scatter, for both surveys. Whether the
+<strong>depth map</strong> is also truth-anchored is the per-survey choice above: the constant
+≈2 discrepancy in the Roman DC2 mock is large enough to overshoot Roman’s external
+reference depth on the native scale, which is <em>why</em> its depth map is truth-anchored;
+the ≈1.4× LSST DC2 discrepancy is small enough that its native-scale map reproduces
+an external calibration (Tsiane et al. 2025) to 0.1%, so its map is <em>not</em> anchored.
+Figure: <code class="docutils literal notranslate"><span class="pre">error_validation.png</span></code> on <a class="reference internal" href="roman_dc2.html"><span class="doc">Roman DC2 Survey Files</span></a>.</p></li>
 <li><p><strong>Depth-map validation notebook</strong> (<code class="docutils literal notranslate"><span class="pre">notebooks/roman_depth_validation.ipynb</span></code>,
-figures under <code class="docutils literal notranslate"><span class="pre">_static/roman_depth_validation/</span></code>). It confirms:</p>
+figures under <code class="docutils literal notranslate"><span class="pre">_static/roman_depth_validation/</span></code>; Roman-specific — Roman DC2 remains
+truth-anchored, LSST DC2 does not, see above). It confirms:</p>
 <ul class="simple">
 <li><p><strong>DC2 band ordering</strong> matches the expected physics: F129 ≈ F158 (26.375),
 F106 = 26.279 &lt; F158, F184 = 25.347 &lt; F106. ✓</p></li>
@@ -709,6 +768,25 @@ require.</em></p>
 <p><em>DC2 per-band truth-anchored depth histograms (nside=1024); the tight spreads and
 the band ordering F184 &lt; F106 &lt; F129 ≈ F158 match the expected physics.</em></p>
 </li>
+<li><p><strong>LSST DC2 native-scale depth validation (headline result, 2026-09).</strong> With
+truth-anchoring removed, the LSST DC2 r-band map median moved from 26.517
+(previously truth-anchored) to <strong>26.846</strong> (native reported-error S/N=5; g-band
+26.972). On the detected population the curves are applied to (see <em>Why the curves
+are measured on the detected population</em> above), the rebuilt <strong>CATALOG</strong> curve reads
+σ = 0.1800 at <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">0</span></code> and the <strong>SAMPLE</strong> curve 0.1625. Note the curve value
+at <code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">=</span> <span class="pre">0</span></code> is <em>not</em> 0.217 and is not expected to be: “the pipeline calls 0.2
+here” is a statement about the <strong>map</strong>, while the curve reports the median error of
+the S/N&gt;5-selected sources that survive there, from which the noisy tail is genuinely
+absent. Compared against the independent external
+calibration of <a class="reference external" href="https://arxiv.org/abs/2504.16203">Tsiane et al. (2025)</a>, the
+rebuilt native-scale CATALOG curve matches to <strong>0.1%</strong> (median ratio 1.0011 over
+<code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">∈</span> <span class="pre">[-5,</span> <span class="pre">-0.25]</span></code>) with <strong>no</strong> shift applied — versus a ratio of 1.335
+under the old truth-anchored convention. This is the evidence that grounds
+keeping LSST DC2 on the native pipeline scale (contrast with Roman DC2, which
+remains truth-anchored — see <em>Depth maps</em> above). Efficiency vs. <em>true</em> magnitude
+is unaffected (identical detection+classification efficiency at r =
+24/25/25.5/26/26.5: 0.7177/0.5667/0.5032/0.4428/0.3381) — only the <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code>
+zero point moved.</p></li>
 <li><p><strong>Test suite.</strong> <code class="docutils literal notranslate"><span class="pre">tests/test_roman.py</span></code> (26 tests) covers loading each Roman release,
 <code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code> column namespacing on inject, Vega→AB offsets, the two-curve
 photo-error model, completeness behaviour (bright ≳ plateau, zero below
@@ -760,10 +838,40 @@ consistent once both are re-derived by this methodology. <em>Status: recommended
 <li><p><strong>Convention closure (non-circular).</strong> The depth-validation notebook’s
 “convention check” currently re-derives the expected value from the same formula
 used to build the map (circular). A real check would compare the truth-anchored
-DC2 F158 median against an <em>independent</em> depth estimate (e.g. the count-turnover
-magnitude of the matched catalog) and confirm agreement. <em>Status: recommended.</em></p></li>
+DC2 F158 median (Roman DC2 remains truth-anchored — see <em>Depth maps</em> above)
+against an <em>independent</em> depth estimate (e.g. the count-turnover magnitude of the
+matched catalog) and confirm agreement. <em>Status: recommended.</em> (The equivalent
+check for LSST DC2’s native-scale map is already done — see the Tsiane et al. 2025
+comparison above, an independent external calibration, not a self-derived one.)</p></li>
 </ol>
 </section>
+</section>
+<section id="when-the-classifier-cannot-be-evaluated-on-the-simulation">
+<h2>When the classifier cannot be evaluated on the simulation<a class="headerlink" href="#when-the-classifier-cannot-be-evaluated-on-the-simulation" title="Link to this heading">#</a></h2>
+<p>The recipe above assumes the survey’s star classifier can be recomputed on the
+simulated sources. That assumption fails for the DECam surveys: DES Y6 Gold’s
+<code class="docutils literal notranslate"><span class="pre">EXT_XGB</span></code> needs three features that are never measured for injected sources, so
+it cannot be run on Balrog at all — and the classifier is precisely what
+<code class="docutils literal notranslate"><span class="pre">classification_eff</span></code> is supposed to describe.</p>
+<p>The general remedy, when the <em>real</em> catalogue carries the classifier output and
+the <em>simulation</em> carries the truth label, is to bridge them through the features
+they share:</p>
+<ol class="arabic simple">
+<li><p>Train a <strong>surrogate</strong> for the classifier on the real catalogue, restricted to
+features constructible identically in both places.</p></li>
+<li><p>Measure the surrogate’s per-magnitude confusion against the real classifier,
+<code class="docutils literal notranslate"><span class="pre">a(m)</span> <span class="pre">=</span> <span class="pre">P(S=1</span> <span class="pre">|</span> <span class="pre">selected)</span></code> and <code class="docutils literal notranslate"><span class="pre">b(m)</span> <span class="pre">=</span> <span class="pre">P(S=1</span> <span class="pre">|</span> <span class="pre">not</span> <span class="pre">selected)</span></code>, and
+<strong>deconvolve</strong> the simulation-measured efficiency,
+<code class="docutils literal notranslate"><span class="pre">eff</span> <span class="pre">=</span> <span class="pre">(eff_S</span> <span class="pre">-</span> <span class="pre">b)</span> <span class="pre">/</span> <span class="pre">(a</span> <span class="pre">-</span> <span class="pre">b)</span></code>, so the shipped curve describes the real
+classifier rather than the surrogate.</p></li>
+</ol>
+<p>Two things decide whether this is trustworthy, and both are cheap to measure
+before committing to it: how much of the missing feature is reconstructible from
+the available ones, and whether the feature distributions actually agree across
+the two catalogues (a feature that is systematically offset between train and
+apply domains must be dropped, however informative it looks).</p>
+<p>See <a class="reference internal" href="balrog_selection_functions.html"><span class="doc">Selection functions from Balrog (DECam surveys)</span></a> for the worked DES/DELVE case, including
+the numbers.</p>
 </section>
 <section id="re-deriving-for-another-survey">
 <h2>Re-deriving for another survey<a class="headerlink" href="#re-deriving-for-another-survey" title="Link to this heading">#</a></h2>
@@ -773,10 +881,17 @@ magnitude of the matched catalog) and confirm agreement. <em>Status: recommended
 recipe, that survey’s bands).</p></li>
 <li><p>Re-fit the size envelope (<code class="docutils literal notranslate"><span class="pre">roman_star_classifier.build_env_classifier</span></code>) on the new
 catalog — same purity target and freeze logic.</p></li>
-<li><p>Re-measure the two photo-error curves and the truth-based depth anchor; clean the
-curves via the YAML afterburner.</p></li>
-<li><p>Emit the <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code>-keyed completeness / photo-error CSVs and the truth-anchored
-maglim maps in the shared convention (use the <code class="docutils literal notranslate"><span class="pre">classification_eff</span></code> column header).</p></li>
+<li><p>Re-measure the two photo-error curves (the <strong>sample</strong> curve is always built from
+the truth-based scatter). For the depth map, compare the native (reported-error)
+S/N=5 median against an independent external reference depth for that survey:
+keep the <strong>native</strong> scale if they agree, as for LSST DC2 (reported errors only
+mildly optimistic); <strong>truth-anchor</strong> to the truth-based S/N=5 magnitude if the
+native scale would overshoot the external reference by a large margin, as for
+Roman DC2 (reported errors ≈2× optimistic). Clean the curves via the YAML
+afterburner.</p></li>
+<li><p>Emit the <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code>-keyed completeness / photo-error CSVs and the maglim maps —
+truth-anchored or left on the native scale, per the choice made in step 3 — in the
+shared convention (use the <code class="docutils literal notranslate"><span class="pre">classification_eff</span></code> column header).</p></li>
 <li><p>Register the release in <code class="docutils literal notranslate"><span class="pre">config/surveys/</span></code> and <code class="docutils literal notranslate"><span class="pre">SURVEY_REGISTRY</span></code>, and add a thin
 per-release data page that references this methodology page for the “how”.</p></li>
 </ol>
@@ -795,20 +910,20 @@ per-release data page that references this methodology page for the “how”.</
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="data.html"
+       href="new_survey.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">StreamObs Data Files</p>
+        <p class="prev-next-title">Adding a New Photometric Survey</p>
       </div>
     </a>
     <a class="right-next"
-       href="roman_dc2.html"
+       href="balrog_selection_functions.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Roman DC2 Survey Files</p>
+        <p class="prev-next-title">Selection functions from Balrog (DECam surveys)</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -819,16 +934,14 @@ per-release data page that references this methodology page for the “how”.</
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-  <div class="sidebar-secondary-item"><div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
   </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+  <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-streamobs-needs">What streamobs needs</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-matched-detectiontruth-catalog">The matched detection→truth catalog</a><ul class="nav section-nav flex-column">
@@ -854,6 +967,7 @@ per-release data page that references this methodology page for the “how”.</
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recommended-quantitative-audits-future">Recommended quantitative audits (future)</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#when-the-classifier-cannot-be-evaluated-on-the-simulation">When the classifier cannot be evaluated on the simulation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#re-deriving-for-another-survey">Re-deriving for another survey</a></li>
 </ul>
   </nav></div>
@@ -903,8 +1017,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

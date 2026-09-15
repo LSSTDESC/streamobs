@@ -16,43 +16,39 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'roman_hlwas';</script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Content" href="modules.html" />
+    <link rel="next" title="Product verification — des/yr6 and delve/dr3_gold" href="product_verification.html" />
     <link rel="prev" title="Roman DC2 Survey Files" href="roman_dc2.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -68,8 +64,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -77,6 +84,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -84,8 +92,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -101,8 +109,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -132,11 +139,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -160,7 +171,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="surveys/DELVE.html">DELVE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
 </ul>
@@ -170,20 +181,10 @@
 <li class="toctree-l1"><a class="reference internal" href="background_light.html">Light method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="background_injection.html">Injection method</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
-<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
-</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Roman HLWAS Survey Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
@@ -198,6 +199,21 @@
 </ul>
 </details></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
+</ul>
 
     </div>
 </nav></div>
@@ -205,14 +221,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -295,7 +306,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -309,17 +320,25 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
 </div></div>
@@ -368,10 +387,10 @@
 <h1>Roman HLWAS Survey Files<a class="headerlink" href="#roman-hlwas-survey-files" title="Link to this heading">#</a></h1>
 <p>This page is the <strong>data sheet</strong> for the three real-footprint Roman High Latitude Wide
 Area Survey (HLWAS) releases: <code class="docutils literal notranslate"><span class="pre">hlwas_wide</span></code>, <code class="docutils literal notranslate"><span class="pre">hlwas_medium</span></code>, and <code class="docutils literal notranslate"><span class="pre">hlwas_all</span></code>. All three
-reuse the DC2-derived selection-function tables (:doc:<code class="docutils literal notranslate"><span class="pre">roman_dc2</span></code>); the only
+reuse the DC2-derived selection-function tables (<a class="reference internal" href="roman_dc2.html"><span class="doc">Roman DC2 Survey Files</span></a>); the only
 tier-specific product is the F158 magnitude-limit map, built from the official HLWAS
 exposure-time maps via the exposure-scaled quasi-depth recipe (<strong>Option B</strong>)
-documented in :doc:<code class="docutils literal notranslate"><span class="pre">selection_function_methodology</span></code>. Validation figures are embedded
+documented in <a class="reference internal" href="selection_function_methodology.html"><span class="doc">Selection-Function Derivation Methodology</span></a>. Validation figures are embedded
 in that methodology page’s <em>Validation &amp; audits</em> section.</p>
 <section id="survey-tiers">
 <h2>Survey tiers<a class="headerlink" href="#survey-tiers" title="Link to this heading">#</a></h2>
@@ -381,7 +400,7 @@ in that methodology page’s <em>Validation &amp; audits</em> section.</p>
 <tr class="row-odd"><th class="head"><p>Release</p></th>
 <th class="head"><p>Footprint</p></th>
 <th class="head"><p>F158 measured map median</p></th>
-<th class="head"><p>Valid pixels (nside=1024)</p></th>
+<th class="head"><p>Valid pixels (nside=128)</p></th>
 <th class="head"><p>Area</p></th>
 </tr>
 </thead>
@@ -427,13 +446,13 @@ single-exposure units.</p>
 <section id="quasi-depth-maps-option-b">
 <h2>Quasi-depth maps (Option B)<a class="headerlink" href="#quasi-depth-maps-option-b" title="Link to this heading">#</a></h2>
 <p>The maglim maps apply the exposure-scaled quasi-depth recipe (derivation and
-rationale in :doc:<code class="docutils literal notranslate"><span class="pre">selection_function_methodology</span></code>):</p>
+rationale in <a class="reference internal" href="selection_function_methodology.html"><span class="doc">Selection-Function Derivation Methodology</span></a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">depth</span><span class="p">(</span><span class="n">pix</span><span class="p">)</span> <span class="o">=</span> <span class="n">DC2_REF_DEPTH</span> <span class="o">+</span> <span class="mf">1.25</span> <span class="o">*</span> <span class="n">log10</span><span class="p">(</span> <span class="n">t</span><span class="p">(</span><span class="n">pix</span><span class="p">)</span> <span class="o">/</span> <span class="n">DC2_REF_EXPTIME</span> <span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">DC2_REF_DEPTH</span></code> ≈ 26.375 AB — median of the DC2 F158 truth-anchored maglim map
-(<code class="docutils literal notranslate"><span class="pre">roman_dc2_maglim_f158_nside1024.fits.gz</span></code>), read from the file at runtime (not
+(<code class="docutils literal notranslate"><span class="pre">roman_dc2_maglim_f158_nside128.fits.gz</span></code>), read from the file at runtime (not
 hardcoded).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">DC2_REF_EXPTIME</span></code> = 770.0 s — the DC2 HLIS reference per-pixel exposure time
 (5.5 dithers × 140 s; Troxel et al. 2023, Sec. 3.1).</p></li>
@@ -477,7 +496,9 @@ because the typical HLWAS exposure (~645 s) is shorter than the DC2 reference (7
 </tbody>
 </table>
 </div>
-<p>Maps are written at nside=1024 (RING, float32) to match the DC2 maps, by
+<p>Maps are built at nside=1024 (RING, float32) to match the DC2 maps, then
+degraded to the nside 128 every release ships at by
+<code class="docutils literal notranslate"><span class="pre">scripts/degrade_maglim_maps.py</span></code>, by
 <code class="docutils literal notranslate"><span class="pre">scripts/roman/build_hlwas_maglim_maps.py</span></code>, to <code class="docutils literal notranslate"><span class="pre">data/surveys/roman_hlwas_&lt;tier&gt;/</span></code>
 (gitignored). For reference, the
 <a class="reference external" href="https://roman-docs.stsci.edu/roman-community-defined-surveys/high-latitude-wide-area-survey">STScI community-defined HLWAS median 5σ point-source depths</a>
@@ -509,7 +530,7 @@ directory so the loader finds them at the default path:</p>
 </tbody>
 </table>
 </div>
-<p>See :doc:<code class="docutils literal notranslate"><span class="pre">roman_dc2</span></code> for these products and :doc:<code class="docutils literal notranslate"><span class="pre">selection_function_methodology</span></code> for
+<p>See <a class="reference internal" href="roman_dc2.html"><span class="doc">Roman DC2 Survey Files</span></a> for these products and <a class="reference internal" href="selection_function_methodology.html"><span class="doc">Selection-Function Derivation Methodology</span></a> for
 how they are derived.</p>
 </section>
 <section id="configuration">
@@ -518,32 +539,7 @@ how they are derived.</p>
 <code class="docutils literal notranslate"><span class="pre">roman_hlwas_medium.yaml</span></code>, <code class="docutils literal notranslate"><span class="pre">roman_hlwas_all.yaml</span></code> (releases <code class="docutils literal notranslate"><span class="pre">hlwas_wide</span></code>,
 <code class="docutils literal notranslate"><span class="pre">hlwas_medium</span></code>, <code class="docutils literal notranslate"><span class="pre">hlwas_all</span></code>). All use F158 only (F106/F129 HLWAS maps are not yet
 built; F184 is excluded per the DC2 documentation). Extinction coefficients and the
-saturation threshold are copied from <code class="docutils literal notranslate"><span class="pre">roman_dc2.yaml</span></code> (same instrument). The
-<code class="docutils literal notranslate"><span class="pre">delta_saturation</span></code> (= saturation − map median) is keyed to each tier’s measured
-median:</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p>Release</p></th>
-<th class="head"><p>map_median (AB)</p></th>
-<th class="head"><p>delta_saturation</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hlwas_wide</span></code></p></td>
-<td><p>26.2842</p></td>
-<td><p>−9.2842</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hlwas_medium</span></code></p></td>
-<td><p>26.2894</p></td>
-<td><p>−9.2894</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">hlwas_all</span></code></p></td>
-<td><p>26.2894</p></td>
-<td><p>−9.2894</p></td>
-</tr>
-</tbody>
-</table>
-</div>
+saturation threshold are copied from <code class="docutils literal notranslate"><span class="pre">roman_dc2.yaml</span></code> (same instrument).</p>
 <p>The column namespace per release is <code class="docutils literal notranslate"><span class="pre">{name}_{release}</span></code>: <code class="docutils literal notranslate"><span class="pre">roman_hlwas_wide</span></code>,
 <code class="docutils literal notranslate"><span class="pre">roman_hlwas_medium</span></code>, <code class="docutils literal notranslate"><span class="pre">roman_hlwas_all</span></code>.</p>
 </section>
@@ -565,7 +561,7 @@ python<span class="w"> </span>scripts/roman/build_hlwas_maglim_maps.py
 </pre></div>
 </div>
 <p>This reads the healsparse exposure-time maps, reads <code class="docutils literal notranslate"><span class="pre">DC2_REF_DEPTH</span></code> from the DC2 F158
-maglim map at runtime, applies the Option B recipe, writes the three nside=1024 maglim
+maglim map at runtime, applies the Option B recipe, writes the three maglim
 maps, and symlinks the DC2 CSV files into each tier’s data directory.</p>
 </section>
 <section id="caveats">
@@ -606,11 +602,11 @@ that will supersede this quasi-depth approach.</p></li>
       </div>
     </a>
     <a class="right-next"
-       href="modules.html"
+       href="product_verification.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Content</p>
+        <p class="prev-next-title">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -621,16 +617,14 @@ that will supersede this quasi-depth approach.</p></li>
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-  <div class="sidebar-secondary-item"><div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
   </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+  <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#survey-tiers">Survey tiers</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exposure-time-maps">Exposure-time maps</a></li>
@@ -691,8 +685,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>

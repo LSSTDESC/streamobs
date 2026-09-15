@@ -16,45 +16,41 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
   
-  <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'surveys/LSST';</script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Roman" href="Roman.html" />
-    <link rel="prev" title="DES" href="DES.html" />
+    <link rel="prev" title="DELVE" href="DELVE.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -70,8 +66,19 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <dialog id="pst-search-dialog">
-    
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="../search.html"
       method="get">
@@ -79,6 +86,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search..."
          aria-label="Search..."
          autocomplete="off"
@@ -86,8 +94,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
+</form></div>
+  </div>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -103,8 +111,7 @@
       
       
       
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -134,11 +141,15 @@
 </a></div>
         <div class="sidebar-primary-item">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button></div>
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
@@ -162,7 +173,7 @@
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="DES.html">DES</a></li>
-
+<li class="toctree-l1"><a class="reference internal" href="DELVE.html">DELVE</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">LSST</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Roman.html">Roman</a></li>
 </ul>
@@ -172,20 +183,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../background_light.html">Light method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../background_injection.html">Injection method</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
-<ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../modifying_streamobs.html">Contributing to StreamObs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../new_survey.html">Adding a New Photometric Survey</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../update_data.html">Update StreamObs data base</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../build_background_resources.html">Building background resources</a></li>
-</ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../column_convention.html">Output column convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../data.html">StreamObs Data Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../roman_dc2.html">Roman DC2 Survey Files</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l3"><a class="reference internal" href="../streamobs.functions.html">streamobs.functions module</a></li>
@@ -200,6 +201,21 @@
 </ul>
 </details></li>
 </ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../build_background_resources.html">Building background resources</a></li>
+</ul>
 
     </div>
 </nav></div>
@@ -207,14 +223,9 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
@@ -297,7 +308,7 @@
 
 
 <button onclick="toggleFullScreen()"
-  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
   data-bs-placement="bottom" data-bs-toggle="tooltip"
 >
@@ -311,17 +322,25 @@
 
 
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
 
 
-<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-</button>
-<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
 </div></div>
@@ -345,14 +364,19 @@
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-releases">Available releases</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lsst-dc2-survey-files">LSST DC2 Survey Files</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-simulated-survey">The simulated survey</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stellar-completeness-and-classification">Stellar completeness and classification</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#photometric-errors">Photometric errors</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#survey-depth">Survey depth</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extinction-coefficients">Extinction coefficients</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-survey-in-streamobs">Using the survey in streamobs</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#caveats">Caveats</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#products">Products</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#depth-and-bands">Depth and bands</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#photometric-errors">Photometric errors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extinction-coefficients">Extinction coefficients</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-it-in-streamobs">Using it in streamobs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#caveats">Caveats</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creation">Creation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-the-survey-was-simulated">How the survey was simulated</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#depth-map-derivation">Depth-map derivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#star-galaxy-classification">Star/galaxy classification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#photometric-error-derivation">Photometric-error derivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validation">Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#derivation-level-limitations">Derivation-level limitations</a></li>
 </ul>
 </li>
 </ul>
@@ -368,64 +392,209 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="lsst">
 <h1>LSST<a class="headerlink" href="#lsst" title="Link to this heading">#</a></h1>
-<p><strong>LSST</strong> is supported by <strong>StreamObs</strong>.</p>
+<p><strong>LSST</strong> is supported by <strong>StreamObs</strong>. Current estimates of LSST performance
+are calibrated on DC2 simulations (expected performance for LSST year 5), and
+extrapolated to years 1 through 5. More information about the underlying LSST
+simulations can be found in Pélissier et al. (2026).</p>
 <section id="available-releases">
 <h2>Available releases<a class="headerlink" href="#available-releases" title="Link to this heading">#</a></h2>
-<p>Current estimation of LSST performances are done using DC2 simulations (expected
-performances for LSST year 5), and extrapolated for year 1 to 5.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>release</p></th>
+<th class="head"><p>bands</p></th>
+<th class="head"><p>footprint</p></th>
+<th class="head"><p>reference band</p></th>
+<th class="head"><p>median reference-band depth</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lsst/dc2</span></code></p></td>
+<td><p>g, r</p></td>
+<td><p>~327 deg² (DESC DC2 Run 2.2i region)</p></td>
+<td><p>r</p></td>
+<td><p>26.839</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lsst/yr1</span></code> … <code class="docutils literal notranslate"><span class="pre">yr5</span></code></p></td>
+<td><p>g, r</p></td>
+<td><p>~27,800–39,900 deg² depending on year and band (see <em>Depth and bands</em>)</p></td>
+<td><p>r</p></td>
+<td><p>25.544 (yr1) – 26.408 (yr4); 26.308 (yr5)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lsst/dp2</span></code></p></td>
+<td><p>g, r</p></td>
+<td><p>g 3,550 deg², r 3,946 deg² (84.1% overlap)</p></td>
+<td><p>r</p></td>
+<td><p>24.514</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
-<section id="lsst-dc2-survey-files">
-<h2>LSST DC2 Survey Files<a class="headerlink" href="#lsst-dc2-survey-files" title="Link to this heading">#</a></h2>
-<p>More information about the LSST simulations can be found in Pélissier et. all (2026).</p>
-<section id="the-simulated-survey">
-<h3>The simulated survey<a class="headerlink" href="#the-simulated-survey" title="Link to this heading">#</a></h3>
-<p>All quantities are measured from the LSST Dark Energy Science Collaboration Data Challenge 2 (DC2) simulations, a realistic realization of the expected Rubin LSST survey performance based on five years of observations. DC2 contains both truth and measured catalogs, enabling direct characterization of survey selection effects and photometric performance.</p>
-<p>The truth catalog contains intrinsic object properties including noiseless magnitudes, positions, and morphological parameters. Galaxies are drawn from the cosmoDC2 catalog while stars are generated from the Galfast Milky Way model. Measured catalogs are produced by passing these objects through the full LSST image simulation and data reduction pipeline, including realistic observing conditions, instrumental effects, object detection, and photometric measurements. Objects in the measured catalog are matched to their truth counterparts through positional associations, allowing direct estimation of photometric uncertainties, detection efficiencies, and classification performance.</p>
+<section id="products">
+<h2>Products<a class="headerlink" href="#products" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>File(s)</p></th>
+<th class="head"><p>Contents</p></th>
+<th class="head"><p>Drives</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lsst_dc2_maglim_{g,r}_nside128.fits.gz</span></code> (<code class="docutils literal notranslate"><span class="pre">dc2</span></code>); <code class="docutils literal notranslate"><span class="pre">baseline_v5.0.0_year_{N}.0_band_{g,r}_nside_128.hsp</span></code> (<code class="docutils literal notranslate"><span class="pre">yr1</span></code>…<code class="docutils literal notranslate"><span class="pre">yr5</span></code>); <code class="docutils literal notranslate"><span class="pre">dp2_deepCoadd_psf_maglim_consolidated_map_weighted_mean_{g,r}_nside_128.hsp</span></code> (<code class="docutils literal notranslate"><span class="pre">dp2</span></code>)</p></td>
+<td><p>HEALPix 5σ point-source depth map, one file per band</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Survey.get_maglim(band,</span> <span class="pre">pixel)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lsst_dc2_stellar_efficiency_cutr.csv</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mag_r,</span> <span class="pre">delta_mag,</span> <span class="pre">detection_eff,</span> <span class="pre">classification_eff,</span> <span class="pre">classification_detection_eff</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Survey.get_completeness(band,</span> <span class="pre">mag,</span> <span class="pre">maglim)</span></code> — detection + star-classification probability</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lsst_dc2_photoerror_r.csv</span></code> (<strong>sample</strong>) / <code class="docutils literal notranslate"><span class="pre">lsst_dc2_photoerror_r_catalog.csv</span></code> (<strong>catalog</strong>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">delta_mag,</span> <span class="pre">log_mag_err</span></code></p></td>
+<td><p>reference-band (r) magnitude noise draw / reported-error S/N cut</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lsst_dc2_photoerror_r_nocut.csv</span></code> / <code class="docutils literal notranslate"><span class="pre">lsst_dc2_photoerror_r_catalog_nocut.csv</span></code></p></td>
+<td><p>same columns, no S/N selection applied</p></td>
+<td><p>every other configured band (forced photometry)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lsst_dc2_galaxy_misclass_cutr.csv</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">delta_mag,</span> <span class="pre">misclass_rate</span></code></p></td>
+<td><p>compact-galaxy contamination rate (informational; not yet consumed by the injector)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ebv_sfd98_lowres_nside_512_ring_equatorial.fits</span></code></p></td>
+<td><p>E(B−V) HEALPix map, shared across releases</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Survey.get_extinction(band,</span> <span class="pre">pixel)</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>All three release families (<code class="docutils literal notranslate"><span class="pre">dc2</span></code>, <code class="docutils literal notranslate"><span class="pre">yr1</span></code>…<code class="docutils literal notranslate"><span class="pre">yr5</span></code>, <code class="docutils literal notranslate"><span class="pre">dp2</span></code>) share the same
+completeness, photo-error, and galaxy-misclassification tables above — only
+the depth map differs. See <em>Creation</em> for how that sharing is
+implemented.</p>
 </section>
-<section id="stellar-completeness-and-classification">
-<h3>Stellar completeness and classification<a class="headerlink" href="#stellar-completeness-and-classification" title="Link to this heading">#</a></h3>
-<p>The stellar selection function is estimated from matched truth and measured
-catalogs using the distance to the local magnitude limit, while the
-classification efficiency measures the fraction of detected stars classified as
-point sources using the LSST <code class="docutils literal notranslate"><span class="pre">EXTENDEDNESS</span></code> classifier.</p>
-<p>The combined efficiency is the product of the detection and classification
-efficiencies and is used by <code class="docutils literal notranslate"><span class="pre">StreamObs</span></code> to probabilistically determine whether
-injected stars are observed.</p>
-<p>Compact galaxies can be incorrectly classified as stars, producing an important contaminant population for stellar-stream analyses.</p>
-<p>The galaxy contamination model is derived from true galaxies with</p>
-<div class="math notranslate nohighlight">
-\[
-{\rm size\_true} &lt; 0.3\ {\rm arcsec},
-\]</div>
-<p>for which morphological star-galaxy separation becomes challenging near the survey magnitude limit.</p>
-<p><img alt="Detection, classification and galaxy misclassification efficiencies" src="../_images/LSST_efficiencies.png" /></p>
-<p><em>Detection efficiency, stellar classification efficiency, combined stellar efficiency, and galaxy contamination efficiency as a function of distance to the local magnitude limit.</em></p>
+<section id="depth-and-bands">
+<h2>Depth and bands<a class="headerlink" href="#depth-and-bands" title="Link to this heading">#</a></h2>
+<p><strong><code class="docutils literal notranslate"><span class="pre">lsst/dc2</span></code></strong> — <code class="docutils literal notranslate"><span class="pre">lsst_dc2_maglim_{g,r}_nside128.fits.gz</span></code>, HEALPix at
+<strong>nside 128</strong>, median depth r = 26.839, g = 26.963 over ~327 deg² (the DESC
+DC2 Run 2.2i footprint).</p>
+<blockquote>
+<div><p><strong>As of 2026-09 this map is <em>not</em> truth-anchored.</strong> It ships on its native
+reported-error S/N = 5 scale (previously it was truth-anchored, with an
+r-band median of 26.517). See <em>Validation</em> below for why this
+changed.</p>
+</div></blockquote>
+<p><strong><code class="docutils literal notranslate"><span class="pre">lsst/yr1</span></code> … <code class="docutils literal notranslate"><span class="pre">yr5</span></code></strong> — <code class="docutils literal notranslate"><span class="pre">baseline_v5.0.0_year_{N}.0_band_{g,r}_nside_128.hsp</span></code>,
+HealSparse at <strong>nside 128</strong>, RubinSim baseline v5.0.0 per year:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>year</p></th>
+<th class="head"><p>g median</p></th>
+<th class="head"><p>g footprint</p></th>
+<th class="head"><p>r median</p></th>
+<th class="head"><p>r footprint</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>25.485</p></td>
+<td><p>27,822 deg²</p></td>
+<td><p>25.544</p></td>
+<td><p>27,884 deg²</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>25.857</p></td>
+<td><p>31,317 deg²</p></td>
+<td><p>26.016</p></td>
+<td><p>27,943 deg²</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>26.166</p></td>
+<td><p>27,931 deg²</p></td>
+<td><p>26.268</p></td>
+<td><p>28,016 deg²</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>26.312</p></td>
+<td><p>27,977 deg²</p></td>
+<td><p>26.408</p></td>
+<td><p>28,044 deg²</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>26.427</p></td>
+<td><p>27,999 deg²</p></td>
+<td><p>26.308</p></td>
+<td><p>39,875 deg²</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Footprint and median depth do not grow strictly monotonically per band per
+year (notably g in year 2 and r in year 5) — this reflects RubinSim’s own
+per-year scheduler allocation across the WFD and mini-surveys, not a data
+error. Per-year depth maps are also plotted individually:
+<code class="docutils literal notranslate"><span class="pre">../_static/lsst_yr{1,2,3,4,5}/lsst_yr{N}_depth.png</span></code>.</p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">lsst/dp2</span></code></strong> — <code class="docutils literal notranslate"><span class="pre">dp2_deepCoadd_psf_maglim_consolidated_map_weighted_mean_{g,r}_nside_128.hsp</span></code>,
+HealSparse at <strong>nside 128</strong>. This is degraded (mean reduction) from a native
+nside-512 source map whose own medians are g = 24.925 over 3,388 deg², r =
+24.544 over 3,759 deg². Degrading to the shipped nside-128 map moves the
+medians down 0.02–0.03 mag and grows the footprint ~5% (coarse pixels that
+were only partially covered become fully valid, and averaging pulls in
+shallower edge pixels — both are expected): the shipped map’s median depth is
+g = 24.903 over 3,550 deg², r = 24.514 over 3,946 deg², overlapping on 84.1%
+of the larger. streamobs handles this per band through the individual maglim
+maps, so the usable two-band area is the intersection rather than either
+number above.</p>
+<p><img alt="DP2 depth maps" src="../_images/lsst_dp2_depth.png" /></p>
+<blockquote>
+<div><p><strong>Not truth-anchored.</strong> There is no injection catalogue for DP2, so there is
+nothing to anchor against, and the maps ship on their own native 5σ scale —
+the same footing as <code class="docutils literal notranslate"><span class="pre">lsst/dc2</span></code> above, and unlike <a class="reference internal" href="DES.html"><span class="doc">DES</span></a> and <a class="reference internal" href="DELVE.html"><span class="doc">DELVE</span></a>,
+whose absolute scales are set from their injections. The absolute depth
+scale is therefore inherited from whoever produced the maps rather than
+measured here.</p>
+</div></blockquote>
+<p><img alt="LSST depth maps after 1 year of observation" src="../_images/lsst_dc2_depth.png" /></p>
+<p><em>LSST 5σ limiting magnitude maps in the g and r bands for Year 1 and Year 4
+survey configurations.</em></p>
+<p><strong>Band coverage.</strong> All releases are configured with <code class="docutils literal notranslate"><span class="pre">bands:</span> <span class="pre">[u,</span> <span class="pre">g,</span> <span class="pre">r,</span> <span class="pre">i,</span> <span class="pre">z,</span> <span class="pre">y]</span></code>
+(used for extinction, see <em>Extinction coefficients</em>),
+but only <strong>g and r</strong> ship maglim maps and selection-function curves. <code class="docutils literal notranslate"><span class="pre">get_maglim</span></code>,
+<code class="docutils literal notranslate"><span class="pre">get_completeness</span></code>, and <code class="docutils literal notranslate"><span class="pre">get_photo_error</span></code> are only usable for g and r unless
+additional per-band depth maps are supplied.</p>
 </section>
 <section id="photometric-errors">
-<h3>Photometric errors<a class="headerlink" href="#photometric-errors" title="Link to this heading">#</a></h3>
-<p>Error model for LSST is taken from <a class="reference external" href="https://arxiv.org/abs/2504.16203">Tsiane et al.2025</a>.
-They are derived directly from matched DC2 truth catalogs and are parameterized as a function of distance to the local magnitude limit,</p>
-<div class="math notranslate nohighlight">
-\[
-\Delta m_j = m_j - m_{{\rm lim},j}.
-\]</div>
-<p>The photometric scatter increases rapidly near the magnitude limit and approaches a systematic floor of approximately 0.005 mag for bright sources.</p>
-<p><img alt="LSST photometric error model" src="../_images/LSST_errors.png" /></p>
-<p><em>Photometric uncertainty as a function of distance to the local magnitude limit.
-An analytic approximation not used in StreamObs is overlaid on the DC2-derived
-model.</em></p>
-</section>
-<section id="survey-depth">
-<h3>Survey depth<a class="headerlink" href="#survey-depth" title="Link to this heading">#</a></h3>
-<p>Depth maps describe the spatial variation of the LSST 5σ limiting magnitude across the survey footprint.</p>
-<p>Magnitude limits are obtained from <a class="reference external" href="https://rubin-sim.lsst.io/">RubinSim</a> and propagated to <code class="docutils literal notranslate"><span class="pre">StreamObs</span></code> as <code class="docutils literal notranslate"><span class="pre">HEALPix</span></code> maps. Survey systematics are modeled through spatial variations in these limiting magnitudes, which drive both photometric uncertainties and selection functions.</p>
-<p><img alt="LSST depth maps after 1 year of observation" src="../_images/depth_maps_yr1.png" />
-<img alt="LSST depth maps after 4 years of observation" src="../_images/depth_maps_yr4.png" /></p>
-<p><em>LSST 5σ limiting magnitude maps in the g and r bands for Year 1 and Year 4 survey configurations.</em></p>
+<h2>Photometric errors<a class="headerlink" href="#photometric-errors" title="Link to this heading">#</a></h2>
+<p>The reference band is <strong>r</strong> (<code class="docutils literal notranslate"><span class="pre">completeness_band:</span> <span class="pre">r</span></code>). <code class="docutils literal notranslate"><span class="pre">Survey.get_photo_error</span></code>
+carries two pairs of <code class="docutils literal notranslate"><span class="pre">delta_mag,</span> <span class="pre">log_mag_err</span></code> curves and picks between them
+automatically:</p>
+<ul class="simple">
+<li><p>For the <strong>reference band (r)</strong>: the <strong>sample</strong> curve
+(<code class="docutils literal notranslate"><span class="pre">lsst_dc2_photoerror_r.csv</span></code>, truth-based scatter of obs − true — drives the
+per-source noise draw) and the <strong>catalog</strong> curve
+(<code class="docutils literal notranslate"><span class="pre">lsst_dc2_photoerror_r_catalog.csv</span></code>, median reported <code class="docutils literal notranslate"><span class="pre">magerr</span></code> — drives the
+S/N cut). Both are measured on the S/N &gt; 5 <em>detected</em> population, because
+that is the population the reference-band curve is applied to.</p></li>
+<li><p>For <strong>every other band</strong> (u, g*, i, z, y — forced photometry from the r-band
+detection): the <code class="docutils literal notranslate"><span class="pre">_nocut</span></code> pair (<code class="docutils literal notranslate"><span class="pre">lsst_dc2_photoerror_r_nocut.csv</span></code>,
+<code class="docutils literal notranslate"><span class="pre">lsst_dc2_photoerror_r_catalog_nocut.csv</span></code>), measured with <strong>no</strong> S/N
+selection, because a non-reference band’s photometry is not conditioned on
+detection in that band. Using the detected-population curve there would
+understate the errors.</p></li>
+</ul>
+<p>Call <code class="docutils literal notranslate"><span class="pre">survey.get_photo_error(band,</span> <span class="pre">mag,</span> <span class="pre">maglim,</span> <span class="pre">kind=&quot;sample&quot;|&quot;catalog&quot;)</span></code>;
+StreamObs resolves the correct pair from <code class="docutils literal notranslate"><span class="pre">band</span></code> and <strong>raises <code class="docutils literal notranslate"><span class="pre">ValueError</span></code></strong>
+if the <code class="docutils literal notranslate"><span class="pre">_nocut</span></code> curve a non-reference band needs is not loaded, rather than
+silently falling back to the reference-band curve.</p>
+<p>* only g and r have shipped maglim maps at all (see
+<em>Depth and bands</em>), so g is the only “other band” currently
+usable end-to-end; the <code class="docutils literal notranslate"><span class="pre">_nocut</span></code> mechanism itself is generic to any additional
+band a maglim map is supplied for.</p>
+<p>See <em>Photometric-error derivation</em> for how
+these curves were built.</p>
 </section>
 <section id="extinction-coefficients">
-<h3>Extinction coefficients<a class="headerlink" href="#extinction-coefficients" title="Link to this heading">#</a></h3>
-<p>Dust extinction is modeled using the Schlegel et. all (1998) reddening maps.</p>
+<h2>Extinction coefficients<a class="headerlink" href="#extinction-coefficients" title="Link to this heading">#</a></h2>
+<p>Dust extinction is modeled using the Schlegel et al. (1998) reddening maps.</p>
 <p>The adopted extinction coefficients are</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
@@ -450,8 +619,8 @@ A_j = R_j E(B-V),
 \]</div>
 <p>and are applied consistently when generating observed magnitudes.</p>
 </section>
-<section id="using-the-survey-in-streamobs">
-<h3>Using the survey in streamobs<a class="headerlink" href="#using-the-survey-in-streamobs" title="Link to this heading">#</a></h3>
+<section id="using-it-in-streamobs">
+<h2>Using it in streamobs<a class="headerlink" href="#using-it-in-streamobs" title="Link to this heading">#</a></h2>
 <p>Configured by <code class="docutils literal notranslate"><span class="pre">config/surveys/lsst_{releases}.yaml</span></code>, data in <code class="docutils literal notranslate"><span class="pre">data/surveys/lsst_{releases}/</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.surveys</span><span class="w"> </span><span class="kn">import</span> <span class="n">SurveyFactory</span>
 
@@ -477,13 +646,134 @@ A_j = R_j E(B-V),
 </div>
 </section>
 <section id="caveats">
-<h3>Caveats<a class="headerlink" href="#caveats" title="Link to this heading">#</a></h3>
+<h2>Caveats<a class="headerlink" href="#caveats" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p>Selection functions are derived from a limited DC2 calibration region and extrapolated across the full footprint through the local magnitude limit parameterization.</p></li>
+<li><p>Selection functions are derived from a limited DC2 calibration region and
+extrapolated across the full footprint through the local magnitude-limit
+parameterization.</p></li>
 <li><p>Survey systematics are modeled primarily through depth variations; PSF
 variations are not explicitly included.</p></li>
-<li><p>DC2 simulations corresponds to 5 years of observation with LSST, thus releases
-up to 10 years of LSST cannot be extrapolated.</p></li>
+<li><p>DC2 simulations correspond to 5 years of observation with LSST, so releases
+beyond year 5 (up to the full 10-year survey) cannot be extrapolated.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lsst/yr1</span></code>…<code class="docutils literal notranslate"><span class="pre">yr5</span></code> and <code class="docutils literal notranslate"><span class="pre">lsst/dp2</span></code> reuse the <code class="docutils literal notranslate"><span class="pre">lsst/dc2</span></code> completeness,
+misclassification, and photo-error curves unchanged (only the depth map
+differs). This is a stronger assumption for <code class="docutils literal notranslate"><span class="pre">dp2</span></code>, which is real
+commissioning data, than for the year releases, which apply DC2 curves to
+another simulation (RubinSim): using DC2 curves for DP2 additionally assumes
+the simulated detection and star/galaxy performance describes the real
+pipeline. The curves are <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code>-keyed, so the depth difference is
+already accounted for; what is assumed is the <em>shape</em> of the efficiency and
+error curves at fixed <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code>. Treat DP2 completeness as indicative until
+it can be checked against real DP2 injections or an external truth
+catalogue.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_photo_error</span></code> returns <code class="docutils literal notranslate"><span class="pre">NaN</span></code> for magnitudes brighter than the configured
+saturation limit (16.0 mag) — the curves do not model the saturation
+regime.</p></li>
+</ul>
+</section>
+<section id="creation">
+<h2>Creation<a class="headerlink" href="#creation" title="Link to this heading">#</a></h2>
+<section id="how-the-survey-was-simulated">
+<h3>How the survey was simulated<a class="headerlink" href="#how-the-survey-was-simulated" title="Link to this heading">#</a></h3>
+<p>All quantities are measured from the LSST Dark Energy Science Collaboration
+Data Challenge 2 (DC2) simulations, a realistic realization of the expected
+Rubin LSST survey performance based on five years of observations. DC2
+contains both truth and measured catalogs, enabling direct characterization
+of survey selection effects and photometric performance.</p>
+<p>The truth catalog contains intrinsic object properties including noiseless
+magnitudes, positions, and morphological parameters. Galaxies are drawn from
+the cosmoDC2 catalog while stars are generated from the Galfast Milky Way
+model. Measured catalogs are produced by passing these objects through the
+full LSST image simulation and data reduction pipeline, including realistic
+observing conditions, instrumental effects, object detection, and photometric
+measurements. Objects in the measured catalog are matched to their truth
+counterparts through positional associations, allowing direct estimation of
+photometric uncertainties, detection efficiencies, and classification
+performance.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">lsst/yr1</span></code>…<code class="docutils literal notranslate"><span class="pre">yr5</span></code> releases pair this DC2-derived selection function with
+RubinSim baseline per-year depth maps; <code class="docutils literal notranslate"><span class="pre">lsst/dp2</span></code> pairs it with DP2’s own
+measured depth. Both are produced by
+<code class="docutils literal notranslate"><span class="pre">scripts/lsst/link_lsst_yr_products.py</span></code>, which symlinks the efficiency,
+misclassification, and both photo-error pairs (including the <code class="docutils literal notranslate"><span class="pre">_nocut</span></code> curves)
+from <code class="docutils literal notranslate"><span class="pre">data/surveys/lsst_dc2/</span></code> — only the depth map is release-specific.
+Derivation script for <code class="docutils literal notranslate"><span class="pre">lsst/dc2</span></code> itself:
+<code class="docutils literal notranslate"><span class="pre">scripts/lsst/create_streamobs_files_lsst_dc2.py</span></code>.</p>
+</section>
+<section id="depth-map-derivation">
+<h3>Depth-map derivation<a class="headerlink" href="#depth-map-derivation" title="Link to this heading">#</a></h3>
+<p>Depth maps describe the spatial variation of the LSST 5σ limiting magnitude
+across the survey footprint.</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">lsst/dc2</span></code>, magnitude limits are obtained from <a class="reference external" href="https://rubin-sim.lsst.io/">RubinSim</a>
+and propagated to StreamObs as HEALPix maps. Survey systematics are modeled
+through spatial variations in these limiting magnitudes, which drive both
+photometric uncertainties and selection functions. As of 2026-09 the DC2 map
+is built on its <strong>native reported-error S/N = 5 scale</strong> rather than
+truth-anchored (see <em>Validation</em>).</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">lsst/dp2</span></code>, the map is DP2’s own measured 5σ PSF magnitude limit from the
+consolidated survey-property maps (<code class="docutils literal notranslate"><span class="pre">deepCoadd</span></code>), HealSparse degraded from
+nside 512 to nside 128 by <code class="docutils literal notranslate"><span class="pre">scripts/lsst/build_dp2_maglim_maps.py</span></code> (mean
+reduction, the same reduction the Balrog reducer applies).</p>
+</section>
+<section id="star-galaxy-classification">
+<h3>Star/galaxy classification<a class="headerlink" href="#star-galaxy-classification" title="Link to this heading">#</a></h3>
+<p>The stellar selection function is estimated from matched truth and measured
+catalogs using the distance to the local magnitude limit, while the
+classification efficiency measures the fraction of detected stars classified
+as point sources using the LSST <code class="docutils literal notranslate"><span class="pre">EXTENDEDNESS</span></code> classifier.</p>
+<p>The combined efficiency is the product of the detection and classification
+efficiencies and is used by StreamObs to probabilistically determine whether
+injected stars are observed.</p>
+<p>Compact galaxies can be incorrectly classified as stars, producing an
+important contaminant population for stellar-stream analyses. The galaxy
+contamination model is derived from true galaxies with</p>
+<div class="math notranslate nohighlight">
+\[
+{\rm size\_true} &lt; 0.3\ {\rm arcsec},
+\]</div>
+<p>for which morphological star-galaxy separation becomes challenging near the
+survey magnitude limit.</p>
+<p><img alt="Detection, classification and galaxy misclassification efficiencies" src="../_images/lsst_dc2_efficiency.png" /></p>
+<p><em>Detection efficiency, stellar classification efficiency, combined stellar
+efficiency, and galaxy contamination efficiency as a function of distance to
+the local magnitude limit.</em></p>
+</section>
+<section id="photometric-error-derivation">
+<h3>Photometric-error derivation<a class="headerlink" href="#photometric-error-derivation" title="Link to this heading">#</a></h3>
+<p>The error model for LSST is taken from <a class="reference external" href="https://arxiv.org/abs/2504.16203">Tsiane et al. 2025</a>.
+It is derived directly from matched DC2 truth catalogs and parameterized as a
+function of distance to the local magnitude limit,</p>
+<div class="math notranslate nohighlight">
+\[
+\Delta m_j = m_j - m_{{\rm lim},j}.
+\]</div>
+<p>The photometric scatter increases rapidly near the magnitude limit and
+approaches a systematic floor of approximately 0.005 mag for bright sources.</p>
+<p><img alt="LSST photometric error model" src="../_images/lsst_dc2_photoerror.png" /></p>
+<p><em>Photometric uncertainty as a function of distance to the local magnitude
+limit. An analytic approximation not used in StreamObs is overlaid on the
+DC2-derived model.</em></p>
+</section>
+<section id="validation">
+<h3>Validation<a class="headerlink" href="#validation" title="Link to this heading">#</a></h3>
+<p>The rebuilt native-scale (non-truth-anchored) <code class="docutils literal notranslate"><span class="pre">lsst/dc2</span></code> depth map and
+<strong>catalog</strong> photo-error curve were checked against the independent external
+calibration of <a class="reference external" href="https://arxiv.org/abs/2504.16203">Tsiane et al. (2025)</a>: the
+median ratio between the two is <strong>1.0011</strong> (0.1% agreement) over
+<code class="docutils literal notranslate"><span class="pre">delta_mag</span> <span class="pre">∈</span> <span class="pre">[-5,</span> <span class="pre">-0.25]</span></code>, with <strong>no</strong> shift applied to the map. Under the
+previous truth-anchored convention this ratio was 1.335. This 0.1% agreement
+is the evidence that grounds keeping <code class="docutils literal notranslate"><span class="pre">lsst/dc2</span></code> on the native pipeline scale
+rather than truth-anchoring it (contrast with Roman DC2, which remains
+truth-anchored — see <a class="reference internal" href="Roman.html"><span class="doc">Roman</span></a>). Detection+classification efficiency vs.
+<em>true</em> magnitude is unaffected by the change (identical values at fixed true
+magnitude) — only the <code class="docutils literal notranslate"><span class="pre">delta_mag</span></code> zero point moved.</p>
+</section>
+<section id="derivation-level-limitations">
+<h3>Derivation-level limitations<a class="headerlink" href="#derivation-level-limitations" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Deriving a DP2-native selection function would require an injection run;
+the <code class="docutils literal notranslate"><span class="pre">dp2_star_gmax_27_skim.parquet</span></code> skim shipped alongside the DP2 depth
+maps cannot substitute, because without a truth table there is no detection
+efficiency and no truth-scatter curve to measure.</p></li>
 </ul>
 </section>
 </section>
@@ -501,12 +791,12 @@ up to 10 years of LSST cannot be extrapolated.</p></li>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="DES.html"
+       href="DELVE.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">DES</p>
+        <p class="prev-next-title">DELVE</p>
       </div>
     </a>
     <a class="right-next"
@@ -525,26 +815,29 @@ up to 10 years of LSST cannot be extrapolated.</p></li>
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
-  <div class="sidebar-secondary-item"><div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
   </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+  <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-releases">Available releases</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lsst-dc2-survey-files">LSST DC2 Survey Files</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-simulated-survey">The simulated survey</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stellar-completeness-and-classification">Stellar completeness and classification</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#photometric-errors">Photometric errors</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#survey-depth">Survey depth</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extinction-coefficients">Extinction coefficients</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-survey-in-streamobs">Using the survey in streamobs</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#caveats">Caveats</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#products">Products</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#depth-and-bands">Depth and bands</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#photometric-errors">Photometric errors</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extinction-coefficients">Extinction coefficients</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-it-in-streamobs">Using it in streamobs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#caveats">Caveats</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creation">Creation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-the-survey-was-simulated">How the survey was simulated</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#depth-map-derivation">Depth-map derivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#star-galaxy-classification">Star/galaxy classification</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#photometric-error-derivation">Photometric-error derivation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validation">Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#derivation-level-limitations">Derivation-level limitations</a></li>
 </ul>
 </li>
 </ul>
@@ -595,8 +888,8 @@ By DESC
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
 
   <footer class="bd-footer">
   </footer>
