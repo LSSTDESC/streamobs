@@ -106,7 +106,8 @@ python bin/download_data.py --url https://custom-server.edu/data.zip
 
 The data files are hosted on [Zenodo](https://zenodo.org) with a persistent DOI for citation and long-term access.
 
-**DOI**: 10.5281/zenodo.17550956
+**DOI**: 10.5281/zenodo.22764339
+
 
 **URL**: whichever record `BASE_DATA_URL` in `bin/download_data.py` names. Do not
 hardcode a record id here — it has drifted from the code before. As of this
