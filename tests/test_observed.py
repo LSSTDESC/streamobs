@@ -275,6 +275,34 @@ class TestStreamInjectorBehavior:
             sample_with_seed1, sample_with_seed2, equal_nan=True
         ), "Samples with the same seed should be the same"
 
+    def test_negative_flux_gives_bad_mag_without_log_warning(self, mock_injector):
+        """Faint stars whose sampled flux is negative are flagged BAD_MAG, and
+        the flux-to-magnitude conversion is never applied to them, so no
+        "invalid value encountered in log10" warning is raised."""
+        import warnings
+
+        rng = np.random.default_rng(0)
+        apparent_mag = rng.uniform(18.0, 30.0, 5000)  # many negative fluxes
+        mag_err = rng.uniform(0.01, 3.0, 5000)
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", RuntimeWarning)
+            sampled = mock_injector.sample_measured_magnitudes(
+                apparent_mag, mag_err, seed=11
+            )
+
+        bad = sampled == "BAD_MAG"
+        assert 0 < bad.sum() < sampled.size, "expected both negative and positive fluxes"
+        magnitudes = pd.to_numeric(sampled[~bad])
+        assert np.all(np.isfinite(magnitudes))
+
+        # Positive fluxes convert exactly as fluxToMag does.
+        flux = StreamInjector.magToFlux(apparent_mag) + np.random.default_rng(11).normal(
+            scale=mock_injector.getFluxError(apparent_mag, mag_err)
+        )
+        np.testing.assert_array_equal(bad, flux <= 0.0)
+        np.testing.assert_allclose(magnitudes, StreamInjector.fluxToMag(flux[flux > 0.0]))
+
     def test_injection_reproducibility(
         self, mock_injector, stream_catalog, seed, verbose
     ):

@@ -1168,10 +1168,16 @@ class StreamInjector:
             scale=self.getFluxError(mag_true, mag_err)
         )
 
-        # If the flux is negative, set the magnitude to "BAD_MAG" (not detected). Otherwise, convert the flux back to magnitude
-        mag_obs = np.where(
-            flux_obs > 0.0, StreamInjector.fluxToMag(flux_obs), "BAD_MAG"
-        )
+        # If the flux is negative, set the magnitude to "BAD_MAG" (not detected). Otherwise, convert
+        # the flux back to magnitude. Only positive fluxes are converted: np.where evaluates both
+        # branches on every element, so passing the whole array to fluxToMag took log10 of the
+        # negative fluxes too, raising "invalid value encountered in log10" for values that were
+        # discarded anyway.
+        flux_obs = np.asarray(flux_obs, dtype=float)
+        positive = flux_obs > 0.0
+        mag_positive = np.full(flux_obs.shape, np.nan)
+        mag_positive[positive] = StreamInjector.fluxToMag(flux_obs[positive])
+        mag_obs = np.where(positive, mag_positive, "BAD_MAG")
 
         return mag_obs
 
