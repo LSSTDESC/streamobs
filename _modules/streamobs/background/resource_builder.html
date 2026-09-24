@@ -1,0 +1,1111 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>streamobs.background.resource_builder &#8212; streamobs  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/streamobs/background/resource_builder';</script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">streamobs  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation &amp; Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multisurvey.html">Injecting one or many surveys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/tutorial_quickstart.html">Quickstart: complete stellar stream analysis pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/multisurvey_cmd.html">Multi-survey CMDs: LSST + Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../surveys/DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../surveys/DELVE.html">DELVE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../surveys/Roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background generation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../background.html">Background generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../background_light.html">Light method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../background_injection.html">Injection method</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../column_convention.html">Output column convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../streamobs.background.html">streamobs.background package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../streamobs.background.background.html">streamobs.background.background module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../streamobs.background.catalog_injector.html">streamobs.background.catalog_injector module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../streamobs.background.generator.html">streamobs.background.generator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../streamobs.background.resource_builder.html">streamobs.background.resource_builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../streamobs.background.storage.html">streamobs.background.storage module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.columns.html">streamobs.columns module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.match_filter.html">streamobs.match_filter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.utils.html">streamobs.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../build_background_resources.html">Building background resources</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for streamobs.background.resource_builder</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Builder for precomputed background color–magnitude diagram (CMD) resources.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..columns</span><span class="w"> </span><span class="kn">import</span> <span class="n">flag_col</span><span class="p">,</span> <span class="n">obs_col</span><span class="p">,</span> <span class="n">true_col</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..surveys</span><span class="w"> </span><span class="kn">import</span> <span class="n">Survey</span><span class="p">,</span> <span class="n">SurveyFactory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">canonical_survey_bands</span><span class="p">,</span> <span class="n">load_catalog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.catalog_injector</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackgroundCatalogInjector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackgroundStorage</span>
+
+
+<div class="viewcode-block" id="BackgroundResourceBuilder">
+<a class="viewcode-back" href="../../../streamobs.background.resource_builder.html#streamobs.background.resource_builder.BackgroundResourceBuilder">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BackgroundResourceBuilder</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Build precomputed CMD histogram grids for fast background generation.</span>
+
+<span class="sd">    Drives :class:`BackgroundCatalogInjector` on uniform surveys (no dust,</span>
+<span class="sd">    constant magnitude limits) at a 2-D meshgrid of ``(maglim_b2, maglim_b1)``</span>
+<span class="sd">    pairs (``b1 = bands[0]``, ``b2 = bands[1]``).  The resulting 2-D</span>
+<span class="sd">    color–magnitude histograms are stored via</span>
+<span class="sd">    :class:`BackgroundStorage` and later consumed by</span>
+<span class="sd">    :class:`~streamobs.background.generator.LightBackgroundGenerator`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    survey_name : str, optional</span>
+<span class="sd">        Survey identifier (e.g. ``&#39;lsst&#39;``).</span>
+<span class="sd">    release : str, optional</span>
+<span class="sd">        Survey release string (e.g. ``&#39;yr5&#39;``).</span>
+<span class="sd">    rng : numpy.random.Generator, int, or None, optional</span>
+<span class="sd">        Random generator (or seed) used when the input catalog has no</span>
+<span class="sd">        positions and ra/dec must be sampled.  Pass a seed for reproducible</span>
+<span class="sd">        background resources.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Forwarded to :meth:`~streamobs.surveys.SurveyFactory.create_survey`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; builder = BackgroundResourceBuilder(&#39;lsst&#39;, release=&#39;yr5&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; builder.build(</span>
+<span class="sd">    ...     catalog_stars=df_stars,</span>
+<span class="sd">    ...     catalog_galaxies=df_gals,</span>
+<span class="sd">    ...     bands=(&#39;g&#39;, &#39;r&#39;),</span>
+<span class="sd">    ...     maglim_min=24.0,</span>
+<span class="sd">    ...     maglim_max=27.0,</span>
+<span class="sd">    ...     maglim_step=0.5,</span>
+<span class="sd">    ...     max_delta=1.0,</span>
+<span class="sd">    ...     area_ref_deg2=100.0,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; storage = BackgroundStorage(survey_name=&#39;lsst&#39;, release=&#39;yr5&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; builder.save(storage)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">survey_name</span><span class="o">=</span><span class="s2">&quot;lsst&quot;</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">surveys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rng</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">survey_name</span> <span class="o">=</span> <span class="n">survey_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">release</span> <span class="o">=</span> <span class="n">release</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_surveys_spec</span> <span class="o">=</span> <span class="n">surveys</span>  <span class="c1"># None → use survey_name + release</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="c1"># Nested dict: {source_type: {(maglim_b2, maglim_b1): config_dict}}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bands</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BackgroundResourceBuilder.build">
+<a class="viewcode-back" href="../../../streamobs.background.resource_builder.html#streamobs.background.resource_builder.BackgroundResourceBuilder.build">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">catalog_stars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">catalog_galaxies</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">bands</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">),</span>
+        <span class="n">maglim_min</span><span class="o">=</span><span class="mf">23.5</span><span class="p">,</span>
+        <span class="n">maglim_max</span><span class="o">=</span><span class="mf">27.5</span><span class="p">,</span>
+        <span class="n">maglim_step</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">max_delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">n_bins_color</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+        <span class="n">n_bins_mag</span><span class="o">=</span><span class="mi">125</span><span class="p">,</span>
+        <span class="n">color_range</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span>
+        <span class="n">mag_range</span><span class="o">=</span><span class="p">(</span><span class="mf">16.0</span><span class="p">,</span> <span class="mf">28.0</span><span class="p">),</span>
+        <span class="n">area_ref_deg2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">source_type</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build CMD histograms for all ``(maglim_b2, maglim_b1)`` grid configurations.</span>
+
+<span class="sd">        For each combination of source type and magnitude limit pair, injects</span>
+<span class="sd">        the catalog into a uniform (no-dust, constant-maglim) survey and</span>
+<span class="sd">        computes a 2-D histogram of ``(color, mag_ref_band)``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        catalog_stars : pd.DataFrame or str, optional</span>
+<span class="sd">            True stellar catalog.  Required when ``source_type`` is</span>
+<span class="sd">            ``&#39;stars&#39;`` or ``&#39;both&#39;``.</span>
+<span class="sd">        catalog_galaxies : pd.DataFrame or str, optional</span>
+<span class="sd">            True galaxy catalog.  Required when ``source_type`` is</span>
+<span class="sd">            ``&#39;galaxies&#39;`` or ``&#39;both&#39;``.</span>
+<span class="sd">        bands : tuple of str, optional</span>
+<span class="sd">            Two band names ``(bands[0], bands[1])`` where color = bands[0] − bands[1]</span>
+<span class="sd">            and bands[1] is the reference magnitude axis. Default ``(&#39;g&#39;, &#39;r&#39;)``.</span>
+<span class="sd">        maglim_min : float, optional</span>
+<span class="sd">            Minimum magnitude limit for the grid. Default ``23.5``.</span>
+<span class="sd">        maglim_max : float, optional</span>
+<span class="sd">            Maximum magnitude limit for the grid. Default ``27.0``.</span>
+<span class="sd">        maglim_step : float, optional</span>
+<span class="sd">            Step size between grid values. Default ``0.5``.</span>
+<span class="sd">        max_delta : float, optional</span>
+<span class="sd">            Keep only pairs with ``|maglim_b2 − maglim_b1| &lt; max_delta``.</span>
+<span class="sd">            Default ``1.0``.</span>
+<span class="sd">        n_bins_color : int, optional</span>
+<span class="sd">            Number of color histogram bins. Default ``125``.</span>
+<span class="sd">        n_bins_mag : int, optional</span>
+<span class="sd">            Number of magnitude histogram bins. Default ``125``.</span>
+<span class="sd">        color_range : tuple of float, optional</span>
+<span class="sd">            ``(min, max)`` of the color axis. Default ``(-0.5, 2.0)``.</span>
+<span class="sd">        mag_range : tuple of float, optional</span>
+<span class="sd">            ``(min, max)`` of the magnitude axis. Default ``(16.0, 28.0)``.</span>
+<span class="sd">        area_ref_deg2 : float, optional</span>
+<span class="sd">            Sky area of the reference simulation in deg².</span>
+<span class="sd">        source_type : str, optional</span>
+<span class="sd">            ``&#39;stars&#39;``, ``&#39;galaxies&#39;``, or ``&#39;both&#39;``. Default ``&#39;both&#39;``.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Forwarded to the catalog injector.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        self</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bands must contain exactly 2 entries.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Resolve survey list</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_surveys_spec</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">raw</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_surveys_spec</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_surveys_spec</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+                <span class="k">else</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_surveys_spec</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">surveys_list</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_resolve_survey_spec</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">raw</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">SurveyFactory</span><span class="o">.</span><span class="n">create_survey</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">survey_name</span><span class="p">,</span> <span class="n">release</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">release</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span>
+            <span class="p">)</span>
+            <span class="n">surveys_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="p">]</span>
+
+        <span class="c1"># Expand single survey to cover both bands</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">surveys_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">surveys_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">surveys_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">surveys_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">surveys_list</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;surveys must resolve to 1 or 2 Survey instances for the light method.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Canonical (survey, band) order — sort by (survey.name, band)</span>
+        <span class="n">surveys_canonical</span><span class="p">,</span> <span class="n">bands_canonical</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">canonical_survey_bands</span><span class="p">(</span>
+            <span class="n">surveys_list</span><span class="p">,</span> <span class="n">bands</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bands</span> <span class="o">=</span> <span class="n">bands_canonical</span>
+
+        <span class="c1"># Build 2-D meshgrid of maglim pairs (symmetric over canonical bands)</span>
+        <span class="n">maglim_1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">maglim_min</span><span class="p">,</span> <span class="n">maglim_max</span> <span class="o">+</span> <span class="n">maglim_step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">maglim_step</span><span class="p">)</span>
+        <span class="n">mg1</span><span class="p">,</span> <span class="n">mg2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">maglim_1d</span><span class="p">,</span> <span class="n">maglim_1d</span><span class="p">)</span>
+        <span class="n">mask_delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mg1</span> <span class="o">-</span> <span class="n">mg2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">max_delta</span>
+        <span class="n">pairs_raw</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">mg1</span><span class="p">[</span><span class="n">mask_delta</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="n">mg2</span><span class="p">[</span><span class="n">mask_delta</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()))</span>
+
+        <span class="n">active</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;stars&quot;</span><span class="p">,</span> <span class="s2">&quot;galaxies&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">source_type</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span> <span class="k">else</span> <span class="p">[</span><span class="n">source_type</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">active</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;==== Processing </span><span class="si">{</span><span class="n">st</span><span class="si">}</span><span class="s2">... ====&quot;</span><span class="p">)</span>
+
+            <span class="n">cat</span> <span class="o">=</span> <span class="n">load_catalog</span><span class="p">(</span><span class="n">catalog_stars</span> <span class="k">if</span> <span class="n">st</span> <span class="o">==</span> <span class="s2">&quot;stars&quot;</span> <span class="k">else</span> <span class="n">catalog_galaxies</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="k">for</span> <span class="n">ml0</span><span class="p">,</span> <span class="n">ml1</span> <span class="ow">in</span> <span class="n">pairs_raw</span><span class="p">:</span>
+                <span class="c1"># ml0 → canonical band 0 (color), ml1 → canonical band 1 (reference)</span>
+                <span class="n">mb1_key</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">ml0</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># maglim for canonical pair 0</span>
+                <span class="n">mb2_key</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">ml1</span><span class="p">),</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># maglim for canonical pair 1</span>
+                <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;  Building CMD histogram for </span><span class="si">{</span><span class="n">st</span><span class="si">}</span><span class="s2"> with &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;maglim_b2=</span><span class="si">{</span><span class="n">mb2_key</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, maglim_b1=</span><span class="si">{</span><span class="n">mb1_key</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">...&quot;</span>
+                    <span class="p">)</span>
+
+                <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_one_config</span><span class="p">(</span>
+                    <span class="n">catalog</span><span class="o">=</span><span class="n">cat</span><span class="p">,</span>
+                    <span class="n">survey</span><span class="o">=</span><span class="n">surveys_canonical</span><span class="p">,</span>
+                    <span class="n">source_type</span><span class="o">=</span><span class="n">st</span><span class="p">,</span>
+                    <span class="n">bands</span><span class="o">=</span><span class="n">bands_canonical</span><span class="p">,</span>
+                    <span class="n">maglim_b2</span><span class="o">=</span><span class="n">mb2_key</span><span class="p">,</span>
+                    <span class="n">maglim_b1</span><span class="o">=</span><span class="n">mb1_key</span><span class="p">,</span>
+                    <span class="n">n_bins_color</span><span class="o">=</span><span class="n">n_bins_color</span><span class="p">,</span>
+                    <span class="n">n_bins_mag</span><span class="o">=</span><span class="n">n_bins_mag</span><span class="p">,</span>
+                    <span class="n">color_range</span><span class="o">=</span><span class="n">color_range</span><span class="p">,</span>
+                    <span class="n">mag_range</span><span class="o">=</span><span class="n">mag_range</span><span class="p">,</span>
+                    <span class="n">area_ref_deg2</span><span class="o">=</span><span class="n">area_ref_deg2</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="n">st</span><span class="p">][(</span><span class="n">mb2_key</span><span class="p">,</span> <span class="n">mb1_key</span><span class="p">)]</span> <span class="o">=</span> <span class="n">result</span>
+
+            <span class="c1"># Release the large input catalog before loading the next source type.</span>
+            <span class="k">del</span> <span class="n">cat</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_survey_spec</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Survey</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve a survey spec (Survey instance, str, or dict) to a Survey.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">Survey</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">spec</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">SurveyFactory</span><span class="o">.</span><span class="n">create_survey</span><span class="p">(</span><span class="o">**</span><span class="n">spec</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported survey spec type: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_one_config</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">catalog</span><span class="p">,</span>
+        <span class="n">survey</span><span class="p">,</span>  <span class="c1"># Survey or list of Survey (len 2, one per canonical band)</span>
+        <span class="n">source_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">bands</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+        <span class="n">maglim_b2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">maglim_b1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">n_bins_color</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">n_bins_mag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">color_range</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span>
+        <span class="n">mag_range</span><span class="o">=</span><span class="p">(</span><span class="mf">16.0</span><span class="p">,</span> <span class="mf">28.0</span><span class="p">),</span>
+        <span class="n">area_ref_deg2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build the CMD histogram for a single ``(maglim_b2, maglim_b1)`` pair.</span>
+
+<span class="sd">        Creates uniform survey copies (no dust, constant maglim), injects the</span>
+<span class="sd">        catalog, and histograms the detected sources.  CMD counts are normalized</span>
+<span class="sd">        to density (counts per deg²) by dividing by ``area_ref_deg2``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        catalog : pd.DataFrame</span>
+<span class="sd">            True background catalog (stars or galaxies).</span>
+<span class="sd">        survey : Survey or list of Survey</span>
+<span class="sd">            Single Survey (used for both bands) or a list of two Survey</span>
+<span class="sd">            instances ``[survey_band0, survey_band1]`` in canonical order.</span>
+<span class="sd">        source_type : str</span>
+<span class="sd">            ``&#39;stars&#39;`` or ``&#39;galaxies&#39;``.</span>
+<span class="sd">        bands : tuple of str</span>
+<span class="sd">            ``(bands[0], bands[1])`` — color = bands[0]_obs − bands[1]_obs.</span>
+<span class="sd">        maglim_b2 : float</span>
+<span class="sd">            Magnitude limit for ``bands[1]`` (reference band).</span>
+<span class="sd">        maglim_b1 : float</span>
+<span class="sd">            Magnitude limit for ``bands[0]`` (color band).</span>
+<span class="sd">        n_bins_color : int</span>
+<span class="sd">            Number of color bins.</span>
+<span class="sd">        n_bins_mag : int</span>
+<span class="sd">            Number of magnitude bins.</span>
+<span class="sd">        color_range : tuple of float</span>
+<span class="sd">            Color axis range.</span>
+<span class="sd">        mag_range : tuple of float</span>
+<span class="sd">            Magnitude axis range.</span>
+<span class="sd">        area_ref_deg2 : float, optional</span>
+<span class="sd">            Reference area in deg².  CMD counts are divided by this value to</span>
+<span class="sd">            produce density; defaults to ``1.0`` (no normalisation).</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Forwarded to the injector.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            ``{&#39;cmd_hist&#39;: np.ndarray (counts/deg²), &#39;color_edges&#39;: np.ndarray,</span>
+<span class="sd">            &#39;mag_edges&#39;: np.ndarray}``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Resolve to [survey_band0, survey_band1]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">surveys_list</span> <span class="o">=</span> <span class="n">survey</span>  <span class="c1"># already [s0, s1] in canonical order</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">surveys_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">survey</span><span class="p">,</span> <span class="n">survey</span><span class="p">]</span>
+
+        <span class="n">area</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">area_ref_deg2</span><span class="p">)</span> <span class="k">if</span> <span class="n">area_ref_deg2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">1.0</span>
+
+        <span class="c1"># Group bands by survey identity to avoid duplicate deep copies</span>
+        <span class="n">survey_band_limits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># {survey_id: (survey_obj, {band: maglim})}</span>
+        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">ml</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">surveys_list</span><span class="p">,</span> <span class="n">bands</span><span class="p">,</span> <span class="p">[</span><span class="n">maglim_b1</span><span class="p">,</span> <span class="n">maglim_b2</span><span class="p">]):</span>
+            <span class="n">sid</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">survey_band_limits</span><span class="p">:</span>
+                <span class="n">survey_band_limits</span><span class="p">[</span><span class="n">sid</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="p">{})</span>
+            <span class="n">survey_band_limits</span><span class="p">[</span><span class="n">sid</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ml</span><span class="p">)</span>
+
+        <span class="c1"># Ensure the completeness_band is injected for each unique survey so the</span>
+        <span class="c1"># detection flag is computed correctly.  Its maglim is set to the same</span>
+        <span class="c1"># depth as the first CMD band already registered for that survey.</span>
+        <span class="k">for</span> <span class="n">sid</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">band_limits</span><span class="p">)</span> <span class="ow">in</span> <span class="n">survey_band_limits</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">cb</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">completeness_band</span>
+            <span class="k">if</span> <span class="n">cb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cb</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">band_limits</span><span class="p">:</span>
+                <span class="n">band_limits</span><span class="p">[</span><span class="n">cb</span><span class="p">]</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">band_limits</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+        <span class="c1"># One deep copy per unique survey</span>
+        <span class="n">prepared</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># {survey_id: prepared_survey}</span>
+        <span class="k">for</span> <span class="n">sid</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">band_limits</span><span class="p">)</span> <span class="ow">in</span> <span class="n">survey_band_limits</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">prepared</span><span class="p">[</span><span class="n">sid</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_survey</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">uniform_maglim</span><span class="o">=</span><span class="n">band_limits</span><span class="p">)</span>
+
+        <span class="n">pair0_prep</span> <span class="o">=</span> <span class="n">prepared</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">surveys_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="n">pair1_prep</span> <span class="o">=</span> <span class="n">prepared</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">surveys_list</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+        <span class="n">pair0_ns</span> <span class="o">=</span> <span class="n">pair0_prep</span><span class="o">.</span><span class="n">namespace</span>
+        <span class="n">pair1_ns</span> <span class="o">=</span> <span class="n">pair1_prep</span><span class="o">.</span><span class="n">namespace</span>
+
+        <span class="c1"># Bands dict: CMD bands + completeness bands, grouped by namespace</span>
+        <span class="n">bands_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">surveys_list</span><span class="p">,</span> <span class="n">bands</span><span class="p">):</span>
+            <span class="n">ns</span> <span class="o">=</span> <span class="n">prepared</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span><span class="o">.</span><span class="n">namespace</span>
+            <span class="n">bands_dict</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">sid</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">band_limits</span><span class="p">)</span> <span class="ow">in</span> <span class="n">survey_band_limits</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">prep</span> <span class="o">=</span> <span class="n">prepared</span><span class="p">[</span><span class="n">sid</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">band_limits</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">b</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bands_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prep</span><span class="o">.</span><span class="n">namespace</span><span class="p">,</span> <span class="p">[]):</span>
+                    <span class="n">bands_dict</span><span class="p">[</span><span class="n">prep</span><span class="o">.</span><span class="n">namespace</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+        <span class="c1"># All true magnitude columns required across both surveys (CMD + completeness)</span>
+        <span class="n">required_true_cols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+            <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span>
+                <span class="n">true_col</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">prep</span><span class="o">.</span><span class="n">namespace</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">prep</span> <span class="ow">in</span> <span class="n">prepared</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bands_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prep</span><span class="o">.</span><span class="n">namespace</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">catalog</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_catalog</span><span class="p">(</span>
+            <span class="n">catalog</span><span class="p">,</span>
+            <span class="n">bands</span><span class="p">,</span>
+            <span class="n">area_ref_deg2</span><span class="o">=</span><span class="n">area_ref_deg2</span><span class="p">,</span>
+            <span class="n">survey</span><span class="o">=</span><span class="n">pair0_prep</span><span class="p">,</span>
+            <span class="n">namespaces</span><span class="o">=</span><span class="p">(</span><span class="n">pair0_ns</span><span class="p">,</span> <span class="n">pair1_ns</span><span class="p">),</span>
+            <span class="n">uniform_maglim</span><span class="o">=</span><span class="p">{</span><span class="n">bands</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="nb">float</span><span class="p">(</span><span class="n">maglim_b1</span><span class="p">),</span> <span class="n">bands</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> <span class="nb">float</span><span class="p">(</span><span class="n">maglim_b2</span><span class="p">)},</span>
+            <span class="n">required_true_cols</span><span class="o">=</span><span class="n">required_true_cols</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Build injector: unique prepared surveys</span>
+        <span class="n">unique_prepared</span> <span class="o">=</span> <span class="nb">list</span><span class="p">({</span><span class="n">sid</span><span class="p">:</span> <span class="n">prep</span> <span class="k">for</span> <span class="n">sid</span><span class="p">,</span> <span class="n">prep</span> <span class="ow">in</span> <span class="n">prepared</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">inj</span> <span class="o">=</span> <span class="n">BackgroundCatalogInjector</span><span class="p">(</span>
+            <span class="n">unique_prepared</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_prepared</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">unique_prepared</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">source_type</span> <span class="o">==</span> <span class="s2">&quot;stars&quot;</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">inj</span><span class="o">.</span><span class="n">inject_stars</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">bands_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">inj</span><span class="o">.</span><span class="n">inject_galaxies</span><span class="p">(</span><span class="n">catalog</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">bands_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">del</span> <span class="n">catalog</span>
+        <span class="k">del</span> <span class="n">inj</span>
+        <span class="k">del</span> <span class="n">prepared</span>
+
+        <span class="n">hist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_cmd_histogram</span><span class="p">(</span>
+            <span class="n">observed</span><span class="p">,</span>
+            <span class="n">band0</span><span class="o">=</span><span class="n">bands</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">ns0</span><span class="o">=</span><span class="n">pair0_ns</span><span class="p">,</span>
+            <span class="n">band1</span><span class="o">=</span><span class="n">bands</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">ns1</span><span class="o">=</span><span class="n">pair1_ns</span><span class="p">,</span>
+            <span class="n">n_bins_color</span><span class="o">=</span><span class="n">n_bins_color</span><span class="p">,</span>
+            <span class="n">n_bins_mag</span><span class="o">=</span><span class="n">n_bins_mag</span><span class="p">,</span>
+            <span class="n">color_range</span><span class="o">=</span><span class="n">color_range</span><span class="p">,</span>
+            <span class="n">mag_range</span><span class="o">=</span><span class="n">mag_range</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">del</span> <span class="n">observed</span>
+
+        <span class="c1"># Normalize to counts per deg²</span>
+        <span class="n">hist</span><span class="p">[</span><span class="s2">&quot;cmd_hist&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hist</span><span class="p">[</span><span class="s2">&quot;cmd_hist&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">area</span>
+
+        <span class="k">return</span> <span class="n">hist</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_survey</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">survey</span><span class="p">:</span> <span class="n">Survey</span><span class="p">,</span>
+        <span class="n">no_dust</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">uniform_maglim</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Survey</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a deep-copied, modified survey for background injection.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        survey : Survey</span>
+<span class="sd">            Survey to copy and modify.</span>
+<span class="sd">        no_dust : bool, optional</span>
+<span class="sd">            If True, zero the EBV map.  Default ``True``.</span>
+<span class="sd">        uniform_maglim : dict, optional</span>
+<span class="sd">            ``{band: value}`` mapping to replace per-pixel maglim maps with</span>
+<span class="sd">            constant arrays.  When provided, ``no_dust`` is implied.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Reserved for future use.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Survey</span>
+<span class="sd">            Modified deep copy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">survey</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">uniform_maglim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">no_dust</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">ebv_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">ebv_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">ebv_map</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">uniform_maglim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">band</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">uniform_maglim</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">maglim_maps</span> <span class="ow">and</span> <span class="n">s</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">s</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span>
+                        <span class="n">s</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">],</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span>
+                    <span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_prepare_catalog</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">catalog</span><span class="p">,</span>
+        <span class="n">bands</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
+        <span class="n">area_ref_deg2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">uniform_maglim</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">survey</span><span class="p">:</span> <span class="n">Survey</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">namespaces</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">required_true_cols</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;pd.DataFrame&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepare the catalog for injection.</span>
+<span class="sd">        Samples positions if they are missing, and checks that the catalog covers</span>
+<span class="sd">        approximately the requested reference area.</span>
+<span class="sd">        Also checks that the required true magnitude columns are present.</span>
+
+<span class="sd">        ``namespaces`` overrides ``survey.namespace`` with per-band namespaces</span>
+<span class="sd">        ``(ns0, ns1)`` for multi-survey use.</span>
+
+<span class="sd">        ``required_true_cols`` lists every true-magnitude column that must exist</span>
+<span class="sd">        (CMD bands + completeness bands).  Defaults to the two CMD band columns.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Resolve namespaces for default required-columns computation.</span>
+        <span class="k">if</span> <span class="n">namespaces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ns0</span><span class="p">,</span> <span class="n">ns1</span> <span class="o">=</span> <span class="n">namespaces</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ns0</span> <span class="o">=</span> <span class="n">ns1</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">namespace</span>
+
+        <span class="k">if</span> <span class="n">required_true_cols</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">required_true_cols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">true_col</span><span class="p">(</span><span class="n">bands</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ns0</span><span class="p">),</span>
+                        <span class="n">true_col</span><span class="p">(</span><span class="n">bands</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">ns1</span><span class="p">),</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">required_true_cols</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;True background catalog is missing required true-magnitude columns: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">. Ensure the catalog includes true magnitudes for all &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;injected bands and each survey&#39;s completeness_band. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Available columns: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Precompute patch bounds with spherical projection correction.</span>
+        <span class="c1"># A naive square [0, side]×[0, side] in (ra, dec) does not have area</span>
+        <span class="c1"># equal to side² because equal RA intervals span less sky at higher</span>
+        <span class="c1"># declinations.  The exact solid angle of a patch [0, ra_ext]×[0, side]</span>
+        <span class="c1"># is  ra_ext × sin(side_rad) × (180/π)  deg², so we invert this to</span>
+        <span class="c1"># obtain ra_ext given the target area.</span>
+        <span class="k">if</span> <span class="n">area_ref_deg2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">side_deg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">area_ref_deg2</span><span class="p">)</span>
+            <span class="n">sin_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">side_deg</span><span class="p">))</span>
+            <span class="n">ra_extent_deg</span> <span class="o">=</span> <span class="n">area_ref_deg2</span> <span class="o">/</span> <span class="p">(</span><span class="n">sin_max</span> <span class="o">*</span> <span class="p">(</span><span class="mf">180.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+
+        <span class="c1"># Check if positions are present; if not, assign them.</span>
+        <span class="n">needs_positions</span> <span class="o">=</span> <span class="s2">&quot;ra&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">columns</span> <span class="ow">or</span> <span class="s2">&quot;dec&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">catalog</span><span class="o">.</span><span class="n">columns</span>
+
+        <span class="c1"># Only copy the columns the injector needs (true magnitudes + positions).</span>
+        <span class="c1"># Discarding unrelated columns here avoids doubling memory for large catalogs.</span>
+        <span class="n">pos_cols</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">needs_positions</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">,</span> <span class="s2">&quot;dec&quot;</span><span class="p">]</span>
+        <span class="n">cat</span> <span class="o">=</span> <span class="n">catalog</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">required_true_cols</span> <span class="o">+</span> <span class="n">pos_cols</span><span class="p">))]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">needs_positions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">uniform_maglim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">area_ref_deg2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;area_ref_deg2 must be provided when catalog has no positions.&quot;</span>
+                    <span class="p">)</span>
+                <span class="c1"># Sample dec uniformly in solid angle (i.e. uniform in sin(dec))</span>
+                <span class="c1"># so the distribution is isotropic on the sphere, not compressed</span>
+                <span class="c1"># toward dec=0.  RA is sampled over the projection-corrected</span>
+                <span class="c1"># extent so the enclosed solid angle equals area_ref_deg2.</span>
+                <span class="n">cat</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">sin_max</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">cat</span><span class="p">)))</span>
+                <span class="p">)</span>
+                <span class="n">cat</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ra_extent_deg</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">cat</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Positions are required when the survey is not uniform.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">area_ref_deg2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">area_estimated</span><span class="p">,</span> <span class="n">pixel_area_deg2</span><span class="p">,</span> <span class="n">nside_used</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_estimate_area_deg2</span><span class="p">(</span>
+                <span class="n">cat</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">cat</span><span class="p">[</span><span class="s2">&quot;dec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">area_ref_deg2</span>
+            <span class="p">)</span>
+            <span class="n">rel_error</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">area_estimated</span> <span class="o">-</span> <span class="n">area_ref_deg2</span><span class="p">)</span> <span class="o">/</span> <span class="n">area_ref_deg2</span>
+            <span class="n">tolerance</span> <span class="o">=</span> <span class="mf">0.05</span>
+            <span class="k">if</span> <span class="n">rel_error</span> <span class="o">&gt;</span> <span class="n">tolerance</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;The sky area estimated from catalog positions &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">area_estimated</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> deg²) differs from &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;area_ref_deg2=</span><span class="si">{</span><span class="n">area_ref_deg2</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> deg² by &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">rel_error</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> % (&gt; </span><span class="si">{</span><span class="n">tolerance</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> % tolerance; &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;HEALPix nside=</span><span class="si">{</span><span class="n">nside_used</span><span class="si">}</span><span class="s2">, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;pixel area=</span><span class="si">{</span><span class="n">pixel_area_deg2</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> deg²). &quot;</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">needs_positions</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="n">msg</span>
+                        <span class="o">+</span> <span class="s2">&quot;Positions were sampled within the correct patch by construction; &quot;</span>
+                        <span class="s2">&quot;the discrepancy is a HEALPix boundary effect (too few objects &quot;</span>
+                        <span class="s2">&quot;or too small a footprint for the pixel size).&quot;</span><span class="p">,</span>
+                        <span class="ne">UserWarning</span><span class="p">,</span>
+                        <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="n">msg</span>
+                        <span class="o">+</span> <span class="s2">&quot;Ensure the catalog covers approximately the requested reference area.&quot;</span>
+                    <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">cat</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_estimate_area_deg2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">area_ref_deg2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Estimate the sky area covered by (ra, dec) positions using HEALPix.</span>
+
+<span class="sd">        Counts the number of unique HEALPix pixels that contain at least one</span>
+<span class="sd">        catalog object and multiplies by the pixel solid angle.  This gives a</span>
+<span class="sd">        correct area estimate for any footprint shape (rectangular, circular,</span>
+<span class="sd">        irregular), unlike a bounding-box approach which would systematically</span>
+<span class="sd">        overestimate a disc by 4/π ≈ 27 %.</span>
+
+<span class="sd">        The nside is set so the expected number of objects per pixel</span>
+<span class="sd">        (assuming the catalog uniformly fills ``area_ref_deg2``) is ~10.</span>
+<span class="sd">        This keeps most pixels occupied (low undercounting) while keeping</span>
+<span class="sd">        pixels small enough to bound overestimation from boundary pixels.</span>
+<span class="sd">        At least 10 pixels are always targeted.  The result is a tuple</span>
+<span class="sd">        ``(area_deg2, pixel_area_deg2, nside)``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ra, dec : array-like</span>
+<span class="sd">            Positions in degrees.</span>
+<span class="sd">        area_ref_deg2 : float</span>
+<span class="sd">            Expected area used to set the HEALPix resolution.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        area_estimated : float</span>
+<span class="sd">            Area covered by the catalog in deg².</span>
+<span class="sd">        pixel_area_deg2 : float</span>
+<span class="sd">            Solid angle of one HEALPix pixel at the chosen nside, in deg².</span>
+<span class="sd">        nside : int</span>
+<span class="sd">            HEALPix nside used for the estimate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">healpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hp</span>
+
+        <span class="c1"># Choose nside so the footprint contains on average 10 objects per pixel.</span>
+        <span class="c1"># This balances coverage (pixels are unlikely to be empty) against</span>
+        <span class="c1"># boundary overestimation (fewer, larger pixels → thicker boundary ring).</span>
+        <span class="c1"># At least 10 pixels are always targeted so tiny footprints are resolved.</span>
+        <span class="c1"># pixel_area_deg2 ≈ 41 253 / (12 × nside²) → solve for nside.</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ra</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">pixel_area_target</span> <span class="o">=</span> <span class="n">area_ref_deg2</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">)</span>
+        <span class="n">nside_raw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">41253.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">12.0</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">pixel_area_target</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">)))</span>
+        <span class="n">nside</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">nside_raw</span><span class="p">,</span> <span class="mi">4</span><span class="p">))))</span>
+        <span class="n">nside</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">nside</span><span class="p">,</span> <span class="mi">4096</span><span class="p">))</span>
+
+        <span class="n">ra</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span>
+        <span class="n">dec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+        <span class="n">finite</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">ra</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">dec</span><span class="p">)</span>
+        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">90.0</span> <span class="o">-</span> <span class="n">dec</span><span class="p">[</span><span class="n">finite</span><span class="p">])</span>
+        <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">ra</span><span class="p">[</span><span class="n">finite</span><span class="p">])</span>
+
+        <span class="n">pixels</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ang2pix</span><span class="p">(</span><span class="n">nside</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+        <span class="n">n_unique</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">pixels</span><span class="p">))</span>
+        <span class="n">pixel_area</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">nside2pixarea</span><span class="p">(</span><span class="n">nside</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">n_unique</span> <span class="o">*</span> <span class="n">pixel_area</span><span class="p">,</span> <span class="n">pixel_area</span><span class="p">,</span> <span class="n">nside</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_cmd_histogram</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">observed_df</span><span class="p">,</span>
+        <span class="n">band0</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ns0</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">band1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">ns1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">n_bins_color</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">n_bins_mag</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">color_range</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+        <span class="n">mag_range</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build a 2-D color–magnitude histogram from an observed catalog.</span>
+
+<span class="sd">        Color = ``obs_col(band0, ns0) − obs_col(band1, ns1)``; magnitude =</span>
+<span class="sd">        ``obs_col(band1, ns1)``.  Only objects detected in **all** surveys are</span>
+<span class="sd">        counted (AND mask across flag columns).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        observed_df : pd.DataFrame</span>
+<span class="sd">            Output of the catalog injector.</span>
+<span class="sd">        band0, ns0 : str</span>
+<span class="sd">            Color-band name and its survey namespace.</span>
+<span class="sd">        band1, ns1 : str</span>
+<span class="sd">            Reference-band name and its survey namespace.</span>
+<span class="sd">        n_bins_color, n_bins_mag : int</span>
+<span class="sd">            Number of histogram bins on each axis.</span>
+<span class="sd">        color_range, mag_range : tuple of float</span>
+<span class="sd">            Axis ranges.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            ``{&#39;cmd_hist&#39;: np.ndarray (n_bins_color × n_bins_mag),</span>
+<span class="sd">            &#39;color_edges&#39;: np.ndarray, &#39;mag_edges&#39;: np.ndarray}``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">color_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">color_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n_bins_color</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">mag_edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">mag_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mag_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n_bins_mag</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># AND mask: object must be detected in all surveys</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">observed_df</span><span class="p">[</span><span class="n">flag_col</span><span class="p">(</span><span class="n">ns0</span><span class="p">)]</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">ns0</span> <span class="o">!=</span> <span class="n">ns1</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">observed_df</span><span class="p">[</span><span class="n">flag_col</span><span class="p">(</span><span class="n">ns1</span><span class="p">)]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;cmd_hist&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_bins_color</span><span class="p">,</span> <span class="n">n_bins_mag</span><span class="p">)),</span>
+                <span class="s2">&quot;color_edges&quot;</span><span class="p">:</span> <span class="n">color_edges</span><span class="p">,</span>
+                <span class="s2">&quot;mag_edges&quot;</span><span class="p">:</span> <span class="n">mag_edges</span><span class="p">,</span>
+            <span class="p">}</span>
+
+        <span class="n">col_b1</span> <span class="o">=</span> <span class="n">obs_col</span><span class="p">(</span><span class="n">band0</span><span class="p">,</span> <span class="n">ns0</span><span class="p">)</span>
+        <span class="n">col_b2</span> <span class="o">=</span> <span class="n">obs_col</span><span class="p">(</span><span class="n">band1</span><span class="p">,</span> <span class="n">ns1</span><span class="p">)</span>
+        <span class="n">mag</span> <span class="o">=</span> <span class="n">observed_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">col_b2</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">observed_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="n">col_b1</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">-</span> <span class="n">mag</span>
+
+        <span class="n">H</span><span class="p">,</span> <span class="n">xe</span><span class="p">,</span> <span class="n">ye</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span>
+            <span class="n">color</span><span class="p">,</span>
+            <span class="n">mag</span><span class="p">,</span>
+            <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="n">n_bins_color</span><span class="p">,</span> <span class="n">n_bins_mag</span><span class="p">],</span>
+            <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">color_range</span><span class="p">,</span> <span class="n">mag_range</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;cmd_hist&quot;</span><span class="p">:</span> <span class="n">H</span><span class="p">,</span> <span class="s2">&quot;color_edges&quot;</span><span class="p">:</span> <span class="n">xe</span><span class="p">,</span> <span class="s2">&quot;mag_edges&quot;</span><span class="p">:</span> <span class="n">ye</span><span class="p">}</span>
+
+<div class="viewcode-block" id="BackgroundResourceBuilder.save">
+<a class="viewcode-back" href="../../../streamobs.background.resource_builder.html#streamobs.background.resource_builder.BackgroundResourceBuilder.save">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage</span><span class="p">:</span> <span class="n">BackgroundStorage</span><span class="p">,</span> <span class="n">source_type</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Persist the built resources to disk via ``storage``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        storage : BackgroundStorage</span>
+<span class="sd">            Storage backend to use.</span>
+<span class="sd">        source_type : str, optional</span>
+<span class="sd">            Which source types to save. Default ``&#39;both&#39;``.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            Forwarded to :meth:`BackgroundStorage.save_data`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">active</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;stars&quot;</span><span class="p">,</span> <span class="s2">&quot;galaxies&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">source_type</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span> <span class="k">else</span> <span class="p">[</span><span class="n">source_type</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">active</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">st</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">:</span>
+                <span class="n">storage</span><span class="o">.</span><span class="n">save_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="n">st</span><span class="p">],</span> <span class="n">st</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BackgroundResourceBuilder.load">
+<a class="viewcode-back" href="../../../streamobs.background.resource_builder.html#streamobs.background.resource_builder.BackgroundResourceBuilder.load">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">storage</span><span class="p">:</span> <span class="n">BackgroundStorage</span><span class="p">,</span>
+        <span class="n">source_type</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+        <span class="n">bands</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">),</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BackgroundResourceBuilder&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load precomputed resources from disk into a new builder instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        storage : BackgroundStorage</span>
+<span class="sd">            Storage backend to read from.</span>
+<span class="sd">        source_type : str, optional</span>
+<span class="sd">            Which source types to load. Default ``&#39;both&#39;``.</span>
+<span class="sd">        bands : tuple of str, optional</span>
+<span class="sd">            Band names used when the resources were saved. Default ``(&#39;g&#39;, &#39;r&#39;)``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        BackgroundResourceBuilder</span>
+<span class="sd">            Populated instance with :attr:`resources` filled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">bands</span> <span class="o">=</span> <span class="n">bands</span>
+        <span class="n">active</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;stars&quot;</span><span class="p">,</span> <span class="s2">&quot;galaxies&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">source_type</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span> <span class="k">else</span> <span class="p">[</span><span class="n">source_type</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">active</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">storage</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">bands</span><span class="p">):</span>
+                <span class="n">instance</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="n">st</span><span class="p">]</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">load_all</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">bands</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">instance</span></div>
+</div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By DESC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, DESC.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

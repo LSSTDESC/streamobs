@@ -186,7 +186,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../streamobs.background.html">streamobs.background package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../streamobs.background.background.html">streamobs.background.background module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../streamobs.background.catalog_injector.html">streamobs.background.catalog_injector module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../streamobs.background.generator.html">streamobs.background.generator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../streamobs.background.resource_builder.html">streamobs.background.resource_builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../streamobs.background.storage.html">streamobs.background.storage module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.columns.html">streamobs.columns module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.match_filter.html">streamobs.match_filter module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../streamobs.model.html">streamobs.model module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../streamobs.observed.html">streamobs.observed module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../streamobs.plotting.html">streamobs.plotting module</a></li>
@@ -1498,10 +1508,16 @@ document.write(`
             <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">getFluxError</span><span class="p">(</span><span class="n">mag_true</span><span class="p">,</span> <span class="n">mag_err</span><span class="p">)</span>
         <span class="p">)</span>
 
-        <span class="c1"># If the flux is negative, set the magnitude to &quot;BAD_MAG&quot; (not detected). Otherwise, convert the flux back to magnitude</span>
-        <span class="n">mag_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-            <span class="n">flux_obs</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">StreamInjector</span><span class="o">.</span><span class="n">fluxToMag</span><span class="p">(</span><span class="n">flux_obs</span><span class="p">),</span> <span class="s2">&quot;BAD_MAG&quot;</span>
-        <span class="p">)</span>
+        <span class="c1"># If the flux is negative, set the magnitude to &quot;BAD_MAG&quot; (not detected). Otherwise, convert</span>
+        <span class="c1"># the flux back to magnitude. Only positive fluxes are converted: np.where evaluates both</span>
+        <span class="c1"># branches on every element, so passing the whole array to fluxToMag took log10 of the</span>
+        <span class="c1"># negative fluxes too, raising &quot;invalid value encountered in log10&quot; for values that were</span>
+        <span class="c1"># discarded anyway.</span>
+        <span class="n">flux_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">flux_obs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">positive</span> <span class="o">=</span> <span class="n">flux_obs</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+        <span class="n">mag_positive</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">flux_obs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="n">mag_positive</span><span class="p">[</span><span class="n">positive</span><span class="p">]</span> <span class="o">=</span> <span class="n">StreamInjector</span><span class="o">.</span><span class="n">fluxToMag</span><span class="p">(</span><span class="n">flux_obs</span><span class="p">[</span><span class="n">positive</span><span class="p">])</span>
+        <span class="n">mag_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">positive</span><span class="p">,</span> <span class="n">mag_positive</span><span class="p">,</span> <span class="s2">&quot;BAD_MAG&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">mag_obs</span></div>
 

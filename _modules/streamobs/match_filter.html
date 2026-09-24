@@ -1,0 +1,950 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>streamobs.match_filter &#8212; streamobs  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/streamobs/match_filter';</script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">streamobs  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">About StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation &amp; Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../multisurvey.html">Injecting one or many surveys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_quickstart.html">Quickstart: complete stellar stream analysis pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/multisurvey_cmd.html">Multi-survey CMDs: LSST + Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/DELVE.html">DELVE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../surveys/Roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background generation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../background.html">Background generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background_light.html">Light method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../background_injection.html">Injection method</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../column_convention.html">Output column convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../streamobs.background.html">streamobs.background package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../streamobs.background.background.html">streamobs.background.background module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../streamobs.background.catalog_injector.html">streamobs.background.catalog_injector module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../streamobs.background.generator.html">streamobs.background.generator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../streamobs.background.resource_builder.html">streamobs.background.resource_builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../streamobs.background.storage.html">streamobs.background.storage module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.columns.html">streamobs.columns module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.match_filter.html">streamobs.match_filter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../streamobs.utils.html">streamobs.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../build_background_resources.html">Building background resources</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for streamobs.match_filter</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.interpolate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ugali.analysis.isochrone</span><span class="w"> </span><span class="kn">import</span> <span class="n">factory</span> <span class="k">as</span> <span class="n">isochrone_factory</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">streamobs.model</span><span class="w"> </span><span class="kn">import</span> <span class="n">ROMAN_VEGA_TO_AB</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Match filter module for stellar stream analysis.</span>
+
+<span class="sd">This module provides functions to create isochrone-based matched-filter</span>
+<span class="sd">polygons and select stars that fall within these polygons in color-magnitude</span>
+<span class="sd">space.</span>
+
+<span class="sd">The matched-filter technique works by defining a polygon in color-magnitude</span>
+<span class="sd">space (CMD) that encompasses the expected stellar locus for a given stellar</span>
+<span class="sd">population (defined by age, metallicity, and distance). Stars falling within</span>
+<span class="sd">this polygon are selected as candidate members.</span>
+
+<span class="sd">The polygon edges are constructed via **spline interpolation** of the</span>
+<span class="sd">isochrone locus, which guarantees bounded, well-behaved polygon vertices</span>
+<span class="sd">even at the faint end where the raw exponential error model would otherwise</span>
+<span class="sd">blow up.</span>
+
+<span class="sd">Functions</span>
+<span class="sd">---------</span>
+<span class="sd">build_match_filter</span>
+<span class="sd">    Construct a CMD polygon from an isochrone model using spline boundaries.</span>
+<span class="sd">is_in_match_filter</span>
+<span class="sd">    Select objects inside the matched-filter polygon.</span>
+<span class="sd">build_filter_splines</span>
+<span class="sd">    Low-level: build near/far color boundary splines from isochrone arrays.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Default isochrone and filter parameters</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># From DES 2018: https://arxiv.org/pdf/1801.03097</span>
+
+<span class="n">DEFAULT_AGE_GYR</span> <span class="o">=</span> <span class="mf">13.0</span>  <span class="c1"># Stellar population age in Gigayears</span>
+<span class="n">DEFAULT_METALLICITY</span> <span class="o">=</span> <span class="mf">0.0002</span>  <span class="c1"># Metallicity (Z), typical for old halo populations</span>
+<span class="n">DEFAULT_DISTANCE_MODULUS_SPREAD</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c1"># Half-width of distance modulus range [mag]</span>
+<span class="n">DEFAULT_COLOR_SPREAD</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mf">0.05</span><span class="p">,</span>
+    <span class="mf">0.05</span><span class="p">,</span>
+<span class="p">]</span>  <span class="c1"># Color padding [blue_side, red_side] [mag]</span>
+<span class="n">DEFAULT_ERROR_MULTIPLIER</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>  <span class="c1"># Error scaling [blue_side, red_side]</span>
+
+<span class="c1"># Absolute magnitude of Main Sequence Turn-Off for Marigo2017 isochrone</span>
+<span class="n">MSTO_ABSOLUTE_MAG</span> <span class="o">=</span> <span class="mf">3.5</span>
+<span class="n">DEFAULT_RGB_CLIP_MAG</span> <span class="o">=</span> <span class="mf">0.2</span>  <span class="c1"># Clip RGB at (MSTO - 0.2) mag</span>
+
+<span class="n">default_errors_des2018</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;baseline_error&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+    <span class="s2">&quot;exp_pivot&quot;</span><span class="p">:</span> <span class="mf">27.09</span><span class="p">,</span>
+    <span class="s2">&quot;exp_scale&quot;</span><span class="p">:</span> <span class="mf">1.09</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">default_errors</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;baseline_error&quot;</span><span class="p">:</span> <span class="mf">0.004775486092612673</span><span class="p">,</span>
+    <span class="s2">&quot;exp_pivot&quot;</span><span class="p">:</span> <span class="mf">28.421419633248796</span><span class="p">,</span>
+    <span class="s2">&quot;exp_scale&quot;</span><span class="p">:</span> <span class="mf">1.0011829218659076</span><span class="p">,</span>
+<span class="p">}</span>  <span class="c1"># fitted on DC2 mag err</span>
+
+<span class="c1"># Per-survey defaults for color_min/color_max clipping applied to spline edges.</span>
+<span class="c1"># These keep the polygon bounded regardless of the exponential error model.</span>
+<span class="c1"># For LSST g-r the MS+RGB locus lives in [~0, ~0.7]; we allow [-0.5, 1.5].</span>
+<span class="c1"># For Roman NIR bands (e.g. F106-F158 in AB) the locus is [-0.15, ~0.35] after</span>
+<span class="c1"># Vega→AB conversion; we clip at [-0.5, 1.5] to prevent error blow-up.</span>
+<span class="n">_SURVEY_COLOR_LIMITS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;lsst&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span>
+    <span class="s2">&quot;des&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span>
+    <span class="s2">&quot;sdss&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span>
+    <span class="s2">&quot;roman&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span>
+    <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="c1"># Per-survey bright absolute magnitude cut (points brighter are noisier/RGB clutter)</span>
+<span class="n">_SURVEY_ABS_MAG_MIN</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;lsst&quot;</span><span class="p">:</span> <span class="mf">2.9</span><span class="p">,</span>
+    <span class="s2">&quot;des&quot;</span><span class="p">:</span> <span class="mf">2.9</span><span class="p">,</span>
+    <span class="s2">&quot;sdss&quot;</span><span class="p">:</span> <span class="mf">2.9</span><span class="p">,</span>
+    <span class="s2">&quot;roman&quot;</span><span class="p">:</span> <span class="mf">2.9</span><span class="p">,</span>
+    <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="mf">2.9</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="c1"># Default faint apparent-magnitude limit used when sampling the polygon grid</span>
+<span class="n">_DEFAULT_APP_MAG_MAX</span> <span class="o">=</span> <span class="mf">30.0</span>
+
+<span class="c1"># Number of magnitude grid points when sampling splines into polygon vertices</span>
+<span class="n">_POLYGON_GRID_POINTS</span> <span class="o">=</span> <span class="mi">200</span>
+
+
+<div class="viewcode-block" id="error_model">
+<a class="viewcode-back" href="../../streamobs.match_filter.html#streamobs.match_filter.error_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">error_model</span><span class="p">(</span>
+    <span class="n">magnitude</span><span class="p">,</span>
+    <span class="n">baseline_error</span><span class="o">=</span><span class="n">default_errors</span><span class="p">[</span><span class="s2">&quot;baseline_error&quot;</span><span class="p">],</span>
+    <span class="n">exp_pivot</span><span class="o">=</span><span class="n">default_errors</span><span class="p">[</span><span class="s2">&quot;exp_pivot&quot;</span><span class="p">],</span>
+    <span class="n">exp_scale</span><span class="o">=</span><span class="n">default_errors</span><span class="p">[</span><span class="s2">&quot;exp_scale&quot;</span><span class="p">],</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the median photometric error as a function of magnitude.</span>
+
+<span class="sd">    Uses an exponential error model calibrated for typical survey data.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    magnitude : float or array-like</span>
+<span class="sd">        Apparent magnitude(s) for which to compute the error.</span>
+<span class="sd">    baseline_error : float, optional</span>
+<span class="sd">        Constant floor of the error curve.</span>
+<span class="sd">    exp_pivot : float, optional</span>
+<span class="sd">        Pivot magnitude of the exponential growth.</span>
+<span class="sd">    exp_scale : float, optional</span>
+<span class="sd">        Scale length of the exponential.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        Print parameter values.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    error : float or array-like</span>
+<span class="sd">        Photometric error(s) corresponding to the input magnitude(s).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;Using following parameters values:&quot;</span><span class="p">,</span> <span class="n">baseline_error</span><span class="p">,</span> <span class="n">exp_pivot</span><span class="p">,</span> <span class="n">exp_scale</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">baseline_error</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">magnitude</span> <span class="o">-</span> <span class="n">exp_pivot</span><span class="p">)</span> <span class="o">/</span> <span class="n">exp_scale</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="build_filter_splines">
+<a class="viewcode-back" href="../../streamobs.match_filter.html#streamobs.match_filter.build_filter_splines">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_filter_splines</span><span class="p">(</span>
+    <span class="n">iso_color</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">iso_mag</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">mag_is_absolute</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">abs_mag_min</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="mf">2.9</span><span class="p">,</span>
+    <span class="n">app_mag_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">color_min</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">color_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span>
+    <span class="n">dmu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">C</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>
+    <span class="n">E</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span>
+    <span class="n">err</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="n">Callable</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build matched-filter boundary splines from precomputed isochrone arrays.</span>
+
+<span class="sd">    Constructs two interpolating functions — ``spline_near`` (blue/near edge)</span>
+<span class="sd">    and ``spline_far`` (red/far edge) — that give the color boundaries of the</span>
+<span class="sd">    matched-filter region as a function of **apparent magnitude**.</span>
+
+<span class="sd">    The splines are built from the isochrone locus after applying magnitude</span>
+<span class="sd">    cuts and color clipping, so they remain bounded even where the raw</span>
+<span class="sd">    exponential error model would diverge.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    iso_color : array_like</span>
+<span class="sd">        Isochrone color array (e.g. g−r) for the locus.</span>
+<span class="sd">    iso_mag : array_like</span>
+<span class="sd">        Isochrone magnitude array.  Interpreted as absolute magnitude when</span>
+<span class="sd">        ``mag_is_absolute=True``, apparent magnitude otherwise.</span>
+<span class="sd">    mu : float, optional</span>
+<span class="sd">        Distance modulus (used only when ``mag_is_absolute=True``).</span>
+<span class="sd">    mag_is_absolute : bool, optional</span>
+<span class="sd">        Whether ``iso_mag`` is in absolute magnitudes.</span>
+<span class="sd">    abs_mag_min : float or None, optional</span>
+<span class="sd">        Bright absolute-magnitude cut applied before spline fitting.</span>
+<span class="sd">    app_mag_max : float or None, optional</span>
+<span class="sd">        Faint apparent-magnitude cut applied before spline fitting.</span>
+<span class="sd">    color_min, color_max : float, optional</span>
+<span class="sd">        Hard clip bounds applied to the near/far color envelopes before</span>
+<span class="sd">        spline fitting.  These prevent runaway exponential values from</span>
+<span class="sd">        entering the polygon.</span>
+<span class="sd">    dmu : float, optional</span>
+<span class="sd">        Half-width of the distance-modulus spread used to shift magnitudes</span>
+<span class="sd">        for the near/far error evaluation.</span>
+<span class="sd">    C : tuple/list [near, far], optional</span>
+<span class="sd">        Additive color padding on the near (blue) and far (red) sides.</span>
+<span class="sd">    E : tuple/list [near, far], optional</span>
+<span class="sd">        Multiplicative error scaling for near and far sides.</span>
+<span class="sd">    err : callable or None, optional</span>
+<span class="sd">        Function ``err(apparent_mag) -&gt; mag_error``.  When ``None`` the</span>
+<span class="sd">        default exponential model is used.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    spline_near, spline_far : callable</span>
+<span class="sd">        Functions mapping apparent magnitude → color boundary.  They return</span>
+<span class="sd">        ``nan`` outside the valid magnitude range so that callers can</span>
+<span class="sd">        detect out-of-bounds regions without needing explicit range checks.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">err</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="n">error_model</span>
+
+    <span class="c1"># Allow E to be scalar (backward compat) or [near, far]</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
+        <span class="n">E_near</span> <span class="o">=</span> <span class="n">E_far</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">E_near</span><span class="p">,</span> <span class="n">E_far</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">C</span><span class="p">):</span>
+        <span class="n">C_near</span> <span class="o">=</span> <span class="n">C_far</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">C_near</span><span class="p">,</span> <span class="n">C_far</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">iso_color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">iso_color</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">iso_mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">iso_mag</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">iso_color</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">iso_mag</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;iso_color and iso_mag must have the same shape&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mag_is_absolute</span><span class="p">:</span>
+        <span class="n">abs_mag</span> <span class="o">=</span> <span class="n">iso_mag</span>
+        <span class="n">app_mag</span> <span class="o">=</span> <span class="n">iso_mag</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">app_mag</span> <span class="o">=</span> <span class="n">iso_mag</span>
+        <span class="n">abs_mag</span> <span class="o">=</span> <span class="n">iso_mag</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+
+    <span class="c1"># Keep only finite points and apply magnitude cuts</span>
+    <span class="n">sel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">iso_color</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">app_mag</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">abs_mag_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sel</span> <span class="o">&amp;=</span> <span class="n">abs_mag</span> <span class="o">&gt;</span> <span class="nb">float</span><span class="p">(</span><span class="n">abs_mag_min</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">app_mag_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sel</span> <span class="o">&amp;=</span> <span class="n">app_mag</span> <span class="o">&lt;</span> <span class="nb">float</span><span class="p">(</span><span class="n">app_mag_max</span><span class="p">)</span>
+
+    <span class="n">iso_color</span> <span class="o">=</span> <span class="n">iso_color</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span>
+    <span class="n">app_mag</span> <span class="o">=</span> <span class="n">app_mag</span><span class="p">[</span><span class="n">sel</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">iso_color</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not enough valid points to build filter splines&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Compute near (blue) and far (red) magnitude offsets from dmu spread</span>
+    <span class="n">mnear</span> <span class="o">=</span> <span class="n">app_mag</span> <span class="o">-</span> <span class="n">dmu</span> <span class="o">/</span> <span class="mf">2.0</span>
+    <span class="n">mfar</span> <span class="o">=</span> <span class="n">app_mag</span> <span class="o">+</span> <span class="n">dmu</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+    <span class="c1"># Build color envelopes; clip to [color_min, color_max] to suppress</span>
+    <span class="c1"># exponential blow-up at the faint end</span>
+    <span class="n">color_far</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span>
+        <span class="n">iso_color</span> <span class="o">+</span> <span class="n">E_far</span> <span class="o">*</span> <span class="n">err</span><span class="p">(</span><span class="n">mfar</span><span class="p">)</span> <span class="o">+</span> <span class="n">C_far</span><span class="p">,</span>
+        <span class="n">color_min</span><span class="p">,</span>
+        <span class="n">color_max</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">color_near</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span>
+        <span class="n">iso_color</span> <span class="o">-</span> <span class="n">E_near</span> <span class="o">*</span> <span class="n">err</span><span class="p">(</span><span class="n">mnear</span><span class="p">)</span> <span class="o">-</span> <span class="n">C_near</span><span class="p">,</span>
+        <span class="n">color_min</span><span class="p">,</span>
+        <span class="n">color_max</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># interp1d requires strictly increasing x</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">app_mag</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">app_mag</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+    <span class="n">y_near</span> <span class="o">=</span> <span class="n">color_near</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+    <span class="n">y_far</span> <span class="o">=</span> <span class="n">color_far</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
+
+    <span class="c1"># Drop duplicate x values (keep first occurrence)</span>
+    <span class="n">x_unique</span><span class="p">,</span> <span class="n">unique_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">y_near</span> <span class="o">=</span> <span class="n">y_near</span><span class="p">[</span><span class="n">unique_idx</span><span class="p">]</span>
+    <span class="n">y_far</span> <span class="o">=</span> <span class="n">y_far</span><span class="p">[</span><span class="n">unique_idx</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">x_unique</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not enough unique magnitude points to build filter splines&quot;</span><span class="p">)</span>
+
+    <span class="n">spline_near</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span>
+        <span class="n">x_unique</span><span class="p">,</span> <span class="n">y_near</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="p">)</span>
+    <span class="n">spline_far</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span>
+        <span class="n">x_unique</span><span class="p">,</span> <span class="n">y_far</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">spline_near</span><span class="p">,</span> <span class="n">spline_far</span></div>
+
+
+
+<div class="viewcode-block" id="build_match_filter">
+<a class="viewcode-back" href="../../streamobs.match_filter.html#streamobs.match_filter.build_match_filter">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_match_filter</span><span class="p">(</span>
+    <span class="n">distance_modulus</span><span class="p">,</span>
+    <span class="n">age</span><span class="o">=</span><span class="n">DEFAULT_AGE_GYR</span><span class="p">,</span>
+    <span class="n">metallicity</span><span class="o">=</span><span class="n">DEFAULT_METALLICITY</span><span class="p">,</span>
+    <span class="n">distance_modulus_spread</span><span class="o">=</span><span class="n">DEFAULT_DISTANCE_MODULUS_SPREAD</span><span class="p">,</span>
+    <span class="n">color_spread</span><span class="o">=</span><span class="n">DEFAULT_COLOR_SPREAD</span><span class="p">,</span>
+    <span class="n">error_multiplier</span><span class="o">=</span><span class="n">DEFAULT_ERROR_MULTIPLIER</span><span class="p">,</span>
+    <span class="n">rgb_clip_mag</span><span class="o">=</span><span class="n">DEFAULT_RGB_CLIP_MAG</span><span class="p">,</span>
+    <span class="n">color_cut</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">red_cap_mode</span><span class="o">=</span><span class="s2">&quot;error_shrunk&quot;</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">error_kwargs</span><span class="o">=</span><span class="p">{},</span>
+    <span class="n">survey</span><span class="o">=</span><span class="s2">&quot;lsst&quot;</span><span class="p">,</span>
+    <span class="n">isochrone_model</span><span class="o">=</span><span class="s2">&quot;Marigo2017&quot;</span><span class="p">,</span>
+    <span class="n">band_1</span><span class="o">=</span><span class="s2">&quot;g&quot;</span><span class="p">,</span>
+    <span class="n">band_2</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build an isochrone matched-filter polygon in color-magnitude space.</span>
+
+<span class="sd">    Creates a closed polygon that encompasses the expected locus of stars</span>
+<span class="sd">    at a given distance, accounting for photometric errors and distance spread.</span>
+
+<span class="sd">    **Implementation note:** polygon edges are constructed via spline</span>
+<span class="sd">    interpolation of the isochrone locus rather than raw concatenation of</span>
+<span class="sd">    error-broadened arrays.  This keeps all polygon vertices strictly bounded</span>
+<span class="sd">    (within the ``color_min``/``color_max`` clip derived from the survey),</span>
+<span class="sd">    preventing the exponential error model from producing degenerate colors</span>
+<span class="sd">    at the faint end (the old approach produced blue-edge colors of ~ -113</span>
+<span class="sd">    at distance_modulus ≈ 16.8 with default LSST parameters).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    distance_modulus : float</span>
+<span class="sd">        Distance modulus (m − M) of the stellar population in magnitudes.</span>
+<span class="sd">    age : float, optional</span>
+<span class="sd">        Isochrone age in Gigayears (Gyr).</span>
+<span class="sd">    metallicity : float, optional</span>
+<span class="sd">        Isochrone metallicity as mass fraction Z.</span>
+<span class="sd">    distance_modulus_spread : float, optional</span>
+<span class="sd">        Half-width of the distance modulus range to consider [mag].</span>
+<span class="sd">    color_spread : list of float, optional</span>
+<span class="sd">        Additive color padding as [blue_side, red_side] in magnitudes.</span>
+<span class="sd">    error_multiplier : list of float, optional</span>
+<span class="sd">        Multiplicative scaling for photometric errors as [blue_side, red_side].</span>
+<span class="sd">    rgb_clip_mag : float or None, optional</span>
+<span class="sd">        If provided, clips the Red Giant Branch at this magnitude offset</span>
+<span class="sd">        from the Main Sequence Turn-Off (MSTO).</span>
+<span class="sd">    color_cut : bool, optional</span>
+<span class="sd">        If True, the red spline edge is additionally capped so the filter</span>
+<span class="sd">        does not extend to very red stars (see ``red_cap_mode``).</span>
+<span class="sd">    red_cap_mode : {&#39;error_shrunk&#39;, &#39;constant&#39;}, optional</span>
+<span class="sd">        How the red-edge cap behaves when ``color_cut=True``:</span>
+
+<span class="sd">        - ``&#39;error_shrunk&#39;`` (default): cap at</span>
+<span class="sd">          ``(color_max - 0.25) - error(mag_far)``, so the cap moves blueward</span>
+<span class="sd">          with the photometric error and the filter narrows (eventually</span>
+<span class="sd">          closes) at the faint end — the historical pre-spline behaviour,</span>
+<span class="sd">          now applied to the spline-sampled edges.  The far edge is floored</span>
+<span class="sd">          at the near edge so the polygon stays simple instead of</span>
+<span class="sd">          self-crossing.</span>
+<span class="sd">        - ``&#39;constant&#39;``: cap at ``color_max - 0.25`` at all magnitudes.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        Print diagnostic information.</span>
+<span class="sd">    error_kwargs : dict, optional</span>
+<span class="sd">        Extra keyword arguments forwarded to :func:`error_model`.</span>
+<span class="sd">    survey : str, optional</span>
+<span class="sd">        Survey name passed to the ugali isochrone factory.  Also controls</span>
+<span class="sd">        per-survey color clip limits and absolute-magnitude cuts.</span>
+<span class="sd">    isochrone_model : str, optional</span>
+<span class="sd">        Ugali isochrone model name (e.g. ``&#39;Marigo2017&#39;``).</span>
+<span class="sd">    band_1, band_2 : str, optional</span>
+<span class="sd">        Bands defining the CMD: color = band_1 − band_2, magnitude = band_1.</span>
+<span class="sd">        Defaults (``&#39;g&#39;``, ``&#39;r&#39;``) preserve the historical LSST behaviour.</span>
+<span class="sd">        For Roman pass e.g. ``band_1=&#39;F106&#39;``, ``band_2=&#39;F158&#39;``.</span>
+<span class="sd">        Roman isochrone magnitudes are returned by ugali in Vega and are</span>
+<span class="sd">        converted to AB here (via the ``ROMAN_VEGA_TO_AB`` table that the</span>
+<span class="sd">        injection path uses), so the filter selects on the same photometric</span>
+<span class="sd">        system as the injected catalogs.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    polygon_vertices : ndarray, shape (N, 2)</span>
+<span class="sd">        Vertices of the closed polygon as (color, magnitude) pairs.</span>
+<span class="sd">        Column 0: color (band_1 − band_2)</span>
+<span class="sd">        Column 1: apparent band_1 magnitude</span>
+<span class="sd">        Suitable for use with ``matplotlib.path.Path.contains_points()``.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Uses Marigo2017 isochrone models from the ugali package by default.</span>
+<span class="sd">    - The Vega→AB conversion for Roman bands is applied before any spline</span>
+<span class="sd">      fitting, so the polygon is in the same photometric system as the data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">survey_lower</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">survey</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;default&quot;</span>
+
+    <span class="c1"># Look up per-survey color clip limits</span>
+    <span class="n">color_min</span><span class="p">,</span> <span class="n">color_max</span> <span class="o">=</span> <span class="n">_SURVEY_COLOR_LIMITS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="n">survey_lower</span><span class="p">,</span> <span class="n">_SURVEY_COLOR_LIMITS</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">abs_mag_min</span> <span class="o">=</span> <span class="n">_SURVEY_ABS_MAG_MIN</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">survey_lower</span><span class="p">,</span> <span class="n">_SURVEY_ABS_MAG_MIN</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">])</span>
+
+    <span class="c1"># --- Generate isochrone model ---</span>
+    <span class="n">isochrone</span> <span class="o">=</span> <span class="n">isochrone_factory</span><span class="p">(</span>
+        <span class="n">isochrone_model</span><span class="p">,</span>
+        <span class="n">age</span><span class="o">=</span><span class="n">age</span><span class="p">,</span>
+        <span class="n">z</span><span class="o">=</span><span class="n">metallicity</span><span class="p">,</span>
+        <span class="n">survey</span><span class="o">=</span><span class="n">survey</span><span class="p">,</span>
+        <span class="n">band_1</span><span class="o">=</span><span class="n">band_1</span><span class="p">,</span>
+        <span class="n">band_2</span><span class="o">=</span><span class="n">band_2</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># ugali returns Roman isochrones in Vega; our catalogs/maglim maps are AB.</span>
+    <span class="c1"># AB = Vega + offset (a no-op for non-Roman bands) — same convention as</span>
+    <span class="c1"># StreamInjector._to_ab, so the filter and the injected stream share one</span>
+    <span class="c1"># photometric system.</span>
+    <span class="n">ab_1</span> <span class="o">=</span> <span class="n">ROMAN_VEGA_TO_AB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">band_1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">ab_2</span> <span class="o">=</span> <span class="n">ROMAN_VEGA_TO_AB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">band_2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">isochrone_color</span> <span class="o">=</span> <span class="n">isochrone</span><span class="o">.</span><span class="n">color</span> <span class="o">+</span> <span class="p">(</span><span class="n">ab_1</span> <span class="o">-</span> <span class="n">ab_2</span><span class="p">)</span>  <span class="c1"># band_1 - band_2</span>
+    <span class="n">isochrone_absolute_mag</span> <span class="o">=</span> <span class="n">isochrone</span><span class="o">.</span><span class="n">mag</span> <span class="o">+</span> <span class="n">ab_1</span>  <span class="c1"># absolute band_1 magnitude</span>
+
+    <span class="c1"># --- Optional: Clip the Red Giant Branch ---</span>
+    <span class="k">if</span> <span class="n">rgb_clip_mag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rgb_bright_limit</span> <span class="o">=</span> <span class="n">MSTO_ABSOLUTE_MAG</span> <span class="o">-</span> <span class="n">rgb_clip_mag</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Clipping RGB at absolute mag = </span><span class="si">{</span><span class="n">rgb_bright_limit</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">valid_stars_mask</span> <span class="o">=</span> <span class="n">isochrone_absolute_mag</span> <span class="o">&gt;</span> <span class="n">rgb_bright_limit</span>
+        <span class="n">isochrone_color</span> <span class="o">=</span> <span class="n">isochrone_color</span><span class="p">[</span><span class="n">valid_stars_mask</span><span class="p">]</span>
+        <span class="n">isochrone_absolute_mag</span> <span class="o">=</span> <span class="n">isochrone_absolute_mag</span><span class="p">[</span><span class="n">valid_stars_mask</span><span class="p">]</span>
+
+    <span class="c1"># --- Build spline-based color boundaries ---</span>
+    <span class="c1"># The err callable accepts apparent magnitudes; we wrap error_model with</span>
+    <span class="c1"># any user-supplied error_kwargs.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_err</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">error_model</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="o">**</span><span class="n">error_kwargs</span><span class="p">)</span>
+
+    <span class="c1"># Apparent magnitude range for polygon sampling</span>
+    <span class="n">app_mag_min_data</span> <span class="o">=</span> <span class="n">isochrone_absolute_mag</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">+</span> <span class="n">distance_modulus</span>
+    <span class="n">app_mag_max_data</span> <span class="o">=</span> <span class="n">isochrone_absolute_mag</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="n">distance_modulus</span>
+    <span class="c1"># Clip to a sane range</span>
+    <span class="n">app_mag_min_data</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">app_mag_min_data</span><span class="p">,</span> <span class="n">distance_modulus</span> <span class="o">+</span> <span class="n">abs_mag_min</span><span class="p">)</span>
+    <span class="n">app_mag_max_data</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">app_mag_max_data</span><span class="p">,</span> <span class="n">_DEFAULT_APP_MAG_MAX</span><span class="p">)</span>
+
+    <span class="n">spline_near</span><span class="p">,</span> <span class="n">spline_far</span> <span class="o">=</span> <span class="n">build_filter_splines</span><span class="p">(</span>
+        <span class="n">iso_color</span><span class="o">=</span><span class="n">isochrone_color</span><span class="p">,</span>
+        <span class="n">iso_mag</span><span class="o">=</span><span class="n">isochrone_absolute_mag</span><span class="p">,</span>
+        <span class="n">mu</span><span class="o">=</span><span class="n">distance_modulus</span><span class="p">,</span>
+        <span class="n">mag_is_absolute</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">abs_mag_min</span><span class="o">=</span><span class="n">abs_mag_min</span><span class="p">,</span>
+        <span class="n">app_mag_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># no faint hard cut; let the spline domain govern</span>
+        <span class="n">color_min</span><span class="o">=</span><span class="n">color_min</span><span class="p">,</span>
+        <span class="n">color_max</span><span class="o">=</span><span class="n">color_max</span><span class="p">,</span>
+        <span class="n">dmu</span><span class="o">=</span><span class="n">distance_modulus_spread</span><span class="p">,</span>
+        <span class="n">C</span><span class="o">=</span><span class="n">color_spread</span><span class="p">,</span>
+        <span class="n">E</span><span class="o">=</span><span class="n">error_multiplier</span><span class="p">,</span>
+        <span class="n">err</span><span class="o">=</span><span class="n">_err</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># --- Sample splines on a fine magnitude grid to get polygon vertices ---</span>
+    <span class="n">mag_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">app_mag_min_data</span><span class="p">,</span> <span class="n">app_mag_max_data</span><span class="p">,</span> <span class="n">_POLYGON_GRID_POINTS</span><span class="p">)</span>
+
+    <span class="n">near_colors</span> <span class="o">=</span> <span class="n">spline_near</span><span class="p">(</span><span class="n">mag_grid</span><span class="p">)</span>
+    <span class="n">far_colors</span> <span class="o">=</span> <span class="n">spline_far</span><span class="p">(</span><span class="n">mag_grid</span><span class="p">)</span>
+
+    <span class="c1"># Remove grid points where either spline is nan (outside interpolation range)</span>
+    <span class="n">valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">near_colors</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">far_colors</span><span class="p">)</span>
+    <span class="n">mag_grid</span> <span class="o">=</span> <span class="n">mag_grid</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span>
+    <span class="n">near_colors</span> <span class="o">=</span> <span class="n">near_colors</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span>
+    <span class="n">far_colors</span> <span class="o">=</span> <span class="n">far_colors</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mag_grid</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Too few valid spline points to build a polygon. &quot;</span>
+            <span class="s2">&quot;Check isochrone parameters and distance_modulus.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Optional color cut: cap the red (far) edge so the polygon does not</span>
+    <span class="c1"># extend to very red stars.</span>
+    <span class="k">if</span> <span class="n">color_cut</span><span class="p">:</span>
+        <span class="n">red_cap</span> <span class="o">=</span> <span class="n">color_max</span> <span class="o">-</span> <span class="mf">0.25</span>
+        <span class="k">if</span> <span class="n">red_cap_mode</span> <span class="o">==</span> <span class="s2">&quot;constant&quot;</span><span class="p">:</span>
+            <span class="n">far_colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">far_colors</span><span class="p">,</span> <span class="n">red_cap</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">red_cap_mode</span> <span class="o">==</span> <span class="s2">&quot;error_shrunk&quot;</span><span class="p">:</span>
+            <span class="n">cap</span> <span class="o">=</span> <span class="n">red_cap</span> <span class="o">-</span> <span class="n">_err</span><span class="p">(</span><span class="n">mag_grid</span> <span class="o">+</span> <span class="n">distance_modulus_spread</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
+            <span class="n">far_colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">far_colors</span><span class="p">,</span> <span class="n">cap</span><span class="p">)</span>
+            <span class="c1"># floor at the near edge: the filter closes rather than</span>
+            <span class="c1"># self-crossing where the shrinking cap dips below it</span>
+            <span class="n">far_colors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">far_colors</span><span class="p">,</span> <span class="n">near_colors</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;red_cap_mode must be &#39;constant&#39; or &#39;error_shrunk&#39;, got </span><span class="si">{</span><span class="n">red_cap_mode</span><span class="si">!r}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Polygon magnitude range: </span><span class="si">{</span><span class="n">mag_grid</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> – </span><span class="si">{</span><span class="n">mag_grid</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Color range: [</span><span class="si">{</span><span class="n">near_colors</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">far_colors</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+    <span class="c1"># --- Concatenate forward (far/red) and backward (near/blue) edges ---</span>
+    <span class="c1"># Forward: red edge traces increasing magnitude</span>
+    <span class="c1"># Backward: blue edge traces decreasing magnitude (closes the polygon)</span>
+    <span class="n">polygon_color</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">far_colors</span><span class="p">,</span> <span class="n">near_colors</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="n">polygon_mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">mag_grid</span><span class="p">,</span> <span class="n">mag_grid</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">polygon_color</span><span class="p">,</span> <span class="n">polygon_mag</span><span class="p">])</span></div>
+
+
+
+<div class="viewcode-block" id="is_in_match_filter">
+<a class="viewcode-back" href="../../streamobs.match_filter.html#streamobs.match_filter.is_in_match_filter">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_in_match_filter</span><span class="p">(</span>
+    <span class="n">mag_1</span><span class="p">,</span> <span class="n">mag_2</span><span class="p">,</span> <span class="n">polygon_vertices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">match_filter_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Select objects inside the matched-filter polygon.</span>
+
+<span class="sd">    ``mag_1``/``mag_2`` are the same two bands the polygon was built with</span>
+<span class="sd">    (color = mag_1 − mag_2, magnitude axis = mag_1) — ``&#39;g&#39;``/``&#39;r&#39;`` for</span>
+<span class="sd">    LSST, e.g. ``&#39;F106&#39;``/``&#39;F158&#39;`` for Roman.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    mag_1 : array_like</span>
+<span class="sd">        Apparent magnitude in band_1.</span>
+<span class="sd">    mag_2 : array_like</span>
+<span class="sd">        Apparent magnitude in band_2.</span>
+<span class="sd">    polygon_vertices : ndarray, shape (N, 2) or None, optional</span>
+<span class="sd">        Pre-built polygon from :func:`build_match_filter`.  If ``None``,</span>
+<span class="sd">        ``match_filter_params`` must be given.</span>
+<span class="sd">    match_filter_params : dict or None, optional</span>
+<span class="sd">        Keyword arguments forwarded to :func:`build_match_filter` to build</span>
+<span class="sd">        the polygon on the fly.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        Print selection statistics.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    selection_mask : ndarray of bool</span>
+<span class="sd">        ``True`` for objects inside the polygon.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mag_1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">mag_1</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
+    <span class="n">mag_2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">mag_2</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;coerce&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Explicitly exclude NaN values (from &#39;BAD_MAG&#39; or invalid data)</span>
+    <span class="n">valid_mask</span> <span class="o">=</span> <span class="o">~</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mag_1</span><span class="p">)</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">mag_2</span><span class="p">))</span>
+
+    <span class="n">color_mag_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">mag_1</span> <span class="o">-</span> <span class="n">mag_2</span><span class="p">,</span> <span class="n">mag_1</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">polygon_vertices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">match_filter_params</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Either polygon_vertices or match_filter_params must be provided.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">polygon_vertices</span> <span class="o">=</span> <span class="n">build_match_filter</span><span class="p">(</span><span class="o">**</span><span class="n">match_filter_params</span><span class="p">)</span>
+
+    <span class="n">polygon_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">polygon_vertices</span><span class="p">)</span>
+    <span class="c1"># Only check valid (non-NaN) points</span>
+    <span class="n">selection_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mag_1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="n">selection_mask</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">polygon_path</span><span class="o">.</span><span class="n">contains_points</span><span class="p">(</span>
+        <span class="n">color_mag_coords</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="n">n_valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">valid_mask</span><span class="p">)</span>
+        <span class="n">n_selected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">selection_mask</span><span class="p">)</span>
+        <span class="n">selection_fraction</span> <span class="o">=</span> <span class="n">n_selected</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">mag_1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mag_1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Match filter selects </span><span class="si">{</span><span class="n">selection_fraction</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">% of all stars &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">n_selected</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mag_1</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mag_1</span><span class="p">)</span><span class="o">-</span><span class="n">n_valid</span><span class="si">}</span><span class="s2"> stars with NaN)&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">selection_mask</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By DESC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, DESC.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

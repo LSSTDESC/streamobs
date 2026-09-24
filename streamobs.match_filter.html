@@ -1,0 +1,670 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>streamobs.match_filter module &#8212; streamobs  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'streamobs.match_filter';</script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="streamobs.model module" href="streamobs.model.html" />
+    <link rel="prev" title="streamobs.functions module" href="streamobs.functions.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">streamobs  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="about.html">About StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation &amp; Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multisurvey.html">Injecting one or many surveys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_quickstart.html">Quickstart: complete stellar stream analysis pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/multisurvey_cmd.html">Multi-survey CMDs: LSST + Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="surveys/DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/DELVE.html">DELVE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="surveys/Roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background generation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="background.html">Background generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background_light.html">Light method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="background_injection.html">Injection method</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="column_convention.html">Output column convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">Content</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="streamobs.background.html">streamobs.background package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="streamobs.background.background.html">streamobs.background.background module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="streamobs.background.catalog_injector.html">streamobs.background.catalog_injector module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="streamobs.background.generator.html">streamobs.background.generator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="streamobs.background.resource_builder.html">streamobs.background.resource_builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="streamobs.background.storage.html">streamobs.background.storage module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.columns.html">streamobs.columns module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">streamobs.match_filter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.utils.html">streamobs.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="build_background_resources.html">Building background resources</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/streamobs.match_filter.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>streamobs.match_filter module</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.match_filter.build_filter_splines"><code class="docutils literal notranslate"><span class="pre">build_filter_splines()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.match_filter.build_match_filter"><code class="docutils literal notranslate"><span class="pre">build_match_filter()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.match_filter.error_model"><code class="docutils literal notranslate"><span class="pre">error_model()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.match_filter.is_in_match_filter"><code class="docutils literal notranslate"><span class="pre">is_in_match_filter()</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="module-streamobs.match_filter">
+<span id="streamobs-match-filter-module"></span><h1>streamobs.match_filter module<a class="headerlink" href="#module-streamobs.match_filter" title="Link to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="streamobs.match_filter.build_filter_splines">
+<span class="sig-prename descclassname"><span class="pre">streamobs.match_filter.</span></span><span class="sig-name descname"><span class="pre">build_filter_splines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iso_color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iso_mag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag_is_absolute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_mag_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_mag_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dmu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0.05,</span> <span class="pre">0.05)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(2.0,</span> <span class="pre">2.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">err</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/streamobs/match_filter.html#build_filter_splines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.match_filter.build_filter_splines" title="Link to this definition">#</a></dt>
+<dd><p>Build matched-filter boundary splines from precomputed isochrone arrays.</p>
+<p>Constructs two interpolating functions — <code class="docutils literal notranslate"><span class="pre">spline_near</span></code> (blue/near edge)
+and <code class="docutils literal notranslate"><span class="pre">spline_far</span></code> (red/far edge) — that give the color boundaries of the
+matched-filter region as a function of <strong>apparent magnitude</strong>.</p>
+<p>The splines are built from the isochrone locus after applying magnitude
+cuts and color clipping, so they remain bounded even where the raw
+exponential error model would diverge.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iso_color</strong> (<em>array_like</em>) – Isochrone color array (e.g. g−r) for the locus.</p></li>
+<li><p><strong>iso_mag</strong> (<em>array_like</em>) – Isochrone magnitude array.  Interpreted as absolute magnitude when
+<code class="docutils literal notranslate"><span class="pre">mag_is_absolute=True</span></code>, apparent magnitude otherwise.</p></li>
+<li><p><strong>mu</strong> (<em>float</em><em>, </em><em>optional</em>) – Distance modulus (used only when <code class="docutils literal notranslate"><span class="pre">mag_is_absolute=True</span></code>).</p></li>
+<li><p><strong>mag_is_absolute</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether <code class="docutils literal notranslate"><span class="pre">iso_mag</span></code> is in absolute magnitudes.</p></li>
+<li><p><strong>abs_mag_min</strong> (<em>float</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Bright absolute-magnitude cut applied before spline fitting.</p></li>
+<li><p><strong>app_mag_max</strong> (<em>float</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Faint apparent-magnitude cut applied before spline fitting.</p></li>
+<li><p><strong>color_min</strong> (<em>float</em><em>, </em><em>optional</em>) – Hard clip bounds applied to the near/far color envelopes before
+spline fitting.  These prevent runaway exponential values from
+entering the polygon.</p></li>
+<li><p><strong>color_max</strong> (<em>float</em><em>, </em><em>optional</em>) – Hard clip bounds applied to the near/far color envelopes before
+spline fitting.  These prevent runaway exponential values from
+entering the polygon.</p></li>
+<li><p><strong>dmu</strong> (<em>float</em><em>, </em><em>optional</em>) – Half-width of the distance-modulus spread used to shift magnitudes
+for the near/far error evaluation.</p></li>
+<li><p><strong>C</strong> (<em>tuple/list</em><em> [</em><em>near</em><em>, </em><em>far</em><em>]</em><em>, </em><em>optional</em>) – Additive color padding on the near (blue) and far (red) sides.</p></li>
+<li><p><strong>E</strong> (<em>tuple/list</em><em> [</em><em>near</em><em>, </em><em>far</em><em>]</em><em>, </em><em>optional</em>) – Multiplicative error scaling for near and far sides.</p></li>
+<li><p><strong>err</strong> (<em>callable</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Function <code class="docutils literal notranslate"><span class="pre">err(apparent_mag)</span> <span class="pre">-&gt;</span> <span class="pre">mag_error</span></code>.  When <code class="docutils literal notranslate"><span class="pre">None</span></code> the
+default exponential model is used.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>spline_near, spline_far</strong> – Functions mapping apparent magnitude → color boundary.  They return
+<code class="docutils literal notranslate"><span class="pre">nan</span></code> outside the valid magnitude range so that callers can
+detect out-of-bounds regions without needing explicit range checks.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>callable</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="streamobs.match_filter.build_match_filter">
+<span class="sig-prename descclassname"><span class="pre">streamobs.match_filter.</span></span><span class="sig-name descname"><span class="pre">build_match_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">distance_modulus</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">age</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metallicity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0002</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance_modulus_spread</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_spread</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0.05,</span> <span class="pre">0.05]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_multiplier</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[2.0,</span> <span class="pre">2.0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rgb_clip_mag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">red_cap_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'error_shrunk'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">survey</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lsst'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isochrone_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Marigo2017'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'g'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/match_filter.html#build_match_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.match_filter.build_match_filter" title="Link to this definition">#</a></dt>
+<dd><p>Build an isochrone matched-filter polygon in color-magnitude space.</p>
+<p>Creates a closed polygon that encompasses the expected locus of stars
+at a given distance, accounting for photometric errors and distance spread.</p>
+<p><strong>Implementation note:</strong> polygon edges are constructed via spline
+interpolation of the isochrone locus rather than raw concatenation of
+error-broadened arrays.  This keeps all polygon vertices strictly bounded
+(within the <code class="docutils literal notranslate"><span class="pre">color_min</span></code>/<code class="docutils literal notranslate"><span class="pre">color_max</span></code> clip derived from the survey),
+preventing the exponential error model from producing degenerate colors
+at the faint end (the old approach produced blue-edge colors of ~ -113
+at distance_modulus ≈ 16.8 with default LSST parameters).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>distance_modulus</strong> (<em>float</em>) – Distance modulus (m − M) of the stellar population in magnitudes.</p></li>
+<li><p><strong>age</strong> (<em>float</em><em>, </em><em>optional</em>) – Isochrone age in Gigayears (Gyr).</p></li>
+<li><p><strong>metallicity</strong> (<em>float</em><em>, </em><em>optional</em>) – Isochrone metallicity as mass fraction Z.</p></li>
+<li><p><strong>distance_modulus_spread</strong> (<em>float</em><em>, </em><em>optional</em>) – Half-width of the distance modulus range to consider [mag].</p></li>
+<li><p><strong>color_spread</strong> (<em>list</em><em> of </em><em>float</em><em>, </em><em>optional</em>) – Additive color padding as [blue_side, red_side] in magnitudes.</p></li>
+<li><p><strong>error_multiplier</strong> (<em>list</em><em> of </em><em>float</em><em>, </em><em>optional</em>) – Multiplicative scaling for photometric errors as [blue_side, red_side].</p></li>
+<li><p><strong>rgb_clip_mag</strong> (<em>float</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – If provided, clips the Red Giant Branch at this magnitude offset
+from the Main Sequence Turn-Off (MSTO).</p></li>
+<li><p><strong>color_cut</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the red spline edge is additionally capped so the filter
+does not extend to very red stars (see <code class="docutils literal notranslate"><span class="pre">red_cap_mode</span></code>).</p></li>
+<li><p><strong>red_cap_mode</strong> (<em>{'error_shrunk'</em><em>, </em><em>'constant'}</em><em>, </em><em>optional</em>) – <p>How the red-edge cap behaves when <code class="docutils literal notranslate"><span class="pre">color_cut=True</span></code>:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">'error_shrunk'</span></code> (default): cap at
+<code class="docutils literal notranslate"><span class="pre">(color_max</span> <span class="pre">-</span> <span class="pre">0.25)</span> <span class="pre">-</span> <span class="pre">error(mag_far)</span></code>, so the cap moves blueward
+with the photometric error and the filter narrows (eventually
+closes) at the faint end — the historical pre-spline behaviour,
+now applied to the spline-sampled edges.  The far edge is floored
+at the near edge so the polygon stays simple instead of
+self-crossing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'constant'</span></code>: cap at <code class="docutils literal notranslate"><span class="pre">color_max</span> <span class="pre">-</span> <span class="pre">0.25</span></code> at all magnitudes.</p></li>
+</ul>
+</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Print diagnostic information.</p></li>
+<li><p><strong>error_kwargs</strong> (<em>dict</em><em>, </em><em>optional</em>) – Extra keyword arguments forwarded to <a class="reference internal" href="#streamobs.match_filter.error_model" title="streamobs.match_filter.error_model"><code class="xref py py-func docutils literal notranslate"><span class="pre">error_model()</span></code></a>.</p></li>
+<li><p><strong>survey</strong> (<em>str</em><em>, </em><em>optional</em>) – Survey name passed to the ugali isochrone factory.  Also controls
+per-survey color clip limits and absolute-magnitude cuts.</p></li>
+<li><p><strong>isochrone_model</strong> (<em>str</em><em>, </em><em>optional</em>) – Ugali isochrone model name (e.g. <code class="docutils literal notranslate"><span class="pre">'Marigo2017'</span></code>).</p></li>
+<li><p><strong>band_1</strong> (<em>str</em><em>, </em><em>optional</em>) – Bands defining the CMD: color = band_1 − band_2, magnitude = band_1.
+Defaults (<code class="docutils literal notranslate"><span class="pre">'g'</span></code>, <code class="docutils literal notranslate"><span class="pre">'r'</span></code>) preserve the historical LSST behaviour.
+For Roman pass e.g. <code class="docutils literal notranslate"><span class="pre">band_1='F106'</span></code>, <code class="docutils literal notranslate"><span class="pre">band_2='F158'</span></code>.
+Roman isochrone magnitudes are returned by ugali in Vega and are
+converted to AB here (via the <code class="docutils literal notranslate"><span class="pre">ROMAN_VEGA_TO_AB</span></code> table that the
+injection path uses), so the filter selects on the same photometric
+system as the injected catalogs.</p></li>
+<li><p><strong>band_2</strong> (<em>str</em><em>, </em><em>optional</em>) – Bands defining the CMD: color = band_1 − band_2, magnitude = band_1.
+Defaults (<code class="docutils literal notranslate"><span class="pre">'g'</span></code>, <code class="docutils literal notranslate"><span class="pre">'r'</span></code>) preserve the historical LSST behaviour.
+For Roman pass e.g. <code class="docutils literal notranslate"><span class="pre">band_1='F106'</span></code>, <code class="docutils literal notranslate"><span class="pre">band_2='F158'</span></code>.
+Roman isochrone magnitudes are returned by ugali in Vega and are
+converted to AB here (via the <code class="docutils literal notranslate"><span class="pre">ROMAN_VEGA_TO_AB</span></code> table that the
+injection path uses), so the filter selects on the same photometric
+system as the injected catalogs.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>polygon_vertices</strong> – Vertices of the closed polygon as (color, magnitude) pairs.
+Column 0: color (band_1 − band_2)
+Column 1: apparent band_1 magnitude
+Suitable for use with <code class="docutils literal notranslate"><span class="pre">matplotlib.path.Path.contains_points()</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray, shape (N, 2)</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Uses Marigo2017 isochrone models from the ugali package by default.</p></li>
+<li><p>The Vega→AB conversion for Roman bands is applied before any spline
+fitting, so the polygon is in the same photometric system as the data.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="streamobs.match_filter.error_model">
+<span class="sig-prename descclassname"><span class="pre">streamobs.match_filter.</span></span><span class="sig-name descname"><span class="pre">error_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">magnitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_error</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.004775486092612673</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_pivot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">28.421419633248796</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exp_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0011829218659076</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/match_filter.html#error_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.match_filter.error_model" title="Link to this definition">#</a></dt>
+<dd><p>Compute the median photometric error as a function of magnitude.</p>
+<p>Uses an exponential error model calibrated for typical survey data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>magnitude</strong> (<em>float</em><em> or </em><em>array-like</em>) – Apparent magnitude(s) for which to compute the error.</p></li>
+<li><p><strong>baseline_error</strong> (<em>float</em><em>, </em><em>optional</em>) – Constant floor of the error curve.</p></li>
+<li><p><strong>exp_pivot</strong> (<em>float</em><em>, </em><em>optional</em>) – Pivot magnitude of the exponential growth.</p></li>
+<li><p><strong>exp_scale</strong> (<em>float</em><em>, </em><em>optional</em>) – Scale length of the exponential.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Print parameter values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>error</strong> – Photometric error(s) corresponding to the input magnitude(s).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float or array-like</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="streamobs.match_filter.is_in_match_filter">
+<span class="sig-prename descclassname"><span class="pre">streamobs.match_filter.</span></span><span class="sig-name descname"><span class="pre">is_in_match_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mag_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mag_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polygon_vertices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">match_filter_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/streamobs/match_filter.html#is_in_match_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#streamobs.match_filter.is_in_match_filter" title="Link to this definition">#</a></dt>
+<dd><p>Select objects inside the matched-filter polygon.</p>
+<p><code class="docutils literal notranslate"><span class="pre">mag_1</span></code>/<code class="docutils literal notranslate"><span class="pre">mag_2</span></code> are the same two bands the polygon was built with
+(color = mag_1 − mag_2, magnitude axis = mag_1) — <code class="docutils literal notranslate"><span class="pre">'g'</span></code>/<code class="docutils literal notranslate"><span class="pre">'r'</span></code> for
+LSST, e.g. <code class="docutils literal notranslate"><span class="pre">'F106'</span></code>/<code class="docutils literal notranslate"><span class="pre">'F158'</span></code> for Roman.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mag_1</strong> (<em>array_like</em>) – Apparent magnitude in band_1.</p></li>
+<li><p><strong>mag_2</strong> (<em>array_like</em>) – Apparent magnitude in band_2.</p></li>
+<li><p><strong>polygon_vertices</strong> (<em>ndarray</em><em>, </em><em>shape</em><em> (</em><em>N</em><em>, </em><em>2</em><em>) or </em><em>None</em><em>, </em><em>optional</em>) – Pre-built polygon from <a class="reference internal" href="#streamobs.match_filter.build_match_filter" title="streamobs.match_filter.build_match_filter"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_match_filter()</span></code></a>.  If <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+<code class="docutils literal notranslate"><span class="pre">match_filter_params</span></code> must be given.</p></li>
+<li><p><strong>match_filter_params</strong> (<em>dict</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Keyword arguments forwarded to <a class="reference internal" href="#streamobs.match_filter.build_match_filter" title="streamobs.match_filter.build_match_filter"><code class="xref py py-func docutils literal notranslate"><span class="pre">build_match_filter()</span></code></a> to build
+the polygon on the fly.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Print selection statistics.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>selection_mask</strong> – <code class="docutils literal notranslate"><span class="pre">True</span></code> for objects inside the polygon.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ndarray of bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="streamobs.functions.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">streamobs.functions module</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="streamobs.model.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">streamobs.model module</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.match_filter.build_filter_splines"><code class="docutils literal notranslate"><span class="pre">build_filter_splines()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.match_filter.build_match_filter"><code class="docutils literal notranslate"><span class="pre">build_match_filter()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.match_filter.error_model"><code class="docutils literal notranslate"><span class="pre">error_model()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#streamobs.match_filter.is_in_match_filter"><code class="docutils literal notranslate"><span class="pre">is_in_match_filter()</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By DESC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, DESC.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

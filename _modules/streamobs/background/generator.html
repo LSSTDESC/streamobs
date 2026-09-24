@@ -1,0 +1,930 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>streamobs.background.generator &#8212; streamobs  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../../../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/streamobs/background/generator';</script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">streamobs  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation &amp; Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../multisurvey.html">Injecting one or many surveys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citation.html">Citation</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/tutorial_quickstart.html">Quickstart: complete stellar stream analysis pipeline</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/tutorial_generate_datamocks.html">Streamobs: generate stream mocks</a></li>
+
+
+
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/tutorial_inject_stream.html">Injecting stream mocks into a survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/multisurvey_cmd.html">Multi-survey CMDs: LSST + Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Surveys supported</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../surveys/DES.html">DES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../surveys/DELVE.html">DELVE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../surveys/LSST.html">LSST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../surveys/Roman.html">Roman</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Background generation</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../background.html">Background generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../background_light.html">Light method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../background_injection.html">Injection method</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../column_convention.html">Output column convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data.html">StreamObs Data Files</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../../streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../../streamobs.background.html">streamobs.background package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../streamobs.background.background.html">streamobs.background.background module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../streamobs.background.catalog_injector.html">streamobs.background.catalog_injector module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../streamobs.background.generator.html">streamobs.background.generator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../streamobs.background.resource_builder.html">streamobs.background.resource_builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../streamobs.background.storage.html">streamobs.background.storage module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.columns.html">streamobs.columns module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.match_filter.html">streamobs.match_filter module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.model.html">streamobs.model module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.observed.html">streamobs.observed module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.plotting.html">streamobs.plotting module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.samplers.html">streamobs.samplers module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.surveys.html">streamobs.surveys module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../streamobs.utils.html">streamobs.utils module</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Creating survey products</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../new_survey.html">Adding a New Photometric Survey</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../selection_function_methodology.html">Selection-Function Derivation Methodology</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../balrog_selection_functions.html">Selection functions from Balrog (DECam surveys)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../roman_dc2.html">Roman DC2 Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../roman_hlwas.html">Roman HLWAS Survey Files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../product_verification.html">Product verification — <code class="docutils literal notranslate"><span class="pre">des/yr6</span></code> and <code class="docutils literal notranslate"><span class="pre">delve/dr3_gold</span></code></a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">For developers</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../modifying_streamobs.html">Contributing to StreamObs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../update_data.html">Update StreamObs data base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../build_background_resources.html">Building background resources</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for streamobs.background.generator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Fast per-pixel background generation from precomputed CMD grids.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">coord</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">astropy.units</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">u</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">healpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..columns</span><span class="w"> </span><span class="kn">import</span> <span class="n">obs_col</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..surveys</span><span class="w"> </span><span class="kn">import</span> <span class="n">Survey</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">canonical_survey_bands</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackgroundStorage</span>
+
+
+<div class="viewcode-block" id="LightBackgroundGenerator">
+<a class="viewcode-back" href="../../../streamobs.background.generator.html#streamobs.background.generator.LightBackgroundGenerator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LightBackgroundGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate background catalogs rapidly from precomputed CMD histogram grids.</span>
+
+<span class="sd">    For each HEALPix pixel in the requested sky region the generator:</span>
+
+<span class="sd">    1. Retrieves the effective magnitude limit (observed maglim minus dust extinction).</span>
+<span class="sd">    2. Bilinearly interpolates the CMD histogram grid at that effective maglim</span>
+<span class="sd">       (taking into account the dust absorption in each band).</span>
+<span class="sd">    3. Scales the reference object count to the pixel area via a Poisson draw.</span>
+<span class="sd">    4. Samples ``(color, mag)`` pairs from the 2-D histogram.</span>
+<span class="sd">    5. Samples sky positions uniformly within the pixel.</span>
+
+<span class="sd">    Stars and galaxies are handled independently so that users can build</span>
+<span class="sd">    custom mixed background models.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    storage : BackgroundStorage</span>
+<span class="sd">        Storage backend holding the precomputed CMD grids.</span>
+<span class="sd">    survey : Survey</span>
+<span class="sd">        Survey with real (non-uniform) HEALPix magnitude limit maps used to</span>
+<span class="sd">        look up per-pixel depth.</span>
+<span class="sd">    bands : tuple of str, optional</span>
+<span class="sd">        ``(band_g, band_r)`` — must match the bands used when building resources.</span>
+<span class="sd">        Default ``(&#39;g&#39;, &#39;r&#39;)``.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Reserved for future use.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; gen = LightBackgroundGenerator(storage, survey, bands=(&#39;g&#39;, &#39;r&#39;))</span>
+<span class="sd">    &gt;&gt;&gt; catalog, meta = gen.generate(</span>
+<span class="sd">    ...     phi1_limits=(-20, 20),</span>
+<span class="sd">    ...     phi2_limits=(-2, 2),</span>
+<span class="sd">    ...     gc_frame=frame,</span>
+<span class="sd">    ...     nside=4096,</span>
+<span class="sd">    ...     source_type=&#39;both&#39;,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">storage</span><span class="p">:</span> <span class="n">BackgroundStorage</span><span class="p">,</span>
+        <span class="n">surveys</span><span class="p">,</span>  <span class="c1"># Survey or list of Survey</span>
+        <span class="n">bands</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">),</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">storage</span> <span class="o">=</span> <span class="n">storage</span>
+
+        <span class="c1"># Normalize to list</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">surveys</span><span class="p">,</span> <span class="n">Survey</span><span class="p">):</span>
+            <span class="n">surveys_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">surveys</span><span class="p">,</span> <span class="n">surveys</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">surveys</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">surveys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">surveys_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">surveys</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">surveys</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">surveys</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">surveys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">surveys_list</span> <span class="o">=</span> <span class="n">surveys</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;surveys must be a Survey instance or a list of 1 or 2 Survey instances.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Sort (survey, band) pairs to canonical order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surveys_canonical</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands_canonical</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">canonical_survey_bands</span><span class="p">(</span>
+            <span class="n">surveys_list</span><span class="p">,</span> <span class="n">bands</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Lazy cache: {source_type: grid_dict}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="LightBackgroundGenerator.generate">
+<a class="viewcode-back" href="../../../streamobs.background.generator.html#streamobs.background.generator.LightBackgroundGenerator.generate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">phi1_limits</span><span class="p">,</span>
+        <span class="n">phi2_limits</span><span class="p">,</span>
+        <span class="n">gc_frame</span><span class="p">,</span>
+        <span class="n">nside</span><span class="o">=</span><span class="mi">4096</span><span class="p">,</span>
+        <span class="n">source_type</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a background catalog for the given sky region.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        phi1_limits : tuple of float</span>
+<span class="sd">            ``(phi1_min, phi1_max)`` in degrees.</span>
+<span class="sd">        phi2_limits : tuple of float</span>
+<span class="sd">            ``(phi2_min, phi2_max)`` in degrees.</span>
+<span class="sd">        gc_frame : gala.coordinates.GreatCircleICRSFrame</span>
+<span class="sd">            Great-circle frame mapping ``(phi1, phi2)`` to ``(RA, Dec)``.</span>
+<span class="sd">        nside : int, optional</span>
+<span class="sd">            HEALPix resolution. Default ``4096``.</span>
+<span class="sd">        source_type : str, optional</span>
+<span class="sd">            ``&#39;stars&#39;``, ``&#39;galaxies&#39;``, or ``&#39;both&#39;``. Default ``&#39;both&#39;``.</span>
+<span class="sd">        **kwargs</span>
+<span class="sd">            rng : numpy.random.Generator, optional</span>
+<span class="sd">            seed : int, optional</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of (pd.DataFrame, dict)</span>
+<span class="sd">            Background catalog with columns ``phi1``, ``phi2``,</span>
+<span class="sd">            ``mag_{band_r}`` (e.g. ``mag_r``), ``mag_{band_g}`` (e.g. ``mag_g``),</span>
+<span class="sd">            and ``source_type``; plus a metadata dict with keys ``nside``,</span>
+<span class="sd">            ``color_edges``, ``mag_edges``, ``band1``, ``band2``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rng</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;rng&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rng</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;seed&quot;</span><span class="p">))</span>
+
+        <span class="c1"># Cap nside to the resolution of the magnitude-limit maps.</span>
+        <span class="c1"># There&#39;s no benefit to sampling positions at sub-pixel resolution relative to the depth maps.</span>
+        <span class="n">maglim_nsides</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">surveys_canonical</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands_canonical</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">maglim_maps</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">maglim_nsides</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">b</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">maglim_nsides</span><span class="p">:</span>
+            <span class="n">maglim_nside</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">maglim_nsides</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nside</span> <span class="o">&gt;</span> <span class="n">maglim_nside</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Requested nside=</span><span class="si">{</span><span class="n">nside</span><span class="si">}</span><span class="s2"> exceeds the magnitude-limit map &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;resolution (nside=</span><span class="si">{</span><span class="n">maglim_nside</span><span class="si">}</span><span class="s2">). &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Capping to nside=</span><span class="si">{</span><span class="n">maglim_nside</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
+                    <span class="ne">UserWarning</span><span class="p">,</span>
+                    <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">nside</span> <span class="o">=</span> <span class="n">maglim_nside</span>
+
+        <span class="n">active</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;stars&quot;</span><span class="p">,</span> <span class="s2">&quot;galaxies&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">source_type</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span> <span class="k">else</span> <span class="p">[</span><span class="n">source_type</span><span class="p">]</span>
+
+        <span class="n">catalogs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">active</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_one_type</span><span class="p">(</span>
+                <span class="n">phi1_limits</span><span class="p">,</span> <span class="n">phi2_limits</span><span class="p">,</span> <span class="n">gc_frame</span><span class="p">,</span> <span class="n">st</span><span class="p">,</span> <span class="n">nside</span><span class="p">,</span> <span class="n">rng</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">catalogs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+
+        <span class="n">b1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands_canonical</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">b2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands_canonical</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">ns1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surveys_canonical</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">namespace</span>
+        <span class="n">ns2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surveys_canonical</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">namespace</span>
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">obs_col</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">ns1</span><span class="p">),</span> <span class="n">obs_col</span><span class="p">(</span><span class="n">b2</span><span class="p">,</span> <span class="n">ns2</span><span class="p">)</span>
+
+        <span class="n">catalog</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">catalogs</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">catalogs</span>
+            <span class="k">else</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">,</span> <span class="s2">&quot;dec&quot;</span><span class="p">,</span> <span class="s2">&quot;phi1&quot;</span><span class="p">,</span> <span class="s2">&quot;phi2&quot;</span><span class="p">,</span> <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="s2">&quot;source_type&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;nside&quot;</span><span class="p">:</span> <span class="n">nside</span><span class="p">,</span>
+            <span class="s2">&quot;namespaces&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">ns1</span><span class="p">,</span> <span class="n">ns2</span><span class="p">],</span>
+            <span class="s2">&quot;band1&quot;</span><span class="p">:</span> <span class="n">b1</span><span class="p">,</span>
+            <span class="s2">&quot;band2&quot;</span><span class="p">:</span> <span class="n">b2</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">active</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">st</span><span class="p">):</span>
+                <span class="n">first</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">[</span><span class="n">st</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+                <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;color_edges&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first</span><span class="p">[</span><span class="s2">&quot;color_edges&quot;</span><span class="p">]</span>
+                <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;mag_edges&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first</span><span class="p">[</span><span class="s2">&quot;mag_edges&quot;</span><span class="p">]</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">catalog</span><span class="p">,</span> <span class="n">meta</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load_resources</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load CMD grid for *source_type* from storage and cache it.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">source_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">[</span><span class="n">source_type</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">storage</span><span class="o">.</span><span class="n">load_all</span><span class="p">(</span>
+                <span class="n">source_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands_canonical</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_generate_one_type</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">phi1_limits</span><span class="p">,</span>
+        <span class="n">phi2_limits</span><span class="p">,</span>
+        <span class="n">gc_frame</span><span class="p">,</span>
+        <span class="n">source_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">nside</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate objects of a single source type, pixel by pixel.</span>
+
+<span class="sd">        All pixel positions are collected in (ra, dec) space first, then a</span>
+<span class="sd">        single batched gala coordinate transform converts them to (phi1, phi2).</span>
+<span class="sd">        This avoids per-pixel transform overhead.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_resources</span><span class="p">(</span><span class="n">source_type</span><span class="p">)</span>
+
+        <span class="n">pixels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_footprint_pixels</span><span class="p">(</span><span class="n">phi1_limits</span><span class="p">,</span> <span class="n">phi2_limits</span><span class="p">,</span> <span class="n">gc_frame</span><span class="p">,</span> <span class="n">nside</span><span class="p">)</span>
+        <span class="n">b1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands_canonical</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># color band</span>
+        <span class="n">b2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands_canonical</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># reference band</span>
+        <span class="n">ns1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surveys_canonical</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">namespace</span>
+        <span class="n">ns2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surveys_canonical</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">namespace</span>
+        <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span> <span class="o">=</span> <span class="n">obs_col</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">ns1</span><span class="p">),</span> <span class="n">obs_col</span><span class="p">(</span><span class="n">b2</span><span class="p">,</span> <span class="n">ns2</span><span class="p">)</span>
+        <span class="n">empty</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ra&quot;</span><span class="p">,</span> <span class="s2">&quot;dec&quot;</span><span class="p">,</span> <span class="s2">&quot;phi1&quot;</span><span class="p">,</span> <span class="s2">&quot;phi2&quot;</span><span class="p">,</span> <span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">,</span> <span class="s2">&quot;source_type&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pixels</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">empty</span>
+
+        <span class="n">pixel_area_deg2</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">nside2pixarea</span><span class="p">(</span><span class="n">nside</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># b2 is the reference (magnitude) band; b1 is the color (secondary) band.</span>
+        <span class="c1"># Grid keys are (maglim_b2, maglim_b1), matching how storage was built.</span>
+        <span class="n">maglim_b2_eff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_effective_maglim</span><span class="p">(</span><span class="n">pixels</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nside</span><span class="p">)</span>
+        <span class="n">maglim_b1_eff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_effective_maglim</span><span class="p">(</span><span class="n">pixels</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nside</span><span class="p">)</span>
+
+        <span class="c1"># Accumulate samples; defer gala transform to a single batch call</span>
+        <span class="n">all_ra</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">all_dec</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">all_col2</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># reference-band magnitudes</span>
+        <span class="n">all_col1</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># color-band magnitudes</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pixel</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pixels</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">maglim_b2_eff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">maglim_b1_eff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">maglim_b2_eff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">maglim_b1_eff</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">maglim_b2_eff</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">maglim_b1_eff</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                <span class="k">continue</span>
+
+            <span class="n">cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolate_cmd</span><span class="p">(</span>
+                <span class="nb">float</span><span class="p">(</span><span class="n">maglim_b2_eff</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">maglim_b1_eff</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">source_type</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">cmd</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cmd</span><span class="p">[</span><span class="s2">&quot;cmd_hist&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Scale the pixel&#39;s expected object count from the reference area to the pixel area.</span>
+            <span class="n">n_objects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_n_objects</span><span class="p">(</span>
+                <span class="n">cmd</span><span class="p">[</span><span class="s2">&quot;cmd_hist&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">pixel_area_deg2</span><span class="p">,</span> <span class="n">rng</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">n_objects</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Sample (color, mag) pairs from the 2-D CMD histogram and sample positions within the pixel.</span>
+            <span class="n">df_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_from_cmd</span><span class="p">(</span>
+                <span class="n">cmd</span><span class="p">[</span><span class="s2">&quot;cmd_hist&quot;</span><span class="p">],</span> <span class="n">cmd</span><span class="p">[</span><span class="s2">&quot;color_edges&quot;</span><span class="p">],</span> <span class="n">cmd</span><span class="p">[</span><span class="s2">&quot;mag_edges&quot;</span><span class="p">],</span> <span class="n">n_objects</span><span class="p">,</span> <span class="n">rng</span>
+            <span class="p">)</span>
+            <span class="n">ra_pix</span><span class="p">,</span> <span class="n">dec_pix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_positions</span><span class="p">(</span><span class="n">n_objects</span><span class="p">,</span> <span class="n">pixel</span><span class="p">,</span> <span class="n">nside</span><span class="p">,</span> <span class="n">rng</span><span class="p">)</span>
+
+            <span class="n">all_ra</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ra_pix</span><span class="p">)</span>
+            <span class="n">all_dec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dec_pix</span><span class="p">)</span>
+            <span class="n">all_col2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df_cmd</span><span class="p">[</span><span class="s2">&quot;mag&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+            <span class="n">all_col1</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">df_cmd</span><span class="p">[</span><span class="s2">&quot;mag&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df_cmd</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">all_ra</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">empty</span>
+
+        <span class="n">ra_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">all_ra</span><span class="p">)</span>
+        <span class="n">dec_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">all_dec</span><span class="p">)</span>
+
+        <span class="c1"># Single batched coordinate transform for all pixels combined</span>
+        <span class="n">sky</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">SkyCoord</span><span class="p">(</span><span class="n">ra</span><span class="o">=</span><span class="n">ra_all</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">dec</span><span class="o">=</span><span class="n">dec_all</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;icrs&quot;</span><span class="p">)</span>
+        <span class="n">gc_coords</span> <span class="o">=</span> <span class="n">sky</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">gc_frame</span><span class="p">)</span>
+        <span class="n">phi1_all</span> <span class="o">=</span> <span class="n">gc_coords</span><span class="o">.</span><span class="n">phi1</span><span class="o">.</span><span class="n">deg</span>
+        <span class="n">phi2_all</span> <span class="o">=</span> <span class="n">gc_coords</span><span class="o">.</span><span class="n">phi2</span><span class="o">.</span><span class="n">deg</span>
+
+        <span class="c1"># hp.query_polygon with inclusive=True returns pixels that merely touch</span>
+        <span class="c1"># the box boundary, so sampled positions can fall outside the limits.</span>
+        <span class="c1"># Filter to the exact requested region here.</span>
+        <span class="n">phi1_min</span><span class="p">,</span> <span class="n">phi1_max</span> <span class="o">=</span> <span class="n">phi1_limits</span>
+        <span class="n">phi2_min</span><span class="p">,</span> <span class="n">phi2_max</span> <span class="o">=</span> <span class="n">phi2_limits</span>
+        <span class="n">in_box</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">phi1_all</span> <span class="o">&gt;=</span> <span class="n">phi1_min</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">phi1_all</span> <span class="o">&lt;=</span> <span class="n">phi1_max</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">phi2_all</span> <span class="o">&gt;=</span> <span class="n">phi2_min</span><span class="p">)</span>
+            <span class="o">&amp;</span> <span class="p">(</span><span class="n">phi2_all</span> <span class="o">&lt;=</span> <span class="n">phi2_max</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">col2_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">all_col2</span><span class="p">)</span>
+        <span class="n">col1_all</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">all_col1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">in_box</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">empty</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;ra&quot;</span><span class="p">:</span> <span class="n">ra_all</span><span class="p">[</span><span class="n">in_box</span><span class="p">],</span>
+                <span class="s2">&quot;dec&quot;</span><span class="p">:</span> <span class="n">dec_all</span><span class="p">[</span><span class="n">in_box</span><span class="p">],</span>
+                <span class="s2">&quot;phi1&quot;</span><span class="p">:</span> <span class="n">phi1_all</span><span class="p">[</span><span class="n">in_box</span><span class="p">],</span>
+                <span class="s2">&quot;phi2&quot;</span><span class="p">:</span> <span class="n">phi2_all</span><span class="p">[</span><span class="n">in_box</span><span class="p">],</span>
+                <span class="n">col2</span><span class="p">:</span> <span class="n">col2_all</span><span class="p">[</span><span class="n">in_box</span><span class="p">],</span>
+                <span class="n">col1</span><span class="p">:</span> <span class="n">col1_all</span><span class="p">[</span><span class="n">in_box</span><span class="p">],</span>
+                <span class="s2">&quot;source_type&quot;</span><span class="p">:</span> <span class="n">source_type</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_footprint_pixels</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">phi1_limits</span><span class="p">,</span>
+        <span class="n">phi2_limits</span><span class="p">,</span>
+        <span class="n">gc_frame</span><span class="p">,</span>
+        <span class="n">nside</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return HEALPix pixel indices covering the ``(phi1, phi2)`` bounding box.&quot;&quot;&quot;</span>
+        <span class="n">phi1_min</span><span class="p">,</span> <span class="n">phi1_max</span> <span class="o">=</span> <span class="n">phi1_limits</span>
+        <span class="n">phi2_min</span><span class="p">,</span> <span class="n">phi2_max</span> <span class="o">=</span> <span class="n">phi2_limits</span>
+
+        <span class="c1"># 4 corners of the (phi1, phi2) box, listed counterclockwise</span>
+        <span class="n">phi1_corners</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">phi1_min</span><span class="p">,</span> <span class="n">phi1_max</span><span class="p">,</span> <span class="n">phi1_max</span><span class="p">,</span> <span class="n">phi1_min</span><span class="p">])</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+        <span class="n">phi2_corners</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">phi2_min</span><span class="p">,</span> <span class="n">phi2_min</span><span class="p">,</span> <span class="n">phi2_max</span><span class="p">,</span> <span class="n">phi2_max</span><span class="p">])</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">deg</span>
+        <span class="n">stream_coords</span> <span class="o">=</span> <span class="n">coord</span><span class="o">.</span><span class="n">SkyCoord</span><span class="p">(</span>
+            <span class="n">phi1</span><span class="o">=</span><span class="n">phi1_corners</span><span class="p">,</span> <span class="n">phi2</span><span class="o">=</span><span class="n">phi2_corners</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">gc_frame</span>
+        <span class="p">)</span>
+        <span class="n">icrs</span> <span class="o">=</span> <span class="n">stream_coords</span><span class="o">.</span><span class="n">icrs</span>
+        <span class="n">ra_corners</span> <span class="o">=</span> <span class="n">icrs</span><span class="o">.</span><span class="n">ra</span><span class="o">.</span><span class="n">deg</span>
+        <span class="n">dec_corners</span> <span class="o">=</span> <span class="n">icrs</span><span class="o">.</span><span class="n">dec</span><span class="o">.</span><span class="n">deg</span>
+
+        <span class="c1"># hp.ang2vec returns (N, 3) — shape expected by query_polygon</span>
+        <span class="n">vecs</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ang2vec</span><span class="p">(</span><span class="n">ra_corners</span><span class="p">,</span> <span class="n">dec_corners</span><span class="p">,</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">hp</span><span class="o">.</span><span class="n">query_polygon</span><span class="p">(</span><span class="n">nside</span><span class="p">,</span> <span class="n">vecs</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_effective_maglim</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pixels</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">pair_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">nside</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute effective magnitude limit for each pixel.</span>
+
+<span class="sd">        ``maglim_eff = maglim_obs - A_band``  (dust reduces the effective depth).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pair_index : int</span>
+<span class="sd">            Index into ``self.surveys_canonical`` / ``self.bands_canonical`` (0 or 1).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">survey</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">surveys_canonical</span><span class="p">[</span><span class="n">pair_index</span><span class="p">]</span>
+        <span class="n">band</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bands_canonical</span><span class="p">[</span><span class="n">pair_index</span><span class="p">]</span>
+        <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">pix2ang</span><span class="p">(</span><span class="n">nside</span><span class="p">,</span> <span class="n">pixels</span><span class="p">,</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Maglim — re-pixelise to the survey map&#39;s nside if different</span>
+        <span class="n">maglim_map</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">maglim_maps</span><span class="p">[</span><span class="n">band</span><span class="p">]</span>
+        <span class="n">nside_maglim</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="n">maglim_map</span><span class="p">)</span>
+        <span class="n">pix_maglim</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ang2pix</span><span class="p">(</span><span class="n">nside_maglim</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">maglim</span> <span class="o">=</span> <span class="n">maglim_map</span><span class="p">[</span><span class="n">pix_maglim</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="c1"># Extinction</span>
+        <span class="k">if</span> <span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">band</span> <span class="ow">in</span> <span class="n">survey</span><span class="o">.</span><span class="n">coeff_extinc</span><span class="p">:</span>
+            <span class="n">nside_ebv</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">get_nside</span><span class="p">(</span><span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span><span class="p">)</span>
+            <span class="n">pix_ebv</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ang2pix</span><span class="p">(</span><span class="n">nside_ebv</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">extinction</span> <span class="o">=</span> <span class="n">survey</span><span class="o">.</span><span class="n">coeff_extinc</span><span class="p">[</span><span class="n">band</span><span class="p">]</span> <span class="o">*</span> <span class="n">survey</span><span class="o">.</span><span class="n">ebv_map</span><span class="p">[</span><span class="n">pix_ebv</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">extinction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">maglim</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">maglim</span> <span class="o">-</span> <span class="n">extinction</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_interpolate_cmd</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">maglim_b2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">maglim_b1</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">source_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Bilinear interpolation of CMD histogram in ``(maglim_b2, maglim_b1)`` space.</span>
+
+<span class="sd">        ``maglim_b2`` is the effective limit for the reference band (``bands[1]``);</span>
+<span class="sd">        ``maglim_b1`` for the color band (``bands[0]``).  Grid keys follow the</span>
+<span class="sd">        same convention as :class:`BackgroundStorage`: ``(maglim_b2, maglim_b1)``.</span>
+
+<span class="sd">        All grid points share the same bin edges, so per-bin linear weighting</span>
+<span class="sd">        is valid. The result is clipped to ≥ 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resources</span><span class="p">[</span><span class="n">source_type</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">grid</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">r_vals</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">mr</span> <span class="k">for</span> <span class="p">(</span><span class="n">mr</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">))</span>
+        <span class="n">g_vals</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">mg</span> <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">mg</span><span class="p">)</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">))</span>
+
+        <span class="c1"># Clamp to grid range</span>
+        <span class="n">maglim_b2</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">maglim_b2</span><span class="p">,</span> <span class="n">r_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">r_vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">maglim_b1</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">maglim_b1</span><span class="p">,</span> <span class="n">g_vals</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">g_vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="c1"># Bracket in b2 (first key axis)</span>
+        <span class="n">r1_idx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">r_vals</span><span class="p">,</span> <span class="n">maglim_b2</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">r2_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">r_vals</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r1_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span> <span class="o">=</span> <span class="n">r_vals</span><span class="p">[</span><span class="n">r1_idx</span><span class="p">],</span> <span class="n">r_vals</span><span class="p">[</span><span class="n">r2_idx</span><span class="p">]</span>
+        <span class="n">wr</span> <span class="o">=</span> <span class="p">(</span><span class="n">maglim_b2</span> <span class="o">-</span> <span class="n">r1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">r2</span> <span class="o">-</span> <span class="n">r1</span><span class="p">)</span> <span class="k">if</span> <span class="n">r2</span> <span class="o">!=</span> <span class="n">r1</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Bracket in b1 (second key axis)</span>
+        <span class="n">g1_idx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">g_vals</span><span class="p">,</span> <span class="n">maglim_b1</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">g2_idx</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">g_vals</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">g1_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span> <span class="o">=</span> <span class="n">g_vals</span><span class="p">[</span><span class="n">g1_idx</span><span class="p">],</span> <span class="n">g_vals</span><span class="p">[</span><span class="n">g2_idx</span><span class="p">]</span>
+        <span class="n">wg</span> <span class="o">=</span> <span class="p">(</span><span class="n">maglim_b1</span> <span class="o">-</span> <span class="n">g1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">g2</span> <span class="o">-</span> <span class="n">g1</span><span class="p">)</span> <span class="k">if</span> <span class="n">g2</span> <span class="o">!=</span> <span class="n">g1</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Bilinear weights for 4 corners</span>
+        <span class="n">corners</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">wr</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">wg</span><span class="p">),</span> <span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">g1</span><span class="p">)),</span>
+            <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">wr</span><span class="p">)</span> <span class="o">*</span> <span class="n">wg</span><span class="p">,</span> <span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">g2</span><span class="p">)),</span>
+            <span class="p">(</span><span class="n">wr</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">wg</span><span class="p">),</span> <span class="p">(</span><span class="n">r2</span><span class="p">,</span> <span class="n">g1</span><span class="p">)),</span>
+            <span class="p">(</span><span class="n">wr</span> <span class="o">*</span> <span class="n">wg</span><span class="p">,</span> <span class="p">(</span><span class="n">r2</span><span class="p">,</span> <span class="n">g2</span><span class="p">)),</span>
+        <span class="p">]</span>
+
+        <span class="n">H_interp</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">w_total</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">first_key</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">corners</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">grid</span> <span class="ow">or</span> <span class="n">w</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">H_interp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">H_interp</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;cmd_hist&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">w</span>
+                <span class="n">first_key</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">H_interp</span> <span class="o">=</span> <span class="n">H_interp</span> <span class="o">+</span> <span class="n">grid</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;cmd_hist&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">w</span>
+            <span class="n">w_total</span> <span class="o">+=</span> <span class="n">w</span>
+
+        <span class="k">if</span> <span class="n">H_interp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Re-normalise weights if some corners were missing</span>
+        <span class="k">if</span> <span class="n">w_total</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">w_total</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-9</span><span class="p">:</span>
+            <span class="n">H_interp</span> <span class="o">/=</span> <span class="n">w_total</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;cmd_hist&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">H_interp</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s2">&quot;color_edges&quot;</span><span class="p">:</span> <span class="n">grid</span><span class="p">[</span><span class="n">first_key</span><span class="p">][</span><span class="s2">&quot;color_edges&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;mag_edges&quot;</span><span class="p">:</span> <span class="n">grid</span><span class="p">[</span><span class="n">first_key</span><span class="p">][</span><span class="s2">&quot;mag_edges&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_scale_n_objects</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_per_deg2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">pixel_area_deg2</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Poisson draw for the expected object count in one pixel.</span>
+
+<span class="sd">        ``n_per_deg2`` is ``cmd_hist.sum()`` — the CMD density (objects per deg²)</span>
+<span class="sd">        at this effective maglim.  Multiply by pixel area to get expected count.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">n_per_deg2</span> <span class="o">*</span> <span class="n">pixel_area_deg2</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sample_from_cmd</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cmd_hist</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">color_edges</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">mag_edges</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">n_objects</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Draw ``n_objects`` (color, mag) pairs from the 2-D CMD histogram.</span>
+
+<span class="sd">        Returns a DataFrame with columns ``color`` and ``mag``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">cmd_hist</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">total</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">n_objects</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([]),</span> <span class="s2">&quot;mag&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])})</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="n">cmd_hist</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">/</span> <span class="n">total</span>
+        <span class="n">flat_idx</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="n">n_objects</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">i_color</span><span class="p">,</span> <span class="n">i_mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">flat_idx</span><span class="p">,</span> <span class="n">cmd_hist</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="c1"># Uniform sample within each selected bin cell</span>
+        <span class="n">dc</span> <span class="o">=</span> <span class="n">color_edges</span><span class="p">[</span><span class="n">i_color</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">color_edges</span><span class="p">[</span><span class="n">i_color</span><span class="p">]</span>
+        <span class="n">dm</span> <span class="o">=</span> <span class="n">mag_edges</span><span class="p">[</span><span class="n">i_mag</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">mag_edges</span><span class="p">[</span><span class="n">i_mag</span><span class="p">]</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="n">color_edges</span><span class="p">[</span><span class="n">i_color</span><span class="p">]</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">n_objects</span><span class="p">)</span> <span class="o">*</span> <span class="n">dc</span>
+        <span class="n">mag</span> <span class="o">=</span> <span class="n">mag_edges</span><span class="p">[</span><span class="n">i_mag</span><span class="p">]</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">n_objects</span><span class="p">)</span> <span class="o">*</span> <span class="n">dm</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">,</span> <span class="s2">&quot;mag&quot;</span><span class="p">:</span> <span class="n">mag</span><span class="p">})</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sample_positions</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_objects</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">pixel</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">nside</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">rng</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">Generator</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sample ``n_objects`` (RA, Dec) positions uniformly within a HEALPix pixel.</span>
+
+<span class="sd">        Uses rejection sampling in the pixel&#39;s bounding box with sin(dec) weighting</span>
+<span class="sd">        for uniform-on-sphere distribution.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ra, dec : np.ndarray</span>
+<span class="sd">            Arrays of length ``n_objects`` in degrees.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vecs</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">boundaries</span><span class="p">(</span><span class="n">nside</span><span class="p">,</span> <span class="n">pixel</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (3, 4)</span>
+        <span class="n">corner_ra</span><span class="p">,</span> <span class="n">corner_dec</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">vec2ang</span><span class="p">(</span><span class="n">vecs</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">corner_ra</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">corner_ra</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">:</span>
+            <span class="n">corner_ra</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">corner_ra</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">,</span> <span class="n">corner_ra</span> <span class="o">-</span> <span class="mi">360</span><span class="p">,</span> <span class="n">corner_ra</span><span class="p">)</span>
+
+        <span class="n">ra_min</span><span class="p">,</span> <span class="n">ra_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">corner_ra</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span> <span class="nb">float</span><span class="p">(</span><span class="n">corner_ra</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="n">dec_min</span><span class="p">,</span> <span class="n">dec_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">corner_dec</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span> <span class="nb">float</span><span class="p">(</span><span class="n">corner_dec</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="n">sin_dec_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">dec_min</span><span class="p">))</span>
+        <span class="n">sin_dec_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">deg2rad</span><span class="p">(</span><span class="n">dec_max</span><span class="p">))</span>
+
+        <span class="n">accepted_ra</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">accepted_dec</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">n_objects</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">accepted_ra</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n_objects</span><span class="p">:</span>
+            <span class="n">batch_ra</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">ra_min</span><span class="p">,</span> <span class="n">ra_max</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span> <span class="o">%</span> <span class="mf">360.0</span>
+            <span class="n">sin_dec</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">sin_dec_min</span><span class="p">,</span> <span class="n">sin_dec_max</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+            <span class="n">batch_dec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">sin_dec</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)))</span>
+            <span class="n">pix_test</span> <span class="o">=</span> <span class="n">hp</span><span class="o">.</span><span class="n">ang2pix</span><span class="p">(</span><span class="n">nside</span><span class="p">,</span> <span class="n">batch_ra</span><span class="p">,</span> <span class="n">batch_dec</span><span class="p">,</span> <span class="n">lonlat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">pix_test</span> <span class="o">==</span> <span class="n">pixel</span>
+            <span class="n">accepted_ra</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">batch_ra</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+            <span class="n">accepted_dec</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">batch_dec</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">accepted_ra</span><span class="p">[:</span><span class="n">n_objects</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">accepted_dec</span><span class="p">[:</span><span class="n">n_objects</span><span class="p">])</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By DESC
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, DESC.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

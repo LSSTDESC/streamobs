@@ -186,7 +186,17 @@
 <li class="toctree-l1"><a class="reference internal" href="data.html">StreamObs Data Files</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="modules.html">Content</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="streamobs.html">streamobs package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="streamobs.background.html">streamobs.background package</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l4"><a class="reference internal" href="streamobs.background.background.html">streamobs.background.background module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="streamobs.background.catalog_injector.html">streamobs.background.catalog_injector module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="streamobs.background.generator.html">streamobs.background.generator module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="streamobs.background.resource_builder.html">streamobs.background.resource_builder module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="streamobs.background.storage.html">streamobs.background.storage module</a></li>
+</ul>
+</details></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.columns.html">streamobs.columns module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.functions.html">streamobs.functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="streamobs.match_filter.html">streamobs.match_filter module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.model.html">streamobs.model module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.observed.html">streamobs.observed module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="streamobs.plotting.html">streamobs.plotting module</a></li>
@@ -353,11 +363,25 @@ document.write(`
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="streamobs.background.background.html#streamobs.background.background.Background">Background (class in streamobs.background.background)</a>
+</li>
+      <li><a href="streamobs.background.catalog_injector.html#streamobs.background.catalog_injector.BackgroundCatalogInjector">BackgroundCatalogInjector (class in streamobs.background.catalog_injector)</a>
+</li>
       <li><a href="streamobs.model.html#streamobs.model.BackgroundModel">BackgroundModel (class in streamobs.model)</a>
+</li>
+      <li><a href="streamobs.background.resource_builder.html#streamobs.background.resource_builder.BackgroundResourceBuilder">BackgroundResourceBuilder (class in streamobs.background.resource_builder)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="streamobs.background.storage.html#streamobs.background.storage.BackgroundStorage">BackgroundStorage (class in streamobs.background.storage)</a>
+</li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.bands">bands (streamobs.surveys.Survey attribute)</a>
+</li>
+      <li><a href="streamobs.background.resource_builder.html#streamobs.background.resource_builder.BackgroundResourceBuilder.build">build() (streamobs.background.resource_builder.BackgroundResourceBuilder method)</a>
+</li>
+      <li><a href="streamobs.match_filter.html#streamobs.match_filter.build_filter_splines">build_filter_splines() (in module streamobs.match_filter)</a>
+</li>
+      <li><a href="streamobs.match_filter.html#streamobs.match_filter.build_match_filter">build_match_filter() (in module streamobs.match_filter)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -417,6 +441,14 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.ebv_map">ebv_map (streamobs.surveys.Survey attribute)</a>
 </li>
+      <li><a href="streamobs.columns.html#streamobs.columns.err_col">err_col() (in module streamobs.columns)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="streamobs.match_filter.html#streamobs.match_filter.error_model">error_model() (in module streamobs.match_filter)</a>
+</li>
+      <li><a href="streamobs.background.storage.html#streamobs.background.storage.BackgroundStorage.exists">exists() (streamobs.background.storage.BackgroundStorage method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -427,9 +459,11 @@ document.write(`
 </li>
       <li><a href="streamobs.samplers.html#streamobs.samplers.FileInterpolationSampler">FileInterpolationSampler (class in streamobs.samplers)</a>
 </li>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.FileLinearDensityCubicSplineInterpolationSampler">FileLinearDensityCubicSplineInterpolationSampler (class in streamobs.samplers)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="streamobs.samplers.html#streamobs.samplers.FileLinearDensityCubicSplineInterpolationSampler">FileLinearDensityCubicSplineInterpolationSampler (class in streamobs.samplers)</a>
+      <li><a href="streamobs.columns.html#streamobs.columns.flag_col">flag_col() (in module streamobs.columns)</a>
 </li>
       <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.fluxToMag">fluxToMag() (streamobs.observed.StreamInjector static method)</a>
 </li>
@@ -443,6 +477,12 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.samplers.html#streamobs.samplers.GaussianSampler">GaussianSampler (class in streamobs.samplers)</a>
 </li>
+      <li><a href="streamobs.background.background.html#streamobs.background.background.Background.generate">generate() (streamobs.background.background.Background method)</a>
+
+      <ul>
+        <li><a href="streamobs.background.generator.html#streamobs.background.generator.LightBackgroundGenerator.generate">(streamobs.background.generator.LightBackgroundGenerator method)</a>
+</li>
+      </ul></li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.get_classification_efficiency">get_classification_efficiency() (streamobs.surveys.Survey method)</a>
 </li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.get_completeness">get_completeness() (streamobs.surveys.Survey method)</a>
@@ -461,6 +501,8 @@ document.write(`
 </li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.get_maglim">get_maglim() (streamobs.surveys.Survey method)</a>
 </li>
+      <li><a href="streamobs.background.storage.html#streamobs.background.storage.BackgroundStorage.get_path">get_path() (streamobs.background.storage.BackgroundStorage method)</a>
+</li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.get_photo_error">get_photo_error() (streamobs.surveys.Survey method)</a>
 </li>
       <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.getFluxError">getFluxError() (streamobs.observed.StreamInjector static method)</a>
@@ -473,11 +515,17 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.inject">inject() (streamobs.observed.StreamInjector method)</a>
 </li>
-      <li><a href="streamobs.samplers.html#streamobs.samplers.InterpolationSampler">InterpolationSampler (class in streamobs.samplers)</a>
+      <li><a href="streamobs.background.catalog_injector.html#streamobs.background.catalog_injector.BackgroundCatalogInjector.inject_galaxies">inject_galaxies() (streamobs.background.catalog_injector.BackgroundCatalogInjector method)</a>
+</li>
+      <li><a href="streamobs.background.catalog_injector.html#streamobs.background.catalog_injector.BackgroundCatalogInjector.inject_stars">inject_stars() (streamobs.background.catalog_injector.BackgroundCatalogInjector method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="streamobs.samplers.html#streamobs.samplers.InterpolationSampler">InterpolationSampler (class in streamobs.samplers)</a>
+</li>
       <li><a href="streamobs.samplers.html#streamobs.samplers.inverse_transform_sample">inverse_transform_sample() (in module streamobs.samplers)</a>
+</li>
+      <li><a href="streamobs.match_filter.html#streamobs.match_filter.is_in_match_filter">is_in_match_filter() (in module streamobs.match_filter)</a>
 </li>
       <li><a href="streamobs.model.html#streamobs.model.IsochroneModel">IsochroneModel (class in streamobs.model)</a>
 </li>
@@ -487,6 +535,8 @@ document.write(`
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="streamobs.background.generator.html#streamobs.background.generator.LightBackgroundGenerator">LightBackgroundGenerator (class in streamobs.background.generator)</a>
+</li>
       <li><a href="streamobs.functions.html#streamobs.functions.Line">Line (class in streamobs.functions)</a>
 </li>
       <li><a href="streamobs.samplers.html#streamobs.samplers.LinearDensityCubicSplineInterpolationSampler">LinearDensityCubicSplineInterpolationSampler (class in streamobs.samplers)</a>
@@ -495,11 +545,19 @@ document.write(`
 </li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.list_cached_surveys">list_cached_surveys() (streamobs.surveys.SurveyFactory class method)</a>
 </li>
+      <li><a href="streamobs.background.resource_builder.html#streamobs.background.resource_builder.BackgroundResourceBuilder.load">load() (streamobs.background.resource_builder.BackgroundResourceBuilder class method)</a>
+
+      <ul>
+        <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.load">(streamobs.surveys.Survey class method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.load">load() (streamobs.surveys.Survey class method)</a>
+      <li><a href="streamobs.background.storage.html#streamobs.background.storage.BackgroundStorage.load_all">load_all() (streamobs.background.storage.BackgroundStorage method)</a>
 </li>
       <li><a href="streamobs.utils.html#streamobs.utils.load_catalog">load_catalog() (in module streamobs.utils)</a>
+</li>
+      <li><a href="streamobs.background.storage.html#streamobs.background.storage.BackgroundStorage.load_data">load_data() (streamobs.background.storage.BackgroundStorage method)</a>
 </li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.log_photo_error">log_photo_error (streamobs.surveys.Survey property)</a>
 </li>
@@ -525,7 +583,23 @@ document.write(`
       <ul>
         <li><a href="streamobs.html#module-streamobs">streamobs</a>
 </li>
+        <li><a href="streamobs.background.html#module-streamobs.background">streamobs.background</a>
+</li>
+        <li><a href="streamobs.background.background.html#module-streamobs.background.background">streamobs.background.background</a>
+</li>
+        <li><a href="streamobs.background.catalog_injector.html#module-streamobs.background.catalog_injector">streamobs.background.catalog_injector</a>
+</li>
+        <li><a href="streamobs.background.generator.html#module-streamobs.background.generator">streamobs.background.generator</a>
+</li>
+        <li><a href="streamobs.background.resource_builder.html#module-streamobs.background.resource_builder">streamobs.background.resource_builder</a>
+</li>
+        <li><a href="streamobs.background.storage.html#module-streamobs.background.storage">streamobs.background.storage</a>
+</li>
+        <li><a href="streamobs.columns.html#module-streamobs.columns">streamobs.columns</a>
+</li>
         <li><a href="streamobs.functions.html#module-streamobs.functions">streamobs.functions</a>
+</li>
+        <li><a href="streamobs.match_filter.html#module-streamobs.match_filter">streamobs.match_filter</a>
 </li>
         <li><a href="streamobs.model.html#module-streamobs.model">streamobs.model</a>
 </li>
@@ -558,6 +632,10 @@ document.write(`
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="streamobs.columns.html#streamobs.columns.obs_col">obs_col() (in module streamobs.columns)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.open_map_sparse">open_map_sparse() (streamobs.surveys.SurveyFactory static method)</a>
 </li>
   </ul></td>
@@ -568,16 +646,18 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.utils.html#streamobs.utils.parse_config">parse_config() (in module streamobs.utils)</a>
 </li>
+      <li><a href="streamobs.columns.html#streamobs.columns.perfect_flag_col">perfect_flag_col() (in module streamobs.columns)</a>
+</li>
       <li><a href="streamobs.observed.html#streamobs.observed.StreamInjector.phi_to_radec">phi_to_radec() (streamobs.observed.StreamInjector method)</a>
 </li>
       <li><a href="streamobs.plotting.html#streamobs.plotting.plot_healpix_counts">plot_healpix_counts() (in module streamobs.plotting)</a>
 </li>
       <li><a href="streamobs.plotting.html#streamobs.plotting.plot_inject">plot_inject() (in module streamobs.plotting)</a>
 </li>
-      <li><a href="streamobs.plotting.html#streamobs.plotting.plot_stream">plot_stream() (in module streamobs.plotting)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="streamobs.plotting.html#streamobs.plotting.plot_stream">plot_stream() (in module streamobs.plotting)</a>
+</li>
       <li><a href="streamobs.plotting.html#streamobs.plotting.plot_stream_in_mask">plot_stream_in_mask() (in module streamobs.plotting)</a>
 
       <ul>
@@ -626,6 +706,10 @@ document.write(`
 </li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.Survey.saturation">saturation (streamobs.surveys.Survey attribute)</a>
 </li>
+      <li><a href="streamobs.background.resource_builder.html#streamobs.background.resource_builder.BackgroundResourceBuilder.save">save() (streamobs.background.resource_builder.BackgroundResourceBuilder method)</a>
+</li>
+      <li><a href="streamobs.background.storage.html#streamobs.background.storage.BackgroundStorage.save_data">save_data() (streamobs.background.storage.BackgroundStorage method)</a>
+</li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.set_completeness">set_completeness() (streamobs.surveys.SurveyFactory static method)</a>
 </li>
       <li><a href="streamobs.surveys.html#streamobs.surveys.SurveyFactory.set_photo_error">set_photo_error() (streamobs.surveys.SurveyFactory static method)</a>
@@ -647,13 +731,69 @@ document.write(`
         <li><a href="streamobs.html#module-streamobs">module</a>
 </li>
       </ul></li>
+      <li>
+    streamobs.background
+
+      <ul>
+        <li><a href="streamobs.background.html#module-streamobs.background">module</a>
+</li>
+      </ul></li>
+      <li>
+    streamobs.background.background
+
+      <ul>
+        <li><a href="streamobs.background.background.html#module-streamobs.background.background">module</a>
+</li>
+      </ul></li>
+      <li>
+    streamobs.background.catalog_injector
+
+      <ul>
+        <li><a href="streamobs.background.catalog_injector.html#module-streamobs.background.catalog_injector">module</a>
+</li>
+      </ul></li>
+      <li>
+    streamobs.background.generator
+
+      <ul>
+        <li><a href="streamobs.background.generator.html#module-streamobs.background.generator">module</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    streamobs.background.resource_builder
+
+      <ul>
+        <li><a href="streamobs.background.resource_builder.html#module-streamobs.background.resource_builder">module</a>
+</li>
+      </ul></li>
+      <li>
+    streamobs.background.storage
+
+      <ul>
+        <li><a href="streamobs.background.storage.html#module-streamobs.background.storage">module</a>
+</li>
+      </ul></li>
+      <li>
+    streamobs.columns
+
+      <ul>
+        <li><a href="streamobs.columns.html#module-streamobs.columns">module</a>
+</li>
+      </ul></li>
       <li>
     streamobs.functions
 
       <ul>
         <li><a href="streamobs.functions.html#module-streamobs.functions">module</a>
+</li>
+      </ul></li>
+      <li>
+    streamobs.match_filter
+
+      <ul>
+        <li><a href="streamobs.match_filter.html#module-streamobs.match_filter">module</a>
 </li>
       </ul></li>
       <li>
@@ -715,6 +855,10 @@ document.write(`
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="streamobs.model.html#streamobs.model.TrackModel">TrackModel (class in streamobs.model)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="streamobs.columns.html#streamobs.columns.true_col">true_col() (in module streamobs.columns)</a>
 </li>
   </ul></td>
 </tr></table>
