@@ -149,11 +149,15 @@ Current releases, with the resolution and format of their maglim maps:
 | `lsst_dp2/` | LSST DP2 | g, r | nside 128, `.hsp` |
 | `roman_dc2/` | Roman DC2 | F106, F129, F158 | nside 128, `.fits.gz` |
 | `roman_hlwas_wide/`, `_medium/`, `_all/` | Roman HLWAS tiers | F158 (F106 for `_all`) | nside 128, `.fits.gz` |
+| `euclid_q1/` | Euclid Q1 (EDF-N/F/S at Wide depth) | VIS, Y, J, H | nside 128, `.fits.gz` |
+| `euclid_dr1/` | Euclid DR1 footprint, uniform Wide depth | VIS, Y, J, H | nside 128, `.fits.gz` |
 
 The DECam releases (`des_yr6`, `delve_dr3_gold`) are derived from Balrog
 synthetic-source injections — see {doc}`surveys/DES`, {doc}`surveys/DELVE` and
 {doc}`balrog_selection_functions`. The LSST and Roman releases are described in
-{doc}`surveys/LSST` and {doc}`surveys/Roman`.
+{doc}`surveys/LSST` and {doc}`surveys/Roman`; the Euclid releases, derived from
+the Q1 MER catalogue and the ECDFS spectroscopic truth compilation, in
+{doc}`surveys/Euclid`.
 
 Additional surveys can be added by placing their products in a new
 subdirectory — see {doc}`new_survey`.

@@ -11,6 +11,7 @@ It now supports the following surveys (and corresponding data releases):
 - **DELVE**: DR3 Gold
 - **LSST**: DC2, DP2, and expected properties for Y1, Y2, Y3, Y4, and Y5 built on the [Baseline_v5.0.0 simulation](https://survey-strategy.lsst.io/baseline/index.html)
 - **ROMAN**: DC2, and expected properties for HLWAS_all, HLWAS_medium, and HLWAS_wide
+- **Euclid**: Q1 (deep-field pass at Wide depth, where the selection function is derived) and DR1 (the DR1 footprint at the fiducial Wide depth)
 
 What StreamObs Does
 -------------------
@@ -101,6 +102,7 @@ Documentation Contents
    surveys/DELVE
    surveys/LSST
    surveys/Roman
+   surveys/Euclid
 
 
 .. toctree::

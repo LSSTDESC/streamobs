@@ -72,6 +72,7 @@ DEPTH_BANDS = {
     "des": ["g", "r"],
     "delve": ["g", "r"],
     "roman": ["F158", "F106"],
+    "euclid": ["VIS", "H"],
 }
 # Footprints smaller than this across are plotted zoomed instead of all-sky.
 ZOOM_MAX_RADIUS_DEG = 15.0
@@ -206,7 +207,7 @@ def fig_efficiency(r):
 
     ax.axvline(0.0, color="0.5", lw=0.9, ls=":")
     ax.text(0.02, 0.30, "maglim", fontsize=8, color="0.45", rotation=90)
-    ax.set_xlabel(rf"$\Delta$mag = mag$_{ref}^{{\rm true}}$ $-$ maglim$_{ref}$")
+    ax.set_xlabel(rf"$\Delta$mag = mag$_{{\mathrm{{{ref}}}}}^{{\rm true}}$ $-$ maglim$_{{\mathrm{{{ref}}}}}$")
     ax.set_ylabel("efficiency")
     ax.set_ylim(-0.02, 1.12)
     ax.set_xlim(max(eff["delta_mag"].min(), -8.5), min(eff["delta_mag"].max(), 2.5))
@@ -276,7 +277,7 @@ def fig_photoerror(r):
         color="0.4",
     )
     ax.axvline(0.0, color="0.5", lw=0.9, ls=":")
-    ax.set_xlabel(rf"$\Delta$mag = mag$_{ref}^{{\rm true}}$ $-$ maglim$_{ref}$")
+    ax.set_xlabel(rf"$\Delta$mag = mag$_{{\mathrm{{{ref}}}}}^{{\rm true}}$ $-$ maglim$_{{\mathrm{{{ref}}}}}$")
     ax.set_ylabel(r"$\sigma_{\rm mag}$")
     sub = (
         "solid: reference band, conditioned on detection.  "

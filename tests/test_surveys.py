@@ -227,6 +227,45 @@ SURVEY_REGISTRY = [
         # on the truth-anchored depth scale, so SNR=10 falls at -0.41, not -0.75.
         "snr10_delta_mag": -0.42,
     },
+    # Euclid Q1 — the release the Euclid selection function is derived on:
+    # depth maps from the MER catalogue's own reported errors, anchored to the
+    # Wide-survey 5-sigma point-source depths; efficiency / misclassification
+    # from the ECDFS spectroscopic truth compilation; VIS is the reference band
+    # and Y/J/H are forced (TEMPLFIT) photometry. Same two-curve overrides as
+    # the truth-anchored releases.
+    #
+    # bright_completeness_threshold: detection x classification sits at
+    # 0.86-0.95 over I_E 17.75-21 (the 17.75 bin is partly saturated and the
+    # truth stars carry an ~3% match/flag loss), so the 0.9 default fails.
+    # skip_snr_maglim_check: the reported-error (catalog) curve reaches
+    # S/N = 10 at delta_mag +0.38 on the anchored scale -- faintward of the
+    # depth, because the anchor says the reported errors are 1.94x optimistic
+    # there (the sample curve, not the catalog one, reaches sigma = 0.217 at
+    # the depth) -- and the detection cut (reported S/N > 9.7) sits right at
+    # that crossing, so the detected-population and no-cut catalog curves have
+    # already diverged there (S/N 10.0 vs 7.9 at +0.38). No single delta_mag
+    # serves both the reference band and the forced bands, which is what this
+    # check assumes. The relation is recorded in the audit instead.
+    {
+        "survey": "euclid",
+        "release": "q1",
+        "expected_bands": ["VIS", "Y", "J", "H"],
+        "expected_maglim": ["VIS", "Y", "J", "H"],
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+        "skip_snr_maglim_check": True,
+    },
+    # Euclid DR1 — the DR1 input-coverage footprint at the uniform Wide-survey
+    # depth, carrying the euclid_q1 tables by symlink (the lsst_dp2 pattern).
+    {
+        "survey": "euclid",
+        "release": "dr1",
+        "expected_bands": ["VIS", "Y", "J", "H"],
+        "expected_maglim": ["VIS", "Y", "J", "H"],
+        "bright_completeness_threshold": 0.85,
+        "skip_faint_completeness_check": True,
+        "skip_snr_maglim_check": True,
+    },
     # Roman HLWAS tiers — skipped until per-tier config files are present
     _hlwas_entry("hlwas_wide", "hlwas_wide"),
     _hlwas_entry("hlwas_medium", "hlwas_medium"),

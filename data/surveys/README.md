@@ -99,6 +99,21 @@ Detail and derivation: `docs/source/balrog_selection_functions.md`,
 - `roman_dc2` — reference HLIS depth mock, F106/F129/F158.
 - `roman_hlwas_wide`, `_medium`, `_all` — HLWAS tiers.
 
+### Euclid
+
+- `euclid_q1` — Euclid Q1 (the three Deep Fields at nominal Wide depth, 63 deg²):
+  VIS/Y/J/H depth maps whose spatial structure is the MER catalogue's own
+  reported-error depth and whose absolute scale is anchored to the Wide-survey
+  5σ point-source depths (I_E 26.2, Y_E J_E H_E 24.5); stellar efficiency and
+  galaxy misclassification measured on the ECDFS spectroscopic truth compilation
+  (Gatto et al. 2026) with `POINT_LIKE_PROB > 0.5` as the star classifier;
+  reference band VIS (`FLUX_VIS_PSF`), forced bands Y/J/H (`FLUX_*_TEMPLFIT`).
+  The sample photo-error curve is the catalog curve scaled by the inflation
+  factor the anchor implies (1.94), not a measured truth scatter — Euclid has no
+  injection catalogue. See `docs/source/surveys/Euclid.md`.
+- `euclid_dr1` — the DR1 input-coverage footprint (~2100 deg²) at the uniform
+  Wide depth above, carrying the `euclid_q1` tables.
+
 ## Shared files
 
 - `others/ebv_sfd98_lowres_nside_512_ring_equatorial.fits` — SFD98 extinction

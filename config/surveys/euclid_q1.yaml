@@ -1,0 +1,105 @@
+# Configuration file for the survey Euclid, release Q1
+#
+# Euclid Quick Data Release 1 (Q1): 63.1 deg^2 of the three Euclid Deep Fields
+# (EDF-North, EDF-Fornax, EDF-South) observed to nominal Wide-survey depth, as
+# the MER Final Catalog (29.8M sources). This is the release the Euclid
+# selection function is DERIVED on; euclid/dr1 reuses its tables.
+#
+# Derivation: scripts/euclid/build_euclid_selection_function.py, documented in
+# docs/source/surveys/Euclid.md. Products live in data/surveys/euclid_q1/.
+name: euclid
+release: q1
+survey_files:
+    # Path to data files (leave empty for default location)
+    file_path: ''
+
+    # Band-specific magnitude limit maps, nside 128 (ring), 5-sigma point
+    # source. The spatial structure is the catalogue's own reported-error
+    # depth (per-object m5 = m + 2.5 log10(S/N / 5) for point-like sources at
+    # 20 < S/N < 60, median per pixel); the absolute scale is ANCHORED to the
+    # Euclid Wide Survey 5-sigma point-source depths of Scaramella et al. 2022
+    # (I_E 26.2, Y_E J_E H_E 24.5), to which Q1 was observed. Anchoring is
+    # needed because the MER reported errors grow as 0.2 dex/mag rather than
+    # the background-limited 0.4, so their "native" S/N = 5 depth depends on
+    # where you read it (26.6 extrapolated from S/N 20-60, 27.2 at the
+    # reported crossing) and over-shoots the delivered depth, the Roman DC2
+    # situation. Shifts applied to the catalogue-derived medians:
+    #   VIS 26.602 -> 26.200 (-0.402)   Y 24.036 -> 24.500 (+0.464)
+    #   J   24.183 -> 24.500 (+0.317)   H 24.148 -> 24.500 (+0.352)
+    # VIS is FLUX_VIS_PSF; Y/J/H are FLUX_*_TEMPLFIT (template-fit flux with
+    # the VIS detection as prior, i.e. forced photometry at the VIS position).
+    # The shipped maps cover 81.8 deg^2 of nside-128 pixels for 63.1 deg^2 of
+    # imaging: edge pixels are kept once they hold 20 point-like sources.
+    maglim_map_VIS: euclid_q1_maglim_vis_nside128.fits.gz
+    maglim_map_Y: euclid_q1_maglim_y_nside128.fits.gz
+    maglim_map_J: euclid_q1_maglim_j_nside128.fits.gz
+    maglim_map_H: euclid_q1_maglim_h_nside128.fits.gz
+
+    # Band-independent maps
+    ebv_map: ebv_sfd98_lowres_nside_512_ring_equatorial.fits
+
+    # Stellar detection + classification efficiency vs delta_mag, measured on
+    # the ECDFS spectroscopic truth compilation of Gatto et al. 2026 (4,361
+    # stars / 11,250 galaxies) matched to Q1 at 1". Detected = counterpart
+    # with a PSF flux, SPURIOUS_FLAG == 0 and reported S/N > 9.7 (= 5 x the
+    # 1.94 error-inflation factor the anchor implies, i.e. true S/N > 5);
+    # classified = POINT_LIKE_PROB > 0.5. Bins fainter than I_E = 25.75 are
+    # the S/N-threshold model, not a measurement (the compilation runs out of
+    # stars there) -- see the docs page.
+    completeness: euclid_q1_stellar_efficiency_cutvis.csv
+    completeness_band: VIS
+
+    # Galaxy misclassification: fraction of detected true galaxies with
+    # POINT_LIKE_PROB > 0.5, vs delta_mag. Spectroscopic "galaxies" at
+    # I_E ~ 21 include QSOs, which ARE point sources; the bright end is a
+    # property of the truth sample as much as of the classifier.
+    gal_misclassification: euclid_q1_galaxy_misclass_cutvis.csv
+
+    # Two-curve photometric error model (streamobs Survey.get_photo_error):
+    #   catalog = median reported PSF magerr of point-like sources -> `magerr`,
+    #             drives the S/N cut; reads sigma = 0.094 at delta_mag = 0.
+    #   sample  = catalog x 1.94 -> drives the noise draw; reads 0.182 at
+    #             delta_mag = 0 (0.217 by construction on the no-cut population,
+    #             less here because the S/N cut truncates the detected one).
+    # The 1.94 is 0.2171 / (median reported sigma at the anchored depth). It is
+    # what the anchor implies, not a measured truth scatter: Euclid has no
+    # injection catalogue and the truth compilation has no Euclid photometry.
+    log_photo_error_catalog: euclid_q1_photoerror_vis_catalog.csv
+    log_photo_error_sample: euclid_q1_photoerror_vis.csv
+    # Forced-photometry (non-reference band) curves: measured with NO S/N cut,
+    # because Y/J/H TEMPLFIT photometry is forced from the VIS detection and is
+    # not conditioned on detection in those bands. Required for any band that
+    # is not `completeness_band`.
+    log_photo_error_catalog_nocut: euclid_q1_photoerror_vis_catalog_nocut.csv
+    log_photo_error_sample_nocut: euclid_q1_photoerror_vis_nocut.csv
+
+survey_properties:
+  # ugali's `euclid` isochrone set (PARSEC CMD 3.9, "Euclid VIS+NISP (ABmags)")
+  # uses exactly these band names and is already AB, so no Vega->AB offset
+  # applies (contrast Roman).
+  bands: ['VIS', 'Y', 'J', 'H']
+
+  # Extinction coefficients per band (A_band / E(B-V)_SFD): Fitzpatrick 1999
+  # R_V = 3.1 evaluated at the SVO pivot wavelengths (7103, 10785, 13621,
+  # 17649 A) and multiplied by the Schlafly & Finkbeiner 2011 factor 0.86,
+  # which puts them on the same E(B-V)_SFD footing as the des/yr6 and
+  # delve/dr3_gold coefficients (SF11 Table 6 = 0.86 x F99). Raw F99 values:
+  # 2.081 / 1.022 / 0.691 / 0.465.
+  coeff_extinc_VIS: 1.790
+  coeff_extinc_Y: 0.879
+  coeff_extinc_J: 0.595
+  coeff_extinc_H: 0.400
+
+  # Systematic photometric error (mag), added in quadrature. The package
+  # default; not measured for Euclid (see the docs page, Known limitations).
+  sys_error: 0.005
+
+  # Saturation. VIS: POINT_LIKE_PROB is undefined for 96% of sources
+  # brighter than I_E = 17 and the point-like fraction collapses across
+  # 17.5 -> 16.5, so stars brighter than 17.5 are unclassifiable. NISP: the
+  # TEMPLFIT S/N still rises down to 16.0 and the brightest point-like stars
+  # sit at ~15.4; 15.5 is a floor, not a measured saturation.
+  saturation_VIS: 17.5
+  saturation_Y: 15.5
+  saturation_J: 15.5
+  saturation_H: 15.5
