@@ -988,6 +988,13 @@ class IsochroneModel(ConfigurableModel):
         meant to be interpolated into each survey's bands, so the same physical
         star gets consistent magnitudes across surveys.
 
+        They are drawn from a child stream spawned from ``rng``, never from
+        ``rng`` itself: catalog columns drawn with a generator of the same seed
+        (e.g. ``phi1 = default_rng(seed).uniform(...)``, then injected with
+        ``seed=seed``) would otherwise reuse the masses' random numbers, and
+        the masses would follow those columns. Each call spawns a new child,
+        so successive draws from one generator still differ.
+
         Parameters
         ----------
         nstars : int
@@ -1008,7 +1015,8 @@ class IsochroneModel(ConfigurableModel):
         grid = self.iso.sample(mass_min=mass_min, mass_steps=mass_steps)
         mass_init, mass_pdf = grid[0], grid[1]
         pdf = mass_pdf / mass_pdf.sum()
-        return rng.choice(mass_init, size=int(nstars), p=pdf)
+        (mass_rng,) = rng.spawn(1)
+        return mass_rng.choice(mass_init, size=int(nstars), p=pdf)
 
     def _build_hb_spread(self):
         """Tabulate the horizontal-branch offset of each HB mass of the grid.

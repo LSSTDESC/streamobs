@@ -367,6 +367,53 @@ class TestCompleteCatalogPermutations:
 
 
 # ---------------------------------------------------------------------------
+# Masses are independent of the stars' positions
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.model
+class TestMassIndependentOfPosition:
+    """The mass draw never follows phi1, whether phi1 is sampled by the model
+    or supplied — even drawn with the same seed as the sampling, which used to
+    replay the masses' random numbers and make mass grow along the stream."""
+
+    @staticmethod
+    def _bin_median_deviation(phi1, mass, nbins=5):
+        """Largest relative deviation of the median mass in phi1 bins."""
+        edges = np.linspace(phi1.min(), phi1.max(), nbins + 1)
+        bins = np.digitize(phi1, edges[1:-1])
+        medians = np.array([np.median(mass[bins == k]) for k in range(nbins)])
+        return np.max(np.abs(medians / np.median(mass) - 1))
+
+    @pytest.mark.parametrize("seed", [0, 42])
+    @pytest.mark.parametrize("phi1_source", ["given_same_seed", "sampled"])
+    def test_median_mass_uniform_along_phi1(
+        self, stream_config_with_distance, phi1_source, seed
+    ):
+        n = 5000
+        model = StreamModel(stream_config_with_distance)
+        if phi1_source == "sampled":
+            out = model.sample(n, seed=seed)
+        else:
+            # The user's phi1 comes from a generator with the sampling's seed,
+            # and nothing is drawn before the masses (phi2 given, no distance
+            # spread): the masses must still not follow phi1.
+            phi1 = np.random.default_rng(seed).uniform(-9.0, 9.0, n)
+            df = pd.DataFrame({"phi1": phi1, "phi2": np.zeros(n)})
+            out = model.complete_catalog(
+                df,
+                columns_to_add=["dist", "lsst_g_true", "mass"],
+                rng=np.random.default_rng(seed),
+                verbose=False,
+            )
+        # Bin medians of independent masses scatter by < 12% (5 bins of ~1000).
+        deviation = self._bin_median_deviation(
+            out["phi1"].to_numpy(), out["mass"].to_numpy()
+        )
+        assert deviation < 0.2, f"median mass varies by {deviation:.0%} along phi1"
+
+
+# ---------------------------------------------------------------------------
 # IsochroneModel — shared initial masses (user-supplied + `mass` column)
 # ---------------------------------------------------------------------------
 
@@ -739,14 +786,16 @@ class TestMultiBandIsochrone:
     # -- reproducibility (R1-R3) ----------------------------------------------
 
     def test_one_imf_draw_whatever_the_bands(self):
-        """R1: sampling draws the legacy masses (rng.choice over the mass grid)
-        and leaves the generator in the same state, for any surveys/bands."""
+        """R1: sampling makes one IMF draw (rng.choice over the mass grid) from
+        a child stream of the generator, for any surveys/bands, and leaves the
+        generator's own stream untouched."""
         iso = IsochroneModel(_des_euclid(des_bands=["g", "r", "i", "z"]))
         grid = iso.iso.sample(mass_min=iso._MASS_MIN, mass_steps=iso._MASS_STEPS)
         pdf = grid[1] / grid[1].sum()
         rng, twin = np.random.default_rng(11), np.random.default_rng(11)
         _, masses = iso.sample(1000, 16.0, rng=rng)
-        assert np.array_equal(masses, twin.choice(grid[0], size=1000, p=pdf))
+        (child,) = twin.spawn(1)
+        assert np.array_equal(masses, child.choice(grid[0], size=1000, p=pdf))
         assert rng.bit_generator.state == twin.bit_generator.state
         assert np.array_equal(
             iso.sample_masses(1000, rng=np.random.default_rng(11)), masses
