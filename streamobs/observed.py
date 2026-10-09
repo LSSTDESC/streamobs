@@ -266,6 +266,9 @@ class StreamInjector:
             - <survey>_flag_perfect_galstarsep : Boolean flag assuming perfect
               star/galaxy separation (only if perfect_galstarsep=True)
 
+            plus, when true magnitudes were sampled from ``stream_config``, the
+            shared ``mass`` column (see :meth:`complete_data`).
+
         Raises
         ------
         ValueError
@@ -617,7 +620,11 @@ class StreamInjector:
         already present is preserved; only missing columns are sampled, using
         ``stream_config`` (a :class:`~streamobs.model.StreamModel` config). The
         stellar masses are drawn **once** and interpolated into every survey's
-        bands, so the same physical star is consistent across surveys.
+        bands, so the same physical star is consistent across surveys. They are
+        returned in a ``mass`` column, which a later call on the output reuses,
+        so the bands it adds describe the same stars. When every requested true
+        magnitude is already in ``data``, no mass is drawn and no ``mass``
+        column is added.
 
         This is the same completion :meth:`inject` runs internally, exposed so
         you can build/inspect a completed catalog without injecting noise.
@@ -632,7 +639,9 @@ class StreamInjector:
             Bands whose true-magnitude columns to ensure. A
             ``{survey_name: [bands]}`` dict selects bands per survey (multi-survey
             form); a plain list/tuple is the single-survey shorthand. If omitted
-            and there is exactly one survey, defaults to ``['r', 'g']``.
+            and there is exactly one survey, defaults to ``['r', 'g']``. Missing
+            columns can be any band of the ``stream_config`` isochrone's filter
+            set, whether or not the isochrone config lists it.
         stream_config : dict, optional
             :class:`~streamobs.model.StreamModel` config used to sample any
             missing geometry / true magnitudes. Required only when something is
@@ -650,13 +659,15 @@ class StreamInjector:
         -------
         pandas.DataFrame
             A copy of the input with ``ra``/``dec`` and the requested
-            ``<survey>_<band>_true`` columns present.
+            ``<survey>_<band>_true`` columns present, plus the shared ``mass``
+            column when magnitudes were sampled.
 
         Raises
         ------
         ValueError
-            If neither (ra, dec) nor (phi1, phi2) are present, or if columns are
-            missing and ``stream_config`` is not provided.
+            If neither (ra, dec) nor (phi1, phi2) are present, if columns are
+            missing and ``stream_config`` is not provided, or if a missing band
+            is not available in the ``stream_config`` isochrone.
 
         Examples
         --------
@@ -683,9 +694,10 @@ class StreamInjector:
         # columns are preserved (only missing values are filled). ``ra``/``dec``
         # are placed using the primary survey's footprint. ``dist`` (a float or
         # per-row vector) overrides the model's distance sampling when given.
-        true_cols = []
+        true_cols = {}  # {<survey>_<band>_true: (survey namespace, band)}
         for name, name_bands in survey_bands.items():
-            true_cols += [true_col(b, name) for b in name_bands]
+            for b in name_bands:
+                true_cols[true_col(b, name)] = (name, b)
 
         have_radec = "ra" in data.columns and "dec" in data.columns
         have_phi = "phi1" in data.columns and "phi2" in data.columns
@@ -699,12 +711,20 @@ class StreamInjector:
                     "stream_config is required to sample stream geometry/magnitudes."
                 )
             stream_model = StreamModel(stream_config)
+            # The isochrone samples any band of its filter sets on demand; fail
+            # clearly on a band it cannot produce.
+            self._check_true_columns(stream_model, missing_true, true_cols)
             cols_to_add = []
             if need_phi:
                 cols_to_add += ["phi1", "phi2"]
             # `dist` is needed before magnitudes; the model fills it (from the
             # distance_modulus model or the supplied `dist`) if absent.
             cols_to_add += ["dist"] + missing_true
+            if missing_true:
+                # Keep the stars' initial masses next to the magnitudes sampled
+                # from them; a later call reuses them, so the bands it adds
+                # describe the same stars.
+                cols_to_add += ["mass"]
             data = stream_model.complete_catalog(
                 data,
                 columns_to_add=cols_to_add,
@@ -719,6 +739,34 @@ class StreamInjector:
             data = self._ensure_radec(data, rng=rng, seed=seed, **kwargs)
 
         return data
+
+    @staticmethod
+    def _check_true_columns(stream_model, columns, true_cols):
+        """Raise a ValueError if the stream model cannot sample a true column.
+
+        ``columns`` are ``<survey>_<band>_true`` names missing from the data;
+        ``true_cols`` maps each to its ``(survey namespace, band)``.
+        """
+        available = stream_model._iso_available_columns()
+        for col in columns:
+            if col in available:
+                continue
+            name, band = true_cols[col]
+            iso = stream_model.isochrone
+            if iso is None:
+                raise ValueError(
+                    f"Cannot sample '{col}': stream_config has no isochrone section."
+                )
+            bands = [b for c, (_, b) in available.items() if c == true_col(b, name)]
+            if not bands:
+                raise ValueError(
+                    f"Cannot sample '{col}': the isochrone has no survey matching "
+                    f"'{name}' (isochrone surveys: {iso.surveys})."
+                )
+            raise ValueError(
+                f"Cannot sample '{col}': band '{band}' is not available for survey "
+                f"'{name}' in the isochrone. Available bands: {bands}."
+            )
 
     def _ensure_radec(self, data, rng=None, seed=None, **kwargs):
         """Ensure ``ra``/``dec`` are present, converting from (phi1, phi2) if needed.

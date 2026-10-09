@@ -33,6 +33,14 @@ For a survey with namespace `<survey>` (= `{name}_{release}`), survey name
 
 Plus the shared, un-namespaced sky coordinates `ra`, `dec`.
 
+When true magnitudes are sampled from the isochrone (by `inject` /
+`complete_data`, or by {class}`streamobs.model.StreamModel`'s `sample()` and
+`complete_catalog()`), the catalog also carries the un-namespaced `mass`
+column: each star's initial mass, drawn from the isochrone IMF (or supplied),
+shared by every survey. Its true magnitudes in any band are a function of this
+mass alone. Catalogs that come with their own true magnitudes get no `mass`
+column.
+
 Examples (LSST loaded with `release="yr5"`, Roman with `release="dc2"`):
 `lsst_yr5_r_obs`, `lsst_yr5_g_err`, `roman_F158_true` (true mag — name only), `lsst_yr5_flag_observed`.
 

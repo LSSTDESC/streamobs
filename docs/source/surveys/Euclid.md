@@ -174,10 +174,12 @@ photo_error = survey.get_photo_error("VIS", mag, maglim)
 photo_error_H = survey.get_photo_error("H", mag_H, survey.get_maglim("H", pixel=pix))
 ```
 
-For an isochrone, `survey: euclid` with `band_1`/`band_2` from `VIS, Y, J, H`;
-the multi-survey form in {doc}`../multisurvey` works unchanged, e.g.
-`euclid_dr1: {survey: euclid, band_1: VIS, band_2: H}` next to a DES or LSST
-entry.
+For an isochrone, `survey: euclid`. The bands are sampled on demand from the
+injector's `bands` (e.g. `VIS, Y, J, H`), or listed as `bands: [VIS, H]` to set
+the ones `StreamModel` produces on its own; with none listed, that is the whole
+ugali set (`VIS Y Blue J Red H`). The multi-survey form in
+{doc}`../multisurvey` works unchanged, e.g. `euclid_dr1: {survey: euclid}` next
+to a DES or LSST entry.
 
 ## Caveats
 

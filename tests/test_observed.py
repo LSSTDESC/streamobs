@@ -8,10 +8,14 @@ The injection pipeline is tested end-to-end by calling
 the output columns, dtypes, and flag semantics.
 """
 
+import os
+
 import numpy as np
 import pandas as pd
 import pytest
 
+from streamobs.columns import err_col, obs_col, true_col
+from streamobs.model import StreamModel
 from streamobs.observed import StreamInjector
 from streamobs.surveys import Survey
 
@@ -412,6 +416,34 @@ class TestCompleteDataAndAPI:
         # Verify that we have a single column for each true magnitude, not one per survey.
         assert out[["lsst_g_true", "lsst_r_true"]].notna().all().all()
 
+    def test_complete_data_keeps_masses_for_later_bands(
+        self, mock_injector, stream_config_with_distance
+    ):
+        """Sampled true mags come with `mass`, so a band added in a later call
+        has the value a single call would have given."""
+        n = 20000  # enough stars for a few on the horizontal branch
+        df = pd.DataFrame(
+            {"ra": np.full(n, 10.0), "dec": np.zeros(n), "dist": np.full(n, 16.8)}
+        )
+        kwargs = dict(stream_config=stream_config_with_distance, verbose=False)
+        first = mock_injector.complete_data(df, bands=["g", "r"], seed=1, **kwargs)
+        assert "mass" in first.columns
+        iso = StreamModel(stream_config_with_distance).isochrone
+        assert np.count_nonzero(iso._hb_offset(first["mass"])), "no dispersed HB star"
+        later = mock_injector.complete_data(first, bands=["g", "r", "i"], **kwargs)
+        at_once = mock_injector.complete_data(
+            df, bands=["g", "r", "i"], seed=1, **kwargs
+        )
+        pd.testing.assert_frame_equal(later[at_once.columns], at_once, check_exact=True)
+
+    def test_complete_data_adds_no_mass_without_sampling(self, mock_injector):
+        """True mags supplied by the user -> no isochrone draw, no mass column."""
+        df = pd.DataFrame(
+            {"ra": [10.0], "dec": [0.0], "lsst_g_true": [20.0], "lsst_r_true": [19.5]}
+        )
+        out = mock_injector.complete_data(df, bands=["g", "r"], verbose=False)
+        assert "mass" not in out.columns
+
     def test_bands_list_rejected_for_multisurvey(self, mock_multisurvey_injector):
         """A plain list of bands is ambiguous for a multi-survey injector."""
         df = pd.DataFrame({"phi1": [0.0], "phi2": [0.0]})
@@ -428,3 +460,93 @@ class TestCompleteDataAndAPI:
         """`survey` is now a required argument of detect_flag."""
         with pytest.raises(TypeError):
             mock_injector.detect_flag(0, mag=np.array([20.0]), band="r")
+
+
+# ---------------------------------------------------------------------------
+# True magnitudes of bands the isochrone config does not list
+# ---------------------------------------------------------------------------
+
+_SURVEY_DATA = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "data", "surveys"
+)
+_skip_no_des_euclid = pytest.mark.skipif(
+    not all(
+        os.path.isdir(os.path.join(_SURVEY_DATA, d)) for d in ("des_yr6", "euclid_q1")
+    ),
+    reason="des_yr6 / euclid_q1 products not present under data/surveys/",
+)
+
+
+@pytest.fixture(scope="module")
+def des_euclid_injector():
+    return StreamInjector(
+        {
+            "des_yr6": {"survey": "des", "release": "yr6"},
+            "euclid_q1": {"survey": "euclid", "release": "q1"},
+        },
+        verbose=False,
+    )
+
+
+@pytest.mark.observed
+@_skip_no_des_euclid
+class TestOnDemandBands:
+    """The injector's `bands` alone decides which true magnitudes are sampled."""
+
+    @staticmethod
+    def _config(stream_config, surveys):
+        """Stream config whose isochrone has the given (band-less) surveys."""
+        isochrone = {"name": "Marigo2017", "age": 12.0, "z": 0.0006}
+        return {**stream_config, "isochrone": {**isochrone, "surveys": surveys}}
+
+    def test_inject_bands_not_listed_in_isochrone(
+        self, des_euclid_injector, stream_config_with_distance
+    ):
+        cfg = self._config(
+            stream_config_with_distance,
+            {"des": {"survey": "des"}, "euclid": {"survey": "euclid"}},
+        )
+        bands = {"des_yr6": ["g", "r", "i"], "euclid_q1": ["VIS", "Y", "J"]}
+        out = des_euclid_injector.inject(
+            pd.DataFrame(index=range(300)),
+            bands=bands,
+            stream_config=cfg,
+            seed=42,
+            verbose=False,
+        )
+        for name, name_bands in bands.items():
+            for b in name_bands:
+                for col in (true_col(b, name), obs_col(b, name), err_col(b, name)):
+                    assert col in out.columns, f"missing {col}"
+                assert out[true_col(b, name)].notna().all()
+        assert out["mass"].notna().all()
+
+    def test_unavailable_band_lists_available_bands(
+        self, des_euclid_injector, stream_config_with_distance
+    ):
+        """A Roman band requested for Euclid fails before any injection."""
+        cfg = self._config(
+            stream_config_with_distance,
+            {"des": {"survey": "des"}, "euclid": {"survey": "euclid"}},
+        )
+        with pytest.raises(ValueError, match=r"'F158'.*Available bands.*VIS"):
+            des_euclid_injector.inject(
+                pd.DataFrame(index=range(10)),
+                bands={"des_yr6": ["g"], "euclid_q1": ["VIS", "F158"]},
+                stream_config=cfg,
+                seed=1,
+                verbose=False,
+            )
+
+    def test_survey_missing_from_isochrone_raises(
+        self, des_euclid_injector, stream_config_with_distance
+    ):
+        cfg = self._config(stream_config_with_distance, {"des": {"survey": "des"}})
+        with pytest.raises(ValueError, match="no survey matching 'euclid_q1'"):
+            des_euclid_injector.inject(
+                pd.DataFrame(index=range(10)),
+                bands={"des_yr6": ["g"], "euclid_q1": ["VIS"]},
+                stream_config=cfg,
+                seed=1,
+                verbose=False,
+            )

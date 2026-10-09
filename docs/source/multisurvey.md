@@ -63,11 +63,12 @@ A plain list is rejected for a multi-survey injector (it is ambiguous), and a
 `df` may already contain `ra`/`dec` or `phi1`/`phi2`, may be a fully empty frame
 of length *N*, or any subset — anything missing is sampled from `stream_config`
 (see *Completing a catalog* below). The output carries shared
-`ra`/`dec` plus, **per survey**, the namespaced columns described in
+`ra`/`dec` (and, when true magnitudes were sampled, the stars' `mass`) plus,
+**per survey**, the namespaced columns described in
 [Output column convention](column_convention.md):
 
 ```
-ra, dec,
+ra, dec, mass,
 lsst_dc2_r_true,  lsst_dc2_r_obs,  lsst_dc2_r_err,  lsst_dc2_g_true, ..., lsst_dc2_flag_observed,
 roman_dc2_F106_true, roman_dc2_F106_obs, ..., roman_dc2_flag_observed
 ```
@@ -102,8 +103,8 @@ stream:
     age: 12.0
     z: 0.0006
     surveys:
-      lsst_dc2:  {survey: lsst,  band_1: g,    band_2: r}
-      roman_dc2: {survey: roman, band_1: F106, band_2: F158}
+      lsst_dc2:  {survey: lsst}
+      roman_dc2: {survey: roman}
 ```
 
 ```{important}
@@ -121,9 +122,31 @@ namespace — and keeps one consistent vocabulary across the config. Here the
 inner `survey:` is the *ugali* filter set, which never carries a release.
 ```
 
-A single-survey isochrone (the flat `survey`/`band_1`/`band_2` form, optionally
-with `release:`) is just the one-survey case of the same machinery and produces
+A single-survey isochrone (the flat `survey: ...` form, optionally with
+`release:`) is just the one-survey case of the same machinery and produces
 `<namespace>_<band>_true` identically.
+
+### Which bands are sampled
+
+The isochrone can produce **any band of each survey's filter set** (ugali's
+list, e.g. `u g r i z Y` for `des`, `VIS Y Blue J Red H` for `euclid`), so bands
+never have to be listed twice: the injector's `bands` argument alone decides
+which `<name>_<band>_true` columns are sampled, and a survey entry may name no
+band at all, as above. Requesting a band the filter set does not have (e.g. the
+Roman `F158` for `euclid`) raises a `ValueError` listing the available bands.
+
+A survey entry can still list its bands. They are its *default* bands, the
+ones `StreamModel.sample()` and `complete_catalog()` produce when used without
+the injector:
+
+```yaml
+    surveys:
+      lsst_dc2:  {survey: lsst, bands: [g, r, i]}
+      roman_dc2: {survey: roman, band_1: F106, band_2: F158}  # legacy pair, still accepted
+```
+
+Give either `bands` or the legacy `band_1`/`band_2` pair, not both. An entry
+with neither defaults to every band of its filter set.
 
 A complete, runnable example — the surveys, per-survey bands, the multi-survey
 isochrone, and the shared stream geometry — is provided as a *scene* config in
@@ -193,15 +216,34 @@ mutually colour-consistent).
 
 ### Stellar masses (the `mass` column)
 
-When an isochrone is configured, the shared **initial masses** drawn for the stars
-are surfaced as a single un-namespaced `mass` column (one mass per star, shared by
-all surveys — the same physical star). You can also go the other way and supply
+When true magnitudes are sampled from the isochrone, the shared **initial
+masses** drawn for the stars are surfaced as a single un-namespaced `mass` column
+(one mass per star, shared by all surveys — the same physical star), in the
+output of `inject`/`complete_data` as in that of `StreamModel.sample()` /
+`complete_catalog()`. You can also go the other way and supply
 your own masses: pass a fully-populated `mass` column in the input catalog and the
 isochrone uses *those* masses instead of drawing fresh ones, so the sampled
 magnitudes reproduce your simulation's exact stars. At the model level
 {meth}`streamobs.model.IsochroneModel.sample` accepts a `masses=`
 array and returns the masses it used. The mass grid resolution is controlled by
 `IsochroneModel._MASS_STEPS` (default 4000) and a per-call `mass_steps=` override.
+
+### Horizontal-branch spread
+
+ugali spreads the horizontal branch (HB) in luminosity (`hb_spread`: ±0.1 mag
+in 0.025 mag steps for `Marigo2017`). streamobs keeps this spread as a fixed
+function of the initial mass: each HB mass of the sampling grid has one of
+ugali's offsets, all offsets being equally represented. The HB spans over a
+thousand grid masses, so the stars of a sample practically never share one and
+the spread is in effect per star. The offset is added to every band of every
+survey, since it is a luminosity spread of the same physical star, so HB
+colours are those of the isochrone.
+
+Magnitudes therefore depend on the initial mass alone, which makes completion
+reproducible: when the `mass` column is fully present, the completion reuses
+it, so a band added by a later call (`complete_data`/`inject` on the output, or
+`complete_catalog`) gets exactly the values it would have had if sampled with
+the others.
 
 ## S/N cut ownership
 
