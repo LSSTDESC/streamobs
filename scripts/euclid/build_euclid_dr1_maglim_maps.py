@@ -82,9 +82,15 @@ def coverage_fraction(nside_out):
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--min-frac", type=float, default=0.5,
-                    help="coarse pixel is covered when its covered fraction is >= this (default 0.5)")
+    ap = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    ap.add_argument(
+        "--min-frac",
+        type=float,
+        default=0.5,
+        help="coarse pixel is covered when its covered fraction is >= this (default 0.5)",
+    )
     ap.add_argument("--figdir", default=None, help="write a footprint figure here")
     args = ap.parse_args()
 
@@ -96,7 +102,9 @@ def main():
     pixarea = hp.nside2pixarea(NSIDE, degrees=True)
     print(f"DR1 covered area from fractions: {frac.sum() * pixarea:.1f} deg^2")
     covered = frac >= max(args.min_frac, 1e-9)
-    print(f"covered pixels at nside {NSIDE} with frac >= {args.min_frac}: {covered.sum()} = {covered.sum() * pixarea:.1f} deg^2")
+    print(
+        f"covered pixels at nside {NSIDE} with frac >= {args.min_frac}: {covered.sum()} = {covered.sum() * pixarea:.1f} deg^2"
+    )
 
     for b in BANDS:
         m = np.where(covered, depth[b], hp.UNSEEN).astype(np.float32)
@@ -107,14 +115,18 @@ def main():
     for csv in TABLES:
         src, dst = Q1_DIR / csv, OUT / csv
         if not src.exists():
-            raise FileNotFoundError(f"{src} missing -- run build_euclid_selection_function.py first")
+            raise FileNotFoundError(
+                f"{src} missing -- run build_euclid_selection_function.py first"
+            )
         if os.path.islink(dst):
             if os.readlink(dst) != os.path.relpath(src, OUT):
                 dst.unlink()
                 os.symlink(os.path.relpath(src, OUT), dst)
             print(f"  linked {csv}")
         elif dst.exists():
-            raise FileExistsError(f"{dst} exists and is not a symlink -- resolve manually")
+            raise FileExistsError(
+                f"{dst} exists and is not a symlink -- resolve manually"
+            )
         else:
             os.symlink(os.path.relpath(src, OUT), dst)
             print(f"  symlinked {csv} -> ../euclid_q1/{csv}")
@@ -144,8 +156,19 @@ def main():
         figdir.mkdir(parents=True, exist_ok=True)
         fig = plt.figure(figsize=(11, 5.2))
         shown = np.where(covered, frac, np.nan)
-        hp.mollview(shown, fig=fig.number, coord=["C"], title="", cbar=False, flip="astro",
-                    badcolor="white", cmap="viridis", min=0, max=1, notext=True)
+        hp.mollview(
+            shown,
+            fig=fig.number,
+            coord=["C"],
+            title="",
+            cbar=False,
+            flip="astro",
+            badcolor="white",
+            cmap="viridis",
+            min=0,
+            max=1,
+            notext=True,
+        )
         hp.graticule(dpar=30, dmer=60, alpha=0.3)
         plt.title(
             f"Euclid DR1 input coverage on the nside-{NSIDE} grid: {covered.sum() * pixarea:.0f} deg$^2$ "

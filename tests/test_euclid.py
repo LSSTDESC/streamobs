@@ -26,7 +26,9 @@ import os
 import numpy as np
 import pytest
 
-_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "surveys")
+_DATA = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "data", "surveys"
+)
 
 
 def _has_products(release):
@@ -40,7 +42,8 @@ _skip_no_q1 = pytest.mark.skipif(
     not _has_products("q1"), reason="euclid_q1 products not present under data/surveys/"
 )
 _skip_no_dr1 = pytest.mark.skipif(
-    not _has_products("dr1"), reason="euclid_dr1 products not present under data/surveys/"
+    not _has_products("dr1"),
+    reason="euclid_dr1 products not present under data/surveys/",
 )
 
 
@@ -139,17 +142,22 @@ class TestEuclidQ1Survey:
         are optimistic at the depth, so the noise draw must exceed `magerr`."""
         grid = np.arange(-6.0, 0.0, 0.25)
         ratio = 10 ** (
-            euclid_q1.log_photo_error_sample(grid) - euclid_q1.log_photo_error_catalog(grid)
+            euclid_q1.log_photo_error_sample(grid)
+            - euclid_q1.log_photo_error_catalog(grid)
         )
         assert np.all(ratio > 1.5) and np.all(ratio < 2.5)
-        assert np.allclose(ratio, ratio[0], rtol=1e-3), "constant factor by construction"
+        assert np.allclose(
+            ratio, ratio[0], rtol=1e-3
+        ), "constant factor by construction"
 
     @_skip_no_q1
     def test_classification_collapses_faintward(self, euclid_q1):
         """POINT_LIKE_PROB loses the stars near the depth; detection does not."""
         maglim = 26.2
         det = euclid_q1.get_detection_efficiency("VIS", np.array([22.0, 25.25]), maglim)
-        cls = euclid_q1.get_classification_efficiency("VIS", np.array([22.0, 25.25]), maglim)
+        cls = euclid_q1.get_classification_efficiency(
+            "VIS", np.array([22.0, 25.25]), maglim
+        )
         assert det[0] > 0.9 and det[1] > 0.85
         assert cls[0] > 0.9 and cls[1] < 0.3
 
@@ -198,7 +206,9 @@ class TestEuclidIsochrone:
         h = np.asarray(mags[("euclid_q1", "H")], dtype=float)
         assert np.all(np.isfinite(vis)) and np.all(np.isfinite(h))
         colour = vis - h
-        assert -0.5 < np.median(colour) < 2.0, "VIS - H out of range for an old population"
+        assert (
+            -0.5 < np.median(colour) < 2.0
+        ), "VIS - H out of range for an old population"
         assert np.min(vis) > 16.8 - 4.0 and np.max(vis) < 16.8 + 14.0
 
 
@@ -233,7 +243,10 @@ class TestEuclidQ1Injection:
             flag_col("euclid_q1"),
         ):
             assert col in out.columns, f"missing {col} after inject()"
-        assert np.allclose(out[true_col("VIS", "euclid_q1")].values, df[true_col("VIS", "euclid_q1")].values)
+        assert np.allclose(
+            out[true_col("VIS", "euclid_q1")].values,
+            df[true_col("VIS", "euclid_q1")].values,
+        )
         errs = out[err_col("H", "euclid_q1")].to_numpy(dtype=float)
         assert np.any(np.isfinite(errs)) and np.all(errs[np.isfinite(errs)] > 0)
 
@@ -263,7 +276,11 @@ class TestEuclidDR1Survey:
     @_skip_no_q1
     def test_shares_q1_tables(self, euclid_q1, euclid_dr1):
         grid = np.arange(-6.0, 0.5, 0.5)
-        assert np.allclose(euclid_q1.completeness(grid), euclid_dr1.completeness(grid), equal_nan=True)
         assert np.allclose(
-            euclid_q1.log_photo_error_catalog(grid), euclid_dr1.log_photo_error_catalog(grid), equal_nan=True
+            euclid_q1.completeness(grid), euclid_dr1.completeness(grid), equal_nan=True
+        )
+        assert np.allclose(
+            euclid_q1.log_photo_error_catalog(grid),
+            euclid_dr1.log_photo_error_catalog(grid),
+            equal_nan=True,
         )

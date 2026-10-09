@@ -304,16 +304,20 @@ class TestStreamInjectorBehavior:
             )
 
         bad = sampled == "BAD_MAG"
-        assert 0 < bad.sum() < sampled.size, "expected both negative and positive fluxes"
+        assert (
+            0 < bad.sum() < sampled.size
+        ), "expected both negative and positive fluxes"
         magnitudes = pd.to_numeric(sampled[~bad])
         assert np.all(np.isfinite(magnitudes))
 
         # Positive fluxes convert exactly as fluxToMag does.
-        flux = StreamInjector.magToFlux(apparent_mag) + np.random.default_rng(11).normal(
-            scale=mock_injector.getFluxError(apparent_mag, mag_err)
-        )
+        flux = StreamInjector.magToFlux(apparent_mag) + np.random.default_rng(
+            11
+        ).normal(scale=mock_injector.getFluxError(apparent_mag, mag_err))
         np.testing.assert_array_equal(bad, flux <= 0.0)
-        np.testing.assert_allclose(magnitudes, StreamInjector.fluxToMag(flux[flux > 0.0]))
+        np.testing.assert_allclose(
+            magnitudes, StreamInjector.fluxToMag(flux[flux > 0.0])
+        )
 
     def test_injection_reproducibility(
         self, mock_injector, stream_catalog, seed, verbose
