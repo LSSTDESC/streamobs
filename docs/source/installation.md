@@ -75,6 +75,10 @@ ValueError: Probabilities contain NaN
 
 The fix for this landed on `main` after the 1.8.0 tag, so a git install is
 required until a newer release is published.
+
+streamobs needs ugali ≥ 1.9, which provides the Euclid and Roman filter sets
+and converts the Vega-based Roman isochrones to AB. With an older version,
+building an isochrone raises an `ImportError` giving the command above.
 :::
 
 ## Optional Dependencies

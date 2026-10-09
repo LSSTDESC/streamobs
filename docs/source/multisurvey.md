@@ -143,11 +143,11 @@ cat = inj.inject(
 ```
 
 ```{note}
-**Roman bands are converted Vega→AB automatically.** `ugali` returns Roman
-isochrone magnitudes in Vega while the catalogs are AB, so `IsochroneModel`
-applies a fixed per-band offset (`streamobs.model.ROMAN_VEGA_TO_AB`) to every
-Roman band unconditionally. Non-Roman bands pass through unchanged; there is no
-config flag.
+**Roman bands are converted Vega→AB automatically.** The PARSEC Roman
+isochrone files are in Vega while the catalogs are AB, so `ugali` (>= 1.9)
+applies a fixed per-band offset (listed in `streamobs.model.ROMAN_VEGA_TO_AB`)
+to every Roman band when it reads them, and `IsochroneModel` adds nothing on
+top. Non-Roman bands pass through unchanged; there is no config flag.
 ```
 
 ```{note}

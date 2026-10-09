@@ -20,7 +20,8 @@ sources). `euclid/dr1` reuses its tables on the DR1 footprint, the way
 
 Band names follow the ugali `euclid` isochrone set (PARSEC CMD 3.9, *Euclid
 VIS+NISP (ABmags)*): `VIS`, `Y`, `J`, `H`. The isochrones are already AB, so
-unlike Roman no Vega→AB offset is applied.
+unlike Roman (whose Vega files ugali converts when reading them) no Vega→AB
+offset is applied.
 
 ## Products
 

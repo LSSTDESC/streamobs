@@ -13,15 +13,15 @@ from streamobs.columns import true_col
 from streamobs.functions import function_factory
 from streamobs.samplers import sampler_factory
 
-# Roman ugali isochrones are delivered in Vega magnitudes, but our catalogs are
-# AB. These are the per-band AB - Vega offsets (AB = Vega + diff) for the Roman
-# WFI filters — the mode of the by-chip zeropoints from the Roman technical
-# information (Roman_zeropoints_20240301.ecsv), as used by the
-# rubin_roman_object_classification prototype. The conversion is applied
-# unconditionally to any Roman band (a no-op for non-Roman bands).
+# Per-band AB - Vega offsets (AB = Vega + diff) for the Roman WFI filters — the
+# mode of the by-chip zeropoints from the Roman technical information
+# (Roman_zeropoints_20240301.ecsv), as used by the
+# rubin_roman_object_classification prototype.
 #
-# TODO: this Vega->AB conversion really belongs in ugali, so isochrones are
-# returned natively in AB. Move it upstream and delete this table once that lands.
+# Kept for reference only: the PARSEC Roman isochrone files are in Vega, and
+# ugali >= 1.9 applies these same offsets when it reads them
+# (``ugali.isochrone.parsec.vega_to_ab_dict``), so the isochrones streamobs
+# receives are already AB and streamobs applies no conversion of its own.
 ROMAN_VEGA_TO_AB = {
     "F062": 0.153,
     "F087": 0.481,
@@ -695,8 +695,9 @@ class IsochroneModel(ConfigurableModel):
       across surveys. :meth:`sample` returns
       ``{(survey, band): apparent_mag}``.
 
-    Roman bands are always converted from Vega to AB (see
-    :data:`ROMAN_VEGA_TO_AB`); other bands pass through unchanged.
+    All magnitudes are AB: ``ugali`` (>= 1.9) converts the Vega-based Roman
+    isochrone files to AB when it reads them (see :data:`ROMAN_VEGA_TO_AB`),
+    so no conversion is applied here.
     """
 
     # Defaults for the shared isochrone mass grid (see ugali Isochrone.sample).
@@ -764,6 +765,17 @@ class IsochroneModel(ConfigurableModel):
         so it is stripped before the isochrone is constructed.
         """
         import ugali.isochrone
+        import ugali.isochrone.model
+
+        # ugali < 1.9 lacks the Euclid/Roman filter sets and the Vega->AB
+        # conversion (and its factory then reports a misleading
+        # "Unrecognized class"), so fail early with an actionable message.
+        if not hasattr(ugali.isochrone.model.Isochrone, "vega_to_ab"):
+            raise ImportError(
+                "streamobs needs ugali >= 1.9 (installed: "
+                f"{getattr(ugali, '__version__', 'unknown')}). Install it from "
+                "GitHub: pip install git+https://github.com/DarkEnergySurvey/ugali.git"
+            )
 
         factory_config = {k: v for k, v in factory_config.items() if k != "release"}
         iso = ugali.isochrone.factory(**factory_config)
@@ -833,18 +845,6 @@ class IsochroneModel(ConfigurableModel):
             np.interp(masses, mass_init, mag_2[order]),
         )
 
-    def _to_ab(self, band, mag):
-        """Convert Roman bands from Vega to AB (``AB = Vega + offset``).
-
-        Applied unconditionally: Roman bands use the offset in
-        :data:`ROMAN_VEGA_TO_AB`, every other band passes through unchanged.
-        ``ugali`` delivers Roman isochrones in Vega while our catalogs are AB.
-
-        TODO: this really belongs in ugali (return AB natively); remove once it
-        does.
-        """
-        return mag + ROMAN_VEGA_TO_AB.get(band, 0.0)
-
     @staticmethod
     def _add_distance_modulus(abs_mag, distance_modulus):
         """Add a scalar or per-star distance modulus to absolute magnitudes."""
@@ -896,8 +896,6 @@ class IsochroneModel(ConfigurableModel):
         for name in self.surveys:
             band_1, band_2 = self.survey_bands[name]
             abs_1, abs_2 = self._absolute_mags(self.isos[name], masses)
-            abs_1 = self._to_ab(band_1, abs_1)
-            abs_2 = self._to_ab(band_2, abs_2)
             out[(name, band_1)] = self._add_distance_modulus(abs_1, distance_modulus)
             out[(name, band_2)] = self._add_distance_modulus(abs_2, distance_modulus)
         return out, masses

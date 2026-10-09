@@ -92,5 +92,6 @@ stream:
         survey: roman
         band_1: F106
         band_2: F158
-        # Roman bands are AUTOMATICALLY converted Vega->AB by IsochroneModel
-        # (streamobs.model.ROMAN_VEGA_TO_AB); no per-config flag is needed.
+        # The Roman isochrone files are in Vega; ugali (>= 1.9) converts them
+        # to AB when reading them (offsets listed in
+        # streamobs.model.ROMAN_VEGA_TO_AB), so no per-config flag is needed.

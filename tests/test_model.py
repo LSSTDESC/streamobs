@@ -418,6 +418,16 @@ class TestIsochroneModel:
             iso.survey_name == "lsst"
         ), "Legacy survey_name must be the bare namespace when no release is given"
 
+    def test_old_ugali_raises_actionable_import_error(
+        self, single_survey_iso_config, monkeypatch
+    ):
+        """ugali < 1.9 (no Vega->AB support) is rejected with an install hint."""
+        import ugali.isochrone.model
+
+        monkeypatch.delattr(ugali.isochrone.model.Isochrone, "vega_to_ab")
+        with pytest.raises(ImportError, match="ugali >= 1.9"):
+            IsochroneModel(single_survey_iso_config)
+
     def test_multi_survey_sets_namespace_attrs(self, multi_survey_iso_config):
         iso = IsochroneModel(multi_survey_iso_config)
         assert iso.multi_survey is True

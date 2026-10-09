@@ -8,8 +8,6 @@ import scipy.interpolate
 from matplotlib.path import Path
 from ugali.analysis.isochrone import factory as isochrone_factory
 
-from streamobs.model import ROMAN_VEGA_TO_AB
-
 """
 Match filter module for stellar stream analysis.
 
@@ -348,10 +346,9 @@ def build_match_filter(
         Bands defining the CMD: color = band_1 − band_2, magnitude = band_1.
         Defaults (``'g'``, ``'r'``) preserve the historical LSST behaviour.
         For Roman pass e.g. ``band_1='F106'``, ``band_2='F158'``.
-        Roman isochrone magnitudes are returned by ugali in Vega and are
-        converted to AB here (via the ``ROMAN_VEGA_TO_AB`` table that the
-        injection path uses), so the filter selects on the same photometric
-        system as the injected catalogs.
+        ugali (>= 1.9) returns the isochrone magnitudes in AB (it converts
+        the Vega-based Roman files itself), so the filter selects on the same
+        photometric system as the injected catalogs.
 
     Returns
     -------
@@ -364,8 +361,9 @@ def build_match_filter(
     Notes
     -----
     - Uses Marigo2017 isochrone models from the ugali package by default.
-    - The Vega→AB conversion for Roman bands is applied before any spline
-      fitting, so the polygon is in the same photometric system as the data.
+    - The isochrone is in AB for every survey (ugali converts Roman from Vega
+      when reading it), so the polygon is in the same photometric system as
+      the data.
     """
     survey_lower = survey.lower() if isinstance(survey, str) else "default"
 
@@ -385,14 +383,11 @@ def build_match_filter(
         band_2=band_2,
     )
 
-    # ugali returns Roman isochrones in Vega; our catalogs/maglim maps are AB.
-    # AB = Vega + offset (a no-op for non-Roman bands) — same convention as
-    # StreamInjector._to_ab, so the filter and the injected stream share one
-    # photometric system.
-    ab_1 = ROMAN_VEGA_TO_AB.get(band_1, 0.0)
-    ab_2 = ROMAN_VEGA_TO_AB.get(band_2, 0.0)
-    isochrone_color = isochrone.color + (ab_1 - ab_2)  # band_1 - band_2
-    isochrone_absolute_mag = isochrone.mag + ab_1  # absolute band_1 magnitude
+    # ugali (>= 1.9) returns every isochrone in AB, converting the Vega-based
+    # Roman files itself, so the filter is already in the photometric system of
+    # the catalogs/maglim maps and of the injected stream.
+    isochrone_color = isochrone.color  # band_1 - band_2
+    isochrone_absolute_mag = isochrone.mag  # absolute band_1 magnitude
 
     # --- Optional: Clip the Red Giant Branch ---
     if rgb_clip_mag is not None:

@@ -10,8 +10,8 @@ These complement the generic contract checks every registered survey gets in
 - the ``euclid/q1`` Survey loads with VIS as the reference band and Y/J/H as
   forced-photometry bands, with the extinction and saturation values the
   config documents;
-- the ugali ``euclid`` isochrone set is already in AB, so the Roman Vega->AB
-  offset must be a no-op for Euclid bands and the isochrone must produce AB
+- the ugali ``euclid`` isochrone set is already in AB, so no Vega->AB offset
+  is applied to Euclid bands and the isochrone must produce AB
   magnitudes in the band names the survey uses (``VIS``, ``Y``, ``J``, ``H``);
 - ``inject()`` produces ``euclid_q1``-namespaced columns, including a
   forced-photometry band that resolves to the ``_nocut`` error curves;
@@ -160,11 +160,15 @@ class TestEuclidQ1Survey:
 @pytest.mark.model
 class TestEuclidIsochrone:
     def test_vega_to_ab_is_noop_for_euclid_bands(self):
-        from streamobs.model import ROMAN_VEGA_TO_AB, IsochroneModel
+        """The ugali `euclid` set is served in AB: ugali converts only the
+        Vega-based Roman files, and streamobs applies no offset of its own."""
+        from ugali.isochrone import Marigo2017
 
+        from streamobs.model import ROMAN_VEGA_TO_AB
+
+        assert "euclid" not in Marigo2017.vega_to_ab
         for band in ("VIS", "Y", "J", "H"):
             assert band not in ROMAN_VEGA_TO_AB
-            assert IsochroneModel._to_ab(None, band, 20.0) == 20.0
 
     def test_euclid_isochrone_samples_ab_magnitudes(self):
         """A 12 Gyr metal-poor isochrone in VIS/H gives finite AB magnitudes
