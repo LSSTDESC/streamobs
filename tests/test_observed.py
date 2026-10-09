@@ -148,6 +148,14 @@ class TestStreamInjectorBehavior:
         )
         self._verify_injected_catalog_content(injected_catalog)
 
+    def test_placement_failure_raises_runtime_error(self, mock_injector):
+        """No frame fits the footprint -> a clear RuntimeError, not astropy's."""
+        phi1 = np.linspace(-180.0, 180.0, 100)  # a full great circle never fits
+        with pytest.raises(RuntimeError, match="gc_frame"):
+            mock_injector.phi_to_radec(
+                phi1, np.zeros_like(phi1), seed=0, max_iter=3, verbose=False
+            )
+
     def test_random_injection(self, mock_injector, stream_catalog, seed, verbose):
         """Test random sky injection"""
         mask_type = ["footprint", "ebv", "maglim_g"]

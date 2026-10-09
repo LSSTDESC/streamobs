@@ -883,6 +883,14 @@ class StreamInjector:
                 phi2=phi2_arr,
                 **kwargs,
             )
+            if gc_frame is None:
+                raise RuntimeError(
+                    "Could not place the stream: no random great-circle frame put "
+                    "enough of its points inside the primary survey's mask (see "
+                    "`percentile_threshold`, `max_iter`). For a small footprint, "
+                    "pass an explicit `gc_frame=`, e.g. built with "
+                    "gala.coordinates.GreatCircleICRSFrame.from_endpoints()."
+                )
 
         # Store the frame for potential reuse
         self._last_gc_frame = gc_frame

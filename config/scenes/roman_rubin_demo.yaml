@@ -5,12 +5,15 @@
 # Usage (see notebooks/multisurvey_phases_demo.ipynb):
 #
 #     import yaml, pandas as pd
+#     import astropy.coordinates as coord, gala.coordinates as gc
 #     from streamobs.observed import StreamInjector
 #     scene = yaml.safe_load(open("config/scenes/roman_rubin_demo.yaml"))
+#     ends = [coord.SkyCoord(unit="deg", **e) for e in scene["gc_frame_endpoints"]]
+#     frame = gc.GreatCircleICRSFrame.from_endpoints(*ends)
 #     msi = StreamInjector(scene["surveys"])
 #     df  = pd.DataFrame(index=range(int(scene["stream"]["nstars"])))
 #     out = msi.inject(df, scene["survey_bands"],
-#                      stream_config=scene["stream"], seed=42)
+#                      stream_config=scene["stream"], gc_frame=frame, seed=42)
 #
 # The same physical stars carry both `lsst_<band>_*` and `roman_<band>_*`
 # columns; each band's errors / detection come from that survey's own maps.
@@ -45,16 +48,28 @@ survey_bands:
   lsst_dc2: [r, g]
   roman_dc2: [F106, F158]
 
+# Sky placement: the great circle through these two ICRS points, its origin
+# (phi1 = phi2 = 0) at their midpoint. It crosses the centre of the Roman DC2
+# field (~21 deg², RA 50.6-56.2, Dec -42.2 to -37.9), which lies inside the
+# LSST DC2 footprint, so both surveys observe every star. The injector's
+# random placement (great circles drawn over the whole sky) practically never
+# lands in footprints this small, hence this frame, passed as `gc_frame` (see
+# the usage above).
+gc_frame_endpoints:
+  - {ra: 51.9, dec: -40.05}
+  - {ra: 54.9, dec: -40.05}
+
 # Shared stream geometry + a MULTI-SURVEY isochrone. The isochrone draws one set
 # of initial masses (exactly `nstars`) and interpolates them into every survey's
 # bands, so a star's LSST and Roman magnitudes describe the same object.
 stream:
   nstars: 5.0e+3
 
+  # A 3 deg long, 0.1 deg wide stream, to fit inside the Roman DC2 field.
   density:
     type: Uniform
-    xmin: -9.0
-    xmax: +9.0
+    xmin: -1.5
+    xmax: +1.5
 
   track:
     center:
@@ -62,7 +77,7 @@ stream:
       value: 0.0
     spread:
       type: Constant
-      value: 0.2
+      value: 0.1
     sampler: Gaussian
 
   distance_modulus:
