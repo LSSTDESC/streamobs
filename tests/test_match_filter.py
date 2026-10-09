@@ -147,3 +147,61 @@ class TestMatchFilterIntegration:
             f"Match filter selected {fraction*100:.1f}% of stars shifted 2 mag "
             f"blueward (expected < 5%)."
         )
+
+
+# ---------------------------------------------------------------------------
+# Colour across surveys (DES g - Euclid VIS)
+# ---------------------------------------------------------------------------
+
+_DES_EUCLID = dict(band_1="g", survey_1="des", band_2="VIS", survey_2="euclid")
+
+
+@pytest.mark.match_filter
+class TestCrossSurveyMatchFilter:
+    def test_same_survey_spelled_out_is_unchanged(self):
+        """survey_1 == survey_2 is exactly the single-survey filter."""
+        kw = dict(distance_modulus=16.8, age=12.0, metallicity=0.0006)
+        assert np.array_equal(
+            build_match_filter(**kw, survey="des", band_1="g", band_2="r"),
+            build_match_filter(
+                **kw, band_1="g", survey_1="des", band_2="r", survey_2="des"
+            ),
+        )
+
+    def test_selects_the_cross_survey_locus(self, stream_config_with_distance):
+        """Noiseless DES g / Euclid VIS stream stars lie on the DES g - Euclid
+        VIS locus: a narrow (+/- 0.02 mag) polygon around it selects them, one
+        around DES g - r does not."""
+        from streamobs.model import StreamModel
+
+        dm = stream_config_with_distance["distance_modulus"]["center"]["value"]
+        isochrone = {
+            "name": "Marigo2017",
+            "age": 12.0,
+            "z": 0.0006,
+            "surveys": {"des": {"bands": ["g"]}, "euclid": {"bands": ["VIS"]}},
+        }
+        stars = StreamModel(
+            {**stream_config_with_distance, "isochrone": isochrone}
+        ).sample(5000, seed=1)
+        # Main-sequence stars, below the RGB clip and within the polygon range
+        g, vis = stars["des_g_true"], stars["euclid_VIS_true"]
+        main_sequence = (g > dm + 3.5) & (g < dm + 8.5)
+        g, vis = g[main_sequence], vis[main_sequence]
+        assert len(g) > 100
+
+        # The default polygon is wider than the g-VIS / g-r difference; a
+        # narrow one checks that band_2 is paired with band_1 at the same mass.
+        narrow = dict(
+            age=12.0,
+            metallicity=0.0006,
+            color_spread=[0.02, 0.02],
+            error_multiplier=[0.0, 0.0],
+            distance_modulus_spread=0.0,
+        )
+        polygon = build_match_filter(dm, **narrow, **_DES_EUCLID)
+        inside = is_in_match_filter(g, vis, polygon_vertices=polygon)
+        assert inside.mean() > 0.95, f"only {inside.mean():.1%} selected"
+        g_r = build_match_filter(dm, **narrow, survey="des", band_1="g", band_2="r")
+        wrong = is_in_match_filter(g, vis, polygon_vertices=g_r)
+        assert wrong.mean() < 0.5, f"g-r polygon selected {wrong.mean():.1%}"

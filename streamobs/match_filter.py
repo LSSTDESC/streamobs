@@ -8,6 +8,8 @@ import scipy.interpolate
 from matplotlib.path import Path
 from ugali.analysis.isochrone import factory as isochrone_factory
 
+from streamobs.model import IsochroneModel
+
 """
 Match filter module for stellar stream analysis.
 
@@ -272,6 +274,40 @@ def build_filter_splines(
     return spline_near, spline_far
 
 
+def _isochrone_locus(
+    isochrone_model, age, metallicity, band_1, survey_1, band_2, survey_2
+):
+    """Isochrone colour (band_1 − band_2) and absolute band_1 magnitude.
+
+    Both bands from one survey: ``ugali``'s own colour and magnitude. Bands
+    from two surveys: one isochrone per filter set (same population), with
+    band_2 interpolated in initial mass at band_1's isochrone points — the
+    files of two filter sets do not share their mass points — the same way the
+    injected true magnitudes are computed.
+    """
+    if survey_1.lower() == survey_2.lower():
+        isochrone = isochrone_factory(
+            isochrone_model,
+            age=age,
+            z=metallicity,
+            survey=survey_1,
+            band_1=band_1,
+            band_2=band_2,
+        )
+        return isochrone.color, isochrone.mag
+
+    iso_1, iso_2 = (
+        isochrone_factory(
+            isochrone_model, age=age, z=metallicity, survey=s, band_1=b, band_2=b
+        )
+        for s, b in ((survey_1, band_1), (survey_2, band_2))
+    )
+    sel = slice(iso_1.index)
+    mag_1 = iso_1.data[band_1][sel]
+    mag_2 = IsochroneModel._absolute_mags(iso_2, iso_1.mass_init[sel], [band_2])[band_2]
+    return mag_1 - mag_2, mag_1
+
+
 def build_match_filter(
     distance_modulus,
     age=DEFAULT_AGE_GYR,
@@ -288,6 +324,8 @@ def build_match_filter(
     isochrone_model="Marigo2017",
     band_1="g",
     band_2="r",
+    survey_1=None,
+    survey_2=None,
 ):
     """Build an isochrone matched-filter polygon in color-magnitude space.
 
@@ -338,8 +376,8 @@ def build_match_filter(
     error_kwargs : dict, optional
         Extra keyword arguments forwarded to :func:`error_model`.
     survey : str, optional
-        Survey name passed to the ugali isochrone factory.  Also controls
-        per-survey color clip limits and absolute-magnitude cuts.
+        Survey (ugali filter set) of both bands, unless ``survey_1`` /
+        ``survey_2`` say otherwise.
     isochrone_model : str, optional
         Ugali isochrone model name (e.g. ``'Marigo2017'``).
     band_1, band_2 : str, optional
@@ -349,6 +387,12 @@ def build_match_filter(
         ugali (>= 1.9) returns the isochrone magnitudes in AB (it converts
         the Vega-based Roman files itself), so the filter selects on the same
         photometric system as the injected catalogs.
+    survey_1, survey_2 : str, optional
+        Surveys (ugali filter sets) of ``band_1`` and ``band_2``; ``survey``
+        if omitted. They may differ, for a colour across surveys, e.g.
+        ``band_1='g', survey_1='des', band_2='VIS', survey_2='euclid'`` for
+        DES g − Euclid VIS against DES g. The per-survey color clip limits
+        and absolute-magnitude cut are those of ``survey_1``.
 
     Returns
     -------
@@ -364,8 +408,13 @@ def build_match_filter(
     - The isochrone is in AB for every survey (ugali converts Roman from Vega
       when reading it), so the polygon is in the same photometric system as
       the data.
+    - The color error is a single curve (:func:`error_model`, tuned with
+      ``error_kwargs``) evaluated at the band_1 magnitude, also for a colour
+      across surveys.
     """
-    survey_lower = survey.lower() if isinstance(survey, str) else "default"
+    survey_1 = survey if survey_1 is None else survey_1
+    survey_2 = survey if survey_2 is None else survey_2
+    survey_lower = survey_1.lower() if isinstance(survey_1, str) else "default"
 
     # Look up per-survey color clip limits
     color_min, color_max = _SURVEY_COLOR_LIMITS.get(
@@ -373,21 +422,13 @@ def build_match_filter(
     )
     abs_mag_min = _SURVEY_ABS_MAG_MIN.get(survey_lower, _SURVEY_ABS_MAG_MIN["default"])
 
-    # --- Generate isochrone model ---
-    isochrone = isochrone_factory(
-        isochrone_model,
-        age=age,
-        z=metallicity,
-        survey=survey,
-        band_1=band_1,
-        band_2=band_2,
-    )
-
+    # --- Isochrone locus: color = band_1 - band_2, absolute band_1 magnitude ---
     # ugali (>= 1.9) returns every isochrone in AB, converting the Vega-based
     # Roman files itself, so the filter is already in the photometric system of
     # the catalogs/maglim maps and of the injected stream.
-    isochrone_color = isochrone.color  # band_1 - band_2
-    isochrone_absolute_mag = isochrone.mag  # absolute band_1 magnitude
+    isochrone_color, isochrone_absolute_mag = _isochrone_locus(
+        isochrone_model, age, metallicity, band_1, survey_1, band_2, survey_2
+    )
 
     # --- Optional: Clip the Red Giant Branch ---
     if rgb_clip_mag is not None:
@@ -481,7 +522,9 @@ def is_in_match_filter(
 
     ``mag_1``/``mag_2`` are the same two bands the polygon was built with
     (color = mag_1 − mag_2, magnitude axis = mag_1) — ``'g'``/``'r'`` for
-    LSST, e.g. ``'F106'``/``'F158'`` for Roman.
+    LSST, e.g. ``'F106'``/``'F158'`` for Roman, or two surveys' columns such
+    as ``des_yr6_g_obs``/``euclid_q1_VIS_obs``. Stars missing either magnitude
+    (NaN, e.g. not observed by one survey) are not selected.
 
     Parameters
     ----------
