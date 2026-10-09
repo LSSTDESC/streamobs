@@ -149,19 +149,29 @@ Give either `bands` or the legacy `band_1`/`band_2` pair, not both. An entry
 with neither defaults to every band of its filter set.
 
 A complete, runnable example — the surveys, per-survey bands, the multi-survey
-isochrone, and the shared stream geometry — is provided as a *scene* config in
+isochrone, the shared stream geometry and its sky placement — is provided as a
+*scene* config in
 [`config/scenes/roman_rubin_demo.yaml`](https://github.com/LSSTDESC/streamobs/blob/main/config/scenes/roman_rubin_demo.yaml):
 
 ```python
 import yaml
+import pandas as pd
+import astropy.coordinates as coord
+import gala.coordinates as gc
 from streamobs.observed import StreamInjector
 
 scene = yaml.safe_load(open("config/scenes/roman_rubin_demo.yaml"))
 inj = StreamInjector(scene["surveys"])       # lsst/dc2 + roman/dc2 -> namespaces
                                              # "lsst_dc2", "roman_dc2"
+# The DC2 footprints are too small for the random sky placement, so the scene
+# gives the stream's great circle, through the Roman DC2 field.
+ends = [coord.SkyCoord(unit="deg", **e) for e in scene["gc_frame_endpoints"]]
+frame = gc.GreatCircleICRSFrame.from_endpoints(*ends)
+
+df = pd.DataFrame(index=range(int(scene["stream"]["nstars"])))
 cat = inj.inject(
     df, bands=scene["survey_bands"],         # {"lsst_dc2": [...], "roman_dc2": [...]}
-    stream_config=scene["stream"], seed=42,
+    stream_config=scene["stream"], gc_frame=frame, seed=42,
 )
 ```
 
