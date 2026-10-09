@@ -93,7 +93,7 @@ true magnitudes are physically consistent and tightly correlated across surveys
 rather than drawn independently.
 
 This requires a **multi-survey isochrone** in the stream config: a top-level
-`surveys:` mapping sharing one stellar population, e.g.
+`surveys:` list sharing one stellar population, e.g.
 
 ```yaml
 stream:
@@ -102,24 +102,20 @@ stream:
     name: Marigo2017      # shared population
     age: 12.0
     z: 0.0006
-    surveys:
-      lsst_dc2:  {survey: lsst}
-      roman_dc2: {survey: roman}
+    surveys: [lsst, roman]
 ```
 
 ```{important}
-Each `surveys:` key names the namespace the isochrone produces true-magnitude
-columns for. Because true magnitudes are release-independent, the release is
-**dropped** from those column names — a key of `lsst_dc2` and a key of `lsst`
-both emit `lsst_<band>_true` (see
+Each `surveys:` entry is a survey name, which names both the *ugali* filter set
+and the true-magnitude columns, `<name>_<band>_true`. Because true magnitudes
+are release-independent, no release is needed: `lsst` fills `lsst_<band>_true`
+for an injector serving `lsst_dc2`, `lsst_yr5`, ... (see
 [Output column convention](column_convention.md)). What matters is that the
-key's `{name}` part matches the injecting survey's name, so the columns the
-model emits line up with the ones the injector looks for.
+name matches the injecting survey's name.
 
-Spelling the key as the full `{name}_{release}` namespace is still recommended,
-since it matches the `survey_bands` keys — which *are* matched on the full
-namespace — and keeps one consistent vocabulary across the config. Here the
-inner `survey:` is the *ugali* filter set, which never carries a release.
+A release in the name is accepted and ignored for both purposes (`lsst_dc2`
+works like `lsst`). To use another ugali filter set than the name (e.g.
+`lsst_dp0`), give it as `survey:` in the mapping form below.
 ```
 
 A single-survey isochrone (the flat `survey: ...` form, optionally with
@@ -135,14 +131,15 @@ which `<name>_<band>_true` columns are sampled, and a survey entry may name no
 band at all, as above. Requesting a band the filter set does not have (e.g. the
 Roman `F158` for `euclid`) raises a `ValueError` listing the available bands.
 
-A survey entry can still list its bands. They are its *default* bands, the
-ones `StreamModel.sample()` and `complete_catalog()` produce when used without
-the injector:
+A survey entry can still list its bands, with `surveys` written as a mapping of
+per-survey options. They are its *default* bands, the ones
+`StreamModel.sample()` and `complete_catalog()` produce when used without the
+injector:
 
 ```yaml
     surveys:
-      lsst_dc2:  {survey: lsst, bands: [g, r, i]}
-      roman_dc2: {survey: roman, band_1: F106, band_2: F158}  # legacy pair, still accepted
+      lsst:  {bands: [g, r, i]}
+      roman: {band_1: F106, band_2: F158}  # legacy pair, still accepted
 ```
 
 Give either `bands` or the legacy `band_1`/`band_2` pair, not both. An entry

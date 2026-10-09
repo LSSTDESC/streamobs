@@ -729,12 +729,14 @@ class IsochroneModel(ConfigurableModel):
     - **Single-survey** (legacy): the isochrone section carries the ``ugali``
       factory keys directly (``name``, ``survey``, ``age``, ``z``, ...) plus
       the optional bands (see below).
-    - **Multi-survey**: a ``surveys`` mapping ``{survey_name: {survey, ...}}``
-      plus shared keys (``name``, ``age``, ``z``, ...) at the top level. One
-      ``ugali`` isochrone is built per survey from the *same* stellar
-      population, so a single shared draw of initial masses
-      (:meth:`sample_masses`) is interpolated into every survey's bands —
-      giving the same physical star consistent magnitudes across surveys.
+    - **Multi-survey**: a ``surveys`` list of survey names (``[lsst, roman]``)
+      or, for per-survey options, a mapping ``{survey_name: {bands, ...}}``,
+      plus shared keys (``name``, ``age``, ``z``, ...) at the top level. A
+      survey name also names the ``ugali`` filter set, unless the entry sets
+      ``survey`` to another one. One ``ugali`` isochrone is built per survey
+      from the *same* stellar population, so a single shared draw of initial
+      masses (:meth:`sample_masses`) is interpolated into every survey's bands
+      — giving the same physical star consistent magnitudes across surveys.
 
     :meth:`sample` returns ``{(survey, band): apparent_mag}`` for any band of
     each survey's ``ugali`` filter set (:meth:`available_bands`), requested
@@ -789,8 +791,12 @@ class IsochroneModel(ConfigurableModel):
     def _normalize_iso_config(self, config):
         """Coerce either config form into ``({namespace: factory_cfg}, shared)``.
 
-        Multi-survey: the ``surveys`` mapping is returned verbatim (its keys are
-        the column namespaces) with the top-level keys as shared stellar params.
+        Multi-survey: ``surveys`` is a list of survey names or a mapping
+        ``{survey_name: options}``; its keys are the column namespaces and the
+        top-level keys are shared stellar params. An entry's ``ugali`` filter
+        set (``survey``) defaults to its survey name, the part before the first
+        ``_`` as in the column names (``lsst_yr4`` -> ``lsst``), rather than to
+        ``ugali``'s own default (DES).
         Single-survey (legacy flat): a one-entry mapping keyed by
         ``{survey}_{release}`` (or just ``{survey}``), matching
         :attr:`streamobs.surveys.Survey.namespace`, with no shared params.
@@ -798,7 +804,16 @@ class IsochroneModel(ConfigurableModel):
         if "surveys" in config:
             self.multi_survey = True
             shared = {k: v for k, v in config.items() if k != "surveys"}
-            return dict(config["surveys"]), shared
+            surveys = config["surveys"]
+            if isinstance(surveys, (list, tuple)):
+                surveys = {name: {} for name in surveys}
+            survey_configs = {}
+            for name, scfg in surveys.items():
+                scfg = dict(scfg or {})
+                if "survey" not in scfg and "survey" not in shared:
+                    scfg["survey"] = str(name).split("_")[0]
+                survey_configs[name] = scfg
+            return survey_configs, shared
 
         self.multi_survey = False
         if "distance_modulus" in config:

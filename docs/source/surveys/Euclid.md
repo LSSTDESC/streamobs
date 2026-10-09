@@ -178,8 +178,7 @@ For an isochrone, `survey: euclid`. The bands are sampled on demand from the
 injector's `bands` (e.g. `VIS, Y, J, H`), or listed as `bands: [VIS, H]` to set
 the ones `StreamModel` produces on its own; with none listed, that is the whole
 ugali set (`VIS Y Blue J Red H`). The multi-survey form in
-{doc}`../multisurvey` works unchanged, e.g. `euclid_dr1: {survey: euclid}` next
-to a DES or LSST entry.
+{doc}`../multisurvey` works unchanged, e.g. `surveys: [des, euclid]`.
 
 ## Caveats
 

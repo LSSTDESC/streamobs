@@ -665,6 +665,30 @@ class TestMultiBandIsochrone:
         with pytest.raises(ValueError, match="Unknown isochrone survey"):
             iso.available_bands("roman")
 
+    def test_surveys_list_form_matches_mapping(self, stream_config_with_distance):
+        """`surveys: [des, euclid]` is the mapping with each `survey` spelled out."""
+        as_list = {**_POP, "surveys": ["des", "euclid"]}
+        out_list = StreamModel(
+            _with_isochrone(stream_config_with_distance, as_list)
+        ).sample(300, seed=2)
+        out_map = StreamModel(
+            _with_isochrone(stream_config_with_distance, _des_euclid())
+        ).sample(300, seed=2)
+        pd.testing.assert_frame_equal(out_list, out_map, check_exact=True)
+
+    def test_survey_defaults_to_key_name_not_ugali_des(self):
+        """Without `survey`, the filter set is the key's survey name, release
+        dropped (ugali itself would silently fall back to DES)."""
+        iso = IsochroneModel(
+            {**_POP, "surveys": {"lsst_yr4": {"bands": ["g", "r"]}, "roman": {}}}
+        )
+        assert iso.isos["lsst_yr4"].survey == "lsst"
+        assert iso.isos["roman"].survey == "roman"
+        explicit = IsochroneModel(
+            {**_POP, "surveys": {"custom": {"survey": "des", "bands": ["g"]}}}
+        )
+        assert explicit.isos["custom"].survey == "des"
+
     def test_bands_and_legacy_pair_together_raise(self):
         with pytest.raises(ValueError, match="either `bands` or `band_1`/`band_2`"):
             IsochroneModel({**_POP, "survey": "des", "bands": ["g"], "band_1": "g"})
