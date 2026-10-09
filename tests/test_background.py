@@ -172,13 +172,15 @@ class TestBackgroundCatalogInjector:
         assert len(result) > 0
 
     def test_inject_galaxies_has_detection_flag(
-        self, mock_survey, tiny_galaxies_catalog
+        self, mock_survey, tiny_galaxies_catalog, seed
     ):
         """inject_galaxies output must include a detection flag column."""
         from streamobs.background import BackgroundCatalogInjector
 
+        # Seeded: only ~4 of these 100 galaxies are misclassified as stars on
+        # average, so an unseeded run detects none about 3% of the time.
         result = BackgroundCatalogInjector(mock_survey).inject_galaxies(
-            tiny_galaxies_catalog, bands=["g", "r"]
+            tiny_galaxies_catalog, bands=["g", "r"], seed=seed
         )
         flag_cols = [c for c in result.columns if "flag" in c]
         assert len(flag_cols) > 0

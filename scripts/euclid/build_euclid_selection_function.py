@@ -140,7 +140,17 @@ DELTA_BINS = np.arange(-10.0, 2.0 + 1e-6, 0.12)
 DELTA_MID = 0.5 * (DELTA_BINS[1:] + DELTA_BINS[:-1])
 # truth-catalogue layout: RA, Dec, then (mag, err) pairs in ugrizy order,
 # then is_star, is_galaxy, originating survey
-T_RA, T_DEC, T_R, T_RERR, T_I, T_IERR, T_Z, T_ZERR, T_STAR = 0, 1, 6, 7, 8, 9, 10, 11, 14
+T_RA, T_DEC, T_R, T_RERR, T_I, T_IERR, T_Z, T_ZERR, T_STAR = (
+    0,
+    1,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    14,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -154,7 +164,9 @@ def flux_to_mag(flux):
     """MER fluxes are in uJy: m_AB = -2.5 log10(f) + 23.9."""
     flux = np.asarray(flux, dtype=float)
     with np.errstate(invalid="ignore", divide="ignore"):
-        return np.where(flux > 0, -2.5 * np.log10(np.where(flux > 0, flux, 1)) + 23.9, np.nan)
+        return np.where(
+            flux > 0, -2.5 * np.log10(np.where(flux > 0, flux, 1)) + 23.9, np.nan
+        )
 
 
 def mag_and_err(df, band):
@@ -221,7 +233,13 @@ def error_slope(mag, err, sat, snr_lo=10.0, snr_hi=100.0):
     externally instead.
     """
     snr = 1.0857362 / err
-    sel = np.isfinite(mag) & np.isfinite(err) & (snr > snr_lo) & (snr < snr_hi) & (mag > sat + 0.5)
+    sel = (
+        np.isfinite(mag)
+        & np.isfinite(err)
+        & (snr > snr_lo)
+        & (snr < snr_hi)
+        & (mag > sat + 0.5)
+    )
     bins = np.arange(np.floor(mag[sel].min() * 10) / 10, mag[sel].max() + 0.1, 0.1)
     idx = np.digitize(mag[sel], bins) - 1
     xs, ys = [], []
@@ -246,7 +264,13 @@ def depth_map(mag, err, ra, dec, sat, nside=NSIDE, snr_lo=20.0, snr_hi=60.0):
     replaced by the anchor in main().
     """
     snr = 1.0857362 / err
-    ok = np.isfinite(mag) & np.isfinite(err) & (snr > snr_lo) & (snr < snr_hi) & (mag > sat + 1.0)
+    ok = (
+        np.isfinite(mag)
+        & np.isfinite(err)
+        & (snr > snr_lo)
+        & (snr < snr_hi)
+        & (mag > sat + 1.0)
+    )
     m5 = mag[ok] + 2.5 * np.log10(snr[ok] / SNR_DEPTH)
     pix = hp.ang2pix(nside, ra[ok], dec[ok], lonlat=True)
     npix = hp.nside2npix(nside)
@@ -291,7 +315,9 @@ def main(args):
     pl = cat.query(f"POINT_LIKE_PROB > 0.5 and POINT_LIKE_PROB < {INT_NULL}").compute()
     pl = pl[num(pl, "SPURIOUS_FLAG") == 0].reset_index(drop=True)
     ra_pl, dec_pl = num(pl, "RIGHT_ASCENSION"), num(pl, "DECLINATION")
-    print(f"point-like, SPURIOUS_FLAG == 0 sample: {len(pl):,} rows  [{time.time() - t0:.0f} s]")
+    print(
+        f"point-like, SPURIOUS_FLAG == 0 sample: {len(pl):,} rows  [{time.time() - t0:.0f} s]"
+    )
 
     # ---- 2. depth maps + anchor -----------------------------------------
     maps_native, maps_anchored, depth = {}, {}, {}
@@ -322,7 +348,9 @@ def main(args):
             inflation_factor_bg_extrapolation=f_bg,
             n_pixels=int(fin.sum()),
             n_pixels_clipped=int(bad.sum()),
-            area_deg2=float(np.isfinite(anchored).sum() * hp.nside2pixarea(NSIDE, degrees=True)),
+            area_deg2=float(
+                np.isfinite(anchored).sum() * hp.nside2pixarea(NSIDE, degrees=True)
+            ),
         )
         print(
             f"  {b:<3} error slope {slope:.3f} dex/mag; native median ({n_fit:,} objects) "
@@ -334,7 +362,12 @@ def main(args):
     m_ref, e_ref = mag_and_err(pl, REF)
     pix = hp.ang2pix(NSIDE, ra_pl, dec_pl, lonlat=True)
     ml = maps_anchored[REF][pix]
-    ok = np.isfinite(m_ref) & np.isfinite(e_ref) & np.isfinite(ml) & (m_ref >= SATURATION[REF])
+    ok = (
+        np.isfinite(m_ref)
+        & np.isfinite(e_ref)
+        & np.isfinite(ml)
+        & (m_ref >= SATURATION[REF])
+    )
     delta = m_ref - ml
     snr = 1.0857362 / e_ref
     log_err = np.log10(e_ref)
@@ -370,10 +403,16 @@ def main(args):
     cat_med, cat_cnt = median_curve(det)
     keep = np.isfinite(cat_med)
     logf = np.log10(f_ref)
-    catalog_tab = pd.DataFrame({"delta_mag": DELTA_MID[keep], "log_mag_err": cat_med[keep]})
+    catalog_tab = pd.DataFrame(
+        {"delta_mag": DELTA_MID[keep], "log_mag_err": cat_med[keep]}
+    )
     sample_tab = catalog_tab.assign(log_mag_err=catalog_tab["log_mag_err"] + logf)
-    catalog_nc_tab = pd.DataFrame({"delta_mag": DELTA_MID[keep_nc], "log_mag_err": nc_med[keep_nc]})
-    sample_nc_tab = catalog_nc_tab.assign(log_mag_err=catalog_nc_tab["log_mag_err"] + logf)
+    catalog_nc_tab = pd.DataFrame(
+        {"delta_mag": DELTA_MID[keep_nc], "log_mag_err": nc_med[keep_nc]}
+    )
+    sample_nc_tab = catalog_nc_tab.assign(
+        log_mag_err=catalog_nc_tab["log_mag_err"] + logf
+    )
     for name, tab in [
         (f"{TAG}_photoerror_{REF.lower()}_catalog", catalog_tab),
         (f"{TAG}_photoerror_{REF.lower()}", sample_tab),
@@ -384,9 +423,15 @@ def main(args):
     # where the reported-error (catalog) curve crosses S/N = 10 -- the number
     # tests/test_surveys.py needs as snr10_delta_mag
     cc = catalog_tab.sort_values("log_mag_err")
-    snr10_delta = float(np.interp(np.log10(1.0857362 / 10.0), cc["log_mag_err"], cc["delta_mag"]))
-    sig0_cat = float(10 ** np.interp(0.0, catalog_tab["delta_mag"], catalog_tab["log_mag_err"]))
-    sig0_sample = float(10 ** np.interp(0.0, sample_tab["delta_mag"], sample_tab["log_mag_err"]))
+    snr10_delta = float(
+        np.interp(np.log10(1.0857362 / 10.0), cc["log_mag_err"], cc["delta_mag"])
+    )
+    sig0_cat = float(
+        10 ** np.interp(0.0, catalog_tab["delta_mag"], catalog_tab["log_mag_err"])
+    )
+    sig0_sample = float(
+        10 ** np.interp(0.0, sample_tab["delta_mag"], sample_tab["log_mag_err"])
+    )
     print(
         f"  catalog curve: sigma({sig0_cat:.4f}) at delta_mag = 0, S/N = 10 at delta_mag {snr10_delta:+.3f}; "
         f"sample curve sigma({sig0_sample:.4f}) at delta_mag = 0"
@@ -399,11 +444,21 @@ def main(args):
     r, i_, z = (raw[k].to_numpy(float) for k in (T_R, T_I, T_Z))
     rerr, ierr, zerr = (raw[k].to_numpy(float) for k in (T_RERR, T_IERR, T_ZERR))
     ra_c, dec_c, radius = truth_cone(t_ra, t_dec)
-    full = lsdb.open_catalog(
-        args.hats,
-        columns=["RIGHT_ASCENSION", "DECLINATION", "POINT_LIKE_PROB", "SPURIOUS_FLAG",
-                 FLUX[REF], FLUX[REF].replace("FLUX_", "FLUXERR_")],
-    ).cone_search(ra_c, dec_c, radius * 3600).compute()
+    full = (
+        lsdb.open_catalog(
+            args.hats,
+            columns=[
+                "RIGHT_ASCENSION",
+                "DECLINATION",
+                "POINT_LIKE_PROB",
+                "SPURIOUS_FLAG",
+                FLUX[REF],
+                FLUX[REF].replace("FLUX_", "FLUXERR_"),
+            ],
+        )
+        .cone_search(ra_c, dec_c, radius * 3600)
+        .compute()
+    )
     import astropy.units as u
     from astropy.coordinates import SkyCoord
 
@@ -483,9 +538,13 @@ def main(args):
     # sample exists.
     from scipy.stats import norm
 
-    plateau = float(np.median(eff["detection_eff"].to_numpy()[eff["delta_mag"].to_numpy() < -1.0]))
+    plateau = float(
+        np.median(eff["detection_eff"].to_numpy()[eff["delta_mag"].to_numpy() < -1.0])
+    )
     last_mag = float(eff[f"mag_{REF}"].max())
-    ext_mid = MAG_MID[(MAG_MID > last_mag) & (MAG_MID - maglim_ref <= DET_EFF_DELTA_MAX)]
+    ext_mid = MAG_MID[
+        (MAG_MID > last_mag) & (MAG_MID - maglim_ref <= DET_EFF_DELTA_MAX)
+    ]
     n_model = int(ext_mid.size)
     if n_model:
         d = ext_mid - maglim_ref
@@ -540,8 +599,12 @@ def main(args):
     ext = {}
     for b in BANDS:
         raw_f99 = f99_a_over_ebv(PIVOT_AA[b])
-        ext[b] = dict(pivot_aa=PIVOT_AA[b], f99_rv31=raw_f99, adopted_sf11=raw_f99 * SF11_FACTOR)
-        print(f"  A_{b}/E(B-V): F99 at {PIVOT_AA[b]:.0f} A = {raw_f99:.3f}, x0.86 = {raw_f99 * SF11_FACTOR:.3f}")
+        ext[b] = dict(
+            pivot_aa=PIVOT_AA[b], f99_rv31=raw_f99, adopted_sf11=raw_f99 * SF11_FACTOR
+        )
+        print(
+            f"  A_{b}/E(B-V): F99 at {PIVOT_AA[b]:.0f} A = {raw_f99:.3f}, x0.86 = {raw_f99 * SF11_FACTOR:.3f}"
+        )
 
     # ---- 6. audit ---------------------------------------------------------
     audit = {
@@ -553,7 +616,9 @@ def main(args):
         "flux_columns": FLUX,
         "quality_cut": "SPURIOUS_FLAG == 0",
         "classifier": "POINT_LIKE_PROB > 0.5",
-        "depth_convention": "native" if args.no_anchor else "external (Wide 5 sigma point source)",
+        "depth_convention": (
+            "native" if args.no_anchor else "external (Wide 5 sigma point source)"
+        ),
         "detection_snr_cut_reported": snr_cut,
         "n_pointlike": int(len(pl)),
         "depth": depth,
@@ -569,8 +634,13 @@ def main(args):
         "n_stars_detected": int((star & detected).sum()),
         "n_stars_classified": int((star & classified).sum()),
         "n_true_galaxies_detected": int(gal.sum()),
-        "dp1_transform": dict(coef=[float(c) for c in coef], scatter=transform_scatter,
-                              n_fit=int(fit.sum()), n_fallback=n_fallback, n_dropped=n_lost),
+        "dp1_transform": dict(
+            coef=[float(c) for c in coef],
+            scatter=transform_scatter,
+            n_fit=int(fit.sum()),
+            n_fallback=n_fallback,
+            n_dropped=n_lost,
+        ),
         "catalog_sigma_at_delta0": sig0_cat,
         "sample_sigma_at_delta0": sig0_sample,
         "snr10_delta_mag": snr10_delta,
@@ -592,7 +662,11 @@ def main(args):
         x = eff[f"mag_{REF}"].to_numpy()
         for key, lab, col in (
             ("detection_eff", f"detection (reported S/N > {snr_cut:.1f})", "#1f77b4"),
-            ("classification_eff", "classification (POINT_LIKE_PROB > 0.5 | detected)", "#d62728"),
+            (
+                "classification_eff",
+                "classification (POINT_LIKE_PROB > 0.5 | detected)",
+                "#d62728",
+            ),
             ("classification_detection_eff", "detection x classification", "k"),
         ):
             n = eff["n_true_stars"].to_numpy().astype(float)
@@ -601,15 +675,42 @@ def main(args):
             p = eff[key].to_numpy()
             _, lo, hi = wilson(p * np.maximum(n, 1), np.maximum(n, 1))
             lo, hi = np.where(n > 0, lo, p), np.where(n > 0, hi, p)
-            ax.plot(x, p, "o-", color=col, ms=4, lw=2 if key.startswith("classification_d") else 1.5, label=lab)
+            ax.plot(
+                x,
+                p,
+                "o-",
+                color=col,
+                ms=4,
+                lw=2 if key.startswith("classification_d") else 1.5,
+                label=lab,
+            )
             ax.fill_between(x, lo, hi, color=col, alpha=0.15, lw=0)
-        ax.plot(mis[f"mag_{REF}"], mis["missclassification_eff"], "s--", color="#2ca02c", ms=4,
-                label="galaxy misclassification (true galaxies called star)")
+        ax.plot(
+            mis[f"mag_{REF}"],
+            mis["missclassification_eff"],
+            "s--",
+            color="#2ca02c",
+            ms=4,
+            label="galaxy misclassification (true galaxies called star)",
+        )
         for xi, ni in zip(x, eff["n_true_stars"]):
-            ax.annotate(f"{int(ni)}" if ni else "model", (xi, 0.01), fontsize=6.5, ha="center", color="0.45")
+            ax.annotate(
+                f"{int(ni)}" if ni else "model",
+                (xi, 0.01),
+                fontsize=6.5,
+                ha="center",
+                color="0.45",
+            )
         ax.axvline(maglim_ref, color="0.5", ls=":", lw=1)
-        ax.text(maglim_ref, 0.5, f" anchored 5$\\sigma$ depth {maglim_ref:.2f}", rotation=90,
-                va="center", fontsize=8, color="0.4")
+        ax.text(
+            maglim_ref,
+            0.5,
+            f" anchored 5$\\sigma$ depth {maglim_ref:.2f}",
+            rotation=90,
+            va="center",
+            fontsize=8,
+            color="0.4",
+        )
         ax.axvspan(MAG_BINS[0] - 1, SATURATION[REF], color="0.9")
         ax.set_xlim(MAG_BINS[0] - 0.5, MAG_BINS[-1])
         ax.set_ylim(-0.02, 1.05)
@@ -632,19 +733,56 @@ def main(args):
         ax = axes[0]
         for b, col in zip(BANDS, ("k", "#ff7f0e", "#d62728", "#9467bd")):
             v = maps_native[b][np.isfinite(maps_native[b])]
-            ax.hist(v, bins=np.arange(23.5, 28.5, 0.05), histtype="step", color=col, lw=1.3,
-                    label=f"{b}: native {depth[b]['native_median_bg_extrapolation']:.2f} -> {depth[b]['anchored_median']:.2f}")
+            ax.hist(
+                v,
+                bins=np.arange(23.5, 28.5, 0.05),
+                histtype="step",
+                color=col,
+                lw=1.3,
+                label=f"{b}: native {depth[b]['native_median_bg_extrapolation']:.2f} -> {depth[b]['anchored_median']:.2f}",
+            )
             ax.axvline(depth[b]["anchored_median"], color=col, ls="--", lw=1)
         ax.set_xlabel("reported-error S/N = 5 depth per nside-128 pixel (native scale)")
         ax.set_ylabel("pixels")
         ax.legend(fontsize=8.5)
-        ax.set_title("Q1 depth maps: structure from the catalogue, scale from the Wide-survey depth", fontsize=10)
+        ax.set_title(
+            "Q1 depth maps: structure from the catalogue, scale from the Wide-survey depth",
+            fontsize=10,
+        )
         ax.grid(alpha=0.25)
         ax = axes[1]
-        ax.plot(catalog_tab["delta_mag"], catalog_tab["log_mag_err"], "-", color="#1f77b4", lw=2, label="catalog (reported, detected)")
-        ax.plot(sample_tab["delta_mag"], sample_tab["log_mag_err"], "-", color="#d62728", lw=2, label=f"sample = catalog x {f_ref:.2f}")
-        ax.plot(catalog_nc_tab["delta_mag"], catalog_nc_tab["log_mag_err"], "--", color="#1f77b4", lw=1.2, label="catalog, no S/N cut")
-        ax.plot(sample_nc_tab["delta_mag"], sample_nc_tab["log_mag_err"], "--", color="#d62728", lw=1.2, label="sample, no S/N cut")
+        ax.plot(
+            catalog_tab["delta_mag"],
+            catalog_tab["log_mag_err"],
+            "-",
+            color="#1f77b4",
+            lw=2,
+            label="catalog (reported, detected)",
+        )
+        ax.plot(
+            sample_tab["delta_mag"],
+            sample_tab["log_mag_err"],
+            "-",
+            color="#d62728",
+            lw=2,
+            label=f"sample = catalog x {f_ref:.2f}",
+        )
+        ax.plot(
+            catalog_nc_tab["delta_mag"],
+            catalog_nc_tab["log_mag_err"],
+            "--",
+            color="#1f77b4",
+            lw=1.2,
+            label="catalog, no S/N cut",
+        )
+        ax.plot(
+            sample_nc_tab["delta_mag"],
+            sample_nc_tab["log_mag_err"],
+            "--",
+            color="#d62728",
+            lw=1.2,
+            label="sample, no S/N cut",
+        )
         ax.axhline(np.log10(SIG_SN5), color="0.5", ls=":", lw=1)
         ax.axvline(0, color="0.5", ls=":", lw=1)
         ax.set_xlabel("delta_mag = $I_E$ - maglim(pixel)")
@@ -652,7 +790,9 @@ def main(args):
         ax.set_xlim(-9, 2)
         ax.legend(fontsize=8.5, loc="upper left")
         ax.grid(alpha=0.25)
-        ax.set_title(f"VIS photo-error curves ({len(pl):,} point-like sources)", fontsize=10)
+        ax.set_title(
+            f"VIS photo-error curves ({len(pl):,} point-like sources)", fontsize=10
+        )
         fig.tight_layout()
         fig.savefig(figdir / f"{TAG}_depth_anchor.png", dpi=140)
         plt.close(fig)
@@ -662,14 +802,23 @@ def main(args):
 
 
 def build_parser():
-    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     p.add_argument("--hats", default=HATS_EUCLID, help="Euclid Q1 HATS collection")
-    p.add_argument("--truth", default=TRUTH_DEFAULT, help="ECDFS spectroscopic compilation (catalog.dat.gz)")
+    p.add_argument(
+        "--truth",
+        default=TRUTH_DEFAULT,
+        help="ECDFS spectroscopic compilation (catalog.dat.gz)",
+    )
     p.add_argument("--out", default=str(OUT_DEFAULT), help="output directory")
     p.add_argument("--figdir", default=None, help="write derivation figures here")
-    p.add_argument("--no-anchor", action="store_true",
-                   help="ship the native reported-error depth scale (f = 1) instead of anchoring "
-                        "to the Wide-survey point-source depths")
+    p.add_argument(
+        "--no-anchor",
+        action="store_true",
+        help="ship the native reported-error depth scale (f = 1) instead of anchoring "
+        "to the Wide-survey point-source depths",
+    )
     return p
 
 

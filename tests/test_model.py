@@ -367,6 +367,53 @@ class TestCompleteCatalogPermutations:
 
 
 # ---------------------------------------------------------------------------
+# Masses are independent of the stars' positions
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.model
+class TestMassIndependentOfPosition:
+    """The mass draw never follows phi1, whether phi1 is sampled by the model
+    or supplied — even drawn with the same seed as the sampling, which used to
+    replay the masses' random numbers and make mass grow along the stream."""
+
+    @staticmethod
+    def _bin_median_deviation(phi1, mass, nbins=5):
+        """Largest relative deviation of the median mass in phi1 bins."""
+        edges = np.linspace(phi1.min(), phi1.max(), nbins + 1)
+        bins = np.digitize(phi1, edges[1:-1])
+        medians = np.array([np.median(mass[bins == k]) for k in range(nbins)])
+        return np.max(np.abs(medians / np.median(mass) - 1))
+
+    @pytest.mark.parametrize("seed", [0, 42])
+    @pytest.mark.parametrize("phi1_source", ["given_same_seed", "sampled"])
+    def test_median_mass_uniform_along_phi1(
+        self, stream_config_with_distance, phi1_source, seed
+    ):
+        n = 5000
+        model = StreamModel(stream_config_with_distance)
+        if phi1_source == "sampled":
+            out = model.sample(n, seed=seed)
+        else:
+            # The user's phi1 comes from a generator with the sampling's seed,
+            # and nothing is drawn before the masses (phi2 given, no distance
+            # spread): the masses must still not follow phi1.
+            phi1 = np.random.default_rng(seed).uniform(-9.0, 9.0, n)
+            df = pd.DataFrame({"phi1": phi1, "phi2": np.zeros(n)})
+            out = model.complete_catalog(
+                df,
+                columns_to_add=["dist", "lsst_g_true", "mass"],
+                rng=np.random.default_rng(seed),
+                verbose=False,
+            )
+        # Bin medians of independent masses scatter by < 12% (5 bins of ~1000).
+        deviation = self._bin_median_deviation(
+            out["phi1"].to_numpy(), out["mass"].to_numpy()
+        )
+        assert deviation < 0.2, f"median mass varies by {deviation:.0%} along phi1"
+
+
+# ---------------------------------------------------------------------------
 # IsochroneModel — shared initial masses (user-supplied + `mass` column)
 # ---------------------------------------------------------------------------
 
@@ -417,6 +464,16 @@ class TestIsochroneModel:
         assert (
             iso.survey_name == "lsst"
         ), "Legacy survey_name must be the bare namespace when no release is given"
+
+    def test_old_ugali_raises_actionable_import_error(
+        self, single_survey_iso_config, monkeypatch
+    ):
+        """ugali < 1.9 (no Vega->AB support) is rejected with an install hint."""
+        import ugali.isochrone.model
+
+        monkeypatch.delattr(ugali.isochrone.model.Isochrone, "vega_to_ab")
+        with pytest.raises(ImportError, match="ugali >= 1.9"):
+            IsochroneModel(single_survey_iso_config)
 
     def test_multi_survey_sets_namespace_attrs(self, multi_survey_iso_config):
         iso = IsochroneModel(multi_survey_iso_config)
@@ -567,3 +624,276 @@ class TestIsochroneModel:
         assert np.array_equal(
             mags[("lsst_yr4", "r")], mags[("lsst_yr5", "r")]
         ), "Explicit masses should yield identical r mags across namespaces"
+
+
+# ---------------------------------------------------------------------------
+# IsochroneModel — any number of bands, on demand, with the HB spread
+# ---------------------------------------------------------------------------
+
+# Shared stellar population of the multi-band tests.
+_POP = {"name": "Marigo2017", "age": 12.0, "z": 0.0006}
+
+
+def _with_isochrone(stream_config, isochrone):
+    """Copy of a stream config with its isochrone section replaced."""
+    return {**stream_config, "isochrone": isochrone}
+
+
+def _des_euclid(des_bands=None, euclid_bands=None):
+    """Multi-survey isochrone config, DES first (primary), optional bands."""
+    surveys = {"des": {"survey": "des"}, "euclid": {"survey": "euclid"}}
+    if des_bands is not None:
+        surveys["des"]["bands"] = list(des_bands)
+    if euclid_bands is not None:
+        surveys["euclid"]["bands"] = list(euclid_bands)
+    return {**_POP, "surveys": surveys}
+
+
+@pytest.mark.model
+class TestMultiBandIsochrone:
+    """Bands beyond the legacy pair: config, on-demand sampling, HB spread and
+    reproducibility (one IMF draw whatever the surveys and bands)."""
+
+    # -- configuration --------------------------------------------------------
+
+    def test_bands_list_gives_one_column_per_band(self, stream_config_with_distance):
+        """`bands: [g, r, i]` -> three columns, g/r identical to `band_1/band_2`."""
+        legacy = StreamModel(
+            _with_isochrone(
+                stream_config_with_distance,
+                {**_POP, "survey": "des", "band_1": "g", "band_2": "r"},
+            )
+        ).sample(500, seed=4)
+        listed = StreamModel(
+            _with_isochrone(
+                stream_config_with_distance,
+                {**_POP, "survey": "des", "bands": ["g", "r", "i"]},
+            )
+        ).sample(500, seed=4)
+        assert {"des_g_true", "des_r_true", "des_i_true"}.issubset(listed.columns)
+        assert "des_i_true" not in legacy.columns
+        pd.testing.assert_frame_equal(listed[legacy.columns], legacy, check_exact=True)
+
+    def test_legacy_attrs_follow_bands(self):
+        iso = IsochroneModel({**_POP, "survey": "des", "bands": ["i", "g", "z"]})
+        assert iso.default_bands == {"des": ("i", "g", "z")}
+        assert iso.survey_bands is iso.default_bands
+        assert (iso.band_1, iso.band_2) == ("i", "g")
+        single = IsochroneModel({**_POP, "survey": "euclid", "bands": ["VIS"]})
+        assert (single.band_1, single.band_2) == ("VIS", "VIS")
+
+    def test_no_bands_defaults_to_whole_filter_set(self, stream_config_with_distance):
+        """No band configured -> every band of ugali's list for that survey."""
+        from ugali.isochrone import Marigo2017
+
+        model = StreamModel(_with_isochrone(stream_config_with_distance, _des_euclid()))
+        des, euclid = Marigo2017.band_names["des"], Marigo2017.band_names["euclid"]
+        assert model.isochrone.default_bands == {
+            "des": tuple(des),
+            "euclid": tuple(euclid),
+        }
+        out = model.sample(100, seed=1)
+        expected = [f"des_{b}_true" for b in des] + [f"euclid_{b}_true" for b in euclid]
+        assert set(expected).issubset(out.columns)
+        assert out[expected].notna().all().all()
+
+    def test_available_bands_cover_the_filter_set(self):
+        iso = IsochroneModel(_des_euclid(des_bands=["g", "r"]))
+        assert set(iso.available_bands("euclid")) >= {
+            "VIS",
+            "Y",
+            "Blue",
+            "J",
+            "Red",
+            "H",
+        }
+        assert set(iso.available_bands("des")) >= {"u", "g", "r", "i", "z", "Y"}
+        assert "mass_init" not in iso.available_bands("des")
+        with pytest.raises(ValueError, match="Unknown isochrone survey"):
+            iso.available_bands("roman")
+
+    def test_surveys_list_form_matches_mapping(self, stream_config_with_distance):
+        """`surveys: [des, euclid]` is the mapping with each `survey` spelled out."""
+        as_list = {**_POP, "surveys": ["des", "euclid"]}
+        out_list = StreamModel(
+            _with_isochrone(stream_config_with_distance, as_list)
+        ).sample(300, seed=2)
+        out_map = StreamModel(
+            _with_isochrone(stream_config_with_distance, _des_euclid())
+        ).sample(300, seed=2)
+        pd.testing.assert_frame_equal(out_list, out_map, check_exact=True)
+
+    def test_survey_defaults_to_key_name_not_ugali_des(self):
+        """Without `survey`, the filter set is the key's survey name, release
+        dropped (ugali itself would silently fall back to DES)."""
+        iso = IsochroneModel(
+            {**_POP, "surveys": {"lsst_yr4": {"bands": ["g", "r"]}, "roman": {}}}
+        )
+        assert iso.isos["lsst_yr4"].survey == "lsst"
+        assert iso.isos["roman"].survey == "roman"
+        explicit = IsochroneModel(
+            {**_POP, "surveys": {"custom": {"survey": "des", "bands": ["g"]}}}
+        )
+        assert explicit.isos["custom"].survey == "des"
+
+    def test_bands_and_legacy_pair_together_raise(self):
+        with pytest.raises(ValueError, match="either `bands` or `band_1`/`band_2`"):
+            IsochroneModel({**_POP, "survey": "des", "bands": ["g"], "band_1": "g"})
+
+    @pytest.mark.parametrize("bands", [["F158"], ["VIS", "H", "F158"]])
+    def test_unavailable_band_in_config_lists_available_bands(self, bands):
+        """A Roman band configured for Euclid is rejected, naming the valid ones."""
+        with pytest.raises(ValueError, match=r"Available bands.*VIS"):
+            IsochroneModel({**_POP, "survey": "euclid", "bands": bands})
+
+    def test_unavailable_band_in_sample_lists_available_bands(self):
+        iso = IsochroneModel(_des_euclid(euclid_bands=["VIS"]))
+        with pytest.raises(ValueError, match=r"Available bands.*VIS"):
+            iso.sample(
+                10, 16.0, rng=np.random.default_rng(0), bands={"euclid": ["F158"]}
+            )
+
+    # -- sampling on demand ---------------------------------------------------
+
+    def test_sample_any_available_band_on_request(self):
+        iso = IsochroneModel(_des_euclid(des_bands=["g", "r"], euclid_bands=["VIS"]))
+        mags, _ = iso.sample(
+            20,
+            16.0,
+            rng=np.random.default_rng(0),
+            bands={"des": ["z"], "euclid": ["J"]},
+        )
+        assert set(mags) == {("des", "z"), ("euclid", "J")}
+
+    def test_complete_catalog_accepts_non_default_band(
+        self, stream_config_with_distance
+    ):
+        model = StreamModel(
+            _with_isochrone(
+                stream_config_with_distance,
+                {**_POP, "survey": "des", "release": "yr6", "bands": ["g", "r"]},
+            )
+        )
+        out = model.complete_catalog(
+            catalog=None,
+            size=30,
+            columns_to_add=["phi1", "dist", "des_Y_true"],
+            verbose=False,
+        )
+        assert out["des_Y_true"].notna().all()
+        assert "des_g_true" not in out.columns, "only the requested band is added"
+
+    # -- reproducibility (R1-R3) ----------------------------------------------
+
+    def test_one_imf_draw_whatever_the_bands(self):
+        """R1: sampling makes one IMF draw (rng.choice over the mass grid) from
+        a child stream of the generator, for any surveys/bands, and leaves the
+        generator's own stream untouched."""
+        iso = IsochroneModel(_des_euclid(des_bands=["g", "r", "i", "z"]))
+        grid = iso.iso.sample(mass_min=iso._MASS_MIN, mass_steps=iso._MASS_STEPS)
+        pdf = grid[1] / grid[1].sum()
+        rng, twin = np.random.default_rng(11), np.random.default_rng(11)
+        _, masses = iso.sample(1000, 16.0, rng=rng)
+        (child,) = twin.spawn(1)
+        assert np.array_equal(masses, child.choice(grid[0], size=1000, p=pdf))
+        assert rng.bit_generator.state == twin.bit_generator.state
+        assert np.array_equal(
+            iso.sample_masses(1000, rng=np.random.default_rng(11)), masses
+        )
+
+    @pytest.mark.parametrize(
+        "isochrone",
+        [
+            _des_euclid(des_bands=["g", "r", "i", "z"]),  # more bands
+            _des_euclid(des_bands=["g", "r"], euclid_bands=["VIS", "H"]),  # + survey
+        ],
+        ids=["more_bands", "more_surveys"],
+    )
+    def test_more_bands_or_surveys_leave_other_columns_unchanged(
+        self, stream_config_with_distance, isochrone
+    ):
+        """R2: same seed -> the shared columns are bit-identical."""
+        ref = StreamModel(
+            _with_isochrone(
+                stream_config_with_distance,
+                {**_POP, "surveys": {"des": {"survey": "des", "bands": ["g", "r"]}}},
+            )
+        ).sample(3000, seed=3)
+        out = StreamModel(
+            _with_isochrone(stream_config_with_distance, isochrone)
+        ).sample(3000, seed=3)
+        pd.testing.assert_frame_equal(out[ref.columns], ref, check_exact=True)
+
+    def test_completing_bands_later_matches_sampling_them_at_once(
+        self, stream_config_with_distance
+    ):
+        """R3: complete `i` in a second call (reusing `mass`) -> identical to
+        sampling g, r, i together."""
+        n = 20000  # enough stars for a few on the horizontal branch
+
+        def model(bands):
+            return StreamModel(
+                _with_isochrone(
+                    stream_config_with_distance,
+                    {**_POP, "survey": "des", "bands": bands},
+                )
+            )
+
+        first = model(["g", "r"]).complete_catalog(
+            catalog=None, size=n, rng=np.random.default_rng(5), verbose=False
+        )
+        hb_offset = model(["g", "r"]).isochrone._hb_offset(first["mass"])
+        assert np.count_nonzero(hb_offset) > 0, "sample has no dispersed HB star"
+        later = model(["g", "r"]).complete_catalog(
+            catalog=first, columns_to_add=["des_i_true"], verbose=False
+        )
+        at_once = model(["g", "r", "i"]).complete_catalog(
+            catalog=None, size=n, rng=np.random.default_rng(5), verbose=False
+        )
+        pd.testing.assert_frame_equal(later[at_once.columns], at_once, check_exact=True)
+
+    # -- horizontal-branch spread ---------------------------------------------
+
+    def test_magnitudes_depend_on_mass_alone(self):
+        """The drawn masses, supplied back, give the same magnitudes, HB stars
+        included: the masses alone reproduce a sample."""
+        iso = IsochroneModel(_des_euclid(des_bands=["g", "r"], euclid_bands=["VIS"]))
+        mags, masses = iso.sample(50000, 16.0, rng=np.random.default_rng(1))
+        assert np.count_nonzero(iso._hb_offset(masses)) > 0, "no dispersed HB star"
+        again, _ = iso.sample(50000, 16.0, masses=masses)
+        for key in mags:
+            assert np.array_equal(again[key], mags[key]), key
+
+    def test_hb_spread_is_shared_by_all_bands_and_surveys(self):
+        """HB stars are offset by one of ugali's dispersion values, the same in
+        every band of every survey, so their colours are the isochrone's."""
+        iso = IsochroneModel(
+            _des_euclid(des_bands=["g", "r"], euclid_bands=["VIS", "H"])
+        )
+        mags, masses = iso.sample(50000, 16.0, rng=np.random.default_rng(0))
+        offset = None
+        for name in ("des", "euclid"):
+            undispersed = IsochroneModel._absolute_mags(
+                iso.isos[name], masses, iso.default_bands[name]
+            )
+            for band, mag in undispersed.items():
+                this = mags[(name, band)] - 16.0 - mag
+                offset = this if offset is None else offset
+                assert np.allclose(this, offset, rtol=0, atol=1e-9), (name, band)
+        offset = np.round(offset, 6)
+        # ugali disperses the HB by up to +/- hb_spread in 0.025 steps.
+        steps = offset / 0.025
+        assert np.allclose(steps, np.round(steps), rtol=0, atol=1e-6)
+        assert np.all(np.abs(offset) <= iso.iso.hb_spread + 1e-9)
+        assert np.count_nonzero(offset) > 0
+        # Only horizontal-branch masses are dispersed.
+        hb_masses = iso.iso.mass_init[iso.iso.stage == iso.iso.hb_stage]
+        on_hb = (masses > hb_masses.min()) & (masses < hb_masses.max())
+        assert np.all(on_hb[offset != 0])
+
+    def test_hb_offsets_cover_ugali_dispersion_evenly(self):
+        """Every one of ugali's HB offsets is used by as many HB masses."""
+        iso = IsochroneModel({**_POP, "survey": "des", "bands": ["g"]})
+        values, counts = np.unique(iso._hb_mass_offsets, return_counts=True)
+        assert np.allclose(values, np.linspace(-0.1, 0.1, 9))
+        assert np.all(np.abs(counts / counts.mean() - 1) < 0.02)

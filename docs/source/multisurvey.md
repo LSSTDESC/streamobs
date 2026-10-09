@@ -63,11 +63,12 @@ A plain list is rejected for a multi-survey injector (it is ambiguous), and a
 `df` may already contain `ra`/`dec` or `phi1`/`phi2`, may be a fully empty frame
 of length *N*, or any subset — anything missing is sampled from `stream_config`
 (see *Completing a catalog* below). The output carries shared
-`ra`/`dec` plus, **per survey**, the namespaced columns described in
+`ra`/`dec` (and, when true magnitudes were sampled, the stars' `mass`) plus,
+**per survey**, the namespaced columns described in
 [Output column convention](column_convention.md):
 
 ```
-ra, dec,
+ra, dec, mass,
 lsst_dc2_r_true,  lsst_dc2_r_obs,  lsst_dc2_r_err,  lsst_dc2_g_true, ..., lsst_dc2_flag_observed,
 roman_dc2_F106_true, roman_dc2_F106_obs, ..., roman_dc2_flag_observed
 ```
@@ -92,7 +93,7 @@ true magnitudes are physically consistent and tightly correlated across surveys
 rather than drawn independently.
 
 This requires a **multi-survey isochrone** in the stream config: a top-level
-`surveys:` mapping sharing one stellar population, e.g.
+`surveys:` list sharing one stellar population, e.g.
 
 ```yaml
 stream:
@@ -101,53 +102,82 @@ stream:
     name: Marigo2017      # shared population
     age: 12.0
     z: 0.0006
-    surveys:
-      lsst_dc2:  {survey: lsst,  band_1: g,    band_2: r}
-      roman_dc2: {survey: roman, band_1: F106, band_2: F158}
+    surveys: [lsst, roman]
 ```
 
 ```{important}
-Each `surveys:` key names the namespace the isochrone produces true-magnitude
-columns for. Because true magnitudes are release-independent, the release is
-**dropped** from those column names — a key of `lsst_dc2` and a key of `lsst`
-both emit `lsst_<band>_true` (see
+Each `surveys:` entry is a survey name, which names both the *ugali* filter set
+and the true-magnitude columns, `<name>_<band>_true`. Because true magnitudes
+are release-independent, no release is needed: `lsst` fills `lsst_<band>_true`
+for an injector serving `lsst_dc2`, `lsst_yr5`, ... (see
 [Output column convention](column_convention.md)). What matters is that the
-key's `{name}` part matches the injecting survey's name, so the columns the
-model emits line up with the ones the injector looks for.
+name matches the injecting survey's name.
 
-Spelling the key as the full `{name}_{release}` namespace is still recommended,
-since it matches the `survey_bands` keys — which *are* matched on the full
-namespace — and keeps one consistent vocabulary across the config. Here the
-inner `survey:` is the *ugali* filter set, which never carries a release.
+A release in the name is accepted and ignored for both purposes (`lsst_dc2`
+works like `lsst`). To use another ugali filter set than the name (e.g.
+`lsst_dp0`), give it as `survey:` in the mapping form below.
 ```
 
-A single-survey isochrone (the flat `survey`/`band_1`/`band_2` form, optionally
-with `release:`) is just the one-survey case of the same machinery and produces
+A single-survey isochrone (the flat `survey: ...` form, optionally with
+`release:`) is just the one-survey case of the same machinery and produces
 `<namespace>_<band>_true` identically.
 
+### Which bands are sampled
+
+The isochrone can produce **any band of each survey's filter set** (ugali's
+list, e.g. `u g r i z Y` for `des`, `VIS Y Blue J Red H` for `euclid`), so bands
+never have to be listed twice: the injector's `bands` argument alone decides
+which `<name>_<band>_true` columns are sampled, and a survey entry may name no
+band at all, as above. Requesting a band the filter set does not have (e.g. the
+Roman `F158` for `euclid`) raises a `ValueError` listing the available bands.
+
+A survey entry can still list its bands, with `surveys` written as a mapping of
+per-survey options. They are its *default* bands, the ones
+`StreamModel.sample()` and `complete_catalog()` produce when used without the
+injector:
+
+```yaml
+    surveys:
+      lsst:  {bands: [g, r, i]}
+      roman: {band_1: F106, band_2: F158}  # legacy pair, still accepted
+```
+
+Give either `bands` or the legacy `band_1`/`band_2` pair, not both. An entry
+with neither defaults to every band of its filter set.
+
 A complete, runnable example — the surveys, per-survey bands, the multi-survey
-isochrone, and the shared stream geometry — is provided as a *scene* config in
+isochrone, the shared stream geometry and its sky placement — is provided as a
+*scene* config in
 [`config/scenes/roman_rubin_demo.yaml`](https://github.com/LSSTDESC/streamobs/blob/main/config/scenes/roman_rubin_demo.yaml):
 
 ```python
 import yaml
+import pandas as pd
+import astropy.coordinates as coord
+import gala.coordinates as gc
 from streamobs.observed import StreamInjector
 
 scene = yaml.safe_load(open("config/scenes/roman_rubin_demo.yaml"))
 inj = StreamInjector(scene["surveys"])       # lsst/dc2 + roman/dc2 -> namespaces
                                              # "lsst_dc2", "roman_dc2"
+# The DC2 footprints are too small for the random sky placement, so the scene
+# gives the stream's great circle, through the Roman DC2 field.
+ends = [coord.SkyCoord(unit="deg", **e) for e in scene["gc_frame_endpoints"]]
+frame = gc.GreatCircleICRSFrame.from_endpoints(*ends)
+
+df = pd.DataFrame(index=range(int(scene["stream"]["nstars"])))
 cat = inj.inject(
     df, bands=scene["survey_bands"],         # {"lsst_dc2": [...], "roman_dc2": [...]}
-    stream_config=scene["stream"], seed=42,
+    stream_config=scene["stream"], gc_frame=frame, seed=42,
 )
 ```
 
 ```{note}
-**Roman bands are converted Vega→AB automatically.** `ugali` returns Roman
-isochrone magnitudes in Vega while the catalogs are AB, so `IsochroneModel`
-applies a fixed per-band offset (`streamobs.model.ROMAN_VEGA_TO_AB`) to every
-Roman band unconditionally. Non-Roman bands pass through unchanged; there is no
-config flag.
+**Roman bands are converted Vega→AB automatically.** The PARSEC Roman
+isochrone files are in Vega while the catalogs are AB, so `ugali` (>= 1.9)
+applies a fixed per-band offset (listed in `streamobs.model.ROMAN_VEGA_TO_AB`)
+to every Roman band when it reads them, and `IsochroneModel` adds nothing on
+top. Non-Roman bands pass through unchanged; there is no config flag.
 ```
 
 ```{note}
@@ -193,15 +223,34 @@ mutually colour-consistent).
 
 ### Stellar masses (the `mass` column)
 
-When an isochrone is configured, the shared **initial masses** drawn for the stars
-are surfaced as a single un-namespaced `mass` column (one mass per star, shared by
-all surveys — the same physical star). You can also go the other way and supply
+When true magnitudes are sampled from the isochrone, the shared **initial
+masses** drawn for the stars are surfaced as a single un-namespaced `mass` column
+(one mass per star, shared by all surveys — the same physical star), in the
+output of `inject`/`complete_data` as in that of `StreamModel.sample()` /
+`complete_catalog()`. You can also go the other way and supply
 your own masses: pass a fully-populated `mass` column in the input catalog and the
 isochrone uses *those* masses instead of drawing fresh ones, so the sampled
 magnitudes reproduce your simulation's exact stars. At the model level
 {meth}`streamobs.model.IsochroneModel.sample` accepts a `masses=`
 array and returns the masses it used. The mass grid resolution is controlled by
 `IsochroneModel._MASS_STEPS` (default 4000) and a per-call `mass_steps=` override.
+
+### Horizontal-branch spread
+
+ugali spreads the horizontal branch (HB) in luminosity (`hb_spread`: ±0.1 mag
+in 0.025 mag steps for `Marigo2017`). streamobs keeps this spread as a fixed
+function of the initial mass: each HB mass of the sampling grid has one of
+ugali's offsets, all offsets being equally represented. The HB spans over a
+thousand grid masses, so the stars of a sample practically never share one and
+the spread is in effect per star. The offset is added to every band of every
+survey, since it is a luminosity spread of the same physical star, so HB
+colours are those of the isochrone.
+
+Magnitudes therefore depend on the initial mass alone, which makes completion
+reproducible: when the `mass` column is fully present, the completion reuses
+it, so a band added by a later call (`complete_data`/`inject` on the output, or
+`complete_catalog`) gets exactly the values it would have had if sampled with
+the others.
 
 ## S/N cut ownership
 

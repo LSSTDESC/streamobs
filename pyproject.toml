@@ -33,9 +33,11 @@ dependencies = [
 
 # `ugali` (CMD/isochrone sampling) must be installed from GitHub, NOT from PyPI:
 #   pip install git+https://github.com/DarkEnergySurvey/ugali.git
-# The PyPI release (1.8.0) predates CMD 3.8 isochrone column support and parses
-# those files against the wrong columns, yielding "Probabilities contain NaN"
-# at sampling time. See docs/source/installation.md.
+# streamobs needs ugali >= 1.9 (Euclid/Roman filter sets, Vega->AB conversion
+# of the Roman isochrones), checked when an isochrone is built. The PyPI
+# release (1.8.0) predates CMD 3.8 isochrone column support and parses those
+# files against the wrong columns, yielding "Probabilities contain NaN" at
+# sampling time. See docs/source/installation.md.
 [project.optional-dependencies]
 isochrones = ["ugali"]
 plotting = ["skyproj"] # sky-map helpers (guarded import in streamobs.plotting)

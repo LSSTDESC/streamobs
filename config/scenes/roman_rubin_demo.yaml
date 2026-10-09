@@ -5,12 +5,15 @@
 # Usage (see notebooks/multisurvey_phases_demo.ipynb):
 #
 #     import yaml, pandas as pd
+#     import astropy.coordinates as coord, gala.coordinates as gc
 #     from streamobs.observed import StreamInjector
 #     scene = yaml.safe_load(open("config/scenes/roman_rubin_demo.yaml"))
+#     ends = [coord.SkyCoord(unit="deg", **e) for e in scene["gc_frame_endpoints"]]
+#     frame = gc.GreatCircleICRSFrame.from_endpoints(*ends)
 #     msi = StreamInjector(scene["surveys"])
 #     df  = pd.DataFrame(index=range(int(scene["stream"]["nstars"])))
 #     out = msi.inject(df, scene["survey_bands"],
-#                      stream_config=scene["stream"], seed=42)
+#                      stream_config=scene["stream"], gc_frame=frame, seed=42)
 #
 # The same physical stars carry both `lsst_<band>_*` and `roman_<band>_*`
 # columns; each band's errors / detection come from that survey's own maps.
@@ -33,6 +36,8 @@ surveys:
     release: dc2
 
 # Bands to inject per survey. Each survey's `completeness_band` must appear here.
+# These alone decide which true magnitudes the isochrone samples (any band of
+# the survey's ugali filter set).
 # NOTE: a band label is used BOTH as the ugali isochrone field name AND as the
 # key into that survey's maglim/photo-error/extinction maps, so the two must
 # agree. ugali's Roman fields are upper-case (F106, F158, ...); the Roman
@@ -43,16 +48,28 @@ survey_bands:
   lsst_dc2: [r, g]
   roman_dc2: [F106, F158]
 
+# Sky placement: the great circle through these two ICRS points, its origin
+# (phi1 = phi2 = 0) at their midpoint. It crosses the centre of the Roman DC2
+# field (~21 deg², RA 50.6-56.2, Dec -42.2 to -37.9), which lies inside the
+# LSST DC2 footprint, so both surveys observe every star. The injector's
+# random placement (great circles drawn over the whole sky) practically never
+# lands in footprints this small, hence this frame, passed as `gc_frame` (see
+# the usage above).
+gc_frame_endpoints:
+  - {ra: 51.9, dec: -40.05}
+  - {ra: 54.9, dec: -40.05}
+
 # Shared stream geometry + a MULTI-SURVEY isochrone. The isochrone draws one set
 # of initial masses (exactly `nstars`) and interpolates them into every survey's
 # bands, so a star's LSST and Roman magnitudes describe the same object.
 stream:
   nstars: 5.0e+3
 
+  # A 3 deg long, 0.1 deg wide stream, to fit inside the Roman DC2 field.
   density:
     type: Uniform
-    xmin: -9.0
-    xmax: +9.0
+    xmin: -1.5
+    xmax: +1.5
 
   track:
     center:
@@ -60,7 +77,7 @@ stream:
       value: 0.0
     spread:
       type: Constant
-      value: 0.2
+      value: 0.1
     sampler: Gaussian
 
   distance_modulus:
@@ -78,19 +95,10 @@ stream:
     name: Marigo2017
     age: 12.0
     z: 0.0006
-    # Keys are the injecting surveys' namespaces. Note the true-magnitude
-    # columns these produce drop the release (`lsst_g_true`, not
-    # `lsst_dc2_g_true`), so `lsst:` would name the same columns — the
-    # namespace spelling is used here to stay consistent with `survey_bands`
-    # above. The inner `survey:` is the *ugali* filter set (never a release).
-    surveys:
-      lsst_dc2:
-        survey: lsst
-        band_1: g
-        band_2: r
-      roman_dc2:
-        survey: roman
-        band_1: F106
-        band_2: F158
-        # Roman bands are AUTOMATICALLY converted Vega->AB by IsochroneModel
-        # (streamobs.model.ROMAN_VEGA_TO_AB); no per-config flag is needed.
+    # One entry per survey: its name is both the ugali filter set and the
+    # prefix of the true-magnitude columns (`lsst_g_true`, `roman_F158_true`;
+    # true magnitudes drop the release). No bands are listed: the injector
+    # samples those of `survey_bands` above. The Roman isochrone files are in
+    # Vega; ugali (>= 1.9) converts them to AB when reading them (offsets
+    # listed in streamobs.model.ROMAN_VEGA_TO_AB), so no flag is needed.
+    surveys: [lsst, roman]

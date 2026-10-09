@@ -7,8 +7,8 @@ These tests verify *runtime behavior* of the Roman pipeline:
 
 - The ``roman/dc2`` Survey loads and has the expected namespaced columns after
   an inject.
-- Vega→AB conversion is applied for Roman bands (``F158``, ``F106``, etc.) and
-  is a no-op for non-Roman bands.
+- Roman isochrones are converted Vega→AB exactly once: by ugali when it reads
+  the files, never a second time by streamobs.
 - The completeness and photo-error loaders work, including both the standard
   ``classification_eff`` column and the legacy misspelled ``classifiction_eff``
   fallback path (kept for backward compatibility with older/Zenodo data packages).
@@ -315,58 +315,69 @@ class TestRomanDC2TrueNameObsNamespaceConvention:
 
 @pytest.mark.surveys
 class TestRomanVegaToAB:
-    """Verify that ``IsochroneModel._to_ab`` applies the correct offsets."""
+    """Roman isochrones are converted Vega→AB exactly once, by ugali.
+
+    The PARSEC Roman files are in Vega magnitudes; ugali (>= 1.9) adds the
+    ``ROMAN_VEGA_TO_AB`` offsets when it reads them, so ``IsochroneModel`` must
+    pass ugali's magnitudes through without adding them a second time.
+    """
 
     def _make_iso_model(self):
-        """Build a minimal Roman IsochroneModel for unit-testing _to_ab."""
+        """Build a minimal Roman IsochroneModel."""
         from streamobs.model import IsochroneModel
 
-        cfg = {
-            "name": "Marigo2017",
-            "survey": "roman",
-            "age": 12.0,
-            "z": 0.0006,
-            "band_1": "F158",
-            "band_2": "F106",
-        }
-        iso_model = IsochroneModel(cfg)
-        iso_model.create_isochrone(cfg)
-        return iso_model
-
-    def test_f158_offset_applied(self):
-        """F158 Vega→AB offset must be ~1.315 mag."""
-        from streamobs.model import ROMAN_VEGA_TO_AB
-
-        iso_model = self._make_iso_model()
-        mags = np.array([20.0, 21.0, 22.0])
-        ab_mags = iso_model._to_ab("F158", mags)
-        expected_offset = ROMAN_VEGA_TO_AB["F158"]
-        assert np.allclose(ab_mags - mags, expected_offset), (
-            f"F158 Vega→AB offset: expected {expected_offset}, "
-            f"got {(ab_mags - mags)[0]}"
+        return IsochroneModel(
+            {
+                "name": "Marigo2017",
+                "survey": "roman",
+                "age": 12.0,
+                "z": 0.0006,
+                "band_1": "F158",
+                "band_2": "F106",
+            }
         )
 
-    def test_f106_offset_applied(self):
-        """F106 Vega→AB offset must be ~0.660 mag."""
+    @staticmethod
+    def _raw_file_column(filename, band):
+        """``<band>mag`` column of a CMD isochrone file, on the rows ugali keeps."""
+        with open(filename) as f:
+            header = [line for line in f if line.startswith("#") and "Mini" in line]
+        names = header[-1].lstrip("#").split()
+        raw = np.genfromtxt(filename, comments="#")
+        raw = raw[raw[:, names.index("label")] != 9]  # ugali drops stage 9
+        return raw[:, names.index(f"{band}mag")]
+
+    def test_ugali_converts_file_to_ab(self):
+        """ugali's magnitudes are the raw (Vega) file values plus
+        ``ROMAN_VEGA_TO_AB`` (e.g. +1.315 in F158)."""
         from streamobs.model import ROMAN_VEGA_TO_AB
 
-        iso_model = self._make_iso_model()
-        mags = np.array([20.0, 21.0, 22.0])
-        ab_mags = iso_model._to_ab("F106", mags)
-        expected_offset = ROMAN_VEGA_TO_AB["F106"]
-        assert np.allclose(ab_mags - mags, expected_offset), (
-            f"F106 Vega→AB offset: expected {expected_offset}, "
-            f"got {(ab_mags - mags)[0]}"
-        )
+        iso = self._make_iso_model().iso
+        for band, offset in ROMAN_VEGA_TO_AB.items():
+            raw = self._raw_file_column(iso.filename, band)
+            assert np.allclose(
+                iso.data[band] - raw, offset, rtol=0, atol=1e-9
+            ), f"{band}: ugali should add the Vega→AB offset {offset} to the file"
 
-    def test_non_roman_band_unchanged(self):
-        """Non-Roman bands (e.g. 'g') must pass through _to_ab unchanged."""
-        iso_model = self._make_iso_model()
-        mags = np.array([20.0, 21.0, 22.0])
-        ab_mags = iso_model._to_ab("g", mags)
-        assert np.allclose(
-            ab_mags, mags
-        ), "Non-Roman band 'g' should not be modified by _to_ab"
+    def test_no_second_conversion_in_streamobs(self):
+        """At an isochrone mass point, the absolute magnitude IsochroneModel
+        returns is ugali's (already AB) value, with no extra offset."""
+        model = self._make_iso_model()
+        iso = model.iso
+        i = len(iso.mass_init) // 4  # a main-sequence point
+        mags, _ = model.sample(1, 0.0, masses=iso.mass_init[i : i + 1])
+        for band in ("F158", "F106"):
+            assert mags[("roman", band)][0] == pytest.approx(
+                iso.data[band][i], abs=1e-3
+            ), f"{band}: Vega→AB offset applied on top of ugali's conversion"
+
+    def test_reference_table_matches_ugali(self):
+        """``ROMAN_VEGA_TO_AB`` lists exactly the offsets ugali applies."""
+        from ugali.isochrone import Marigo2017
+
+        from streamobs.model import ROMAN_VEGA_TO_AB
+
+        assert dict(Marigo2017.vega_to_ab["roman"]) == ROMAN_VEGA_TO_AB
 
     def test_all_roman_bands_have_positive_offset(self):
         """Every Roman band in ROMAN_VEGA_TO_AB must have a positive offset
@@ -377,19 +388,6 @@ class TestRomanVegaToAB:
             assert (
                 offset > 0
             ), f"Roman band {band} has non-positive Vega→AB offset: {offset}"
-
-    def test_ab_mags_greater_than_vega(self):
-        """AB mags must be strictly larger (numerically dimmer in flux) than Vega
-        for Roman NIR bands — positive offset means AB number > Vega number."""
-        from streamobs.model import ROMAN_VEGA_TO_AB
-
-        iso_model = self._make_iso_model()
-        mags_vega = np.array([20.0])
-        for band in ("F106", "F129", "F158", "F184"):
-            mags_ab = iso_model._to_ab(band, mags_vega)
-            assert (
-                mags_ab[0] > mags_vega[0]
-            ), f"AB mag should be larger than Vega for Roman band {band}"
 
 
 # ---------------------------------------------------------------------------
