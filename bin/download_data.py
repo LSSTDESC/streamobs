@@ -224,9 +224,12 @@ Examples:
         return 1
 
     # Check if data already exists
-    if data_dir.exists() and not args.force:
+    # data/surveys/ is tracked in git (README.md, .gitkeep), so look for the
+    # survey folders that only the archive provides.
+    surveys_dir = data_dir / "surveys"
+    if surveys_dir.exists() and not args.force:
         subdirs = [
-            d for d in data_dir.iterdir() if d.is_dir() and not d.name.startswith(".")
+            d for d in surveys_dir.iterdir() if d.is_dir() and not d.name.startswith(".")
         ]
         if subdirs:
             print("=" * 80)
