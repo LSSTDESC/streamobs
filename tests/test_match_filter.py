@@ -10,6 +10,7 @@ of detected stream stars.
 
 import numpy as np
 import pytest
+from matplotlib.path import Path
 
 from streamobs.match_filter import build_match_filter, is_in_match_filter
 
@@ -205,3 +206,58 @@ class TestCrossSurveyMatchFilter:
         g_r = build_match_filter(dm, **narrow, survey="des", band_1="g", band_2="r")
         wrong = is_in_match_filter(g, vis, polygon_vertices=g_r)
         assert wrong.mean() < 0.5, f"g-r polygon selected {wrong.mean():.1%}"
+
+
+# ---------------------------------------------------------------------------
+# Isochrone locus: only the points before ugali's ``index``
+# ---------------------------------------------------------------------------
+
+
+class _FakeIsochrone:
+    """An ugali-like isochrone: colour, magnitude, and the index of its late stages."""
+
+    color = np.array([0.1, 0.2, 0.3, -0.4, -0.5])
+    mag = np.array([4.0, 5.0, 6.0, 10.0, 12.0])
+    index = 3  # the last two points: late stages (e.g. a white dwarf sequence)
+
+
+@pytest.mark.match_filter
+class TestIsochroneLocus:
+    def test_same_survey_stops_at_index(self, monkeypatch):
+        """One survey: the points before ``index`` only, as with two surveys."""
+        from streamobs import match_filter
+
+        monkeypatch.setattr(match_filter, "isochrone_factory", lambda *a, **k: _FakeIsochrone())
+        color, mag = match_filter._isochrone_locus("Dotter2016", 13.0, 1e-4, "VIS", "euclid", "H", "euclid")
+        np.testing.assert_array_equal(color, _FakeIsochrone.color[:3])
+        np.testing.assert_array_equal(mag, _FakeIsochrone.mag[:3])
+
+    def test_dotter_white_dwarfs_left_out(self):
+        """A Dotter2016 Euclid isochrone with a white dwarf sequence (13 Gyr,
+        Z = 1e-4): its match filter is as narrow as without it, and its locus
+        has none of the late stages."""
+        from ugali.analysis.isochrone import factory as isochrone_factory
+
+        from streamobs.match_filter import _isochrone_locus
+
+        try:
+            isochrone = isochrone_factory("Dotter2016", age=13.0, z=1e-4, survey="euclid", band_1="VIS", band_2="H")
+        except Exception as error:  # the Dotter2016 Euclid grid is not installed
+            pytest.skip(f"no Dotter2016 Euclid isochrone: {error}")
+        if (isochrone.stage[isochrone.index:] < 6).all():
+            pytest.skip("this Dotter2016 file has no white dwarf sequence")
+        color, mag = _isochrone_locus("Dotter2016", 13.0, 1e-4, "VIS", "euclid", "H", "euclid")
+        assert len(mag) == isochrone.index
+
+        polygon = build_match_filter(
+            distance_modulus=16.5, age=13.0, metallicity=1e-4, isochrone_model="Dotter2016",
+            band_1="VIS", band_2="H", survey_1="euclid", survey_2="euclid",
+        )
+        # Main sequence: one narrow interval of colour at each magnitude
+        main_sequence_colors = np.linspace(-1.0, 1.5, 2501)
+        for mag_vis in np.arange(21.0, 25.01, 0.25):
+            inside = Path(polygon).contains_points(
+                np.c_[main_sequence_colors, np.full_like(main_sequence_colors, mag_vis)]
+            )
+            width = inside.sum() * (main_sequence_colors[1] - main_sequence_colors[0])
+            assert 0.05 < width < 0.5, f"width {width:.2f} mag at VIS = {mag_vis}"
