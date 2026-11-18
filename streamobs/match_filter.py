@@ -338,6 +338,11 @@ def _isochrone_locus(
     band_2 interpolated in initial mass at band_1's isochrone points — the
     files of two filter sets do not share their mass points — the same way the
     injected true magnitudes are computed.
+
+    In both cases, only the isochrone points before ``ugali``'s ``index``: the
+    whole isochrone for the PARSEC models (e.g. Marigo2017), up to the early
+    AGB for the MESA ones (e.g. Dotter2016), some of whose files go on to the
+    white dwarf cooling sequence, which crosses the main sequence.
     """
     if survey_1.lower() == survey_2.lower():
         isochrone = isochrone_factory(
@@ -348,7 +353,8 @@ def _isochrone_locus(
             band_1=band_1,
             band_2=band_2,
         )
-        return isochrone.color, isochrone.mag
+        sel = slice(isochrone.index)
+        return isochrone.color[sel], isochrone.mag[sel]
 
     iso_1, iso_2 = (
         isochrone_factory(
